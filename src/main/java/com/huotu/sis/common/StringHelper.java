@@ -9,54 +9,45 @@
 
 package com.huotu.sis.common;
 
-import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Random;
 
-/**
- * 字符处理
- *
- * @author Administrator
- */
 public class StringHelper {
-    public static final String SECRET="08afd6f9ae0c6017d105b4ce580de885";
-
-
-    /**
-     * 返回app信息
-     * @param userAgent 字符串
-     * @return
-     */
-    public static String[] getRequestAppInfo(String userAgent){
-        if(StringUtils.isEmpty(userAgent)){
-            return null;
-        }
-        Pattern p = Pattern.compile(";hottec:([^;]+)");
-        Matcher matcher=p.matcher(userAgent);
-        StringBuilder builder=new StringBuilder();
-        while (matcher.find()){
-            builder.append(matcher.group(1));
-        }
-        return builder.toString().split(":");
-
+    public StringHelper() {
     }
 
-    /**
-     * 判断签名是否正确
-     * @param data
-     * @return
-     */
-    public static boolean isTrueSign(String[] data) throws UnsupportedEncodingException {
-        for(String s:data){
-            if(StringUtils.isEmpty(s)){
-                return false;
-            }
+    public static String getIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if(!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+            int index = ip.indexOf(",");
+            return index != -1?ip.substring(0, index):ip;
+        } else {
+            ip = request.getHeader("X-Real-IP");
+            return !StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)?ip:request.getRemoteAddr();
         }
-        String s=data[1]+data[2]+SECRET;
-        String sign= DigestUtils.md5DigestAsHex(s.getBytes("UTF-8")).toLowerCase();
-        return sign.equals(data[0]);
+    }
+
+    public static String randomNo(Random ran, int xLen) {
+        String[] char_array = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "W", "U", "V", "X", "Y", "Z"};
+        String output = "";
+
+        for(double tmp = 0.0D; output.length() < xLen; output = output + char_array[(int)(tmp * 34.0D)]) {
+            tmp = (double)ran.nextFloat();
+        }
+
+        return output;
+    }
+
+    public static String randomNum(Random ran, int xLen) {
+        String[] char_array = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+        String output = "";
+
+        for(double tmp = 0.0D; output.length() < xLen; output = output + char_array[(int)(tmp * 9.0D)]) {
+            tmp = (double)ran.nextFloat();
+        }
+
+        return output;
     }
 }

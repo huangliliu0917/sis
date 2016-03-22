@@ -2,7 +2,7 @@ package com.huotu.sis.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.sourceforge.jtds.jdbc.DateTime;
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 
 /**
  * Created by admin on 2016/1/31.
