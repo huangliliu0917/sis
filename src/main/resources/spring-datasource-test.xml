@@ -8,6 +8,10 @@
         <property name="packagesToScan">
             <array>
                 <value>com.huotu.sis.entity</value>
+                <value>com.huotu.huobanplus.model.entity</value>
+                <value>com.huotu.huobanplus.common.entity</value>
+                <value>com.huotu.huobanplus.base.entity</value>
+                <value>com.huotu.huobanplus.smartui.entity</value>
             </array>
         </property>
         <property name="persistenceProvider">
