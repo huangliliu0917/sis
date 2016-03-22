@@ -1,0 +1,110 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2015. All rights reserved.
+ */
+
+package com.huotu.sis.entity;
+
+import com.huotu.sis.entity.support.OpenSisAwards;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.rest.core.annotation.Description;
+
+import javax.persistence.*;
+import java.util.Date;
+
+/**
+ *
+ * <p>店中店配置表</p>
+ *
+ * @author shiliting
+ */
+@Entity
+@Table(name = "SIS_Cfg")
+@Getter
+@Setter
+@Cacheable(value = false)
+public class SisConfig {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ConfigId")
+    @Description("主键ID")
+    private Long id;
+
+    @Column(name = "CustomerId")
+    @Description("商户ID")
+    private Long merchantId;
+
+    @Column(name = "Enabled")
+    @Description("是否启用店中店，0:关闭，1:启用")
+    private Integer enabled;
+
+    @Column(name = "Open_Mode")
+    @Description("开店门槛，0:小伙伴直接开启，1:购买指定商品")
+    private Integer openMode;
+
+    @Column(name = "Open_NeedInvite")
+    @Description("是否需要邀请，0:不需要，1:需要")
+    private Integer openNeedInvite;
+
+    @Column(name = "RebateSetting")
+    @Description("直推奖计算")
+    private String rebateSetting;
+
+
+    @Column(name = "Open_GoodsId")
+    @Description("购买指定商品")
+    private Long openGoodsId;
+
+    @Column(name = "Open_Award",columnDefinition = "longtext")
+    @Description("开店奖")
+    @Lob
+    private OpenSisAwards OpenSisAwards;
+
+    @Column(name = "MaxMartketableNum")
+    @Description("最大上架商品数")
+    private Integer maxMartketableNum;
+
+    @Column(name = "MaxBrandNum")
+    @Description("最大上架品牌数")
+    private Integer maxBrandNum;
+
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @Description("更新时间")
+    @Column(name = "UpdateTime")
+    private Date updateTime;
+
+
+    @Column(name = "CorpStockSelf")
+    @Description("开店人获得梦想股")
+    private Integer corpStockSelf;
+
+
+    @Column(name = "CorpStockBelongOne")
+    @Description("开店人上级获得梦想股")
+    private Integer corpStockBelongOne;
+
+    @Column(name = "ShareTitle",length = 300)
+    @Description("分享标题")
+    private String shareTitle;
+
+    @Column(name = "ShareDesc",length = 300)
+    @Description("分享描述")
+    private String ShareDesc;
+
+    @Column(name = "SharePic",length = 200)
+    @Description("分享图片")
+    private String SharePic;
+
+//    @Column(name = "Open_Award",columnDefinition = "longtext")
+//    @Description("直推奖")
+//    @Lob
+//    private SisRebateSetting sisRebateSetting;
+
+
+}

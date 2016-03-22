@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="development" xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url" value="jdbc:jtds:sqlserver://192.168.1.146:1433/Dev_HotPdMall"/>
+        <property name="username" value="hotdev"/>
+        <property name="password" value="hot@1234"/>
+
+    </bean>
+
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+
+        <property name="packagesToScan">
+            <array>
+                <value>com.huotu.sis.entity</value>
+            </array>
+        </property>
+        <property name="persistenceProvider">
+            <bean class="org.eclipse.persistence.jpa.PersistenceProvider"/>
+        </property>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect"/>
+        </property>
+
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="javax.persistence.schema-generation.database.action" value="create"/>
+                <entry key="eclipselink.weaving" value="false"/>
+                <entry key="eclipselink.logging.level" value="FINE"/>
+            </map>
+        </property>
+    </bean>
+</beans>
