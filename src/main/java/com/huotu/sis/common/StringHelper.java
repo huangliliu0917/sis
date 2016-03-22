@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by lgh on 2015/11/12.
@@ -25,6 +27,8 @@ import java.util.TreeMap;
 public class StringHelper {
 
     private static String appSecret = "1165a8d240b29af3f418b8d10599d0da";
+
+    public static final String SECRET="08afd6f9ae0c6017d105b4ce580de885";
 
     /**
      * 将json字符串转换为Map，目前只支持“{"56": "颜色","57": "尺码"}”，这种格式的转为Map&lt;Long,String&gt;
@@ -97,5 +101,40 @@ public class StringHelper {
         resultMap.keySet().stream().filter(key -> !"sign".equals(key)).forEach(key -> strB.append(resultMap.get(key)));
 
         return DigestUtils.md5DigestAsHex(strB.toString().getBytes("UTF-8")).toLowerCase();
+    }
+
+    /**
+     * 返回app信息
+     * @param userAgent 字符串
+     * @return
+     */
+    public static String[] getRequestAppInfo(String userAgent){
+        if(StringUtils.isEmpty(userAgent)){
+            return null;
+        }
+        Pattern p = Pattern.compile(";hottec:([^;]+)");
+        Matcher matcher=p.matcher(userAgent);
+        StringBuilder builder=new StringBuilder();
+        while (matcher.find()){
+            builder.append(matcher.group(1));
+        }
+        return builder.toString().split(":");
+
+    }
+
+    /**
+     * 判断签名是否正确
+     * @param data
+     * @return
+     */
+    public static boolean isTrueSign(String[] data) throws UnsupportedEncodingException {
+        for(String s:data){
+            if(StringUtils.isEmpty(s)){
+                return false;
+            }
+        }
+        String s=data[1]+data[2]+SECRET;
+        String sign= DigestUtils.md5DigestAsHex(s.getBytes("UTF-8")).toLowerCase();
+        return sign.equals(data[0]);
     }
 }
