@@ -67,7 +67,7 @@ public class SisWebGoodsController {
     @Autowired
     SisOrderRepository sisOrderRepository;
     @Autowired
-    CommonConfigService commonConfigService;
+    CommonConfigsService commonConfigService;
     @Autowired
     UTIHRepository utihRepository;
     @Autowired

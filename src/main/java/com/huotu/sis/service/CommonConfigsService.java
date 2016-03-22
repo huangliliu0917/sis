@@ -68,4 +68,11 @@ public interface CommonConfigsService {
      * @return
      */
     String getMallDomain();
+
+    /**
+     * 资源地址
+     *
+     * @return
+     */
+    String getResoureServerUrl();
 }
