@@ -168,8 +168,25 @@
 
         <dependency>
             <groupId>com.huotu.huobanplus</groupId>
+            <artifactId>common-service</artifactId>
+            <version>1.4.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.huotu.huobanplus</groupId>
+            <artifactId>smartui-client</artifactId>
+            <version>1.4.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.huotu.huobanplus</groupId>
             <artifactId>mall-sdk</artifactId>
             <version>1.4.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.huotu.huobanplus</groupId>
+            <artifactId>smartui-service</artifactId>
+            <version>1.4-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
