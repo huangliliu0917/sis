@@ -9,45 +9,93 @@
 
 package com.huotu.sis.common;
 
+import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
+/**
+ * Created by lgh on 2015/11/12.
+ */
 public class StringHelper {
-    public StringHelper() {
-    }
 
-    public static String getIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if(!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
-            int index = ip.indexOf(",");
-            return index != -1?ip.substring(0, index):ip;
-        } else {
-            ip = request.getHeader("X-Real-IP");
-            return !StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)?ip:request.getRemoteAddr();
+    private static String appSecret = "1165a8d240b29af3f418b8d10599d0da";
+
+    /**
+     * 将json字符串转换为Map，目前只支持“{"56": "颜色","57": "尺码"}”，这种格式的转为Map&lt;Long,String&gt;
+     *
+     * @param json
+     * @return
+     */
+    public static Map jsonToMap(String json) {
+        if (StringUtils.isEmpty(json) || json.equals("{}")) {
+            return null;
         }
+        String[] spec = json.substring(1, json.length() - 1).replaceAll("\\r|\\n", "").trim().split(",");
+        Map<Long, String> map = new HashMap<>();
+        for (int i = 0; i < spec.length; i++) {
+            String[] ss = spec[i].trim().split(":");
+            ss[0] = ss[0].replaceAll("\"", "").trim();
+            ss[1] = ss[1].replaceAll("\"", "").trim();
+            map.put(Long.parseLong(ss[0]), ss[1]);
+        }
+
+        return map;
     }
 
-    public static String randomNo(Random ran, int xLen) {
-        String[] char_array = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "W", "U", "V", "X", "Y", "Z"};
+    /**
+     * 验证码生成
+     *
+     * @param ran  随机设置
+     * @param xLen 长度
+     * @return
+     */
+    public static String RandomNum(Random ran, int xLen) {
+        String[] char_array = new String[9];
+        char_array[0] = "1";
+        char_array[1] = "2";
+        char_array[2] = "3";
+        char_array[3] = "4";
+        char_array[4] = "5";
+        char_array[5] = "6";
+        char_array[6] = "7";
+        char_array[7] = "8";
+        char_array[8] = "9";
+
         String output = "";
-
-        for(double tmp = 0.0D; output.length() < xLen; output = output + char_array[(int)(tmp * 34.0D)]) {
-            tmp = (double)ran.nextFloat();
+        double tmp = 0;
+        while (output.length() < xLen) {
+            tmp = ran.nextFloat();
+            output = output + char_array[(int) (tmp * 9)];
         }
-
         return output;
     }
 
-    public static String randomNum(Random ran, int xLen) {
-        String[] char_array = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-        String output = "";
 
-        for(double tmp = 0.0D; output.length() < xLen; output = output + char_array[(int)(tmp * 9.0D)]) {
-            tmp = (double)ran.nextFloat();
+    /**
+     * 通过request 返回一个签名字符串
+     *
+     * @param request request请求
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    public static String getSign(HttpServletRequest request) throws UnsupportedEncodingException {
+        Map<String, String> resultMap = new TreeMap<String, String>();
+        resultMap.put("appSecret", appSecret);
+        Map map = request.getParameterMap();
+        for (Object key : map.keySet()) {
+            resultMap.put(key.toString(), request.getParameter(key.toString()));
         }
 
-        return output;
+        StringBuilder strB = new StringBuilder();
+
+        resultMap.keySet().stream().filter(key -> !"sign".equals(key)).forEach(key -> strB.append(resultMap.get(key)));
+
+        return DigestUtils.md5DigestAsHex(strB.toString().getBytes("UTF-8")).toLowerCase();
     }
 }

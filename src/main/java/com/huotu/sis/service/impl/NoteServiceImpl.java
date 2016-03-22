@@ -21,7 +21,7 @@ public class NoteServiceImpl implements NoteService {
     public NoteModel setNoteModel(String phone, int type,Long merchantId) {
         NoteModel noteModel=new NoteModel();
         noteModel.setPhone(phone);
-        noteModel.setCode(StringHelper.randomNum(new Random(), 4));
+        noteModel.setCode(StringHelper.RandomNum(new Random(), 4));
         noteModel.setType(EnumHelper.getEnumType(VerificationType.class, type));
         noteModel.setMerchantId(merchantId);
         noteModel.setDate(new Date());
