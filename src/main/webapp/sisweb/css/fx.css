@@ -1,0 +1,64 @@
+body {
+	margin: 0 auto;
+	min-width: 320px;
+	max-width: 640px;
+	height: 100%;
+	background: #FFF;
+	
+	font-family: Helvetica, STHeiti STXihei, Microsoft JhengHei, Microsoft YaHei, Arial;
+	line-height: 1.5;
+	color: #333;
+	-webkit-text-size-adjust: 100%;
+	-webkit-user-select: none;
+	user-select: none;
+}
+html {
+	font-size: 62.5%
+}
+.commfont {
+	font-size: 1.4rem;
+}
+.commfont .tit_rem {
+	font-size: 1.2rem
+}
+.commfont .tit_rem_big {
+	font-size: 1.5rem
+}
+.commfont .tit_rem_small {
+	font-size: 0.8rem
+}
+.boxtd {
+	background: #fff;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	width: 30%;
+}
+.fn-clear {
+	clear: both;
+}
+.tablePanel {
+	background: #dddddd;
+}
+.my_menu_btn2 {
+	text-align: left;
+	height: 36px;
+	line-height: 3em;
+	
+	display: inline-block;
+	background: #fff;
+	width: 100%;
+}
+.fximg {
+}
+.fximg img {
+	width: 20px;
+	    vertical-align: middle;
+}
+	
+
+.fffx {
+	padding: 40px;
+}
+.jf {
+	color: #FF3C00;
+}

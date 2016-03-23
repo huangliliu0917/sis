@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" content=""/>
+    <link href="3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/3rdParty/css/admin.global.css}"/>
+    <link href="3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/3rdParty/css/admin.content.css}"/>
+    <link href="css/settlements.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/css/settlements.css}"/>
+    <script type="text/javascript" src="3rdParty/js/jquery-1.4.2.min.js"
+            th:src="@{/sisweb/3rdParty/js/jquery-1.7.2.min.js}"></script>
+    <script type="text/javascript" src="3rdParty/js/jquery.utils.js"
+            th:src="@{/sisweb/3rdParty/js/jquery.utils.js}"></script>
+    <link href="3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/3rdParty/jBox/Skins/Green/jbox.css}"/>
+    <script type="text/javascript" src="3rdParty/jBox/jquery.jBox-2.3.min.js"
+            th:src="@{/sisweb/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>
+    <link rel="stylesheet" type="text/css" href="css/settlements.css"
+          th:href="@{/sisweb/css/settlements.css}"/>
+    <script type="text/javascript" src="3rdParty/js/admin.js"
+            th:src="@{/sisweb/3rdParty/js/admin.js}"></script>
+    <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/weui.minweui.min.css" th:href="@{/sisweb/css/weui.minweui.min.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css" th:href="@{/sisweb/css/fksc.css}"/>
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var customerId = /*[[${customerId}]]*/ 0;
+        /*]]>*/
+    </script>
+
+    <script src="JLoad/jquery.Jload.js" th:src="@{/sisweb/JLoad/jquery.Jload.js}" type="text/javascript"></script>
+    <script src="js/template.js" th:src="@{/sisweb/js/template.js}" type="text/javascript"></script>
+    <script src="js/sisBrandDetail.js" th:src="@{/sisweb/js/sisBrandDetail.js}" type="text/javascript"></script>
+    <script src="js/TouchSlide.1.1.js"></script>
+    <title th:text="${brand.brandName}">品牌详情</title>
+</head>
+<body>
+<div class="commfont fk ">
+    <input type="hidden" name="brandId" id="brandId" th:value="${brand.id}"/>
+    <div>
+        <div>
+            <div id="s_focus" class="s_focus">
+                <div class="s_hd" style="display:none;">
+                    <ul></ul>
+                </div>
+                <div class="s_bd">
+                    <ul>
+                        <li><a href="#"><img style="width:100%;" th:src="${brand.brandLogo}"/></a></li>
+
+                    </ul>
+                </div>
+            </div>
+            <p style="clear:both"></p>
+        </div>
+
+        <div class="sort">
+            <i class="sort-handler"></i>
+        </div>
+    </div>
+    <div class="sp">
+        <div>
+            品牌名称：
+            <span class="sp_bt" th:text="${brand.brandName}">商品名称</span>
+            <p style="clear:both; height:10px">
+            </p>
+        </div>
+        <!--文字说明结束图片-->
+    </div>
+
+    <p class="lq_tit">
+        该品牌商品
+    </p>
+    <div class="fk_hracf" style="position:relative;">
+        <div id="loading" style="position: absolute; text-align: center; width: auto; height: auto; top: 120px; left: 35%">
+            <img src="3rdParty/iPicture/images/loading.gif" alt="loading" border="0"/><p style="margin-top:8px ">&nbsp;数据加载中...</p>
+        </div>
+        <div id="goodsList1">
+        </div>
+        <p style="clear:both;"></p>
+    </div>
+</div>
+
+
+</body>
+<script type="text/template" id="brandDetailTemplate">
+    {{each Rows as row i}}
+    <label style="border-top: 1px solid #fff;" class="weui_cell weui_check_label">
+        <div class="weui_cell_bd weui_cell_primary">
+            <div style="float:left;" class="hrfg">
+                <img src="{{row.imgUrl}}" class="fk_hrtab" /></div>
+            <div>
+                <p class="fk_hrsd tit_rem">{{row.goodsName}}</p>
+                <p class="fk_hrsdds tit_rem">库存:{{row.stock}}件
+                    <span class="cj-right">
+                        会员价:<i style="color:#EB5A28">￥{{row.price}}</i>
+
+                                                 </span></p>
+                <p class="fk_hrsdds tit_rem">分销积分:
+                    {{if row.minRebate != row.maxRebate}}  <!--不相等则 显示区间-->
+                    {{row.minRebate}}-{{row.maxRebate}}
+                    {{else}}    <!--相等则 直接显示某个值-->
+                    {{row.minRebate}} {{/if}}
+                    <span class="cj-right">直推积分:{{row.directRebate}}</span></p>
+            </div>
+        </div>
+    </label>
+    <!--<ul class="tabstyle cjgl-a">
+        <li style="float:left;" class="hrfg">
+            <a href="javascript:void(0)">
+                <img src="{{row.imgUrl}}" class="fk_hrtab"/></a>
+        </li>
+        <li>
+            <p class="fk_hrsd">{{row.goodsName}}</p>
+
+            <p class="fk_hrsdds tit_rem">库存：{{row.stock}}件<span  class="cj-right">&nbsp;&nbsp;
+                                        分销返利：{{if row.minRebate != row.maxRebate}}  &lt;!&ndash;不相等则 显示区间&ndash;&gt;
+                                                        {{row.minRebate}}-{{row.maxRebate}}
+                                                  {{else}}    &lt;!&ndash;相等则 直接显示某个值&ndash;&gt;
+                                                        {{row.minRebate}}
+                                                  {{/if}}
+            </span></p>
+
+            <p class="fk_hrsdds tit_rem">销售价：<span style="color:#EB5A28">￥{{row.price}}</span><span class="cj-right">直推返利:{{row.directRebate}}</span></p>
+        </li>
+        <p style="clear:both; height:1px;"></p>
+    </ul>-->
+    {{/each}}
+</script>
+
+<script type="text/javascript" th:inline="javascript">
+    TouchSlide({
+        slideCell: "#s_focus",
+        titCell: ".s_hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+        mainCell: ".s_bd ul",
+        effect: "leftLoop",
+        pnLoop: true,
+        autoPlay: true,//自动播放
+        autoPage: true //自动分页
+    });
+</script>
+</html>
+

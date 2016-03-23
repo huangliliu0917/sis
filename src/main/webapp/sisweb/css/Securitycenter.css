@@ -1,0 +1,429 @@
+﻿html {
+	font-size: 62.5%
+}
+.commfont {
+	font-size: 1.4rem;
+}
+.commfont .tit_rem {
+	font-size: 1.2rem
+}
+.Securitycenter img {
+	width: 100%;
+}
+.Securitycenter .xian-f {
+	clear: both;
+	border-bottom: 1px solid #dcdcdc;
+}
+.Securitycenter .floatleft {
+	float: left;
+}
+.Securitycenter .floatright {
+	float: right;
+}
+.Securitycenter .textcen {
+	text-align: center;
+}
+.Securitycenter .wi11 {
+	width: 11px;
+}
+.Securitycenter .coa0a {
+	color: #a0a0a0;
+}
+.Securitycenter .boxs1 {
+	background-color: #fff;
+	padding: 10px;
+	height: 20px;
+}
+.Securitycenter .boxs2 {
+	background-color: #fff;
+	padding: 10px;
+	height: 42px;
+	line-height: 22px;
+}
+.Securitycenter .boxs2 i {
+	color: #FF0004;
+}
+.Securitycenter .mt {
+	margin-top: 12px;
+}
+.Securitycenter .tm {
+	margin-top: -32px;
+}
+.secbox .xian-b {
+	clear: both;
+	border-bottom: 1px solid #dcdcdc;
+	padding-top: 7px;
+}
+.secbox a:first-child .boxs2 {
+	margin-top: 8px;
+	border-top: 1px solid #dcdcdc;
+}
+.secbox a:last-child .boxs2 {
+	border-bottom: 1px solid #dcdcdc;
+}
+.secbox a:last-child .xian-b {
+	display: none;
+}
+.secbox i {
+	color: red;
+}
+/*基本信息*/
+.zhaq {
+	padding: 10px 0px 5px 0px;
+}
+.zhaq p {
+	font-size: 16px;
+	text-align: center;
+	line-height: 33px;
+}
+.zhaq .qhimgs:after {
+	width: 117px;
+	background: url(../images/iconfont-xingxingq.png) no-repeat;
+	background-position: 0px 0px;
+	background-size: 117px 113px;
+	height: 23px;
+	margin: 0 auto;
+}
+.zhaq .qhimgs:after {
+	background-position: 0px 0px;
+}
+.zhaq .qhimgs:after {
+	content: '\20';
+	display: block;
+}
+.boxs3 {
+	border: 1px solid #dcdcdc;
+	border-left: 0px;
+	border-right: 0px;
+	padding: 10px;
+	background-color: #fff;
+}
+.boxs3 input {
+	padding: 0px;
+	margin-bottom: 0px;
+	width: 70%;
+	border: 1px solid #dcdcdc;
+	background-color: #fff;
+	border-radius: 0;
+	height: 40px;
+	text-indent: 12px;
+	margin: 5px 0px;
+	-webkit-appearance: none;
+	vertical-align: top;
+	line-height: normal;
+}
+.boxs3 .selectys {
+	outline: none;
+	border-radius: 4px;
+	position: relative;
+	margin: 5px 0px;
+}
+.boxs3 select {
+	width: 70%;
+	font-size: 14px;
+	position: relative;
+	height: 40px;
+	line-height: 40px;
+	-webkit-appearance: none;
+	-webkit-border-radius: 0;
+	border: 1px solid #ddd;
+	padding: 0 16px 0 5px;
+	background: #fff;
+	background-size: 15px 5px;
+}
+.box3-button {
+	background-color: #ff3c00;
+	border: 1px solid #ff3c00;
+	text-align: center;
+	padding: 10px 0px;
+	width: 99%;
+	color: #fff;
+	border-radius: 4px;
+}
+.boxs3 .tit {
+	line-height: 48px;
+}
+.Securitycenter .rq {
+	padding: 10px;
+}
+/*绑定手机*/
+.boxs4 {
+	border: 1px solid #dcdcdc;
+	border-left: 0px;
+	border-right: 0px;
+	padding: 0px 10px;
+	background-color: #fff;
+}
+.boxs4 .fonts {
+	padding: 10px 0px;
+}
+.boxs4 input {
+	padding: 0px;
+	margin-bottom: 0px;
+	width: 72%;
+	border: 1px solid #dcdcdc;
+	background-color: #fff;
+	border-radius: 0;
+	height: 40px;
+	text-indent: 12px;
+	margin: 5px 0px;
+	-webkit-appearance: none;
+	vertical-align: top;
+	line-height: normal;
+}
+.boxs4 .inputp {
+	padding: 0px;
+	margin-bottom: 0px;
+	width: 99%;
+	border: 1px solid #dcdcdc;
+	background-color: #fff;
+	border-radius: 0;
+	height: 40px;
+	text-indent: 12px;
+	margin: 5px 0px;
+	-webkit-appearance: none;
+	vertical-align: top;
+	line-height: normal;
+}
+.boxs4 .yzm {
+	background-color: #FF3C00;
+	border: 1px solid #FF3C00;
+	height: 42px;
+	line-height: 40px;
+	width: 27%;
+	margin-left: -5px;
+	color: #fff;
+	font-size: 12px;
+	margin-top: 5px;
+}
+.Securitycenter .tips {
+	padding: 10px;
+	font-size: 12px;
+	color: #616161;
+	line-height: 20px;
+}
+/*设置手机号*/
+
+.bdding {
+	padding: 15px;
+	background-color: #fff;
+}
+.bdding_zi {
+	padding: 10px 0px;
+}
+.Securitycenter .bdding_zixiahua {
+	font-size: 12px;
+	color: #606060;
+}
+.bdding_dx {
+	height: 30px;
+	width: 100%;
+	background: #FF0004;
+}
+.bdding_kuang {
+	padding: 0px;
+	margin-bottom: 0px;
+	width: 95%;
+	border: 1px solid #dcdcdc;
+	background-color: #fff;
+	border-radius: 0;
+	height: 40px;
+	line-height: 40px;
+	text-indent: 12px;
+	margin: 5px 0px;
+}
+.box3-buttontt {
+	background-color: #FFFFFF;
+	border: 1px solid #dcdcdc;
+	text-align: center;
+	padding: 10px 0px;
+	width: 95%;
+	color: #fff;
+	margin: 10px;
+	padding: 20px 0px;
+}
+/*设置手机号*/
+.Securitycenter {
+	font-size: 14px;
+}
+.bdding {
+	padding: 15px;
+}
+.bdding_zi {
+	padding-left: 10px;
+}
+.Securitycenter .bdding_zixiahua {
+	font-size: 12px;
+	color: #606060;
+}
+.bdding_dx {
+	height: 30px;
+	width: 100%;
+	background: #FF0004;
+}
+.bdding_kuang {
+	padding: 0px;
+	margin-bottom: 0px;
+	width: 95%;
+	border: 1px solid #dcdcdc;
+	background-color: #fff;
+	border-radius: 0;
+	height: 40px;
+	line-height: 40px;
+	text-indent: 12px;
+	margin: 5px 0px;
+}
+.box3-buttontt {
+	background-color: #FFFFFF;
+	border: 1px solid #dcdcdc;
+	text-align: center;
+	padding: 10px 0px;
+	width: 95%;
+	color: #fff;
+	margin: 10px;
+	padding: 20px 0px;
+}
+.bdding_buu {
+	text-align: center;
+	width: 100%;
+}
+.bdding_buu {
+	text-align: center;
+	width: 100%;
+}
+.bdding_dixia {
+	text-align: center;
+}
+.bdding_kuaione {
+	margin-top: 10px;
+}
+.bdding_mamama {
+	margin: 10px 0px;
+}
+.bdding_dixia {
+	text-align: center;
+}
+.bdding_m {
+	padding: 80px 0px;
+	text-align: center;
+}
+.bdding_zq {
+	text-align: center;
+}
+.bdding_zier {
+	padding: 10px 0px 0px 10px;
+}
+.bdding_zierq {
+	padding: 0px 0px 10px 10px;
+}
+.Securitycenter .udco {
+	text-decoration: underline;
+	color: #6E6E6E;
+}
+.fffd {
+	border: 1px solid #DCDCDC;
+	margin-left: -4%;
+	color: #fff;
+	margin-top: 5px;
+	width: 95px;
+	height: 40px;
+}
+.fffddd {
+	width: 27%;
+	float: right;
+}
+.boood {
+	border: 1px solid #dcdcdc;
+	padding-top: 10px;
+}
+.booodp {
+	padding-top: 10px;
+}
+.immmm {
+	width: 100%;
+}
+.baocuoo {
+	text-align: center;
+	max-width: 640px;
+	min-width: 320px;
+	margin: 0 auto;
+}
+.baocuotbo {
+	padding-top: 40%;
+}
+.baocuoo img {
+	width: 105px;
+}
+.baocuoo p.baocuo_tishi {
+	color: #575757;
+	font-size: 16px;
+	margin-top: 10px;
+}
+.baocuoo a.cxjzo {
+	border: 1px solid #575757;
+	padding: 5px 15px;
+	font-size: 14px;
+	color: #575757;
+	;
+	border-radius: 4px;
+}
+.baocuoo .baocuo_buttomo {
+	margin: 18px auto;
+	text-align: center;
+	display: none;
+}
+.baocuoo .baocuo_buttomoo.on {
+	display: block;
+}
+.box3-buttonnnn {
+	background-color: #fff;
+	border: 1px solid #ACACAC;
+	text-align: center;
+	padding: 10px 0px;
+	width: 40%;
+	color: #5F5F5F;
+	border-radius: 4px;
+}
+/**/
+.kaiguanbox {
+	float: right;
+	width: 80px;
+	height: 25px;
+	background-color: #FF3C00;
+	border: 1px solid #FF3C00;
+	border-radius: 3px;
+	position: relative;
+	margin: 8px;
+}
+.kaiguanbox.off {
+	float: right;
+	width: 80px;
+	height: 25px;
+	background-color: #a8aaa7;
+	border: 1px solid #a8aaa7;
+	border-radius: 3px;
+	position: relative;
+	margin: 8px;
+}
+.kaiguan2 {
+	width: 40px;
+	height: 22px;
+	background-color: #FFFFFF;
+	border: 1px solid #FFFFFF;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	border-radius: 3px;
+	right: 0px;
+}
+.kaiguan2.on {
+	width: 40px;
+	height: 22px;
+	background-color: #FFFFFF;
+	border: 1px solid #FFFFFF;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	border-radius: 3px;
+	left: 0;
+}

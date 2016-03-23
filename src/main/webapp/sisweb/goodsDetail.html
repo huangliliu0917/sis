@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" content=""/>
+    <link href="3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/3rdParty/css/admin.global.css}"/>
+    <link href="3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/3rdParty/css/admin.content.css}"/>
+    <script type="text/javascript" src="3rdParty/js/jquery-1.4.2.min.js"
+            th:src="@{/sisweb/3rdParty/js/jquery-1.7.2.min.js}"></script>
+    <script type="text/javascript" src="3rdParty/js/jquery.utils.js"
+            th:src="@{/sisweb/3rdParty/js/jquery.utils.js}"></script>
+    <link href="3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/3rdParty/jBox/Skins/Green/jbox.css}"/>
+    <script type="text/javascript" src="3rdParty/jBox/jquery.jBox-2.3.min.js"
+            th:src="@{/sisweb/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>
+    <!--<link rel="stylesheet" type="text/css" href="css/settlements.css" th:href="@{/sisweb/css/settlements.css}"/>-->
+    <script type="text/javascript" src="3rdParty/js/admin.js" th:src="@{/sisweb/3rdParty/js/admin.js}"></script>
+    <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css" th:href="@{/sisweb/css/fksc.css}"/>
+    <script src="js/TouchSlide.1.1.js"></script>
+
+    <title>商品详情</title>
+</head>
+
+<body>
+<input type="hidden" id="customerId" th:value="${customerId}"/>
+<div class="commfont fk " th:object="${goodsDetailModel}">
+    <input type="hidden" name="goodsId" id="goodsId" th:value="*{goodsId}"/>
+
+    <div>
+        <div>
+            <div id="s_focus" class="s_focus">
+                <div class="s_hd" style="display:none;">
+                    <ul></ul>
+                </div>
+
+                <div class="s_bd">
+                    <ul>
+                        <li><a href="#"><img style="width:100%;" th:src="*{picture}"/></a></li>
+                    </ul>
+                </div>
+            </div>
+            <p style="clear:both"></p>
+        </div>
+
+        <div class="sort">
+            <i class="sort-handler"></i>
+        </div>
+    </div>
+    <div id="goodsDescription" class="xf-xf" style="display: none">
+        <img src="images/2.png" />
+        <p id="goodsMsg">添加成功</p>
+    </div>
+    <div id="resultDescription" class="xf-xf" style="display: none">
+        <img src="images/iconfont-jiazai.gif" style="width: 35%"/>
+        <p id="resultMsg">操作中...</p>
+    </div>
+    <div class="sp">
+        <div>
+            <div class="sp_bt" th:text="*{title}">商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情</div>
+            <p>
+                <span class="sp_hz">价格</span>
+                <span style="margin-right: 10px;" class="cj-right"><img src="images/x5.png" width="15px"/>分销积分:
+                    <i th:if="*{minRebate==maxRebate}" th:text="*{minRebate}">100</i>
+                    <i th:if="*{minRebate!=maxRebate}" th:text="*{minRebate}+'-'+*{maxRebate}">100</i>
+                </span>
+                <span class="sp_hongz" th:text="'¥'+ *{#numbers.formatDecimal(price,1,0)}"></span>
+            </p>
+            <p>
+                <span class="sp_hz">剩余</span><span style="margin-right: 10px;" class="cj-right"><img
+                    src="images/x43.png" width="15px"/>直推积分:
+                    <i th:text="*{directRebate}">100</i>
+                </span>
+                <span class="sp_hongzz" th:text="*{store}+'件'"></span>
+            </p>
+            <p>
+                <span class="sp_hz">描述</span>
+                <span class="sp_hongzz" th:text="*{description}"></span>
+            </p>
+            <p style="clear:both; height:10px">
+            </p>
+        </div>
+        <!--文字说明结束图片-->
+    </div>
+
+    <p class="lq_tit">
+        商品详情
+    </p>
+
+    <div class="lq_img_p">
+        <div id="deta" class="p10_lq" th:utext="*{detail}">
+        </div>
+    </div>
+    <p style="height: 40px;"></p>
+    <button th:if="*{isUp==1}" class="button-a" type="button" onclick="upGoods()">上架</button>
+    <button th:if="*{isUp==0}" class="button-a" type="button" onclick="downGoods()">下架</button>
+</div>
+
+</body>
+<script type="text/javascript" th:inline="javascript">
+
+
+//    $(function () {
+//        if (typeof WeixinJSBridge == "undefined") {
+//            if (document.addEventListener) {
+//                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+//            } else if (document.attachEvent) {
+//                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+//                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+//            }
+//        } else {
+//            onBridgeReady();
+//        }
+//    })
+//    function onBridgeReady() {
+//        WeixinJSBridge.call('hideOptionMenu');
+//    }
+
+
+    var customerId = $("#customerId").val();
+
+    var upGoods = function () {
+        var goodsId = $("input[name='goodsId']").val();
+//        $.jBox.tip("正在修改...", "loading");
+        $("#resultDescription").show();
+        $.ajax({
+            type: "POST",
+            url: "operGoods",
+            data: {
+                goodsId: goodsId,
+                operType: 1,
+                customerId:customerId
+            },
+            dataType: "json",
+            success: function (result) {
+                $("#resultDescription").hide();
+                if (result.success) {
+//                    $.jBox.tip("上架成功");
+                    $("#goodsMsg").text("上架成功");
+                    $("#goodsDescription").show();
+                    setTimeout('$("#goodsDescription").hide()',1000);
+                    window.location.reload();
+                } else {
+                    $.jBox.tip(result.msg);
+                }
+            },error:function(){
+                $("#resultDescription").hide();
+                jBox.alert("服务器繁忙");
+            }
+        });
+    }
+    var downGoods = function () {
+        var goodsId = $("input[name='goodsId']").val();
+//        $.jBox.tip("正在修改...", "loading");
+        $("#resultDescription").show();
+        $.ajax({
+            type: "POST",
+            url: "operGoods",
+            data: {
+                goodsId: goodsId,
+                operType: 0,
+                customerId:customerId
+            },
+            dataType: "json",
+            success: function (result) {
+                $("#resultDescription").hide();
+                if (result.success) {
+//                    $.jBox.tip("下架成功");
+                    $("#goodsMsg").text("下架成功");
+                    $("#goodsDescription").show();
+                    setTimeout('$("#goodsDescription").hide()',1000);
+                    window.location.reload();
+                } else {
+//                    $.jBox.tip(result.msg);
+                    $("#goodsMsg").text(result.msg);
+                    $("#goodsDescription").show();
+                    setTimeout('$("#goodsDescription").hide()',1000);
+                }
+            }
+        });
+    }
+
+
+    function firstLoad() {
+        /*<![CDATA[*/
+        var det = /*[[${goodsDetailModel.detail}]]*/'';
+        $("#deta").append(det);
+        /*]]>*/
+    }
+
+    TouchSlide({
+        slideCell: "#s_focus",
+        titCell: ".s_hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+        mainCell: ".s_bd ul",
+        effect: "leftLoop",
+        pnLoop: true,
+        autoPlay: true,//自动播放
+        autoPage: true //自动分页
+    });
+</script>
+</html>
+

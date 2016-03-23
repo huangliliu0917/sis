@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" content=""/>
+    <link href="3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/3rdParty/css/admin.global.css}"/>
+    <link href="3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/3rdParty/css/admin.content.css}"/>
+    <link href="css/settlements.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/css/settlements.css}"/>
+    <script type="text/javascript" src="3rdParty/js/jquery-1.4.2.min.js"
+            th:src="@{/sisweb/3rdParty/js/jquery-1.7.2.min.js}"></script>
+    <script type="text/javascript" src="3rdParty/js/jquery.utils.js"
+            th:src="@{/sisweb/3rdParty/js/jquery.utils.js}"></script>
+    <link href="3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"
+          th:href="@{/sisweb/3rdParty/jBox/Skins/Green/jbox.css}"/>
+    <script type="text/javascript" src="3rdParty/jBox/jquery.jBox-2.3.min.js"
+            th:src="@{/sisweb/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>
+    <link rel="stylesheet" type="text/css" href="css/settlements.css"
+          th:href="@{/sisweb/css/settlements.css}"/>
+    <script type="text/javascript" src="3rdParty/js/admin.js"
+            th:src="@{/sisweb/3rdParty/js/admin.js}"></script>
+    <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css" th:href="@{/sisweb/css/fksc.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/about.css" th:href="@{/sisweb/css/about.css}"/>
+
+    <title>模板选择</title>
+</head>
+<body>
+<div class="neirongye">
+    <input type="hidden" id="templateType" name="templateType" th:value="${templateType}"/>
+    <input type="hidden" id="templateId"/>
+    <input type="hidden" id="customerId" th:value="${customerId}"/>
+
+    <div class="commfont">
+        <div th:each="temp:${templatePage}">
+            <p th:text="${temp.title}">模板一</p>
+
+            <p><img src="images/640X920-2.png" th:src="${temp.imgPath}" width="100%"/></p>
+
+            <p>
+                <button class=" tit_rem_big xz-a" type="button" name="tempButton" onclick="submitT(this)">选择模板</button>
+                <input type="hidden" th:value="${temp.templateId}"/>
+            </p>
+        </div>
+
+        <p style="height:20px"></p>
+
+        <!--<p>-->
+        <!--<button class=" tit_rem_big xz-c" type="button" onclick="submitT()">确认选择</button>-->
+        <!--</p>-->
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    var chooseTemp = function (obj) {
+
+        var buttons = $("button[name='tempButton']");
+
+        $.each(buttons, function(){
+            $(this).text("选择模板");
+        })
+        $("#templateId").val($(obj).next("input").val());
+
+        $(obj).text("已选择该模板");
+    }
+    var submitT = function (obj) {
+        var buttons = $("button[name='tempButton']");
+        $.each(buttons, function(){
+            $(this).text("选择模板");
+        })
+        $.jBox.tip("正在修改...", "loading");
+        var customerId = $("#customerId").val();
+        $.ajax({
+            type: "POST",
+            url: "updateTemplate",
+            data: {
+                templateId: $(obj).next("input").val(),
+                customerId:customerId
+            },
+            dataType: "json",
+            success: function (msg) {
+                if (msg.code == 200) {
+                    $.jBox.tip(msg.msg, 'success', {
+                        closed: function () {
+                            $(obj).text("已选择该模板");
+//                            window.location.reload();
+                        }
+                    });
+                } else {
+                    $.jBox.tip(msg.msg, 'error', {
+                        closed: function () {
+                            window.location.reload();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    //    function init(){
+    //        var buttons = $("button[name='tempButton']");
+    //        var templateId = /*[[${templateId}]]*/'';
+    //        //var templateId = $("#templateId").val();
+    //        $.each(buttons, function(i,item){
+    //            if(templateId==$(item).next("input").val()){
+    //                $(this).text("已选择该模板");
+    //            }
+    //        })
+    //    }
+
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function () {
+        var buttons = $("button[name='tempButton']");
+        var templateId = /*[[${templateId}]]*/'';
+        $.each(buttons, function(i,item){
+            if(templateId==$(item).next("input").val()){
+                $(this).text("已选择该模板");
+            }
+        })
+    });
+    /*]]>*/
+</script>
+</html>

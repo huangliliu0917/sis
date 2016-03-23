@@ -1,10 +1,14 @@
 package com.huotu.sis.boot;
 
 import com.huotu.huobanplus.base.DataSupportConfig;
+import com.huotu.huobanplus.base.ResourceConfig;
 import com.huotu.huobanplus.common.CommonServiceSpringConfig;
+import com.huotu.huobanplus.common.DataServiceSpringConfig;
 import com.huotu.huobanplus.sdk.common.CommonClientSpringConfig;
 import com.huotu.huobanplus.sdk.mall.MallSDKConfig;
+import com.huotu.huobanplus.smartui.SmartUIDataServiceSpringConfig;
 import com.huotu.huobanplus.smartui.SmartUIServiceSpringConfig;
+import com.huotu.huobanplus.smartui.common.SmartuiClientSpringConfig;
 import org.luffy.lib.libspring.data.ClassicsRepositoryFactoryBean;
 import org.luffy.lib.libspring.logging.LoggingConfig;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,14 +23,18 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 //@EnableTransactionManagement(mode = AdviceMode.PROXY)
-@ComponentScan({"com.huotu.sis.service"})
-@EnableJpaRepositories(value = "com.huotu.sis.repository", repositoryFactoryBeanClass = ClassicsRepositoryFactoryBean.class)
+@ComponentScan(basePackages = {"com.huotu.sis.service","com.huotu.sis.controller"})
+@EnableJpaRepositories(value = {"com.huotu.sis.repository"}, repositoryFactoryBeanClass = ClassicsRepositoryFactoryBean.class)
 @ImportResource(value = {"classpath:spring-jpa.xml"})
 @Import(value = {CommonClientSpringConfig.class,
         MallSDKConfig.class,
-        CommonServiceSpringConfig.class,
-        SmartUIServiceSpringConfig.class,
-        DataSupportConfig.class,
+//        CommonServiceSpringConfig.class,
+//        SmartUIServiceSpringConfig.class,
+//        DataSupportConfig.class,
+        ResourceConfig.class,
+        DataServiceSpringConfig.class,
+        SmartUIDataServiceSpringConfig.class,
+        SmartuiClientSpringConfig.class,
         LoggingConfig.class
 })
 public class RootConfig {

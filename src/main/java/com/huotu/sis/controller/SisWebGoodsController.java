@@ -1,6 +1,9 @@
 package com.huotu.sis.controller;
 
 import com.huotu.huobanplus.common.UserType;
+import com.huotu.huobanplus.common.dataService.AdvanceQuatoRebateService;
+import com.huotu.huobanplus.common.dataService.NormalRebateService;
+import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.*;
 import com.huotu.huobanplus.common.entity.support.LevelPrice;
 import com.huotu.huobanplus.common.entity.support.RebateConfiguration;
@@ -8,16 +11,12 @@ import com.huotu.huobanplus.common.model.RebateCompatible;
 import com.huotu.huobanplus.common.model.RebateInfo;
 import com.huotu.huobanplus.common.model.RebateMode;
 import com.huotu.huobanplus.common.repository.*;
-import com.huotu.huobanplus.common.service.AdvanceQuatoRebateService;
-import com.huotu.huobanplus.common.service.NormalRebateService;
-import com.huotu.huobanplus.common.service.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisGoods;
 import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.repository.*;
-import com.huotu.sis.service.CommonConfigService;
 import com.huotu.sis.service.SisGoodsService;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.exception.SisException;

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" content=""/>
+    <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css" th:href="@{/sisweb/css/fksc.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/weui.minweui.min.css" th:href="@{/sisweb/css/weui.minweui.min.css}"/>
+    <link href="jBox/Skins/Green/jbox.css" th:href="@{/sisweb/jBox/Skins/Green/jbox.css}" rel="stylesheet" type="text/css" />
+    <script src="js/jquery.min.js" th:src="@{/sisweb/js/jquery.min.js}" type="text/javascript"></script>
+    <script src="js/jquery-1.7.2.min.js" th:src="@{/sisweb/js/jquery-1.7.2.min.js}" type="text/javascript"></script>
+    <script src="js/template.js" th:src="@{/sisweb/js/template.js}" type="text/javascript"></script>
+    <script src="JLoad/jquery.Jload.js" th:src="@{/sisweb/JLoad/jquery.Jload.js}" type="text/javascript"></script>
+    <script type="text/javascript" src="jBox/jquery.jBox-2.3.min.js" th:src="@{/sisweb/jBox/jquery.jBox-2.3.min.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var customerId = /*[[${customerId}]]*/ 0;
+        /*]]>*/
+    </script>
+    <script src="js/sisAddBrand.js" th:src="@{/sisweb/js/sisAddBrand.js}" type="text/javascript"></script>
+    <title>选品上架</title>
+</head>
+<style>
+
+    ul {
+        list-style: none;
+        margin: 0;
+    }
+    .float-ul {
+        width: 100%;
+        overflow: hidden;
+        zoom: 1;
+    }
+    .float-ul li {
+        float: left;
+        width:33%;
+        height: 43px;
+        line-height: 43px;
+        text-align: center;
+        font-size: 1.4rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .float-ul li .con{
+        border-right: 1px solid #D2D2D2;
+    }
+    .float-ul li:last-child .con{
+        border-right: none;
+    }
+    .float-ul-a {
+        width: 100%;
+        overflow: hidden;
+        zoom: 1;
+    }
+    .float-ul-a li{
+        padding:20px 0px;
+        float: left;
+        width:50%;
+        text-align: center;
+        font-size: 1.4rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .flex-ul,.float-ul-a {
+        display: -webkit-flex;
+        display: flex;
+        width: 100%;
+
+    }
+    .flex-ul li,.float-ul-a li {
+        display: block;
+        flex: 1;
+        -ms-flex: 1;
+        -webkit-flex: 1;
+        box-flex: 1;
+        -ms-box-flex: 1;
+        -webkit-box-flex: 1;
+
+    }
+
+    .flex-ul .on {
+        color: #ff0000;
+        padding-bottom: 0;
+        border-bottom: 3px solid #ff0000;
+        z-index: 1;
+    }
+
+    .superli .control-group .hr_screen{
+        border-bottom: 1px solid #ddd;
+    }
+
+
+
+</style>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(function(){
+        sisAddBrandProvider.init();
+    });
+    /*]]>*/
+</script>
+
+<body>
+<input type="hidden" id="brandCount" th:value="${count}"/>
+<div class="commfont fk ">
+    <div style="position: fixed;top:0px; left: 0px; right: 0px; margin: 0 auto; z-index: 1">
+        <div class="control-group">
+            <div class="custom-search custom-search-style-A border-radius-none">
+                <ul>
+                    <li style="float:left;text-align:center;">
+                        <a href="javascript:void(0)" th:href="@{/sisweb/getSisCenter(customerId=${customerId})}"><img src="images/x59.png" width="39px" />
+                            <p style="color:#000; display:none" class="tit_rem_small">店主中心</p></a>
+                    </li>
+                    <li style="float:right;width: 86%;">
+                        <form action="" method="GET" onsubmit="sisAddBrandProvider.searchBrand();return false;">
+                            <input  type="text" placeholder="品牌搜索：请输入品牌关键字" id="brandKeywords"/>
+                            <a href="javascript:void(0)" onclick="sisAddBrandProvider.searchBrand()"><i class="search-a"></i></a>
+                        </form>
+                    </li>
+                </ul>
+                <p style="clear:both;"></p>
+            </div>
+        </div>
+        <div class="app-edit">
+            <div class="superli clearfix editing">
+                <div class="control-group">
+                    <div class="hr_screen">
+                        <ul id= "catgeory" class="float-ul flex-ul" >
+                            <li href="javascript:void(0)">
+                                <a href="javascript:void(0)" th:href="@{/sisweb/recommendGoodsIndex(customerId=${customerId})}"><p>店主专享</p></a>
+                            </li>
+                            <li href="javascript:void(0)" onclick="sisAddBrandProvider.getBrandList(this)"  class="on state_switch">
+                                <p>品牌</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" th:href="@{/sisweb/goodsIndex(customerId=${customerId})}"><p>筛选</p></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="brandOperDescprition" class="xf-xf" style="display: none">
+        <img src="images/2.png" />
+        <p id="brandMsg">添加成功</p>
+        <p id="brandNum">已上架品牌1200</p>
+    </div>
+    <div id="resultDescription" class="xf-xf" style="display: none">
+        <img src="images/iconfont-jiazai.gif" style="width: 35%"/>
+        <p id="resultMsg">操作中...</p>
+    </div>
+    <div style="padding-top:61px;margin-top: 38px;">
+        <div class="fk_hracf" style="position:relative;">
+            <!--<div id="loading" style="position: absolute; text-align: center; width: auto; height: auto; top: 120px; left: 35%">-->
+                <!--<img src="3rdParty/iPicture/images/loading.gif" alt="loading" border="0"/><p style="margin-top:8px ">&nbsp;数据加载中...</p>-->
+            <!--</div>-->
+            <div id="brandsList" class="weui_cells weui_cells_checkbox">
+            </div>
+            <p style="clear:both;"></p>
+        </div>
+        <p style="clear:both;"></p>
+
+    </div>
+
+</div>
+<script type="text/template" id="brandsTemplate">
+    {{each Rows as row i}}
+
+
+
+
+    <label style="border-top: 1px solid #fff" class="weui_cell weui_check_label">
+        <div class="weui_cell_hd">
+            {{if row.selected != true}}
+            <a href="javascript:void(0)" onclick="sisAddBrandProvider.operateBrands({{row.brandId}},this,1)">
+                <img src="images/a03.png" width="25px" />
+            </a>
+            {{else}}
+            <a href="javascript:void(0)" onclick="sisAddBrandProvider.operateBrands({{row.brandId}},this,0)">
+                <img src="images/a06.png" width="25px" />
+            </a>
+            {{/if}}
+        </div>
+        <div class="weui_cell_bd weui_cell_primary">
+            <a href="{{row.detailsUrl}}{{row.brandId}}"><img src="{{row.brandLogo}}" width="100%" /></a>
+        </div>
+    </label>
+
+    <!--<ul class="tabstyle">-->
+    <!--<li><a href="{{row.detailsUrl}}{{row.brandId}}">-->
+    <!--<img src="{{row.brandLogo}}" width="100%"/></a>-->
+    <!--</li>-->
+    <!--<li class="vip-a">-->
+    <!--{{if row.selected != true}} &lt;!&ndash;未上架&ndash;&gt;-->
+    <!--<a href="javascript:void(0)" onclick="sisAddBrandProvider.operateBrands({{row.brandId}},this,1)">-->
+    <!--<i class="git-a" ></i>-->
+    <!--</a>-->
+    <!--{{else}}    &lt;!&ndash;已上架&ndash;&gt;-->
+    <!--<a href="javascript:void(0)" onclick="sisAddBrandProvider.operateBrands({{row.brandId}},this,0)">-->
+    <!--<i class="git-a git-pos" ></i>-->
+    <!--</a>-->
+    <!--{{/if}}-->
+    <!--<p style="clear:both; height:13px;"></p>-->
+    <!--</li>-->
+    <!--</ul>-->
+    <!--<div class="ddd-a"></div>-->
+    {{/each}}
+</script>
+
+</body>
+</html>

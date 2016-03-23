@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" content=""/>
+    <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css" th:href="@{/sisweb/css/fksc.css}"/>
+    <link href="jBox/Skins/Green/jbox.css"
+          th:href="@{/sisweb/jBox/Skins/Green/jbox.css}" rel="stylesheet"
+          type="text/css"/>
+    <link rel="stylesheet" href="css/jquery-ui.min.css"/>
+    <script src="js/jquery.min.js" th:src="@{/sisweb/js/jquery.min.js}"></script>
+    <script src="js/jquery-ui.min.js" th:src="@{/sisweb/js/jquery-ui.min.js}"></script>
+    <script src="js/jquery-1.7.2.min.js"
+            th:src="@{/sisweb/js/jquery-1.7.2.min.js}"
+            type="text/javascript"></script>
+    <script src="js/template.js"
+            th:src="@{/sisweb/js/template.js}"
+            type="text/javascript"></script>
+    <script src="JLoad/jquery.Jload.js"
+            th:src="@{/sisweb/JLoad/jquery.Jload.js}"
+            type="text/javascript"></script>
+    <script type="text/javascript"
+            src="jBox/jquery.jBox-2.3.min.js"
+            th:src="@{/sisweb/jBox/jquery.jBox-2.3.min.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var customerId = /*[[${customerId}]]*/ 0;
+        /*]]>*/
+    </script>
+    <script src="js/indexBrand.js"
+            th:src="@{/sisweb/js/indexBrand.js}"
+            type="text/javascript"></script>
+    <title>店铺管理</title>
+    <style>
+
+        ul {
+            list-style: none;
+            margin: 0;
+        }
+
+        .float-ul {
+            width: 100%;
+            overflow: hidden;
+            zoom: 1;
+        }
+
+        .float-ul li {
+            float: left;
+            width: 25%;
+            text-align: center;
+            font-size: 1.4rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .float-ul li .con {
+            border-right: 1px solid #D2D2D2;
+        }
+
+        .float-ul li:last-child .con {
+            border-right: none;
+        }
+
+        .float-ul-a {
+            width: 100%;
+            overflow: hidden;
+            zoom: 1;
+            height: 50px;
+        }
+
+        .float-ul-a li {
+            padding: 15px 0px;
+            height: 31px;
+            float: left;
+            width: 49%;
+            text-align: center;
+            font-size: 1.4rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .flex-ul, .float-ul-a {
+            display: -webkit-flex;
+            display: flex;
+            width: 100%;
+
+        }
+
+        .flex-ul li, .float-ul-a li {
+            display: block;
+            flex: 1;
+            -ms-flex: 1;
+            -webkit-flex: 1;
+            box-flex: 1;
+            -ms-box-flex: 1;
+            -webkit-box-flex: 1;
+
+        }
+
+        .flex-ul .on {
+            color: #ff0000;
+            padding-bottom: 0;
+            border-bottom: 3px solid #ff0000;
+            z-index: 1;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="commfont fk">
+    <div style="position: fixed;top: 0px;left: 0;right: 0;margin: 0 auto;z-index: 1;">
+        <div class="fk_superli fk_clearfix editing">
+            <ul class="float-ul-a flex-ul">
+
+                <li id="goodsBanner">
+                    <a href="javascript:void(0)" th:href="@{/sisweb/sisIndex(customerId=${customerId})}">
+                        <div class="ifont">单品管理</div>
+                    </a>
+                </li>
+                <li class="on" id="brandBanner">
+                    <a href="javascript:void(0)"
+                       th:href="@{/sisweb/sisIndexBrand(customerId=${customerId})}"><i>品牌管理</i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="goodsOperDescprition" class="xf-xf" style="display: none">
+        <img src="images/2.png" />
+        <p id="goodsMsg">添加成功</p>
+    </div>
+    <div id="resultDescription" class="xf-xf" style="display: none">
+        <img src="images/iconfont-jiazai.gif" style="width: 35%"/>
+        <p id="resultMsg">操作中...</p>
+    </div>
+    <div class="fk">
+        <!--<div id="loading"-->
+             <!--style="position: absolute; text-align: center; width: auto; height: auto; top: 120px; left: 35%">-->
+            <!--<img src="3rdParty/iPicture/images/loading.gif" alt="loading" border="0"/>-->
+            <!--<p style="margin-top:8px ">&nbsp;数据加载中...</p>-->
+        <!--</div>-->
+        <div id="brandList" style="margin-top: 54px;display: none;" class="fk_hracf">
+        </div>
+    </div>
+
+    <script type="text/template" id="brandTemplate">
+        {{each Rows as row i}}
+        <ul class="tabstyle" id="sisBrand_{{row.brandId}}">
+            <li><a href="{{row.detailsUrl}}{{row.brandId}}"><img src="{{row.brandLogo}}" width="100%"/></a></li>
+            <li class="updown-a">
+                <a href="javascript:void(0)" onclick="operationBrand({{row.brandId}},0)"><p style="margin-right: 10px;"
+                                                                                            class="fk_hrsdds tit_rem  toptop-d">下架</p></a>
+                <a href="javascript:void(0)" onclick="operationBrand({{row.brandId}},2)"><p
+                        class="xcjjxc fk_hrsdds tit_rem left-a toptop-d">置顶</p></a>
+            </li>
+            <p style="clear:both; height:1px;"></p>
+        </ul>
+        {{/each}}
+    </script>
+
+</div>
+</body>
+</html>

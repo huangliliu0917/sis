@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport"
+        content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <meta name="description" content=""/>
+  <link href="3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+        th:href="@{/sisweb/3rdParty/css/admin.global.css}"/>
+  <link href="3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+        th:href="@{/sisweb/3rdParty/css/admin.content.css}"/>
+  <link href="css/settlements.css" rel="stylesheet" type="text/css"
+        th:href="@{/sisweb/css/settlements.css}"/>
+  <script type="text/javascript" src="3rdParty/js/jquery-1.4.2.min.js"
+          th:src="@{/sisweb/3rdParty/js/jquery-1.7.2.min.js}"></script>
+  <script type="text/javascript" src="3rdParty/js/jquery.utils.js"
+          th:src="@{/sisweb/3rdParty/js/jquery.utils.js}"></script>
+  <link href="3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"
+        th:href="@{/sisweb/3rdParty/jBox/Skins/Green/jbox.css}"/>
+  <script type="text/javascript" src="3rdParty/jBox/jquery.jBox-2.3.min.js"
+          th:src="@{/sisweb/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>
+  <link rel="stylesheet" type="text/css" href="css/settlements.css"
+        th:href="@{/sisweb/css/settlements.css}"/>
+  <script type="text/javascript" src="3rdParty/js/admin.js"
+          th:src="@{/sisweb/3rdParty/js/admin.js}"></script>
+  <script type="text/javascript" src="3rdParty/My97DatePicker/WdatePicker.js"
+          th:src="@{/sisweb/3rdParty/My97DatePicker/WdatePicker.js}"></script>
+  <script type="text/javascript" src="js/ajaxfileupload.js"
+          th:src="@{/sisweb/js/ajaxfileupload.js}"></script>
+  <script type="text/javascript" src="js/mall.returnproduct.js"
+          th:src="@{/sisweb/js/mall.returnproduct.js}"></script>
+  <script type="text/javascript" src="js/megapix-image.js"
+          th:src="@{/sisweb/js/megapix-image.js}"></script>
+  <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
+  <link rel="stylesheet" type="text/css" href="css/Securitycenter.css" th:href="@{/sisweb/css/Securitycenter.css}"/>
+  <script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var customerId = /*[[${customerId}]]*/ 0;
+    /*]]>*/
+  </script>
+  <title>修改店铺信息</title>
+  <script type="text/javascript" th:inline="javascript">
+    var updateSis = function () {
+      var head = $("#head").val();
+      var sisName = $("#sisName").val();
+      var sisDetail = $("#sisDetail").val();
+      var shareTitle = $("#shareTitle").val();
+      var shareDetail = $("#shareDetail").val();
+      if (head.length == 0) {
+        $.jBox.tip("请上传图片");
+        return;
+      }
+      if (sisName.length == 0) {
+        $.jBox.tip("请输入店铺名称");
+        return;
+      }
+      if (sisName.length > 20) {
+        $.jBox.tip("店铺名字长度10字以内！");
+        return;
+      }
+
+      if (sisDetail.length == 0) {
+        $.jBox.tip("请输入店铺描述");
+        return;
+      }
+      if (shareTitle.length == 0) {
+        $.jBox.tip("请输入店铺分享标题");
+        return;
+      }
+      if (shareDetail.length == 0) {
+        $.jBox.tip("请输入店铺分享详情");
+        return;
+      }
+      $('#form1').attr("action","updateSisProfile?customerId="+$("#customerId").val());
+      $('#form1').submit();
+    }
+
+    //图片上传
+    function uploadImage() {
+      $.jBox.tip("正在上传...", "loading");
+      $.ajaxFileUpload({
+        url: 'saveImage',
+        secureuri: false,
+        fileElementId: 'sisImage',
+        dataType: 'json',
+        data: null,
+        success: function (resultModel) {
+          if (resultModel.code == 200) {
+            $("input[name='head']").val(resultModel.relativeUrl);
+            $("#picture").attr("src", resultModel.url);
+            $.jBox.tip("上传成功");
+
+          }
+        },
+        error: function (data, status, e) {
+
+          $.jBox.tip("上传失败，请检查网络后重试" + e);
+        }
+      });
+    }
+    //    function sendImage() {
+    //      // 获取 canvas DOM 对象
+    //      var canvas = document.getElementById("sisImage");
+    //      // 获取Base64编码后的图像数据，格式是字符串
+    //      // "data:image/png;base64,"开头,需要在客户端或者服务器端将其去掉，后面的部分可以直接写入文件。
+    //      var dataurl = canvas.toDataURL("image/png");
+    //      // 为安全 对URI进行编码
+    //      // data%3Aimage%2Fpng%3Bbase64%2C 开头
+    //      var imagedata = encodeURIComponent(dataurl);
+    //      //imagedata = imagedata.replace(‘data:image/png;base64,‘, ‘‘);
+    //      //var url = "/APPCommon/SavePostCanvasImage";
+    //
+    //      // 因为是string，所以服务器需要对数据进行转码，写文件操作等。
+    //      // 个人约定，所有http参数名字全部小写
+    //      console.log(dataurl);
+    //      console.log(imagedata);
+    //      var data = {
+    //        imagedata: imagedata
+    //      };
+    //      jQuery.ajax({
+    //        url: "saveImage",
+    //        data: data,
+    //        type: "POST",
+    //        // 期待的返回值类型
+    //        dataType: "json",
+    //        success: function (msg) {
+    //          if(msg.code == 200){
+    //            $("input[name='head']").val(msg.url);
+    //            $.jBox.tip(msg.msg, 'success',{closed:function(){
+    //             }});
+    //
+    //          }else{
+    //            $.jBox.tip(msg.msg, 'error',{closed:function(){
+    //              window.location.reload();}});
+    //          }
+    //        }
+    //      });
+    //    };
+
+    //    var fileInput = document.getElementById('sisImage');
+    //    function changesis() {
+    //      //var filein = $("#sisImage");
+    //      var picture = document.getElementById('picture')
+    //      var file = fileInput.files[0];
+    //      var mpImg = new MegaPixImage(file);
+    //      mpImg.render(picture, {maxWidth: 800, maxHeight: 800, quality: 1});
+    //      sendImage();
+    //    }
+  </script>
+</head>
+
+<body style=" background-color:#f6f6f6;">
+
+<div class="commfont" th:object="${sisModel}">
+
+  <div class="Securitycenter">
+
+    <p style="height:8px"></p>
+    <div class="boxs3">
+      <!--<div >-->
+      <!--<p class="textcen" style="cursor: pointer; position: relative; overflow: hidden; direction: ltr;">-->
+
+      <!--&lt;!&ndash;<canvas style="width:100px;" id="picture" src="images/123.jpg" th:src="*{head}"></canvas>&ndash;&gt;-->
+      <!--<img  id="picture" th:src="*{head}" style="width:100px;"/>-->
+      <!--&lt;!&ndash;<img  id="picture" th:src="@{/sisweb/images/d.png}" style="width:100px;"/>&ndash;&gt;-->
+      <!--<br />-->
+      <!--<a id="uploadpic" class="btn-lit jUploader-button">-->
+      <!--<span id="btnsend" style="color: #c1b3a9" onclick="jQuery('#sisImage').click()">上传店铺头像</span>-->
+      <!--<input  type="file"  capture="camera"  onchange="uploadImage()" name="sisImage" id="sisImage" class="sign_file" style="position: absolute; right: 0px; top: 0px; margin: 0px; opacity: 0; padding: 0px; font-family: Arial; font-size: 118px; vertical-align: baseline; cursor: pointer;"/>-->
+      <!--</a>-->
+      <!--</p>-->
+      <!--</div>-->
+      <form action="updateSisProfile" id="form1" name="form1" method="post">
+        <input type="hidden" name="customerId" id="customerId" th:value="${customerId}"/>
+        <input type="hidden" id="head" name="head" th:value="*{head}"/>
+        <div>
+          <p class="textcen">
+            <span class="tit">店铺名称：</span>
+            <input id="sisName" name="sisName" th:value="*{sisName}" placeholder="" maxlength="20"
+                   type="text"/>
+          </p>
+        </div>
+        <div>
+          <p class="textcen">
+            <span class="tit">店铺简介：</span>
+            <input id="sisDetail" name="sisDetail" th:value="*{sisDetail}" placeholder="" maxlength="100"
+                   type="text"/>
+          </p>
+        </div>
+        <div>
+          <p class="textcen">
+            <span class="tit">分享标题：</span>
+            <input id="shareTitle" name="shareTitle" th:value="*{shareTitle}" placeholder="" maxlength="100"
+                   type="text"/>
+          </p>
+        </div>
+        <div>
+          <p class="textcen">
+            <span class="tit">分享内容：</span>
+            <input id="shareDetail" name="shareDetail" th:value="*{shareDetail}" placeholder=""
+                   maxlength="100" type="text"/>
+          </p>
+        </div>
+      </form>
+    </div>
+    <p class="textcen rq">
+      <button id="baominSubmitButton" class="box3-button" type="button" onclick="updateSis()">保存</button>
+    </p>
+
+
+  </div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" content=""/>
+    <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css" th:href="@{/sisweb/css/fksc.css}"/>
+    <link href="jBox/Skins/Green/jbox.css"
+          th:href="@{/sisweb/jBox/Skins/Green/jbox.css}" rel="stylesheet"
+          type="text/css"/>
+    <link rel="stylesheet" href="css/jquery-ui.min.css"/>
+    <script src="js/jquery.min.js" th:src="@{/sisweb/js/jquery.min.js}"></script>
+    <script src="js/jquery-ui.min.js" th:src="@{/sisweb/js/jquery-ui.min.js}"></script>
+    <script src="js/jquery-1.7.2.min.js"
+            th:src="@{/sisweb/js/jquery-1.7.2.min.js}"
+            type="text/javascript"></script>
+    <script src="js/template.js"
+            th:src="@{/sisweb/js/template.js}"
+            type="text/javascript"></script>
+    <script src="JLoad/jquery.Jload.js"
+            th:src="@{/sisweb/JLoad/jquery.Jload.js}"
+            type="text/javascript"></script>
+    <script type="text/javascript"
+            src="jBox/jquery.jBox-2.3.min.js"
+            th:src="@{/sisweb/jBox/jquery.jBox-2.3.min.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var customerId = /*[[${customerId}]]*/ 0;
+        /*]]>*/
+    </script>
+    <script src="js/order.js"
+            th:src="@{/sisweb/js/order.js}"
+            type="text/javascript"></script>
+    <title>店铺订单</title>
+</head>
+
+<body>
+<div class="commfont fk">
+    <div class="control-group">
+        <div class="fk_hracf" id="orderList">
+        </div>
+    </div>
+</div>
+
+<script type="text/template" id="orderTemplate">
+    {{each Rows as row i}}
+    <ul style="margin:0px 10px;border-bottom:0px;" class="cjgl-a">
+        <a>
+            <li>
+                <p class="tit_rem colo-f">单号:{{row.orderId}}<span style="color:#EB5A28" class="cj-right">已支付</span></p>
+
+                <p class="fk_hrsd-g">{{row.orderName}}</p>
+
+                <p style="color:#A0A0A0;" class="tit_rem">来源：{{row.mobile}}({{row.loginName}})
+                    <span class="cj-right">总额:{{row.price}}元</span></p>
+
+                <p style="color:#A0A0A0;" class="tit_rem">下单时间<span>&nbsp;{{row.addDate}}</span>
+                    <span style="color:#FF6E00" class="cj-right">直推积分:{{row.integral}}积分</span></p>
+            </li>
+        </a>
+
+        <p style="clear:both; height:1px;"></p>
+    </ul>
+    <div class="ddd-a"></div>
+    {{/each}}
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" type="text/css" href="css/common_lq.css" th:href="@{/sisweb/css/common_lq.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/fx.css" th:href="@{/sisweb/css/fx.css}"/>
+    <title>我的团队</title>
+    <style>
+
+    </style>
+</head>
+
+<body gtools_scp_screen_capture_injected="true" style="zoom: 1;">
+<aside>
+    <div class="commfont">
+
+        <div style="background-color: #fff">
+            <div class="my_menu_btn2 sd  tit_rem_big">
+
+        <span style="margin:0px 8px;" class="fximg">
+        <img src="images/fx01.png" th:href="@{/sisweb/images/fx01.png}"/>
+        </span>
+        <span>
+        我的团队
+        </span>
+            </div>
+        </div>
+        <!--end菜单2-->
+        <div style="display: box; display: -ms-box; display: -webkit-box; display: flex; display: -ms-flexbox; display: -webkit-flex;">
+            <table class="tablePanel" style="width: 100%; margin: 10px 0px;" cellspacing="1" cellpadding="0">
+                <thead>
+                <tr>
+                    <td class="boxtd"><p style="text-align: center;">
+                        <img src="images/fx02.png" style=" width:50px;"/>
+                        <br/>
+                        <span>
+                        级数
+                        </span>
+                    </p>
+                    </td>
+                    <td class="boxtd"><p style="text-align: center;">
+                        <img src="images/fx03.png" style=" width:50px;"/>
+                        <br/>
+                <span>
+                店主培训补贴
+                </span>
+                    </p></td>
+                    <td class="boxtd"><p style="text-align: center;">
+                        <img src="images/fx04.png" style=" width:50px;"/>
+                        <br/>
+                <span>
+                开店人数
+                </span>
+                    </p></td>
+                </tr>
+                </thead>
+                <tbody>
+
+
+
+                <tr th:each="junior:${list}">
+                    <!--<td class="boxtd"><p style="text-align: center" th:text="${junior.srcType}+'级'">一级</p></td>-->
+                    <!--<td class="boxtd"><p style="text-align: center" th:text="${junior.amount}">0</p></td>-->
+
+                    <!--<td class="boxtd"><p style="text-align: center" th:text="${junior.userNum}">0</p>-->
+                        <!--<br/>-->
+                        <!--<a href="javascript:void(0);" th:href="@{/sisweb/juniorDetailList(srcType=${junior.srcType},customerId=${customerId})}">-->
+                            <!--<p style="color: #BDBDBD;text-align: center;">查看成员</p></a></td>-->
+
+
+
+
+
+                    <td class="boxtd fffx"><p style="text-align: center" th:text="${junior.srcType}+'级'">
+                        1级
+                    </p></td>
+                    <td class="boxtd" style="text-align: center">
+                        <p style="text-align: center" th:text="${#numbers.formatDecimal(junior.amount,1,0)}">
+                            0
+                        </p>
+                        <span style="color: #BDBDBD">元</span>
+                    </td>
+                    <td class="boxtd" style="text-align: center">
+                        <a href="javascript:void(0);" th:href="@{/sisweb/juniorDetailList(srcType=${junior.srcType},customerId=${customerId})}">
+                            <p style="text-align: center;" th:text="${junior.userNum}">
+                            0
+                            </p>
+                    <span style="color: #BDBDBD">
+                        查看成员
+                    </span></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!--end菜单3-->
+
+        <p class="fn-clear h20">
+        </p>
+    </div>
+    <div id="mbotomm_hackdiv" style="height: 8px;"></div>
+</aside>
+<div></div>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="description" content="" />
+
+    <script type="text/javascript" src="3rdParty/js/jquery-1.7.2.min.js"
+            th:src="@{/sisweb/3rdParty/js/jquery-1.7.2.min.js}"></script>
+    <!--<link href="3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"-->
+    <!--th:href="@{/sisweb/3rdParty/jBox/Skins/Green/jbox.css}"/>-->
+    <!--<script type="text/javascript" src="3rdParty/jBox/jquery.jBox-2.3.min.js"-->
+    <!--th:src="@{/sisweb/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>-->
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css"/>
+    <link rel="stylesheet" type="text/css" href="layer/skin/layer.css"/>
+    <link rel="stylesheet" type="text/css" href="layer/skin/layer.ext.css"/>
+    <title>我要开店</title>
+</head>
+<!--/*@thymesVar id="sisInviteLog" type="com.huotu.huobanplus.sis.model.entity.SisInviteLog"*/-->
+<!--/*@thymesVar id="customerId" type="java.lang.Long"*/-->
+<!--/*@thymesVar id="inviterName" type="java.lang.String"*/-->
+<body onload="firstLoad()">
+<div class="commfont fk">
+    <div id="openNow" style="padding: 18px 0px;top: 50%; display:none" class="xf-xf">
+        <img src="images/iconfont-jiazai.gif" width="35px"/>
+        <p style="padding-top:10px" class="tit_rem_big">正在开启</p>
+    </div>
+    <p style=" width:45%; text-align:center; margin:0 auto; margin-top:8%"><img src="images/gm-open.png" width="100%"/></p>
+
+
+    <form method="post" id="form1" th:object="${sisInviteLog}">
+
+        <input type="hidden" id="customerId" name="customerId" th:value="${customerId}"/>
+        <p th:if="*{inviterId}!=null" style="text-align:center; color:#383838" class="tit_rem_big_a">
+
+            <b th:text="${inviterName}+'邀请您开店'">邀请您开店</b></p>
+        <div style="margin:40px 40px  0px 40px; position: relative">
+            <input th:if="*{inviterId}!=null" type="hidden" id="inviterId" th:value="*{inviterId}" name="inviterId"/>
+            <input class="input-name" id="realName" name="realName" placeholder="请输入您的真实姓名" maxlength="20" type="text"/>
+            <input class="input-name" id="phone" name="mobile" placeholder="请输入您的店铺手机号" maxlength="20" type="text"/>
+            <input class="input-name" id="code" name="code" placeholder="输入验证码" maxlength="20" type="text"/>
+            <button  id="send" name="send" class=" button-code-a" type="button" title=""
+                     onclick="javascript:sendSMS(this);">获取验证码</button>
+        </div>
+        <p style="height:100px"></p>
+        <p style="text-align:center"><button class="tit_rem_big button-open-a" type="button" title=""
+                                             onclick="javascript:submitform();">立即开启</button></p>
+
+    </form>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    //初始化进页面
+    var countdown=60;
+    function firstLoad() {
+        $("#openNow").hide();
+    }
+
+    function sendSMS(obj){
+
+        var phone=$("input[name='mobile']").val();
+        var merchantId=$("input[name='customerId']").val();
+        if(phone.length!=11){
+            layer.msg("请填写有效的手机号");
+            return;
+        }
+        $.ajax({
+            type:'GET',
+            url: 'sendSMS',
+            dataType: 'json',
+            data: {phone:phone,type:0,customerId:merchantId},
+            success:function(result){
+                if(result.code==200){
+//                    layer.msg("验证码发送成功！");
+                }else {
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.msg("发送验证码出错，请检查网络");
+            }
+        });
+        countdown=60;
+        settime(obj);//开始倒计时
+
+
+    }
+
+
+    function settime(obj) {
+        if(-1>=countdown){
+            $(obj).removeAttr("disabled");
+            $(obj).text("获取验证码");
+            $(obj).attr("class","button-code-a");
+            clearTimeout();
+        }else{
+            $(obj).attr("disabled", true);
+            $(obj).attr("class","button-code-disabled");
+            $(obj).text(countdown+"秒");
+            countdown--;
+            setTimeout(function() { settime(obj) },1000) //每1000毫秒执行一次
+        }
+    }
+
+
+    function checkCode() {
+        var flag=false;
+        var code=$("input[name='code']").val().trim();
+        var phone=$("input[name='mobile']").val();
+        var customerId=$("input[name='customerId']").val();
+        if(code.length!=4){
+            return flag;
+        }
+        if(phone.length!=11){
+            return flag;
+        }
+//        var timestamp = Date.parse(new Date());
+        $.ajax({
+            type:'GET',
+            url: 'checkCode',
+            dataType: 'json',
+            async:false,
+            data: {phone:phone,code:code,type:0,customerId:customerId},
+            success:function(result){
+                if(result.code==200){
+                    flag=true;
+                }else {
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.msg("校验验证码出错，请检查网络");
+            }
+        });
+        return flag;
+    }
+
+
+    //提交设置
+    function submitform() {
+
+        var flag;
+        var realName=$("input[name='realName']").val();
+        var phone=$("input[name='mobile']").val();
+        if(realName.length==0){
+            layer.msg("请填写真实姓名");
+            return;
+        }
+        if(phone.length!=11){
+            layer.msg("请填写有效的手机号");
+            return;
+        }
+        flag=checkCode();
+        if(flag==false){
+            return;
+        }
+        $("#openNow").show();
+        var customerId=/*[[${customerId}]]*/'';
+        submitInviteInfo(realName,phone,customerId);
+    }
+
+
+
+
+    /**
+     *  收集开店信息
+     * @param realName      用户真实姓名
+     * @param phone         用户电话
+     * @param customerId    商户ID
+     */
+    function submitInviteInfo(realName,phone,customerId) {
+        var inviterId=$("input[name='inviterId']").val();
+        $.ajax({
+            type:'POST',
+            url: 'collectSisInfo',
+            dataType: 'json',
+            data: {mobile:phone,inviterId:inviterId,realName:realName,customerId:customerId},
+            success:function(result){
+                if(result.code!=200){
+                    layer.msg(result.message);
+                }
+                skipUrl(customerId);
+            },
+            error:function(e){
+                layer.msg("收集邀请信息出错，请检查网络");
+                skipUrl(customerId);
+            }
+        });
+    }
+
+    function skipUrl(customerId){
+        var isFree=/*[[${free}]]*/1;//0免费开店，1购买商品开店
+        var url="";
+        if(isFree==1){
+            url="showOpenShopGoodsDetail?customerId="+customerId;
+
+        }
+        if(isFree==0){
+            openFreeShop(customerId);
+            url="getSisCenter?customerId="+customerId;
+
+        }
+        window.location.href=url;
+    }
+
+    /**
+     * 免费开店
+     * @param customerId    商户ID
+     */
+    function openFreeShop(customerId) {
+        $.ajax({
+            type:'POST',
+            url: 'openFreeShop',
+            dataType: 'json',
+            async:false,
+            data: {customerId:customerId},
+            success:function(result){
+                if(result.code!=200){
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.msg("免费开店出错，请检查网络");
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

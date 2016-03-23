@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" content=""/>
+    <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css" th:href="@{/sisweb/css/fksc.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/weui.minweui.min.css" th:href="@{/sisweb/css/weui.minweui.min.css}"/>
+    <link href="jBox/Skins/Green/jbox.css" th:href="@{/sisweb/jBox/Skins/Green/jbox.css}" rel="stylesheet" type="text/css" />
+    <script src="js/jquery.min.js" th:src="@{/sisweb/js/jquery.min.js}" type="text/javascript"></script>
+    <script src="js/jquery-1.7.2.min.js" th:src="@{/sisweb/js/jquery-1.7.2.min.js}" type="text/javascript"></script>
+    <script src="js/template.js" th:src="@{/sisweb/js/template.js}" type="text/javascript"></script>
+    <script src="JLoad/jquery.Jload.js" th:src="@{/sisweb/JLoad/jquery.Jload.js}" type="text/javascript"></script>
+    <script type="text/javascript" src="jBox/jquery.jBox-2.3.min.js" th:src="@{/sisweb/jBox/jquery.jBox-2.3.min.js}"></script>
+    <script src="js/sisAddGoods.js" th:src="@{/sisweb/js/sisAddGoods.js}" type="text/javascript"></script>
+    <title>选品上架</title>
+</head>
+<style>
+
+    ul {
+        list-style: none;
+        margin: 0;
+    }
+    .float-ul {
+        width: 100%;
+        overflow: hidden;
+        zoom: 1;
+    }
+    .float-ul li {
+        float: left;
+        width:25%;
+        height: 43px;
+        line-height: 43px;
+        text-align: center;
+        font-size: 1.4rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .float-ul li .con{
+        border-right: 1px solid #D2D2D2;
+    }
+    .float-ul li:last-child .con{
+        border-right: none;
+    }
+    .float-ul-a {
+        width: 100%;
+        overflow: hidden;
+        zoom: 1;
+    }
+    .float-ul-a li{
+        padding:20px 0px;
+        float: left;
+        width:50%;
+        text-align: center;
+        font-size: 1.4rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .flex-ul,.float-ul-a {
+        display: -webkit-flex;
+        display: flex;
+        width: 100%;
+
+    }
+    .flex-ul li,.float-ul-a li {
+        display: block;
+        flex: 1;
+        -ms-flex: 1;
+        -webkit-flex: 1;
+        box-flex: 1;
+        -ms-box-flex: 1;
+        -webkit-box-flex: 1;
+
+    }
+
+    .flex-ul .on {
+        color: #ff0000;
+        padding-bottom: 0;
+        border-bottom: 3px solid #ff0000;
+        z-index: 1;
+    }
+
+    .xcj .superli .control-group .hr_screen .hr_key {
+        border-bottom: 1px solid #ddd;
+        height: 35px;
+        background-color: #FFFFFF;
+        text-align: center;
+        /* margin: 0 auto; */
+        height: 35px;
+        padding: 10px 10px 0px;
+    }
+    .xcj .superli .control-group .hr_screen .hr_key ul {
+        height: 35px;
+    }
+    .xcj .superli .control-group .hr_screen .hr_key .hot-keywords.border-none {
+        border-radius: 5px 5px 0px 0px;
+        background-color: #ffffff;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+    .xcj .superli .control-group .hr_screen .hr_key .keyword {
+        color: #e33b3d;
+    }
+    .xcj .superli .control-group .hr_screen .hr_key ul li a {
+        height: 36px;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        white-space: nowrap;
+    }
+    .xcj .superli .control-group .hr_screen .hr_key ul li {
+        display: inline-block;
+        margin: 0 2% 0px 0;
+        width:35%;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        white-space: nowrap;
+        /* padding: 5px 5px; */
+        position: relative;
+    }
+
+
+
+</style>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var pageType = /*[[${pageType}]]*/ 0;
+    $(function(){
+        sisAddGoodsProvider.init(pageType);
+        sisAddGoodsProvider.hideOperation();
+    });
+    /*]]>*/
+</script>
+
+<body>
+<div class="commfont fk ">
+    <div style="position: fixed;top:0px; left: 0px; right: 0px; margin: 0 auto; z-index: 1">
+    <div class="control-group">
+        <div class="custom-search custom-search-style-A border-radius-none">
+            <ul>
+                <li style="float:left;text-align:center;">
+                    <img src="images/x59.png" width="39px" />
+                    <p style="color:#000; display:none" class="tit_rem_small">店主中心</p>
+                </li>
+                <li style="float:right;width: 86%;">
+                <form action="" method="GET" onsubmit="sisAddGoodsProvider.getGoodsByNameAndCategory();return false;">
+                        <input  type="text" placeholder="商品搜索：请输入商品关键字" id="goodsKeywords"/>
+                        <a href="javascript:void(0)" onclick="sisAddGoodsProvider.getGoodsByNameAndCategory()"><i class="search-a"></i></a>
+                    </form>
+                </li>
+            </ul>
+            <p style="clear:both;"></p>
+        </div>
+    </div>
+
+        <div class="app-edit">
+            <div class="xcj">
+            <div class="superli clearfix editing">
+                <div class="control-group">
+                    <div class="hr_screen">
+                        <ul style="border-bottom: 1px solid #ddd;" id= "catgeory" class="float-ul flex-ul" >
+                            <li class="on state_switch" href="javascript:void(0)" th:href="@{/sisweb/getBrandListPage(customerId=${customerId})}">
+                                <p>店主专享</p>
+                            </li>
+                            <li href="javascript:void(0)" th:href="@{/sisweb/getBrandListPage(customerId=${customerId})}">
+                                <p>品牌</p>
+                            </li>
+                            <li href="javascript:void(0)" onclick="sisAddGoodsProvider.openOrHidePageTypes(this)">
+                                <p>筛选</p>
+                            </li>
+                        </ul>
+                        <div class="hr_key" id="pageTypes" style="display: none">
+                            <ul>
+                                <li id="categoryLi" class="hot-keywords  border-none">
+                                    <a id="categoryA" class="keyword" href="javascript:void(0)" onclick="sisAddGoodsProvider.openOrHideCategoryWin(this)">
+                                        分类
+                                    </a>
+                                </li>
+                                <li id="conditionLi" class="keynomal">
+                                    <a id="conditionA" class="keyword2" href="javascript:void(0)" onclick="sisAddGoodsProvider.openOrHideSortWin(this)">
+                                        条件
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <div id="mask" class="bacrgba" style="display: none; top: 145px;">
+                            <div class="pos-a" id="categoryList">
+                            </div>
+                            <div class="pos-a" id="sortList">
+                                <div class="hr_word">
+                                    <p class="xxk2">
+                                        <a href="javascript:void(0)" onclick="sisAddGoodsProvider.sortOperation(this)" sortOption="0" >直推返利
+                                        </a>
+                                    </p>
+                                    <p class="xxk2">
+                                        <a href="javascript:void(0)" onclick="sisAddGoodsProvider.sortOperation(this)" sortOption="1" >商品人气
+                                        </a>
+                                    </p>
+                                    <p class="xxk2">
+                                        <a href="javascript:void(0)" onclick="sisAddGoodsProvider.sortOperation(this)" sortOption="2" >上架时间
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="xf-xf">
+        <img src="images/2.png" />
+        <p id="goodsMsg">添加成功</p>
+        <p id="goodsNum">已上架商品1200</p>
+    </div>
+    <div style="padding-top:61px;margin-top: 38px;">
+        <div class="fk_hracf" style="position:relative;">
+            <div id="loading" style="position: absolute; text-align: center; width: auto; height: auto; top: 120px; left: 35%">
+                <img src="3rdParty/iPicture/images/loading.gif" alt="loading" border="0"/><p style="margin-top:8px ">&nbsp;数据加载中...</p>
+            </div>
+
+            <div id="goodsList" class="weui_cells weui_cells_checkbox">
+            </div>
+            <p style="clear:both;"></p>
+        </div>
+        <p style="clear:both;"></p>
+    </div>
+
+</div>
+<script type="text/template" id="goodsTemplate">
+    {{each Rows as row i}}
+
+    <label style="border-top: 1px solid #fff;" class="weui_cell weui_check_label">
+        <div class="weui_cell_hd">
+            {{if row.goodSelected != true}}
+            <a href="javascript:void(0)" onclick="sisAddGoodsProvider.operateGoods({{row.goodsId}},this,1)">
+                <img src="images/a03.png" width="25px" />
+            </a>
+            {{else}}
+            <a href="javascript:void(0)" onclick="sisAddGoodsProvider.operateGoods({{row.goodsId}},this,0)">
+                <img src="images/a06.png" width="25px" />
+            </a>
+            {{/if}}
+        </div>
+        <div class="weui_cell_bd weui_cell_primary">
+            <a href="{{row.detailsUrl}}{{row.goodsId}}"> <div style="float:left;" class="hrfg">
+                <img src="{{row.imgUrl}}" class="fk_hrtab" /></div>
+            <div>
+                <p class="fk_hrsd tit_rem">{{row.goodsName}}</p>
+                <p class="fk_hrsdds tit_rem">库存:{{row.stock}}件
+                    <span class="cj-right">
+                        会员价:<i style="color:#EB5A28">￥{{row.price}}</i>
+
+                                                 </span></p>
+                <p class="fk_hrsdds tit_rem">分销积分:
+                    {{if row.minRebate != row.maxRebate}}  <!--不相等则 显示区间-->
+                    {{row.minRebate}}-{{row.maxRebate}}
+                    {{else}}    <!--相等则 直接显示某个值-->
+                    {{row.minRebate}} {{/if}}
+                    <span class="cj-right">直推积分:{{row.directRebate}}</span></p>
+             </div>
+            </a>
+        </div>
+    </label>
+
+
+
+
+
+
+    <!--<ul class="tabstyle cjgl-a">-->
+        <!--<a href="{{row.detailsUrl}}{{row.goodsId}}" test="{{row.detailsUrl}}{{row.goodsId}}" >-->
+        <!--<li style="float:left;" class="hrfg">-->
+
+                <!--<img src="{{row.imgUrl}}" class="fk_hrtab"/>-->
+        <!--</li>-->
+        <!--<li>-->
+            <!--<p class="fk_hrsd">{{row.goodsName}}</p>-->
+
+            <!--<p class="fk_hrsdds tit_rem">库存：{{row.stock}}件<span  class="cj-right">&nbsp;&nbsp;-->
+                                        <!--分销返利：{{if row.minRebate != row.maxRebate}}  &lt;!&ndash;不相等则 显示区间&ndash;&gt;-->
+                                                        <!--{{row.minRebate}}-{{row.maxRebate}}-->
+                                                  <!--{{else}}    &lt;!&ndash;相等则 直接显示某个值&ndash;&gt;-->
+                                                        <!--{{row.minRebate}}-->
+                                                  <!--{{/if}}-->
+            <!--</span></p>-->
+            <!--<p class="fk_hrsdds tit_rem">销售价：<span style="color:#EB5A28">￥{{row.price}}</span><span class="cj-right">直推返利:{{row.directRebate}}</span></p>-->
+        <!--</li>-->
+        <!--</a>-->
+        <!--<p style="clear:both; height:1px;"></p>-->
+        <!--<li>-->
+            <!--{{if row.goodSelected != true}} &lt;!&ndash;未上架&ndash;&gt;-->
+            <!--<a href="javascript:void(0)" onclick="sisAddGoodsProvider.operateGoods({{row.goodsId}},this,1)">-->
+                <!--<i class="git-a" ></i>-->
+            <!--</a>-->
+            <!--{{else}}    &lt;!&ndash;已上架&ndash;&gt;-->
+            <!--<a href="javascript:void(0)" onclick="sisAddGoodsProvider.operateGoods({{row.goodsId}},this,0)">-->
+                <!--<i class="git-a git-pos" ></i>-->
+            <!--</a>-->
+            <!--{{/if}}-->
+            <!--<p style="clear:both; height:26px;"></p>-->
+        <!--</li>-->
+
+    <!--</ul>-->
+    {{/each}}
+</script>
+
+
+</body>
+</html>

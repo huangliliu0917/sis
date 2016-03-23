@@ -1,7 +1,7 @@
 package com.huotu.sis.controller;
 
 import com.huotu.common.base.HttpHelper;
-import com.huotu.huobanplus.base.service.ResourceService;
+import com.huotu.huobanplus.base.toolService.ResourceService;
 import com.huotu.huobanplus.common.UserType;
 import com.huotu.huobanplus.common.entity.*;
 import com.huotu.huobanplus.common.entity.support.ProductSpecifications;

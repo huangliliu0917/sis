@@ -1,6 +1,5 @@
 package com.huotu.sis.common;
 
-import com.huotu.huobanplus.base.service.BaseService;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.MerchantConfig;
 import com.huotu.huobanplus.common.entity.User;
@@ -18,9 +17,6 @@ import java.util.List;
  * Created by lgh on 2015/11/12.
  */
 public class MathHelper {
-
-    @Autowired
-    BaseService baseService;
 
     @Autowired
     MallBaseRepository mallBaseRepository;

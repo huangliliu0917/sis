@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" content=""/>
+    <!--<link href="3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"-->
+          <!--th:href="@{/sisweb/3rdParty/css/admin.global.css}"/>-->
+    <!--<link href="3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"-->
+          <!--th:href="@{/sisweb/3rdParty/css/admin.content.css}"/>-->
+    <!--<link href="css/settlements.css" rel="stylesheet" type="text/css"-->
+          <!--th:href="@{/sisweb/css/settlements.css}"/>-->
+    <!--<script type="text/javascript" src="3rdParty/js/jquery-1.4.2.min.js"-->
+            <!--th:src="@{/sisweb/3rdParty/js/jquery-1.7.2.min.js}"></script>-->
+    <!--<script type="text/javascript" src="3rdParty/js/jquery.utils.js"-->
+            <!--th:src="@{/sisweb/3rdParty/js/jquery.utils.js}"></script>-->
+    <!--<link href="3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"-->
+          <!--th:href="@{/sisweb/3rdParty/jBox/Skins/Green/jbox.css}"/>-->
+    <!--<script type="text/javascript" src="3rdParty/jBox/jquery.jBox-2.3.min.js"-->
+            <!--th:src="@{/sisweb/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>-->
+    <!--<link rel="stylesheet" type="text/css" href="css/settlements.css"-->
+          <!--th:href="@{/sisweb/css/settlements.css}"/>-->
+    <!--<script type="text/javascript" src="3rdParty/js/admin.js"-->
+            <!--th:src="@{/sisweb/3rdParty/js/admin.js}"></script>-->
+    <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css" th:href="@{/sisweb/css/fksc.css}"/>
+    <!--<script src="js/TouchSlide.1.1.js"></script>-->
+    <title>商品详情</title>
+</head>
+
+<body>
+<div class="commfont fk " th:object="${good}">
+    <!--<input type="hidden" name="goodsId" id="goodsId" th:value="*{goodsId}"/>-->
+
+    <div>
+        <div>
+            <div id="s_focus" class="s_focus">
+                <div class="s_hd" style="display:none;">
+                    <ul></ul>
+                </div>
+                <div class="s_bd">
+                    <ul>
+                        <li><a href="#"><img style="width:100%;" th:src="@{*{smallPic}}"/></a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <p style="clear:both"></p>
+        </div>
+
+        <div class="sort">
+            <i class="sort-handler"></i>
+        </div>
+    </div>
+    <div class="sp">
+        <div>
+            <div class="sp_bt">
+                <a th:text="*{title}">
+                商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情
+                </a>
+            </div>
+            <p>
+      <span class="sp_hz">
+      价格
+      </span>
+      <span class="sp_hongz">
+      ¥<a th:text="*{price}">0.00</a>
+      </span>
+            </p>
+
+            <p>
+      <span class="sp_hz">
+      剩余
+      </span>
+      <span class="sp_hongzz">
+      <a th:text="0>*{stock}?0+'件':*{stock}+'件'">件</a>
+      </span>
+            </p>
+
+            <p style="clear:both; height:10px">
+            </p>
+        </div>
+    </div>
+    <div class="lq_img_p">
+        <div id="deta" class="p10_lq">
+
+        </div>
+    </div>
+    <div th:utext="${goodsDesc}">
+
+    </div>
+
+    <a href="" th:href="${goodsUrl}"><button class="button-a" type="button">立即购买</button></a>
+</div>
+
+</body>
+
+</html>
+
