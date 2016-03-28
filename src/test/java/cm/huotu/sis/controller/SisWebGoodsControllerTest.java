@@ -3,6 +3,7 @@ package cm.huotu.sis.controller;
 import cm.huotu.sis.common.WebTest;
 import cm.huotu.sis.pages.SisCenter;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
+import com.huotu.huobanplus.common.entity.Brand;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
 import com.huotu.huobanplus.common.repository.UserRepository;
@@ -12,6 +13,11 @@ import com.huotu.sis.entity.Sis;
 import com.huotu.sis.model.PublicParameterModel;
 import com.huotu.sis.repository.SisRepository;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jinzj on 2016/3/25.
@@ -74,6 +81,38 @@ public class SisWebGoodsControllerTest extends WebTest {
         }
         sisCenter.validResult(sis,todayIntegrals,integrals,orderCount);
     }
+
+    /**
+     *  店铺订单页面
+     * @throws Exception
+     */
+    @Test
+    public void juniorDetailList() throws Exception {
+        webDriver.get("http://localhost/sisweb/juniorDetailList");
+//        WebElement juniorDetailList = new WebDriverWait(webDriver,30).until(new ExpectedCondition<WebElement>() {
+//
+//            @Nullable
+//            @Override
+//            public WebElement apply(@Nullable WebDriver input) {
+//                return input.findElement(By.id("juniorDetailList"));
+//            }
+//        });
+//        System.out.println(juniorDetailList);
+//        webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+//        WebElement list = webDriver.findElement(By.id("juniorDetailList"));
+//        System.out.println(list);
+    }
+
+    /**
+     * 品牌详情页
+     * @throws Exception
+     */
+    @Test
+    public void brandDetail() throws Exception {
+
+    }
+
+
 
     /**
      * 获取当前登录的user
