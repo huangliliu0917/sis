@@ -46,6 +46,13 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private CommonUserInterceptor commonUserInterceptor;
 
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        super.addResourceHandlers(registry);
+        registry.addResourceHandler("/sisweb/**/*", "/**/*.html")
+                .addResourceLocations("/sisweb/", "/");
+    }
+
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -109,7 +116,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 //        }
 
         engine.setTemplateResolver(rootTemplateResolver);
-
+        resolver.setContentType("text/html;charset=utf-8");
         resolver.setTemplateEngine(engine);
 //        resolver.setOrder(99);
         resolver.setOrder(2147483647 + 10);
