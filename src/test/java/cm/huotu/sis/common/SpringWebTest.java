@@ -1,10 +1,12 @@
 package cm.huotu.sis.common;
 
+import cm.huotu.sis.pages.AbstractPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -98,6 +100,20 @@ public class SpringWebTest {
         if (webDriver != null) {
             webDriver.close();
         }
+    }
+
+
+    /**
+     * 初始化逻辑页面
+     *
+     * @param <T>   该页面相对应的逻辑页面
+     * @param clazz 该页面相对应的逻辑页面的类
+     * @return 页面实例
+     */
+    public <T extends AbstractPage> T initPage(Class<T> clazz) {
+        T page = PageFactory.initElements(webDriver, clazz);
+        page.validate();
+        return page;
     }
 
     /**

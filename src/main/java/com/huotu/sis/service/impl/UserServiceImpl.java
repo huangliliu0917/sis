@@ -84,8 +84,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long getUserId(HttpServletRequest request) {
-        if (env.acceptsProfiles("develop"))
+        if (env.acceptsProfiles("develop")){
+            userRepository.findAll();
             return 97278L;//146 4471商户 王明
+
+        }
         else {
             String encrypt = CookieHelper.get(request, userKey);
             try {

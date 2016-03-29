@@ -1,6 +1,7 @@
 package cm.huotu.sis.controller;
 
 import cm.huotu.sis.common.WebTest;
+import cm.huotu.sis.pages.OpenShop;
 import cm.huotu.sis.pages.SisCenter;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.Brand;
@@ -82,6 +83,19 @@ public class SisWebGoodsControllerTest extends WebTest {
         sisCenter.validResult(sis,todayIntegrals,integrals,orderCount);
     }
 
+
+
+
+    @Test
+    public void openShopTest() throws Exception {
+        User user=new User();
+        user.setWxNickName("slt");
+        userRepository.save(user);
+        webDriver.get("http://localhost/sisweb/showOpenShop");
+        OpenShop openShop = initPage(OpenShop.class);
+        openShop.validResult();
+    }
+
     /**
      *  店铺订单页面
      * @throws Exception
@@ -124,6 +138,8 @@ public class SisWebGoodsControllerTest extends WebTest {
         Long userId = ppm.getUserId();
         return userId;
     }
+
+
 
 
 }
