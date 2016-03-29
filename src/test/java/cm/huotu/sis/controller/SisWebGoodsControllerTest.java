@@ -110,7 +110,6 @@ public class SisWebGoodsControllerTest extends WebTest {
     @Test
     public void juniorDetailList() throws Exception {
         webDriver.get("http://localhost/sisweb/juniorDetailList?srcType=3");
-        System.out.println("1");
 //        Page<SisDetailModel> sisDetailModel = sqlService.getListOpenShop(userId, srcType, page, pageSize);
 //        new WebDriverWait(webDriver,30)
 //                .until(ExpectedConditions.textToBePresentInElement(button,"已选择该模板"));
@@ -151,7 +150,6 @@ public class SisWebGoodsControllerTest extends WebTest {
             WebElement threeButton = elements.get(2).findElements(By.cssSelector("td")).get(2).findElement(By.cssSelector("a"));
             assertThat(threeButton.getAttribute("href")).contains("http://localhost/sisweb/juniorDetailList?srcType=3").as("url进行比较");
             threeButton.click();
-//            driverWait.until(ExpectedConditions.urlContains("http://localhost/sisweb/juniorDetailList"));
 //            JuniorDetail juniorDetail = initPage(JuniorDetail.class);
 //            Page<SisDetailModel> sisDetailModel = sqlService.getListOpenShop(userId, 3, 1, 10);
 //            juniorDetail.validResult(sisDetailModel);
