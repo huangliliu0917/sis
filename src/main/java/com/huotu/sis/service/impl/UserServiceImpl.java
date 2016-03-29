@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long getUserId(HttpServletRequest request) {
         if (env.acceptsProfiles("develop")){
-            userRepository.findAll();
+//            userRepository.findAll();
             return 97278L;//146 4471商户 王明
 
         }

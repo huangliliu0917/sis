@@ -4,7 +4,6 @@ import com.huotu.sis.entity.Sis;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

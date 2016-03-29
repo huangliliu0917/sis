@@ -1028,7 +1028,7 @@ public class SisWebGoodsController {
      * @throws UserNotFoundException
      * @throws SisException
      */
-    @RequestMapping(value = "/juniorDetailListAjax", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/juniorDetailListAjax", method = {RequestMethod.POST})
     @ResponseBody
     public PageOpenShopModel getJuniorDetailListAjax(Integer srcType, Long customerId, Integer pageSize, Integer page) throws
             IOException, UserNotFoundException, SisException {

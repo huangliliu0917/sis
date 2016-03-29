@@ -1,10 +1,10 @@
 package cm.huotu.sis.controller;
 
 import cm.huotu.sis.common.WebTest;
+import cm.huotu.sis.pages.JuniorDetail;
 import cm.huotu.sis.pages.OpenShop;
 import cm.huotu.sis.pages.SisCenter;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
-import com.huotu.huobanplus.common.entity.Brand;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
 import com.huotu.huobanplus.common.repository.UserRepository;
@@ -18,10 +18,7 @@ import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.service.SqlService;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -112,7 +109,8 @@ public class SisWebGoodsControllerTest extends WebTest {
      */
     @Test
     public void juniorDetailList() throws Exception {
-        webDriver.get("http://localhost/sisweb/juniorDetailList");
+        webDriver.get("http://localhost/sisweb/juniorDetailList?srcType=3");
+        System.out.println("1");
 //        Page<SisDetailModel> sisDetailModel = sqlService.getListOpenShop(userId, srcType, page, pageSize);
 //        new WebDriverWait(webDriver,30)
 //                .until(ExpectedConditions.textToBePresentInElement(button,"已选择该模板"));
@@ -135,10 +133,10 @@ public class SisWebGoodsControllerTest extends WebTest {
     @Test
     public void ownerJuniorList() throws Exception {
         webDriver.get("http://localhost/sisweb/ownerJuniorList");
-        List<SisSumAmountModel> list = sqlService.getListGroupBySrcType(getCurrentUserId());
+        Long userId = getCurrentUserId();
+        List<SisSumAmountModel> list = sqlService.getListGroupBySrcType(userId);
         if (Objects.nonNull(list)) {
             List<WebElement> elements = webDriver.findElements(By.cssSelector("tbody tr"));
-            WebDriverWait driverWait = new WebDriverWait(webDriver,10);
             //列表的判断
             for (int i = 0; i < list.size(); i++) {
                 List<WebElement> tds = elements.get(i).findElements(By.cssSelector("td"));
@@ -151,9 +149,12 @@ public class SisWebGoodsControllerTest extends WebTest {
             }
             //随便选择一列进行点击跳转到其他页面
             WebElement threeButton = elements.get(2).findElements(By.cssSelector("td")).get(2).findElement(By.cssSelector("a"));
+            assertThat(threeButton.getAttribute("href")).contains("http://localhost/sisweb/juniorDetailList?srcType=3").as("url进行比较");
             threeButton.click();
 //            driverWait.until(ExpectedConditions.urlContains("http://localhost/sisweb/juniorDetailList"));
-
+//            JuniorDetail juniorDetail = initPage(JuniorDetail.class);
+//            Page<SisDetailModel> sisDetailModel = sqlService.getListOpenShop(userId, 3, 1, 10);
+//            juniorDetail.validResult(sisDetailModel);
         }
     }
 
