@@ -13,7 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by jinzj on 2016/3/25.
  */
-@Transactional
 public class SisCenter extends AbstractPage {
 
     public SisCenter(WebDriver webDriver) {

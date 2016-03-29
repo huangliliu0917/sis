@@ -17,7 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by jinzj on 2016/3/28.
  */
-@Transactional
 public class Template extends AbstractPage {
     public Template(WebDriver webDriver) {
         super(webDriver);
