@@ -3,6 +3,7 @@ package com.huotu.sis.boot;
 import com.huotu.common.api.ApiResultHandler;
 import com.huotu.common.api.OutputHandler;
 
+import com.huotu.sis.common.WebHandlerExceptionResolver;
 import com.huotu.sis.interceptor.CommonUserInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -62,6 +63,15 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
                 .excludePathPatterns("/sisweb/auth","/sisweb/appLogin") ;
 
     }
+
+
+    @Override
+    public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+        exceptionResolvers.add(new WebHandlerExceptionResolver());
+
+    }
+
+
     /**
      * 设置控制器方法参数化输出
      * @param argumentResolvers
