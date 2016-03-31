@@ -5,9 +5,11 @@ import cm.huotu.sis.pages.OpenShop;
 import cm.huotu.sis.pages.SisCenter;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.Brand;
+import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
 import com.huotu.huobanplus.common.repository.BrandRepository;
+import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.common.PublicParameterHolder;
@@ -15,6 +17,7 @@ import com.huotu.sis.entity.Sis;
 import com.huotu.sis.model.PublicParameterModel;
 import com.huotu.sis.model.SisSumAmountModel;
 import com.huotu.sis.repository.SisRepository;
+import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SqlService;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -53,7 +56,10 @@ public class SisWebGoodsControllerTest extends WebTest {
     private SqlService sqlService;
 
     @Autowired
-    private BrandRepository brandRepository;
+    private GoodsRepository goodsRepository;
+
+    @Autowired
+    private CommonConfigsService commonConfigService;
 
     /**
      * 店铺中心页面的测试
@@ -92,8 +98,10 @@ public class SisWebGoodsControllerTest extends WebTest {
     }
 
 
-
-
+    /**
+     * 开店
+     * @throws Exception
+     */
     @Test
     public void openShopTest() throws Exception {
         User user=new User();
@@ -171,18 +179,36 @@ public class SisWebGoodsControllerTest extends WebTest {
         }
     }
 
-//    /**
-//     * 获取当前登录的user
-//     *
-//     * @return
-//     */
-//    private Long getCurrentUserId() {
-//        PublicParameterModel ppm = PublicParameterHolder.get();
-//        Long userId = ppm.getUserId();
-//        return userId;
-//    }
+    @Test
+    public void goodsDetail() throws Exception {
+        webDriver.get("http://localhost/sisweb/ownerJuniorList");
+        Long userId = getCurrentUserId();
+        User user = userRepository.findOne(userId);
+        StringBuilder pictureUrl = new StringBuilder();
+        Goods goods = new Goods();
+        goods.setTitle(UUID.randomUUID().toString());
+        goods.setScenes(0);
+        goods.setOwner(user.getMerchant());
+        goods.setSmallPic(UUID.randomUUID().toString());
+        goods.setIntro(UUID.randomUUID().toString());
+        goods.setStock(100);
+        pictureUrl.append(commonConfigService.getResoureServerUrl() + goods.getSmallPic());
+        goodsRepository.saveAndFlush(goods);
+        webDriver.get("http://localhost/sisweb/getSisGoodsDetail?goodId="+goods.getId()+"&customerId="+user.getMerchant().getId());
+        //商品图片
+        WebElement picture = webDriver.findElement(By.cssSelector("div.s_bd")).findElement(By.cssSelector("ul>li>a>img"));
+        assertThat(picture.getAttribute("src").trim()).isEqualTo(pictureUrl.toString()).as("商品图片的比较");
+        //商品内容
+        WebElement title = webDriver.findElement(By.cssSelector("div.sp_bt"));
+        assertThat(title.getText().trim()).isEqualTo(goods.getTitle()).as("商品内容的比较");
+        //各个值
+        List<WebElement> elements = webDriver.findElements(By.cssSelector("span.sp_hongzz"));
+        assertThat(elements.get(0).getText().trim()).isEqualTo(goods.getStock()+"件").as("库存的比较");
+        //感觉商品详情这边有点问题
+//        assertThat(elements.get(1).getText().trim()).isEqualTo(goods.getIntro()).as("商品详情");
 
 
+    }
 
 
 }
