@@ -44,12 +44,12 @@ public class SpringWebTest {
      **/
     @Autowired
     protected ServletContext servletContext;
-    /**
-     * 选配 只有在SecurityConfig起作用的情况下
-     **/
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    @Autowired(required = false)
-    private FilterChainProxy springSecurityFilter;
+//    /**
+//     * 选配 只有在SecurityConfig起作用的情况下
+//     **/
+//    @SuppressWarnings("SpringJavaAutowiringInspection")
+//    @Autowired(required = false)
+//    private FilterChainProxy springSecurityFilter;
 
     /**
      * mock请求
@@ -61,7 +61,7 @@ public class SpringWebTest {
      * mockMvc等待初始化
      **/
     protected MockMvc mockMvc;
-    protected WebClient webClient;
+//    protected WebClient webClient;
     protected WebDriver webDriver;
 
     @PersistenceContext(unitName = "sisEntity")
@@ -75,21 +75,23 @@ public class SpringWebTest {
 
     protected void createMockMVC() {
         MockitoAnnotations.initMocks(this);
-        if (springSecurityFilter != null)
-            mockMvc = webAppContextSetup(context)
-                    .addFilters(springSecurityFilter)
-                    .build();
-        else
-            mockMvc = webAppContextSetup(context)
-                    .build();
+//        if (springSecurityFilter != null)
+//            mockMvc = webAppContextSetup(context)
+//                    .addFilters(springSecurityFilter)
+//                    .build();
+//        else
+//            mockMvc = webAppContextSetup(context)
+//                    .build();
+        mockMvc = webAppContextSetup(context)
+                .build();
     }
     @Before
     public void initTest(){
         //初始化mockMvc
         this.createMockMVC();
-        this.webClient = MockMvcWebClientBuilder
-                .mockMvcSetup(this.mockMvc)
-                .build();
+//        this.webClient = MockMvcWebClientBuilder
+//                .mockMvcSetup(this.mockMvc)
+//                .build();
         this.webDriver = MockMvcHtmlUnitDriverBuilder
                 .mockMvcSetup(this.mockMvc)
                 .build();
@@ -116,18 +118,18 @@ public class SpringWebTest {
         return page;
     }
 
-    /**
-     * 保存登陆过以后的信息
-     **/
-    protected void saveAuthedSession(HttpSession session) {
-        SecurityContext securityContext = (SecurityContext) session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-
-        if (securityContext == null)
-            throw new IllegalStateException("尚未登录");
-
-        request.setSession(session);
-
-        // context 不为空 表示成功登陆
-        SecurityContextHolder.setContext(securityContext);
-    }
+//    /**
+//     * 保存登陆过以后的信息
+//     **/
+//    protected void saveAuthedSession(HttpSession session) {
+//        SecurityContext securityContext = (SecurityContext) session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+//
+//        if (securityContext == null)
+//            throw new IllegalStateException("尚未登录");
+//
+//        request.setSession(session);
+//
+//        // context 不为空 表示成功登陆
+//        SecurityContextHolder.setContext(securityContext);
+//    }
 }

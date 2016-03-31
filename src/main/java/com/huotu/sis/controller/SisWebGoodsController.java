@@ -1032,7 +1032,7 @@ public class SisWebGoodsController {
     @ResponseBody
     public PageOpenShopModel getJuniorDetailListAjax(Integer srcType, Long customerId, Integer pageSize, Integer page) throws
             IOException, UserNotFoundException, SisException {
-
+        System.out.println("srcType:"+srcType);
         Long userId = getCurrentUserId();
         if (userId == null) {
             throw new UserNotFoundException("用户不存在");

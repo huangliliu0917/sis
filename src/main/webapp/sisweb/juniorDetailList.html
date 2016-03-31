@@ -31,9 +31,7 @@
         var customerId = /*[[${customerId}]]*/'0';
         var srcType = /*[[${srcType}]]*/'1';
     </script>
-    <script type="text/javascript"
-            src="js/juniorDetailList.js"
-            th:src="@{/sisweb/js/juniorDetailList.js}"></script>
+
     <title>团队店铺详情</title>
 </head>
 <style>
@@ -46,6 +44,8 @@
     }
 </style>
 <body>
+<input type="hidden" id="customerId" th:value="${customerId}" />
+<input type="hidden" id="srcType" th:value="${srcType}" />
 <div class="commfont fk">
     <div class="fk">
         <div class="fk_hracf">
@@ -90,5 +90,8 @@
     </ul>
     {{/each}}
 </script>
+<script type="text/javascript"
+        src="js/juniorDetailList.js"
+        th:src="@{/sisweb/js/juniorDetailList.js}"></script>
 </body>
 </html>

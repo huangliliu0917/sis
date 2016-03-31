@@ -1,7 +1,6 @@
 package cm.huotu.sis.controller;
 
 import cm.huotu.sis.common.WebTest;
-import cm.huotu.sis.pages.JuniorDetail;
 import cm.huotu.sis.pages.OpenShop;
 import cm.huotu.sis.pages.SisCenter;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
@@ -12,17 +11,14 @@ import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.model.PublicParameterModel;
-import com.huotu.sis.model.SisDetailModel;
 import com.huotu.sis.model.SisSumAmountModel;
 import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.service.SqlService;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -109,10 +105,28 @@ public class SisWebGoodsControllerTest extends WebTest {
      */
     @Test
     public void juniorDetailList() throws Exception {
+//        htmlunit暂时不行，继续webdriver
+//        URL dynamicUrl = new URL("http://localhost:8080/sisweb/juniorDetailList?srcType=3");
+//        HtmlPage dynamicPage = webClient.getPage(dynamicUrl);
+//        dynamicPage.getElementById("");
+//        dynamicPage.getWebResponse().getWebRequest().setUrl(new URL("http://localhost:8080/sisweb/juniorDetailListAjax"));
+//        DomElement juniorDetailList = dynamicPage.getElementById("juniorDetailList");
+
+//        WebRequest requestSettings = new WebRequest(new URL("http://localhost:8080/sisweb/juniorDetailListAjax"), HttpMethod.POST);
+
+//        requestSettings.setRequestParameters(Collections.singletonList(new NameValuePair(InopticsNfcBoxPage.MESSAGE, Utils.marshalXml(inoptics, "UTF-8"))));
+
+//        HtmlPage page = webClient.getPage(requestSettings);
+
+
         webDriver.get("http://localhost/sisweb/juniorDetailList?srcType=3");
-//        Page<SisDetailModel> sisDetailModel = sqlService.getListOpenShop(userId, srcType, page, pageSize);
-//        new WebDriverWait(webDriver,30)
-//                .until(ExpectedConditions.textToBePresentInElement(button,"已选择该模板"));
+
+
+
+        System.out.println("1");
+//        HtmlElement element = dynamicPage.getBody();
+//        element.getAttributeNode("");
+
     }
 
     /**
@@ -133,6 +147,7 @@ public class SisWebGoodsControllerTest extends WebTest {
     public void ownerJuniorList() throws Exception {
         webDriver.get("http://localhost/sisweb/ownerJuniorList");
         Long userId = getCurrentUserId();
+//        JavascriptExecutor jse = (JavascriptExecutor)webDriver;
         List<SisSumAmountModel> list = sqlService.getListGroupBySrcType(userId);
         if (Objects.nonNull(list)) {
             List<WebElement> elements = webDriver.findElements(By.cssSelector("tbody tr"));
@@ -150,6 +165,10 @@ public class SisWebGoodsControllerTest extends WebTest {
             WebElement threeButton = elements.get(2).findElements(By.cssSelector("td")).get(2).findElement(By.cssSelector("a"));
             assertThat(threeButton.getAttribute("href")).contains("http://localhost/sisweb/juniorDetailList?srcType=3").as("url进行比较");
             threeButton.click();
+//            WebElement srcType = webDriver.findElement(By.id("srcType"));
+//            jse.executeScript()
+//            jse.executeScript("arguments[0].setAttribute('value', arguments[1])", srcType, "3");
+//            new WebDriverWait(webDriver,10).until(ExpectedConditions.visibilityOf(srcType));
 //            JuniorDetail juniorDetail = initPage(JuniorDetail.class);
 //            Page<SisDetailModel> sisDetailModel = sqlService.getListOpenShop(userId, 3, 1, 10);
 //            juniorDetail.validResult(sisDetailModel);
