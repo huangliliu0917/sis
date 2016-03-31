@@ -5,10 +5,6 @@ import com.huotu.huobanplus.common.entity.Brand;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.BrandRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
-import com.huotu.sis.common.PublicParameterHolder;
-import com.huotu.sis.entity.SisBrand;
-import com.huotu.sis.model.PublicParameterModel;
-import com.huotu.sis.repository.SisBrandRepository;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -48,4 +44,6 @@ public class SisWebBrandControllerTest extends WebTest {
         WebElement brandName = webDriver.findElement(By.cssSelector("span.sp_bt"));
         assertThat(brandName.getText().trim()).isEqualTo(brand.getBrandName()).as("品牌名字的比较");
     }
+
+
 }
