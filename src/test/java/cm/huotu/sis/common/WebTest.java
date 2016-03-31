@@ -2,6 +2,8 @@ package cm.huotu.sis.common;
 
 import com.huotu.sis.boot.MVCConfig;
 import com.huotu.sis.boot.RootConfig;
+import com.huotu.sis.common.PublicParameterHolder;
+import com.huotu.sis.model.PublicParameterModel;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,5 +19,16 @@ import org.springframework.test.context.web.WebAppConfiguration;
 //@Import({MVCConfig.class, RootConfig.class})
 @WebAppConfiguration
 public abstract class WebTest extends SpringWebTest{
+
+    /**
+     * 获取当前登录的user
+     *
+     * @return
+     */
+    public Long getCurrentUserId() {
+        PublicParameterModel ppm = PublicParameterHolder.get();
+        Long userId = ppm.getUserId();
+        return userId;
+    }
 
 }

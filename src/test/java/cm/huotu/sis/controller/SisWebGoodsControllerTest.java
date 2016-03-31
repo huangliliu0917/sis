@@ -4,8 +4,10 @@ import cm.huotu.sis.common.WebTest;
 import cm.huotu.sis.pages.OpenShop;
 import cm.huotu.sis.pages.SisCenter;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
+import com.huotu.huobanplus.common.entity.Brand;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
+import com.huotu.huobanplus.common.repository.BrandRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.common.PublicParameterHolder;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,6 +51,9 @@ public class SisWebGoodsControllerTest extends WebTest {
 
     @Autowired
     private SqlService sqlService;
+
+    @Autowired
+    private BrandRepository brandRepository;
 
     /**
      * 店铺中心页面的测试
@@ -130,16 +136,6 @@ public class SisWebGoodsControllerTest extends WebTest {
     }
 
     /**
-     * 品牌详情页
-     *
-     * @throws Exception
-     */
-    @Test
-    public void brandDetail() throws Exception {
-
-    }
-
-    /**
      * 我的团队
      * @throws Exception
      */
@@ -175,16 +171,16 @@ public class SisWebGoodsControllerTest extends WebTest {
         }
     }
 
-    /**
-     * 获取当前登录的user
-     *
-     * @return
-     */
-    private Long getCurrentUserId() {
-        PublicParameterModel ppm = PublicParameterHolder.get();
-        Long userId = ppm.getUserId();
-        return userId;
-    }
+//    /**
+//     * 获取当前登录的user
+//     *
+//     * @return
+//     */
+//    private Long getCurrentUserId() {
+//        PublicParameterModel ppm = PublicParameterHolder.get();
+//        Long userId = ppm.getUserId();
+//        return userId;
+//    }
 
 
 
