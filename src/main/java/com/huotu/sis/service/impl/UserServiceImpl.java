@@ -3,26 +3,18 @@ package com.huotu.sis.service.impl;
 import com.huotu.common.base.CookieHelper;
 import com.huotu.common.base.RSAHelper;
 import com.huotu.huobanplus.common.entity.MallCptCfg;
+import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.MallCptCfgRepository;
 import com.huotu.huobanplus.common.repository.MallCptMembersRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
-import com.huotu.sis.entity.Sis;
-import com.huotu.sis.entity.SisConfig;
-import com.huotu.sis.entity.SisInviteLog;
-import com.huotu.sis.entity.SisLevel;
-import com.huotu.sis.entity.support.LevelIdAndVal;
-import com.huotu.sis.entity.support.OpenSisAward;
-import com.huotu.sis.entity.support.OpenSisAwards;
-import com.huotu.sis.repository.SisConfigRepository;
-import com.huotu.sis.repository.SisInviteRepository;
-import com.huotu.sis.repository.SisLevelRepository;
-import com.huotu.sis.repository.SisRepository;
-import com.huotu.sis.exception.UserSisShopISOPENException;
-import com.huotu.sis.service.*;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
+import com.huotu.sis.entity.*;
+import com.huotu.sis.entity.support.*;
+import com.huotu.sis.repository.*;
+import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +73,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SisInviteRepository sisInviteRepository;
+
+    @Autowired
+    private SisOrderItemsRepository sisOrderItemsRepository;
+
+    @Autowired
+    private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
 
     @Override
     public Long getUserId(HttpServletRequest request) {
@@ -160,10 +158,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void newOpen(User user) throws Exception {
+    public void newOpen(User user,String orderId,SisConfig sisConfig) throws Exception {
         Sis sis = sisRepository.findByUser(user);
         List<TemplatePage> templatePage = templatePageRepository.findByScopeAndEnabled(Scope.sis, true);
         SisInviteLog sisInviteLog=sisInviteRepository.findFirstByAcceptIdOrderByAcceptTimeDesc(user.getId());
+        //开店用户等级设置
+        SisLevel sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());
+        if(sisConfig.getOpenGoodsMode()==1&&sisConfig.getOpenMode()==1){
+            List<OrderItems> orderItemses=sisOrderItemsRepository.getOrderItemsByOrderId(orderId);
+            OpenGoodsIdLevelIds openGoodsIdLevelIds=sisConfig.getOpenGoodsIdlist();
+            //根据订单号找到该用户购买的开店等级
+            OpenGoodsIdLevelId openGoodsIdLevelId=null;
+            for(OrderItems o:orderItemses){
+                for(OpenGoodsIdLevelId ol:openGoodsIdLevelIds.values()){
+                    if(o.getGoodsId()!=null){
+                        if(o.getGoodsId().equals(ol.getGoodsid())){
+                            openGoodsIdLevelId=ol;
+                            break;
+
+                        }
+                    }
+                }
+                if(openGoodsIdLevelId!=null){
+                    break;
+                }
+            }
+            sisLevel=sisLevelRepository.findOne(openGoodsIdLevelId.getLevelid());
+        }
+
         if (sis == null) {
             sis = new Sis();
             sis.setImgPath("");
@@ -177,7 +199,7 @@ public class UserServiceImpl implements UserService {
             }
             sis.setUser(user);
             sis.setDescription("我的小店描述");
-            SisLevel sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());
+
             sis.setSisLevel(sisLevel);
             //新增字段
             sis.setCustomerId(user.getMerchant().getId());
@@ -188,17 +210,12 @@ public class UserServiceImpl implements UserService {
                 sis.setRealName(sisInviteLog.getRealName());
                 sis.setMobile(sisInviteLog.getMobile());
             }
-            //查找用户最近填写的邀请信息
-        } else {
-            log.info(user.getId()+"Can't repeat open a shop!");
-            throw new UserSisShopISOPENException("店中店已经开启！");
         }
         sisRepository.save(sis);
     }
 
     @Override
-    public void countOpenShopAward(User user, String orderId, String unionOrderId) throws Exception {
-        SisConfig sisConfig = sisConfigRepository.findByMerchantId(user.getMerchant().getId());
+    public void countOpenShopAward(User user, String orderId, String unionOrderId,SisConfig sisConfig) throws Exception {
         if (!Objects.isNull(sisConfig)) {
             if (sisConfig.getEnabled() == 0 || sisConfig.getOpenMode() == 0) {
                 log.info(user.getMerchant().getId() + "Businessman is not enabled the inn in inn " +
@@ -206,70 +223,110 @@ public class UserServiceImpl implements UserService {
                 //店中店配置需要开启，并且是收费的,才有返利
                 return;
             }
-            OpenSisAwards openSisAwards = sisConfig.getOpenSisAwards();
-            if (!Objects.isNull(openSisAwards)) {
-                //获取开店奖设置的层级
-                Integer tiers = openSisAwards.size();
-                if (tiers > 0) {
-                    User rebateUser = user;//默认从自己开始返利
 
-                    double rebateMonery = 0;
-                    //遍历每一个层级的开店返利信息
-                    for (int i = 0; i < tiers; i++) {
-                        Sis sis = sisRepository.findByUser(rebateUser);
-                        if (Objects.isNull(sis)) {
-                            //用户未开启店中店，无法返利
-                            log.info("merchant=" + user.getMerchant().getId() + "Not to open the inn in inn to rebate！");
-                            //获取他的上级用户
-                            rebateUser = userRepository.findOne(rebateUser.getBelongOne());
-                            continue;
-                        }
-                        if (!sis.isStatus()) {
-                            //用户店中店被关闭,无法返利
-                            log.info("merchant=" + user.getMerchant().getId() + "Users to the inn in inn is closed to rebate！");
-                            //获取他的上级用户
-                            rebateUser = userRepository.findOne(rebateUser.getBelongOne());
-                            continue;
-                        }
-                        //获取返利信息
-                        OpenSisAward openSisAward = openSisAwards.get((long) i);
-                        //是否是个性化开店返利
-                        if (openSisAward.getUnified() == -1.0) {//是个性化
-                            //获取用户的店铺等级ID
-                            long levelId = sisService.getSisLevelId(rebateUser);
-                            for (LevelIdAndVal lv : openSisAward.getCustom()) {
-                                if (lv.getLvid() == levelId) {//如果店铺的ID等于某个个性化返利的ID
-                                    //开店奖返利
-                                    rebateMonery = lv.getVal();
-                                    break;
-                                }
-                            }
-                        } else if (openSisAward.getUnified() >= 0) {//不是个性化
-                            rebateMonery = openSisAward.getUnified();
-                        }
-                        //---------记录----------
-                        //给某个用户开店奖返利,包括插入流水
-                        rebateOpenShop(rebateUser,user,rebateMonery, orderId, unionOrderId,i);
-                        log.info(user.getId()+"");
-                        //插入一条开店返利日志
-                        String memo = i + "级会员(" + user.getWxNickName() + ")贡献了开店奖";
-                        sisOpenAwardLogService.saveSisOpenAwardLog(user.getMerchant().getId(), rebateUser.getId(),
-                                user.getId(), rebateMonery, memo, i, orderId);
-
-                        //---------记录END----------
-
-                        //为下个层级返利做准备
-                        if (rebateUser.getBelongOne() <= 0) {
-                            //没有上级
-                            break;
-                        }
-                        //获取他的上级用户
-                        rebateUser = userRepository.findOne(rebateUser.getBelongOne());
-                    }
+            //个性化返利模式
+            if(sisConfig.getOpenAwardMode()==1){
+                User belongOne=userRepository.findOne(user.getBelongOne());
+                //没有上级，无法返利
+                if(belongOne==null){
+                    log.info("user:"+user.getId()+"have no belongOneId");
+                    return;
                 }
-            } else {
-                log.info("merchant=" + user.getMerchant().getId() + "Merchants set up shop level configuration error, " +
-                        "cannot rebate!");
+                Sis belongOneSis=sisRepository.findByUser(belongOne);
+                if(belongOneSis==null){
+                    log.info("user"+user.getId()+"belongOne have no sisShop");
+                    return;
+                }
+                //获取自己店铺
+                Sis ownSis=sisRepository.findByUser(user);
+                if(ownSis==null){
+                    log.info("user"+user.getId()+"won have no sisShop");
+                    return;
+                }
+                SisOpenAwardAssign sisOpenAwardAssign=sisOpenAwardAssignRepository.
+                        findByLevel_IdAndGuideLevel_Id(
+                                belongOneSis.getSisLevel().getId(),
+                                ownSis.getSisLevel().getId());
+                //上线等级和自己等级无法匹配到返利余额
+                if(sisOpenAwardAssign==null){
+                    log.info("user"+user.getId()+"On-line level and their own level can't match to the rebate balance");
+                    return;
+                }
+                //插入一条开店流水
+                rebateOpenShop(belongOne,user,sisOpenAwardAssign.getAdvanceVal(),orderId,unionOrderId,1);
+                String memo = "1级会员(" + user.getWxNickName() + ")贡献了开店奖";
+                sisOpenAwardLogService.saveSisOpenAwardLog(belongOne.getMerchant().getId()
+                        ,belongOne.getId(),user.getId(),sisOpenAwardAssign.getAdvanceVal(),memo,1,orderId);
+            }
+
+
+            //默认八层返利模式
+            if(sisConfig.getOpenAwardMode()==null||sisConfig.getOpenAwardMode()==0){
+                OpenSisAwards openSisAwards = sisConfig.getOpenSisAwards();
+                if (!Objects.isNull(openSisAwards)) {
+                    //获取开店奖设置的层级
+                    Integer tiers = openSisAwards.size();
+                    if (tiers > 0) {
+                        User rebateUser = user;//默认从自己开始返利
+
+                        double rebateMonery = 0;
+                        //遍历每一个层级的开店返利信息
+                        for (int i = 0; i < tiers; i++) {
+                            Sis sis = sisRepository.findByUser(rebateUser);
+                            if (Objects.isNull(sis)) {
+                                //用户未开启店中店，无法返利
+                                log.info("merchant=" + user.getMerchant().getId() + "Not to open the inn in inn to rebate！");
+                                //获取他的上级用户
+                                rebateUser = userRepository.findOne(rebateUser.getBelongOne());
+                                continue;
+                            }
+                            if (!sis.isStatus()) {
+                                //用户店中店被关闭,无法返利
+                                log.info("merchant=" + user.getMerchant().getId() + "Users to the inn in inn is closed to rebate！");
+                                //获取他的上级用户
+                                rebateUser = userRepository.findOne(rebateUser.getBelongOne());
+                                continue;
+                            }
+                            //获取返利信息
+                            OpenSisAward openSisAward = openSisAwards.get((long) i);
+                            //是否是个性化开店返利
+                            if (openSisAward.getUnified() == -1.0) {//是个性化
+                                //获取用户的店铺等级ID
+                                long levelId = sisService.getSisLevelId(rebateUser);
+                                for (LevelIdAndVal lv : openSisAward.getCustom()) {
+                                    if (lv.getLvid() == levelId) {//如果店铺的ID等于某个个性化返利的ID
+                                        //开店奖返利
+                                        rebateMonery = lv.getVal();
+                                        break;
+                                    }
+                                }
+                            } else if (openSisAward.getUnified() >= 0) {//不是个性化
+                                rebateMonery = openSisAward.getUnified();
+                            }
+                            //---------记录----------
+                            //给某个用户开店奖返利,包括插入流水
+                            rebateOpenShop(rebateUser,user,rebateMonery, orderId, unionOrderId,i);
+                            log.info(user.getId()+"");
+                            //插入一条开店返利日志
+                            String memo = i + "级会员(" + user.getWxNickName() + ")贡献了开店奖";
+                            sisOpenAwardLogService.saveSisOpenAwardLog(user.getMerchant().getId(), rebateUser.getId(),
+                                    user.getId(), rebateMonery, memo, i, orderId);
+
+                            //---------记录END----------
+
+                            //为下个层级返利做准备
+                            if (rebateUser.getBelongOne() <= 0) {
+                                //没有上级
+                                break;
+                            }
+                            //获取他的上级用户
+                            rebateUser = userRepository.findOne(rebateUser.getBelongOne());
+                        }
+                    }
+                } else {
+                    log.info("merchant=" + user.getMerchant().getId() + "Merchants set up shop level configuration error, " +
+                            "cannot rebate!");
+                }
             }
         } else {
             log.info("merchant=" + user.getMerchant().getId() + "No the inn in inn configuration information for businesses" +
@@ -309,9 +366,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void givePartnerStock(User user, String orderId) throws Exception {
+    public void givePartnerStock(User user, String orderId,SisConfig sisConfig) throws Exception {
         Long customerId = user.getMerchant().getId();
-        SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
         MallCptCfg mallCptCfg = mallCptCfgRepository.findOne(customerId);
         if (Objects.isNull(sisConfig)) {
             log.info(user.getMerchant().getId() + "No the inn in inn configuration information for businesses！," +

@@ -3,33 +3,30 @@ package com.huotu.sis.controller;
 import com.huotu.common.base.HttpHelper;
 import com.huotu.huobanplus.base.toolService.ResourceService;
 import com.huotu.huobanplus.common.UserType;
-import com.huotu.huobanplus.common.entity.*;
+import com.huotu.huobanplus.common.entity.Goods;
+import com.huotu.huobanplus.common.entity.MerchantConfig;
+import com.huotu.huobanplus.common.entity.Product;
+import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.support.ProductSpecifications;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.MerchantRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.sdk.mall.service.MallInfoService;
-import com.huotu.huobanplus.smartui.sdk.SmartPageRepository;
-import com.huotu.sis.common.MathHelper;
-import com.huotu.sis.entity.Sis;
-import com.huotu.sis.entity.SisConfig;
-import com.huotu.sis.entity.SisInviteLog;
-import com.huotu.sis.repository.SisConfigRepository;
-import com.huotu.sis.repository.SisInviteRepository;
-import com.huotu.sis.repository.SisQualifiedMemberRepository;
-import com.huotu.sis.repository.SisRepository;
-import com.huotu.sis.common.EnumHelper;
-import com.huotu.sis.common.Msg;
-import com.huotu.sis.common.PublicParameterHolder;
-import com.huotu.sis.common.SysRegex;
-import com.huotu.sis.exception.*;
-import com.huotu.sis.model.*;
-import com.huotu.sis.service.*;
-import com.huotu.sis.service.impl.NoteSendHandle;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
+import com.huotu.huobanplus.smartui.sdk.SmartPageRepository;
+import com.huotu.sis.common.*;
+import com.huotu.sis.entity.Sis;
+import com.huotu.sis.entity.SisConfig;
+import com.huotu.sis.entity.SisInviteLog;
+import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.exception.*;
+import com.huotu.sis.model.*;
+import com.huotu.sis.repository.*;
+import com.huotu.sis.service.*;
+import com.huotu.sis.service.impl.NoteSendHandle;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -102,6 +99,9 @@ public class SisWebUserController {
 
     @Autowired
     private VerificationServiceSelector verificationServiceSelector;
+
+    @Autowired
+    private SisLevelRepository sisLevelRepository;
 
     VerificationService verificationService;
 
@@ -611,11 +611,11 @@ public class SisWebUserController {
 //                    throw new UserNotOpenShopQualificationException("请升级为小伙伴之后开店");
 //                }
             }
-            Long invites = sisInviteRepository.countByAcceptIdAndInviterId(userId, gduid);
-            if (invites > 0) {//已经填写过邀请信息
-                model.addAttribute("customerId",customerId);
-                return "redirect:showOpenShopGoodsDetail";
-            }
+//            Long invites = sisInviteRepository.countByAcceptIdAndInviterId(userId, gduid);
+//            if (invites > 0) {//已经填写过邀请信息
+//                model.addAttribute("customerId",customerId);
+//                return "redirect:showOpenShopGoodsDetail";
+//            }
 
         } else {//免费开店
             if (UserType.normal.equals(user.getUserType())) {
@@ -630,6 +630,18 @@ public class SisWebUserController {
         model.addAttribute("sisInviteLog", sisInviteLog);
         model.addAttribute("customerId",customerId);
         model.addAttribute("free",sisConfig.getOpenMode());
+        if(sisConfig.getOpenGoodsMode()==1&&sisConfig.getOpenGoodsIdlist()!=null){
+            List<SisLevelModel>sisLevelModels=new ArrayList<>();
+            List<SisLevel> sisLevels=sisLevelRepository.findByMerchantId(customerId);
+            for(SisLevel l:sisLevels){
+
+            }
+
+
+
+            model.addAttribute("openGoods",sisConfig.getOpenGoodsIdlist());
+        }
+        model.addAttribute("");
         return "sisweb/openShop";
 
 
@@ -715,13 +727,13 @@ public class SisWebUserController {
             resultModel.setMessage("商家未配置免费开店");
             return resultModel;
         }
-        try{
-            userService.newOpen(user);
-        }catch (UserSisShopISOPENException e){
+        Sis sis=sisRepository.findByUser(user);
+        if(sis!=null){
             resultModel.setCode(500);
             resultModel.setMessage(userId+"店中店已经开启");
             return resultModel;
         }
+        userService.newOpen(user,null,sisConfig);
         resultModel.setCode(200);
         resultModel.setMessage("OK");
         return resultModel;
@@ -736,7 +748,7 @@ public class SisWebUserController {
      * @throws Exception
      */
     @RequestMapping(value = "showOpenShopGoodsDetail", method = RequestMethod.GET)
-    public String showOpenShopGoodsDetail(Long customerId, Model model) throws Exception {
+    public String showOpenShopGoodsDetail(Long customerId, Model model,Long goodsId) throws Exception {
         if (environment.acceptsProfiles("develop")) {
             customerId = 4471L;
         }
@@ -747,10 +759,17 @@ public class SisWebUserController {
         if (Objects.isNull(sisConfig) || sisConfig.getEnabled() == 0) {
             throw new CustomerNotUseSisException("商家未启用店中店");
         }
-        Goods goods = goodsRepository.findOne(sisConfig.getOpenGoodsId());
+        Long openGoodsId;
+        if(sisConfig.getOpenGoodsMode()==1){
+            openGoodsId=goodsId;
+        }else {
+            openGoodsId=sisConfig.getOpenGoodsId();
+        }
+        Goods goods = goodsRepository.findOne(openGoodsId);
         if (Objects.isNull(goods)) {
             throw new GoodsNotFoundException("开店商品不存在");
         }
+
         ProductSpecifications productSpecifications = goods.getSpecificationsCache();
         if (Objects.isNull(productSpecifications) || productSpecifications.isEmpty()) {
             throw new ProductNotFoundException("开店货品不存在");
@@ -763,8 +782,6 @@ public class SisWebUserController {
         if (Objects.isNull(productId)) {
             throw new ProductNotFoundException("开店货品不存在");
         }
-
-
 
         goods.setSmallPic(commonConfigService.getMallApiWebUrl() + goods.getSmallPic());
         int freeze=0;

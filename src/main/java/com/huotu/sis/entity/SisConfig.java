@@ -9,6 +9,7 @@
 
 package com.huotu.sis.entity;
 
+import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
 import com.huotu.sis.entity.support.OpenSisAwards;
 import lombok.Getter;
 import lombok.Setter;
@@ -105,6 +106,20 @@ public class SisConfig {
 //    @Description("直推奖")
 //    @Lob
 //    private SisRebateSetting sisRebateSetting;
+
+
+    @Column(name = "Open_AwardMode")
+    @Description("返利模式 0:默认八级返利，1：根据店铺的等级返利")
+    private Integer openAwardMode;
+
+    @Column(name = "Open_GoodsMode")
+    @Description("开店商品模式 0:一种开店商品，1：每个等级都有一种开店商品")
+    private Integer openGoodsMode;
+
+    @Column(name = "Open_GoodsIdlist",columnDefinition = "longtext")
+    @Description("个性化商品的和等级")
+    @Lob
+    private OpenGoodsIdLevelIds openGoodsIdlist;
 
 
 }

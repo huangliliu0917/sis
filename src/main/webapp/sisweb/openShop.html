@@ -10,15 +10,13 @@
 
     <script type="text/javascript" src="3rdParty/js/jquery-1.7.2.min.js"
             th:src="@{/sisweb/3rdParty/js/jquery-1.7.2.min.js}"></script>
-    <!--<link href="3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"-->
-    <!--th:href="@{/sisweb/3rdParty/jBox/Skins/Green/jbox.css}"/>-->
-    <!--<script type="text/javascript" src="3rdParty/jBox/jquery.jBox-2.3.min.js"-->
-    <!--th:src="@{/sisweb/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>-->
     <script type="text/javascript" src="layer/layer.js"></script>
     <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="css/weui.minweui.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/fksc.css"/>
     <link rel="stylesheet" type="text/css" href="layer/skin/layer.css"/>
     <link rel="stylesheet" type="text/css" href="layer/skin/layer.ext.css"/>
+
     <title>我要开店</title>
 </head>
 <!--/*@thymesVar id="sisInviteLog" type="com.huotu.huobanplus.sis.model.entity.SisInviteLog"*/-->
@@ -47,6 +45,38 @@
             <button  id="send" name="send" class=" button-code-a" type="button" title=""
                      onclick="javascript:sendSMS(this);">获取验证码</button>
         </div>
+
+        <div style="margin:0px 40px" class="weui_cells weui_cells_checkbox">
+            <label  style="border-top: 1px solid #fff; border-bottom:1px solid #ddd;"class="weui_cell weui_check_label">
+                <div class="weui_cell_hd">
+                    <input  type="checkbox" name="checkbox1" class="weui_check" checked="checked">
+                    <i class="weui_icon_checked"></i>
+                </div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <div>
+                        <a>
+                            <p class="fk_hrsd tit_rem">专卖店</p>
+                        </a>
+                    </div>
+                </div>
+            </label>
+            <label class="weui_cell weui_check_label">
+                <div class="weui_cell_hd">
+                    <input type="checkbox" name="checkbox1" class="weui_check">
+                    <i class="weui_icon_checked"></i>
+                </div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <div>
+                        <a>
+                            <p class="fk_hrsd tit_rem">旗舰店</p>
+                        </a>
+                    </div>
+                </div>
+            </label>
+        </div>
+
+
+
         <p style="height:100px"></p>
         <p style="text-align:center"><button class="tit_rem_big button-open-a" type="button" title=""
                                              onclick="javascript:submitform();">立即开启</button></p>

@@ -5,10 +5,11 @@ import com.huotu.huobanplus.common.entity.*;
 import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.utils.DateUtil;
+import com.huotu.sis.entity.Sis;
+import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
-import com.huotu.sis.repository.*;
-import com.huotu.sis.exception.UserSisShopISOPENException;
 import com.huotu.sis.model.ResultModel;
+import com.huotu.sis.repository.*;
 import com.huotu.sis.service.SecurityService;
 import com.huotu.sis.service.SisService;
 import com.huotu.sis.service.UserService;
@@ -65,6 +66,12 @@ public class SisWebApiController {
     @Autowired
     private SisService sisService;
 
+    @Autowired
+    private SisRepository sisRepository;
+
+    @Autowired
+    private SisConfigRepository sisConfigRepository;
+
     /**
      * 开启店中店服务
      *
@@ -78,13 +85,14 @@ public class SisWebApiController {
         log.info("into openShop");
         ResultModel resultModel=new ResultModel();
 
-        //判断签名是否正确
+        //签名验证
         String sign=request.getParameter("sign");
         if (sign == null || !sign.equals(securityService.getSign(request))) {
             resultModel.setCode(401);
             resultModel.setMessage("授权失败：签名未通过！");
             return resultModel;
         }
+        //参数验证
         String userId=request.getParameter("userid");
         if(StringUtils.isEmpty(userId)){
             resultModel.setCode(403);
@@ -97,24 +105,30 @@ public class SisWebApiController {
             resultModel.setMessage("参数错误：找不到用户！");
             return resultModel;
         }
-        String orderId=request.getParameter("orderid");
-        String unionorderId=request.getParameter("unionorderid");
-        log.info("userId:"+userId+"orderID="+orderId+"into openShop");
-        //开店
-        try{
-            userService.newOpen(user);
-        }catch (UserSisShopISOPENException e){
+        Sis sis = sisRepository.findByUser(user);
+        if(sis!=null){
             resultModel.setCode(500);
             resultModel.setMessage(userId+"店中店已经开启");
             return resultModel;
         }
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
+        if(sisConfig==null){
+            resultModel.setCode(500);
+            resultModel.setMessage(userId+"商户没有店中店配置信息");
+            return resultModel;
+        }
 
+        String orderId=request.getParameter("orderid");
+        String unionorderId=request.getParameter("unionorderid");
+        log.info("userId:"+userId+"orderID="+orderId+"into openShop");
+        //开店
+        userService.newOpen(user,orderId,sisConfig);
         log.info(user.getId()+"openShopOver");
         //开店奖计算
-        userService.countOpenShopAward(user, orderId, unionorderId);
+        userService.countOpenShopAward(user, orderId, unionorderId,sisConfig);
         log.info(user.getId() + "openCountOver");
         //合伙人送股
-        userService.givePartnerStock(user, orderId);
+        userService.givePartnerStock(user, orderId,sisConfig);
         log.info(user.getId() + "songguOver");
         resultModel.setCode(200);
         resultModel.setMessage("OK");

@@ -1,6 +1,7 @@
 package com.huotu.sis.service;
 
 import com.huotu.huobanplus.common.entity.User;
+import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisInviteLog;
 import com.huotu.sis.entity.SisLevel;
 
@@ -60,14 +61,14 @@ public interface UserService {
      * @param user
      * @throws Exception
      */
-    void newOpen(User user) throws Exception;
+    void newOpen(User user, String orderId, SisConfig sisConfig) throws Exception;
 
     /**
      * 用户开店之后根据商户配置给用户的上级返利
      * @param user          开店的用户
      * @throws Exception
      */
-    void countOpenShopAward(User user, String orderId, String unionOrderId) throws Exception;
+    void countOpenShopAward(User user, String orderId, String unionOrderId,SisConfig sisConfig) throws Exception;
 
 
     /**
@@ -95,7 +96,7 @@ public interface UserService {
      * @param orderId
      * @throws Exception
      */
-    void givePartnerStock(User user, String orderId) throws Exception;
+    void givePartnerStock(User user, String orderId,SisConfig sisConfig) throws Exception;
 
     /**
      * 查找用户最近填写的开店邀请记录
@@ -104,7 +105,5 @@ public interface UserService {
      * @throws Exception
      */
     SisInviteLog findUserLatestInviteLog(Long acceptId) throws Exception;
-
-
 
 }

@@ -22,7 +22,7 @@ public class SisOpenAwardLogServiceImpl implements SisOpenAwardLogService {
     @Override
     public SisOpenAwardLog saveSisOpenAwardLog(Long customerId, Long shopId, Long contribShopId, Double amount,
                                                String remark, Integer srcType, String orderId) throws Exception {
-        if(amount<=0){
+        if(amount==null||amount<=0){
             log.info("user"+shopId+"rebate is 0");
             return null;
         }
