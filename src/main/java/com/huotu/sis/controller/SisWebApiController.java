@@ -11,6 +11,7 @@ import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.model.ResultModel;
 import com.huotu.sis.repository.*;
 import com.huotu.sis.service.SecurityService;
+import com.huotu.sis.service.SisLevelService;
 import com.huotu.sis.service.SisService;
 import com.huotu.sis.service.UserService;
 import org.apache.commons.logging.Log;
@@ -72,13 +73,72 @@ public class SisWebApiController {
     @Autowired
     private SisConfigRepository sisConfigRepository;
 
+    @Autowired
+    private SisLevelService sisLevelService;
+
     /**
-     * 开启店中店服务
+     * 升级用户店中店
      *
      * <b>负责人：史利挺</b>
      * @return
      * @throws Exception
      */
+    @RequestMapping(value = "/upgradeSisShop",method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public ResultModel upgradeSisShop(HttpServletRequest request) throws Exception {
+        log.info("upgradeSisShop");
+        ResultModel resultModel=new ResultModel();
+
+        //签名验证
+        String sign=request.getParameter("sign");
+        if (sign == null || !sign.equals(securityService.getSign(request))) {
+            resultModel.setCode(401);
+            resultModel.setMessage("授权失败：签名未通过！");
+            return resultModel;
+        }
+        //参数验证
+        String userId=request.getParameter("userid");
+        if(StringUtils.isEmpty(userId)){
+            resultModel.setCode(403);
+            resultModel.setMessage("参数错误：没有用户ID！");
+            return resultModel;
+        }
+        User user = userRepository.findOne(Long.parseLong(userId));
+        if(Objects.isNull(user)){
+            resultModel.setCode(403);
+            resultModel.setMessage("参数错误：找不到用户！");
+            return resultModel;
+        }
+
+        String productNumberStr=request.getParameter("numbers");
+        if(StringUtils.isEmpty(productNumberStr)){
+            resultModel.setCode(403);
+            resultModel.setMessage("参数错误：没有货品数量！");
+            return resultModel;
+        }
+
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
+        if(sisConfig==null){
+            resultModel.setCode(500);
+            resultModel.setMessage(userId+"商户没有店中店配置信息");
+            return resultModel;
+        }
+        Integer productNumber=Integer.parseInt(productNumberStr);
+        SisLevel upgradeSisLevel=sisLevelService.getUpgradeSisLevel(productNumber,user);
+        Sis sis=sisRepository.findByUser(user);
+        sis.setSisLevel(upgradeSisLevel);
+        sisRepository.save(sis);
+
+        String orderId=request.getParameter("orderid");
+        log.info("user:"+userId+"upgradeSisShopOver"+"Orderid="+orderId);
+
+        resultModel.setCode(200);
+        resultModel.setMessage("OK");
+        return resultModel;
+    }
+
+
+
     @RequestMapping(value = "/openSisShop",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public ResultModel open(HttpServletRequest request) throws Exception {
@@ -134,6 +194,8 @@ public class SisWebApiController {
         resultModel.setMessage("OK");
         return resultModel;
     }
+
+
 
 
     @ResponseStatus(HttpStatus.OK)

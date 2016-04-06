@@ -120,10 +120,9 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
         rootTemplateResolver.setCharacterEncoding("UTF-8");
 
         // start cache
-//        if(env.acceptsProfiles("dev")){
-//            System.out.println("Develement Mode");
-//            rootTemplateResolver.setCacheable(false);
-//        }
+        if(environment.acceptsProfiles("development")||environment.acceptsProfiles("develop")){
+            rootTemplateResolver.setCacheable(false);
+        }
 
         engine.setTemplateResolver(rootTemplateResolver);
         resolver.setContentType("text/html;charset=utf-8");

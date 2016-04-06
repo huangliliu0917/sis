@@ -46,33 +46,34 @@
                      onclick="javascript:sendSMS(this);">获取验证码</button>
         </div>
 
-        <div style="margin:0px 40px" class="weui_cells weui_cells_checkbox">
-            <label  style="border-top: 1px solid #fff; border-bottom:1px solid #ddd;"class="weui_cell weui_check_label">
+        <!--店铺等级选择-->
+        <div th:if="${openGoodsMode==1}" style="margin:0px 40px" class="weui_cells weui_cells_checkbox">
+            <label th:each="og:${openGoods}" style="border-top: 1px solid #fff; border-bottom:1px solid #ddd;" class="weui_cell weui_check_label">
                 <div class="weui_cell_hd">
-                    <input  type="checkbox" name="checkbox1" class="weui_check" checked="checked">
+                    <input th:value="${og.goodsId}"  type="radio" name="openGoods" class="weui_check" checked="checked"/>
                     <i class="weui_icon_checked"></i>
                 </div>
                 <div class="weui_cell_bd weui_cell_primary">
                     <div>
                         <a>
-                            <p class="fk_hrsd tit_rem">专卖店</p>
+                            <p class="fk_hrsd tit_rem" th:text="${og.levelTitle}">专卖店</p>
                         </a>
                     </div>
                 </div>
             </label>
-            <label class="weui_cell weui_check_label">
-                <div class="weui_cell_hd">
-                    <input type="checkbox" name="checkbox1" class="weui_check">
-                    <i class="weui_icon_checked"></i>
-                </div>
-                <div class="weui_cell_bd weui_cell_primary">
-                    <div>
-                        <a>
-                            <p class="fk_hrsd tit_rem">旗舰店</p>
-                        </a>
-                    </div>
-                </div>
-            </label>
+            <!--<label style="border-top: 1px solid #fff; border-bottom:1px solid #ddd;" class="weui_cell weui_check_label">-->
+                <!--<div class="weui_cell_hd">-->
+                    <!--<input type="radio" name="checkbox1" class="weui_check">-->
+                    <!--<i class="weui_icon_checked"></i>-->
+                <!--</div>-->
+                <!--<div class="weui_cell_bd weui_cell_primary">-->
+                    <!--<div>-->
+                        <!--<a>-->
+                            <!--<p class="fk_hrsd tit_rem">旗舰店</p>-->
+                        <!--</a>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</label>-->
         </div>
 
 
@@ -84,6 +85,7 @@
     </form>
 </div>
 <script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
     //初始化进页面
     var countdown=60;
     function firstLoad() {
@@ -176,6 +178,7 @@
         var flag;
         var realName=$("input[name='realName']").val();
         var phone=$("input[name='mobile']").val();
+        var openGoodsMode=/*[[${openGoodsMode}]]*/ '';
         if(realName.length==0){
             layer.msg("请填写真实姓名");
             return;
@@ -183,6 +186,13 @@
         if(phone.length!=11){
             layer.msg("请填写有效的手机号");
             return;
+        }
+        if(openGoodsMode==1){
+            var openGoods=$("input[name='openGoods']:checked").val();
+            if(openGoods.length==0){
+                layer.msg("请选择开店等级");
+                return;
+            }
         }
         flag=checkCode();
         if(flag==false){
@@ -204,6 +214,8 @@
      */
     function submitInviteInfo(realName,phone,customerId) {
         var inviterId=$("input[name='inviterId']").val();
+        var openGoodsId=$("input[name='openGoods']:checked").val();
+
         $.ajax({
             type:'POST',
             url: 'collectSisInfo',
@@ -213,20 +225,20 @@
                 if(result.code!=200){
                     layer.msg(result.message);
                 }
-                skipUrl(customerId);
+                skipUrl(customerId,openGoodsId);
             },
             error:function(e){
                 layer.msg("收集邀请信息出错，请检查网络");
-                skipUrl(customerId);
+                skipUrl(customerId,openGoodsId);
             }
         });
     }
 
-    function skipUrl(customerId){
+    function skipUrl(customerId,openGoodsId){
         var isFree=/*[[${free}]]*/1;//0免费开店，1购买商品开店
         var url="";
         if(isFree==1){
-            url="showOpenShopGoodsDetail?customerId="+customerId;
+            url="showOpenShopGoodsDetail?customerId="+customerId+"&goodsId="+openGoodsId;
 
         }
         if(isFree==0){
@@ -259,6 +271,7 @@
         });
     }
 
+    /*]]>*/
 </script>
 </body>
 </html>

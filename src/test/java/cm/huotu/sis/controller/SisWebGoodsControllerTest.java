@@ -1,20 +1,16 @@
 package cm.huotu.sis.controller;
 
 import cm.huotu.sis.common.WebTest;
-import cm.huotu.sis.pages.OpenShop;
+import cm.huotu.sis.pages.openShop;
 import cm.huotu.sis.pages.SisCenter;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
-import com.huotu.huobanplus.common.entity.Brand;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
-import com.huotu.huobanplus.common.repository.BrandRepository;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.utils.DateUtil;
-import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.entity.Sis;
-import com.huotu.sis.model.PublicParameterModel;
 import com.huotu.sis.model.SisSumAmountModel;
 import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.service.CommonConfigsService;
@@ -108,7 +104,7 @@ public class SisWebGoodsControllerTest extends WebTest {
         user.setWxNickName("slt");
         userRepository.save(user);
         webDriver.get("http://localhost/sisweb/showOpenShop");
-        OpenShop openShop = initPage(OpenShop.class);
+        openShop openShop = initPage(cm.huotu.sis.pages.openShop.class);
         openShop.validResult();
     }
 

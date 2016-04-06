@@ -7,9 +7,9 @@ import org.openqa.selenium.support.FindBy;
 /**
  * Created by jinzj on 2016/3/25.
  */
-public class OpenShop extends AbstractPage {
+public class openShop extends AbstractPage {
 
-    public OpenShop(WebDriver webDriver) {
+    public openShop(WebDriver webDriver) {
         super(webDriver);
     }
 

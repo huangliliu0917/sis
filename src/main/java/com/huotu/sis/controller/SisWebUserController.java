@@ -632,6 +632,7 @@ public class SisWebUserController {
         model.addAttribute("sisInviteLog", sisInviteLog);
         model.addAttribute("customerId",customerId);
         model.addAttribute("free",sisConfig.getOpenMode());
+        model.addAttribute("openGoodsMode",sisConfig.getOpenGoodsMode());
 
 
         if(sisConfig.getOpenGoodsMode()==1&&sisConfig.getOpenGoodsIdlist()!=null){
@@ -642,16 +643,23 @@ public class SisWebUserController {
                 for(SisLevel l:sisLevels){
                     SisLevelModel sisLevelModel=new SisLevelModel();
                     for(OpenGoodsIdLevelId o:openGoodsIdLevelIds.values()){
-                        l.getId();
+                        if(l.getId().equals(o.getLevelid())){
+                            Goods goods=goodsRepository.findOne(o.getGoodsid());
+                            sisLevelModel.setLevelId(l.getId());
+                            sisLevelModel.setLevelTitle(l.getLevelName());
+                            sisLevelModel.setGoodsId(goods.getId());
+                            sisLevelModel.setGoodsTitle(goods.getTitle());
+                            sisLevelModel.setGoodsPrice(goods.getPrice());
+                            sisLevelModels.add(sisLevelModel);
+                            break;
+                        }
 
                     }
                 }
-
             }
 
-            model.addAttribute("openGoods",sisConfig.getOpenGoodsIdlist());
+            model.addAttribute("openGoods",sisLevelModels);
         }
-        model.addAttribute("");
         return "sisweb/openShop";
 
 
