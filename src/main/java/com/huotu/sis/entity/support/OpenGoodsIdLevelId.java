@@ -16,7 +16,7 @@ public class OpenGoodsIdLevelId {
      * 等级id
      */
     @JsonProperty("levelid")
-    private long levelid;
+    private Long levelid;
 
 //    /**
 //     * 等级名称
@@ -28,7 +28,7 @@ public class OpenGoodsIdLevelId {
      * 商品id
      */
     @JsonProperty("goodsid")
-    private long goodsid;
+    private Long goodsid;
 
 //    /**
 //     * 商品名称

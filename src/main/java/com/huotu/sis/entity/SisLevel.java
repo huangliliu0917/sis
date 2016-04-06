@@ -66,5 +66,9 @@ public class SisLevel {
     @Description("直推奖")
     private double rebateRate;
 
+    @Column(name = "IsExtraUpgrade")
+    @Description("是否启用补差价 0：不启用，1：启用")
+    private Integer extraUpgrade;
+
 
 }

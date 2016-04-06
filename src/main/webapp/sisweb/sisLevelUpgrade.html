@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css"/>
+    <link rel="stylesheet" type="text/css" href="css/commfont.css"/>
+    <title>店铺升级</title>
+    <style>
+        .hot-ui .xuanze {
+            padding: 5px;
+        }
+        .hot-ui .imgclass {
+            width: 9px;
+            float: right;
+            margin-top: 6px;
+            margin-right: 10px;
+        }
+        .hot-ui .new {
+            color: #FF3D00;
+            background-color: #FFFFFF;
+            border-radius: 5px;
+            width: 75px;
+            text-align: center;
+        }
+        .hot-ui .upup {
+            margin: 10px 0px;
+            margin-left: 20px;
+        }
+        .hot-ui .fontclass {
+            line-height: 21px;
+            padding: 11px 10px;
+            background-color: #ff3d00;
+            height: 51px;
+        }
+        .hot-ui .boxbig {
+            background-color: #fff;
+        }
+        .hot-ui .imgone {
+            width: 52px;
+            margin-bottom: 10px;
+            float: left
+        }
+        .hot-ui .lfettitle {
+            margin-left: 10px;
+            color: #fff;
+            float: left
+        }
+        .hot-ui .ingtit {
+            float: left;
+            margin-left: 5px;
+            line-height: 24px;
+        }
+        .hot-ui .go-up {
+            color: #ff3d00;
+            float: right
+        }
+        .hot-ui .jtleft {
+            float: left;
+            color: #a0a0a0;
+        }
+        .hot-ui .ckright {
+            float: right;
+            color: #a0a0a0;
+        }
+        /**/
+        .hot-ui .all {
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            padding: 10px 0px;
+        }
+        .hot-ui .right {
+            width: 100%;
+            height: 100%;
+            float: left;
+            background: #fff;
+            padding-bottom: 10px;
+        }
+        .hot-ui .right_in {
+            margin-left:65px;
+            height: 100%;
+            padding-top: 10px;
+            padding-right: 10px;
+        }
+        .hot-ui .left_s {
+            width: 100%;
+            height: 100%;
+            float: right;
+        }
+        .hot-ui .left_in_s {
+            margin-right: 70px;
+            height: 100%;
+        }
+        .hot-ui .hui {
+            color: #A3A3A3;
+        }
+        .hot-ui .right_s {
+            width: 60px;
+            float: right;
+            height: 100%;
+            margin-right: -100%;
+        }
+        .hot-ui .left {
+            float: left;
+            background: #fff;
+            height: 100%;
+            margin-left: -100%;
+            padding-left: 10px;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body style="background-color:#f6f6f6" class="commfont">
+<div class="hot-ui">
+    <div class="tit_rem fontclass">
+        <img class="imgone" src="images/iconfont-geren.png"/>
+        <div class="lfettitle">
+            <p>当前等级：</p>
+            <p class="new" th:text="${sis.sisLevel.levelName}">新晋店主</p>
+        </div>
+        <p style="clear:both"></p>
+    </div>
+
+
+    <p style="height:10px"></p>
+    <div style="padding:10px;">
+        <div class="all tit_rem">
+            <div class="right">
+                <div class="right_in">
+                    <p style="margin-bottom:4px" class="tit_rem_big">
+                        <a href="#">
+                            专卖店
+                        </a>
+                    </p>
+                    <div class="left_s">
+                        <div class="left_in_s">
+                            <p class=" hui">原价2000元，需补1000元</p>
+                        </div>
+                    </div>
+                    <div class="right_s" style="display:block">
+                        <a href="#">
+                            <p class="go-up">去升级>></p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="left">
+                <img src="images/iconfont-dianpu.png" style="width:45px" />
+            </div>
+            <p style="border-bottom: 1px solid #ddd; clear:both; padding:5px"></p>
+            <div style="margin: 10px 8px 1px 8px;">
+                <p class="jtleft">具体待遇由商家指定</p>
+                <a href="" target="_blank">
+                    <p class="ckright">查看待遇详情▼</p>
+                </a>
+                <p style="clear:both"></p>
+            </div>
+        </div>
+        <div class="commfont" style="padding:15px; color:#666; display: block">
+            <p class="tit_rem_big" style="margin-bottom:5px"><b>专卖店享受待遇</b></p>
+            <p class="">• 推荐一家专卖店获得180。</p>
+            <p class="">• 推荐一家旗舰店获得550+50金币。</p>
+            <p class="">• 与公司签订代理合同。</p>
+        </div>
+    </div>
+
+    <div style="padding:10px;">
+        <div class="all tit_rem">
+            <div class="right">
+                <div class="right_in">
+                    <p style="margin-bottom:4px" class="tit_rem_big">
+                        <a href="#">
+                            旗舰店
+                        </a>
+                    </p>
+                    <div class="left_s">
+                        <div class="left_in_s">
+                            <p class=" hui">原价4000元，需补3000元</p>
+                        </div>
+                    </div>
+                    <div class="right_s" style="display:block">
+                        <a href="#">
+                            <p class="go-up">去升级>></p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="left">
+                <img src="images/iconfont-dianpu.png" style="width:45px" />
+            </div>
+            <p style="border-bottom: 1px solid #ddd; clear:both; padding:5px"></p>
+            <div style="margin: 10px 8px 1px 8px;">
+                <p class="jtleft">具体待遇由商家指定</p>
+                <a href="" target="_blank">
+                    <p class="ckright">查看待遇详情▲</p>
+                </a>
+                <p style="clear:both"></p>
+            </div>
+        </div>
+        <div class="commfont" style="padding:15px; color:#666; display: block">
+            <p class="tit_rem_big" style="margin-bottom:5px"><b>旗舰店享受待遇</b></p>
+            <p class="">• 推荐一家专卖店获得180+20金币。</p>
+            <p class="">• 推荐一家旗舰店获得950+50金币。</p>
+            <p class="">• 与公司签订代理合同。</p>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>
