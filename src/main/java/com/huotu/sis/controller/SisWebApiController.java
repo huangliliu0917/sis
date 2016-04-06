@@ -88,15 +88,13 @@ public class SisWebApiController {
     public ResultModel upgradeSisShop(HttpServletRequest request) throws Exception {
         log.info("upgradeSisShop");
         ResultModel resultModel=new ResultModel();
-
-        //签名验证
+        //第一步:参数有效性判断
         String sign=request.getParameter("sign");
         if (sign == null || !sign.equals(securityService.getSign(request))) {
             resultModel.setCode(401);
             resultModel.setMessage("授权失败：签名未通过！");
             return resultModel;
         }
-        //参数验证
         String userId=request.getParameter("userid");
         if(StringUtils.isEmpty(userId)){
             resultModel.setCode(403);
@@ -110,28 +108,32 @@ public class SisWebApiController {
             return resultModel;
         }
 
-        String productNumberStr=request.getParameter("numbers");
-        if(StringUtils.isEmpty(productNumberStr)){
-            resultModel.setCode(403);
-            resultModel.setMessage("参数错误：没有货品数量！");
-            return resultModel;
-        }
-
         SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
-        if(sisConfig==null){
-            resultModel.setCode(500);
-            resultModel.setMessage(userId+"商户没有店中店配置信息");
+        if(sisConfig==null||sisConfig.getEnabled()==0){
+            resultModel.setCode(403);
+            resultModel.setMessage(userId+"商户无店中店配置或未启用");
             return resultModel;
         }
-        Integer productNumber=Integer.parseInt(productNumberStr);
-        SisLevel upgradeSisLevel=sisLevelService.getUpgradeSisLevel(productNumber,user);
-        Sis sis=sisRepository.findByUser(user);
-        sis.setSisLevel(upgradeSisLevel);
-        sisRepository.save(sis);
-
         String orderId=request.getParameter("orderid");
-        log.info("user:"+userId+"upgradeSisShopOver"+"Orderid="+orderId);
+        List<OrderItems> orderItems=sisOrderItemsRepository.getOrderItemsByOrderId(orderId);
+        if(orderItems==null||orderItems.isEmpty()){
+            resultModel.setCode(403);
+            resultModel.setMessage(orderId+"订单无效！");
+            return resultModel;
 
+        }
+
+        log.info("user:"+userId+",upgradeSisShopOverOrderid:"+orderId);
+        //第二步:升级
+
+//        Integer productNumber=Integer.parseInt(productNumberStr);
+//        SisLevel upgradeSisLevel=sisLevelService.getUpgradeSisLevel(productNumber,user);
+//        Sis sis=sisRepository.findByUser(user);
+//        sis.setSisLevel(upgradeSisLevel);
+//        sisRepository.save(sis);
+
+
+        //第三步:返回结果
         resultModel.setCode(200);
         resultModel.setMessage("OK");
         return resultModel;

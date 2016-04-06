@@ -121,5 +121,9 @@ public class SisConfig {
     @Lob
     private OpenGoodsIdLevelIds openGoodsIdlist;
 
+    @Column(name = "ExtraUpGoodsId")
+    @Description("补差价升级商品ID")
+    private Long extraUpGoodsId;
+
 
 }
