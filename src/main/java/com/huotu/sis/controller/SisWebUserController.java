@@ -22,6 +22,8 @@ import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisInviteLog;
 import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
+import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
 import com.huotu.sis.exception.*;
 import com.huotu.sis.model.*;
 import com.huotu.sis.repository.*;
@@ -630,14 +632,22 @@ public class SisWebUserController {
         model.addAttribute("sisInviteLog", sisInviteLog);
         model.addAttribute("customerId",customerId);
         model.addAttribute("free",sisConfig.getOpenMode());
+
+
         if(sisConfig.getOpenGoodsMode()==1&&sisConfig.getOpenGoodsIdlist()!=null){
+            OpenGoodsIdLevelIds openGoodsIdLevelIds= sisConfig.getOpenGoodsIdlist();
             List<SisLevelModel>sisLevelModels=new ArrayList<>();
             List<SisLevel> sisLevels=sisLevelRepository.findByMerchantId(customerId);
-            for(SisLevel l:sisLevels){
+            if(sisLevels!=null){
+                for(SisLevel l:sisLevels){
+                    SisLevelModel sisLevelModel=new SisLevelModel();
+                    for(OpenGoodsIdLevelId o:openGoodsIdLevelIds.values()){
+                        l.getId();
+
+                    }
+                }
 
             }
-
-
 
             model.addAttribute("openGoods",sisConfig.getOpenGoodsIdlist());
         }
