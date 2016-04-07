@@ -3,6 +3,8 @@ package com.huotu.sis.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * Created by jinzj on 2016/4/6.
  */
@@ -21,4 +23,9 @@ public class SisLevelUpgradeModel {
     private Long currentPrice;
 //    图片地址
     private String imgUrl;
+
+    /**
+     * 待遇列表
+     */
+    private List<String> treatments;
 }

@@ -109,9 +109,9 @@ public class SisWebApiController {
         }
 
         SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
-        if(sisConfig==null||sisConfig.getEnabled()==0){
+        if(sisConfig==null||sisConfig.getEnabled()==0||sisConfig.getOpenGoodsMode()==null||sisConfig.getOpenGoodsMode()==0){
             resultModel.setCode(403);
-            resultModel.setMessage(userId+"商户无店中店配置或未启用");
+            resultModel.setMessage(userId+"商户无店中店配置不是升级的条件");
             return resultModel;
         }
         String orderId=request.getParameter("orderid");
@@ -125,17 +125,18 @@ public class SisWebApiController {
 
         log.info("user:"+userId+",upgradeSisShopOverOrderid:"+orderId);
         //第二步:升级
-
-//        Integer productNumber=Integer.parseInt(productNumberStr);
-//        SisLevel upgradeSisLevel=sisLevelService.getUpgradeSisLevel(productNumber,user);
-//        Sis sis=sisRepository.findByUser(user);
-//        sis.setSisLevel(upgradeSisLevel);
-//        sisRepository.save(sis);
-
+        boolean isUpgrade=sisLevelService.upgradeSisLevel(user,sisConfig,orderItems.get(0));
 
         //第三步:返回结果
-        resultModel.setCode(200);
-        resultModel.setMessage("OK");
+        if(isUpgrade){
+            resultModel.setCode(200);
+            resultModel.setMessage("OK");
+        }else {
+            resultModel.setCode(500);
+            resultModel.setMessage("Fail");
+            log.info("user"+userId+"Upgrade failed");
+
+        }
         return resultModel;
     }
 

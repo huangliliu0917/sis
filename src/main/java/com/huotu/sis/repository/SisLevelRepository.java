@@ -20,5 +20,7 @@ public interface SisLevelRepository extends JpaRepository<SisLevel, Long>,JpaSpe
 
     List<SisLevel> findByMerchantId(Long customerId);
 
+    List<SisLevel> findByIdIn(List<Long> ids);
+
 
 }

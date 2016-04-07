@@ -18,11 +18,7 @@ import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
 import com.huotu.huobanplus.smartui.sdk.SmartPageRepository;
 import com.huotu.sis.common.*;
-import com.huotu.sis.entity.Sis;
-import com.huotu.sis.entity.SisConfig;
-import com.huotu.sis.entity.SisInviteLog;
-import com.huotu.sis.entity.SisLevel;
-import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
+import com.huotu.sis.entity.*;
 import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
 import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
 import com.huotu.sis.exception.*;
@@ -49,10 +45,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 /**
  * Created by lgh on 2015/12/29.
@@ -113,7 +105,12 @@ public class SisWebUserController {
     @Autowired
     private SisLevelRepository sisLevelRepository;
 
+    @Autowired
+    private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
+
     VerificationService verificationService;
+
+
 
 
     @PostConstruct
@@ -1022,6 +1019,22 @@ public class SisWebUserController {
             });
         }
 //        models = models.stream().sorted().collect(Collectors.toList());
+
+        List<SisOpenAwardAssign> sisOpenAwardAssigns=sisOpenAwardAssignRepository.findByMerchant_Id(customerId);
+        for(SisOpenAwardAssign s:sisOpenAwardAssigns){
+            for(SisLevelUpgradeModel su:models){
+                if(s.getLevel().getId().equals(su.getLevelId())){
+                    List<String> stringList=su.getTreatments();
+                    if(stringList==null){
+                        stringList=new ArrayList<>();
+                    }
+                    stringList.add("• 推荐一家"+s.getGuideLevel().getLevelName()+"获得"+Math.round(s.getAdvanceVal())+"元");
+                    su.setTreatments(stringList);
+                }
+            }
+
+        }
+
         Collections.sort(models, (t1, t2) -> t1.getLevelNo().compareTo(t2.getLevelNo()));
         model.addAttribute("levels", models);
         model.addAttribute("customerId", customerId);

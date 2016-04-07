@@ -125,5 +125,9 @@ public class SisConfig {
     @Description("补差价升级商品ID")
     private Long extraUpGoodsId;
 
+    @Description("是否允许店铺升级")
+    @Column(name = "EnableLevelUpgrade")
+    private Boolean enableLevelUpgrade;
+
 
 }

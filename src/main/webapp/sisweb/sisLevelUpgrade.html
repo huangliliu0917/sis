@@ -172,54 +172,54 @@
                 <p style="clear:both"></p>
             </div>
         </div>
-        <div class="commfont" style="padding:15px; color:#666; display: none" th:attr="id=${'treatment_'+level.levelId}">
+        <div class="commfont" style="padding:15px; color:#666; display: block" th:attr="id=${'treatment_'+level.levelId}">
             <p class="tit_rem_big" style="margin-bottom:5px"><b th:text="${level.levelName+'享受待遇'}">专卖店享受待遇</b></p>
-            <p class="">• 推荐一家专卖店获得180。</p>
-            <p class="">• 推荐一家旗舰店获得550+50金币。</p>
-            <p class="">• 与公司签订代理合同。</p>
+            <p  th:each="t:${level.treatments}" class="" th:text="${t}">• 推荐一家专卖店获得180。</p>
+            <!--<p class="">• 推荐一家旗舰店获得550+50金币。</p>-->
+            <!--<p class="">• 与公司签订代理合同。</p>-->
         </div>
     </div>
 
-    <div style="padding:10px;">
-        <div class="all tit_rem">
-            <div class="right">
-                <div class="right_in">
-                    <p style="margin-bottom:4px" class="tit_rem_big">
-                        <a href="#">
-                            旗舰店
-                        </a>
-                    </p>
-                    <div class="left_s">
-                        <div class="left_in_s">
-                            <p class=" hui">原价4000元，需补3000元</p>
-                        </div>
-                    </div>
-                    <div class="right_s" style="display:block">
-                        <a href="#">
-                            <p class="go-up">去升级>></p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="left">
-                <img src="images/iconfont-dianpu.png" style="width:45px" />
-            </div>
-            <p style="border-bottom: 1px solid #ddd; clear:both; padding:5px"></p>
-            <div style="margin: 10px 8px 1px 8px;">
-                <p class="jtleft">具体待遇由商家指定</p>
-                <a href="" target="_blank">
-                    <p class="ckright">查看待遇详情▼</p>
-                </a>
-                <p style="clear:both"></p>
-            </div>
-        </div>
-        <div class="commfont" style="padding:15px; color:#666; display: block">
-            <p class="tit_rem_big" style="margin-bottom:5px"><b>旗舰店享受待遇</b></p>
-            <p class="">• 推荐一家专卖店获得180+20金币。</p>
-            <p class="">• 推荐一家旗舰店获得950+50金币。</p>
-            <p class="">• 与公司签订代理合同。</p>
-        </div>
-    </div>
+    <!--<div style="padding:10px;">-->
+        <!--<div class="all tit_rem">-->
+            <!--<div class="right">-->
+                <!--<div class="right_in">-->
+                    <!--<p style="margin-bottom:4px" class="tit_rem_big">-->
+                        <!--<a href="#">-->
+                            <!--旗舰店-->
+                        <!--</a>-->
+                    <!--</p>-->
+                    <!--<div class="left_s">-->
+                        <!--<div class="left_in_s">-->
+                            <!--<p class=" hui">原价4000元，需补3000元</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="right_s" style="display:block">-->
+                        <!--<a href="#">-->
+                            <!--<p class="go-up">去升级>></p>-->
+                        <!--</a>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="left">-->
+                <!--<img src="images/iconfont-dianpu.png" style="width:45px" />-->
+            <!--</div>-->
+            <!--<p style="border-bottom: 1px solid #ddd; clear:both; padding:5px"></p>-->
+            <!--<div style="margin: 10px 8px 1px 8px;">-->
+                <!--<p class="jtleft">具体待遇由商家指定</p>-->
+                <!--<a href="" target="_blank">-->
+                    <!--<p class="ckright">查看待遇详情▼</p>-->
+                <!--</a>-->
+                <!--<p style="clear:both"></p>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="commfont" style="padding:15px; color:#666; display: block">-->
+            <!--<p class="tit_rem_big" style="margin-bottom:5px"><b>旗舰店享受待遇</b></p>-->
+            <!--<p class="">• 推荐一家专卖店获得180+20金币。</p>-->
+            <!--<p class="">• 推荐一家旗舰店获得950+50金币。</p>-->
+            <!--<p class="">• 与公司签订代理合同。</p>-->
+        <!--</div>-->
+    <!--</div>-->
 
 
 </div>
