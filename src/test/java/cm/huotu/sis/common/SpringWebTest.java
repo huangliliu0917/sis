@@ -1,5 +1,6 @@
 package cm.huotu.sis.common;
 
+import cm.huotu.sis.filter.ParamFilter;
 import cm.huotu.sis.pages.AbstractPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.junit.After;
@@ -73,6 +74,9 @@ public class SpringWebTest {
     @Resource(name = "transactionManager")
     protected JpaTransactionManager transactionManager;
 
+    @Autowired
+    private ParamFilter paramFilter;
+
     protected void createMockMVC() {
         MockitoAnnotations.initMocks(this);
 //        if (springSecurityFilter != null)
@@ -83,6 +87,7 @@ public class SpringWebTest {
 //            mockMvc = webAppContextSetup(context)
 //                    .build();
         mockMvc = webAppContextSetup(context)
+                .addFilters(paramFilter)
                 .build();
     }
     @Before

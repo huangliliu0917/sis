@@ -1,6 +1,7 @@
 package cm.huotu.sis.controller;
 
 import cm.huotu.sis.common.WebTest;
+import cm.huotu.sis.pages.JuniorDetail;
 import cm.huotu.sis.pages.openShop;
 import cm.huotu.sis.pages.SisCenter;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
@@ -11,17 +12,23 @@ import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.entity.Sis;
+import com.huotu.sis.model.SisDetailModel;
 import com.huotu.sis.model.SisSumAmountModel;
 import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SqlService;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -96,11 +103,12 @@ public class SisWebGoodsControllerTest extends WebTest {
 
     /**
      * 开店
+     *
      * @throws Exception
      */
     @Test
     public void openShopTest() throws Exception {
-        User user=new User();
+        User user = new User();
         user.setWxNickName("slt");
         userRepository.save(user);
         webDriver.get("http://localhost/sisweb/showOpenShop");
@@ -132,7 +140,6 @@ public class SisWebGoodsControllerTest extends WebTest {
         webDriver.get("http://localhost/sisweb/juniorDetailList?srcType=3");
 
 
-
         System.out.println("1");
 //        HtmlElement element = dynamicPage.getBody();
 //        element.getAttributeNode("");
@@ -141,13 +148,13 @@ public class SisWebGoodsControllerTest extends WebTest {
 
     /**
      * 我的团队
+     *
      * @throws Exception
      */
     @Test
     public void ownerJuniorList() throws Exception {
         webDriver.get("http://localhost/sisweb/ownerJuniorList");
         Long userId = getCurrentUserId();
-//        JavascriptExecutor jse = (JavascriptExecutor)webDriver;
         List<SisSumAmountModel> list = sqlService.getListGroupBySrcType(userId);
         if (Objects.nonNull(list)) {
             List<WebElement> elements = webDriver.findElements(By.cssSelector("tbody tr"));
@@ -157,21 +164,23 @@ public class SisWebGoodsControllerTest extends WebTest {
                 String srcType = tds.get(0).findElement(By.cssSelector("p")).getText();
                 String amount = tds.get(1).findElement(By.cssSelector("p")).getText();
                 String num = tds.get(2).findElement(By.cssSelector("a p")).getText();
-                assertThat(list.get(i).getSrcType()+"级").isEqualTo(srcType.trim()).as("级数的比较");
-                assertThat(Math.round(list.get(i).getAmount())+"").isEqualTo(amount.trim()).as("开店奖的比较");
+                assertThat(list.get(i).getSrcType() + "级").isEqualTo(srcType.trim()).as("级数的比较");
+                assertThat(Math.round(list.get(i).getAmount()) + "").isEqualTo(amount.trim()).as("开店奖的比较");
                 assertThat(list.get(i).getUserNum().toString()).isEqualTo(num.trim()).as("人数比较");
             }
             //随便选择一列进行点击跳转到其他页面
-            WebElement threeButton = elements.get(2).findElements(By.cssSelector("td")).get(2).findElement(By.cssSelector("a"));
-            assertThat(threeButton.getAttribute("href")).contains("http://localhost/sisweb/juniorDetailList?srcType=3").as("url进行比较");
+            WebElement threeButton = elements.get(1).findElements(By.cssSelector("td")).get(2).findElement(By.cssSelector("a"));
+            assertThat(threeButton.getAttribute("href")).contains("http://localhost/sisweb/juniorDetailList?srcType=2").as("url进行比较");
             threeButton.click();
-//            WebElement srcType = webDriver.findElement(By.id("srcType"));
-//            jse.executeScript()
-//            jse.executeScript("arguments[0].setAttribute('value', arguments[1])", srcType, "3");
-//            new WebDriverWait(webDriver,10).until(ExpectedConditions.visibilityOf(srcType));
-//            JuniorDetail juniorDetail = initPage(JuniorDetail.class);
-//            Page<SisDetailModel> sisDetailModel = sqlService.getListOpenShop(userId, 3, 1, 10);
-//            juniorDetail.validResult(sisDetailModel);
+            Page<SisDetailModel> sisDetailModel = sqlService.getListOpenShop(userId, 2, 1, 10);
+            if (Objects.nonNull(sisDetailModel) && Objects.nonNull(sisDetailModel.getContent()) && sisDetailModel.getContent().size() > 0) {
+                new WebDriverWait(webDriver, 10).until(
+                        (ExpectedCondition<Boolean>) input -> input.findElement(By.id("juniorDetailList"))
+                                //注意点，这边不能去找list
+                                .findElement(By.cssSelector("ul.cjgl-a")).isEnabled());
+                JuniorDetail juniorDetail = initPage(JuniorDetail.class);
+                juniorDetail.validResult(sisDetailModel);
+            }
         }
     }
 
@@ -190,7 +199,7 @@ public class SisWebGoodsControllerTest extends WebTest {
         goods.setStock(100);
         pictureUrl.append(commonConfigService.getResoureServerUrl() + goods.getSmallPic());
         goodsRepository.saveAndFlush(goods);
-        webDriver.get("http://localhost/sisweb/getSisGoodsDetail?goodId="+goods.getId()+"&customerId="+user.getMerchant().getId());
+        webDriver.get("http://localhost/sisweb/getSisGoodsDetail?goodId=" + goods.getId() + "&customerId=" + user.getMerchant().getId());
         //商品图片
         WebElement picture = webDriver.findElement(By.cssSelector("div.s_bd")).findElement(By.cssSelector("ul>li>a>img"));
         assertThat(picture.getAttribute("src").trim()).isEqualTo(pictureUrl.toString()).as("商品图片的比较");
@@ -199,7 +208,7 @@ public class SisWebGoodsControllerTest extends WebTest {
         assertThat(title.getText().trim()).isEqualTo(goods.getTitle()).as("商品内容的比较");
         //各个值
         List<WebElement> elements = webDriver.findElements(By.cssSelector("span.sp_hongzz"));
-        assertThat(elements.get(0).getText().trim()).isEqualTo(goods.getStock()+"件").as("库存的比较");
+        assertThat(elements.get(0).getText().trim()).isEqualTo(goods.getStock() + "件").as("库存的比较");
         //感觉商品详情这边有点问题
 //        assertThat(elements.get(1).getText().trim()).isEqualTo(goods.getIntro()).as("商品详情");
 

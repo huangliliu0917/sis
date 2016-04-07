@@ -32,23 +32,13 @@ public class JuniorDetail extends AbstractPage {
     public void validResult(Page<SisDetailModel> sisDetailModels) {
         if (Objects.nonNull(sisDetailModels) && Objects.nonNull(sisDetailModels.getContent())
                 && sisDetailModels.getContent().size() > 0) {
-//            new WebDriverWait(webDriver,10)
-//                    .until((ExpectedCondition<Boolean>) input -> input.findElement(By.id("juniorDetailList")).isDisplayed());
-//            WebDriverWait webDriverWait = new WebDriverWait(webDriver, 10);
             SisDetailModel model = sisDetailModels.getContent().get(0);
-//            WebElement webElement;
-//            if(sisDetailModels.getContent().size()==1){
-//                webElement = webDriverWait.until((ExpectedCondition<WebElement>) input ->
-//                                input.findElement(By.cssSelector("ul")));
-////                assertThat();
-//            }else{
-//                webElement = webDriverWait.until((ExpectedCondition<WebElement>) input ->
-//                                input.findElements(By.cssSelector("ul[class~=cjgl]")).get(0));
-//            }
-//            List<WebElement> lis = webElement.findElements(By.cssSelector("li"));
-//            //图片路径
-//            WebElement imgSrc = lis.get(0).findElement(By.cssSelector("a img"));
-//            assertThat(imgSrc.getAttribute("src").trim()).isEqualTo(model.getWeixinImageUrl().trim()).as("图片路径的比较");
+            List<WebElement> lis = webDriver.findElements(By.cssSelector("ul.cjgl-a")).get(0).findElements(By.cssSelector("li"));
+            WebElement imgSrc = lis.get(0).findElement(By.cssSelector("a>img"));
+            assertThat(imgSrc.getAttribute("src").trim()).isEqualTo(model.getWeixinImageUrl()).as("微信头像的比较");
+            List<WebElement> ps = lis.get(1).findElements(By.cssSelector("p"));
+            WebElement sisName = ps.get(0).findElement(By.cssSelector("b"));
+            assertThat(sisName.getText().trim()).isEqualTo(model.getSisName()).as("店铺名称");
         }
     }
 }

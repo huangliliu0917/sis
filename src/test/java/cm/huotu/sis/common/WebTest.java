@@ -1,5 +1,6 @@
 package cm.huotu.sis.common;
 
+import cm.huotu.sis.filter.ParamFilter;
 import com.huotu.sis.boot.MVCConfig;
 import com.huotu.sis.boot.RootConfig;
 import com.huotu.sis.common.PublicParameterHolder;
@@ -15,7 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
  */
 @ActiveProfiles(value = {"development","develop"})
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MVCConfig.class, RootConfig.class})
+@ContextConfiguration(classes = {MVCConfig.class, RootConfig.class, ParamFilter.class})
 //@Import({MVCConfig.class, RootConfig.class})
 @WebAppConfiguration
 public abstract class WebTest extends SpringWebTest{
