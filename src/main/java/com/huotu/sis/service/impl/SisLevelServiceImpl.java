@@ -43,7 +43,7 @@ public class SisLevelServiceImpl implements SisLevelService {
         return sisLevelRepository.findAll(((root, query, cb) -> {
             Predicate predicate = cb.and(
                     cb.equal(root.get("merchantId").as(Long.class), customerId),
-                    cb.ge(root.get("levelNo").as(Long.class), levelNo),
+                    cb.gt(root.get("levelNo").as(Long.class), levelNo),
                     cb.equal(root.get("extraUpgrade").as(Integer.class), 1)
             );
             return predicate;

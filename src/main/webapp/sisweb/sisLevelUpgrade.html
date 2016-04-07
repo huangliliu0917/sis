@@ -120,10 +120,10 @@
         function operateWin(obj){
             var levelId = $(obj).find("input").val();
             if($("#treatment_"+levelId).is(":hidden")){
-                $(obj).find("p").text("查看待遇详情▲");
+                $(obj).find("p").text("查看待遇详情▼");
                 $("#treatment_"+levelId).show();
             }else{
-                $(obj).find("p").text("查看待遇详情▼");
+                $(obj).find("p").text("查看待遇详情▲");
                 $("#treatment_"+levelId).hide();
             }
         }
@@ -139,8 +139,6 @@
         </div>
         <p style="clear:both"></p>
     </div>
-
-
     <p style="height:10px"></p>
     <div style="padding:10px;" th:each="level:${levels}">
         <div class="all tit_rem">
@@ -175,7 +173,7 @@
             </div>
         </div>
         <div class="commfont" style="padding:15px; color:#666; display: none" th:attr="id=${'treatment_'+level.levelId}">
-            <p class="tit_rem_big" style="margin-bottom:5px"><b>专卖店享受待遇</b></p>
+            <p class="tit_rem_big" style="margin-bottom:5px"><b th:text="${level.levelName+'享受待遇'}">专卖店享受待遇</b></p>
             <p class="">• 推荐一家专卖店获得180。</p>
             <p class="">• 推荐一家旗舰店获得550+50金币。</p>
             <p class="">• 与公司签订代理合同。</p>
