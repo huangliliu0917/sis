@@ -9,7 +9,8 @@
     <meta name="description" content="" />
     <link rel="stylesheet" type="text/css" href="css/common.css"/>
     <link rel="stylesheet" type="text/css" href="css/fksc.css"/>
-    <link rel="stylesheet" type="text/css" href="css/commfont.css"/>
+    <script type="text/javascript" src="3rdParty/js/jquery-1.4.2.min.js"
+            th:src="@{/sisweb/3rdParty/js/jquery-1.7.2.min.js}"></script>
     <title>店铺升级</title>
     <style>
         .hot-ui .xuanze {
@@ -115,6 +116,18 @@
             padding-top: 10px;
         }
     </style>
+    <script type="text/javascript">
+        function operateWin(obj){
+            var levelId = $(obj).find("input").val();
+            if($("#treatment_"+levelId).is(":hidden")){
+                $(obj).find("p").text("查看待遇详情▲");
+                $("#treatment_"+levelId).show();
+            }else{
+                $(obj).find("p").text("查看待遇详情▼");
+                $("#treatment_"+levelId).hide();
+            }
+        }
+    </script>
 </head>
 <body style="background-color:#f6f6f6" class="commfont">
 <div class="hot-ui">
@@ -133,14 +146,12 @@
         <div class="all tit_rem">
             <div class="right">
                 <div class="right_in">
-                    <p style="margin-bottom:4px" class="tit_rem_big">
-                        <a href="#">
-                            专卖店
-                        </a>
+                    <p style="margin-bottom:4px" class="tit_rem_big" th:text="${level.levelName}">
+                        专卖店
                     </p>
                     <div class="left_s">
                         <div class="left_in_s">
-                            <p class=" hui">原价2000元，需补1000元</p>
+                            <p class=" hui">原价<i th:text="${level.originalPrice}"></i>元，需补<i th:text="${level.currentPrice}"></i>元</p>
                         </div>
                     </div>
                     <div class="right_s" style="display:block">
@@ -156,13 +167,14 @@
             <p style="border-bottom: 1px solid #ddd; clear:both; padding:5px"></p>
             <div style="margin: 10px 8px 1px 8px;">
                 <p class="jtleft">具体待遇由商家指定</p>
-                <a href="" target="_blank">
-                    <p class="ckright">查看待遇详情▼</p>
+                <a href="javascript:void(0)" onclick="operateWin(this)">
+                    <input type="hidden" th:value="${level.levelId}"/>
+                    <p class="ckright">查看待遇详情▲</p>
                 </a>
                 <p style="clear:both"></p>
             </div>
         </div>
-        <div class="commfont" style="padding:15px; color:#666; display: block">
+        <div class="commfont" style="padding:15px; color:#666; display: none" th:attr="id=${'treatment_'+level.levelId}">
             <p class="tit_rem_big" style="margin-bottom:5px"><b>专卖店享受待遇</b></p>
             <p class="">• 推荐一家专卖店获得180。</p>
             <p class="">• 推荐一家旗舰店获得550+50金币。</p>
@@ -198,7 +210,7 @@
             <div style="margin: 10px 8px 1px 8px;">
                 <p class="jtleft">具体待遇由商家指定</p>
                 <a href="" target="_blank">
-                    <p class="ckright">查看待遇详情▲</p>
+                    <p class="ckright">查看待遇详情▼</p>
                 </a>
                 <p style="clear:both"></p>
             </div>

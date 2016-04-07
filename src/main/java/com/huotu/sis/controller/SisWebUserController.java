@@ -51,6 +51,7 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 /**
@@ -1006,6 +1007,7 @@ public class SisWebUserController {
 //                    sisLevelUpgradeModel.setImgUrl();
                     sisLevelUpgradeModel.setLevelId(sisLevel.getId());
                     sisLevelUpgradeModel.setLevelName(sisLevel.getLevelName());
+                    sisLevelUpgradeModel.setLevelNo(sisLevel.getLevelNo());
 //                    sisLevelUpgradeModel.setGoodsUrl();
                     Goods goods = goodsRepository.findOne(entry.getValue().getGoodsid());
                     if (Objects.nonNull(goods.getPrice())) {
@@ -1019,6 +1021,8 @@ public class SisWebUserController {
                 }
             });
         }
+//        models = models.stream().sorted().collect(Collectors.toList());
+        Collections.sort(models, (t1, t2) -> t1.getLevelNo().compareTo(t2.getLevelNo()));
         model.addAttribute("levels", models);
         model.addAttribute("customerId", customerId);
         model.addAttribute("sis", sis);

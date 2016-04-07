@@ -12,6 +12,7 @@ public class SisLevelUpgradeModel {
 
     private Long levelId;
     private String levelName;
+    private Integer levelNo;
 //    商品地址
     private String goodsUrl;
 //    原价
