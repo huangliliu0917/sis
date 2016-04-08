@@ -255,6 +255,7 @@ public class UserServiceImpl implements UserService {
                 //插入一条开店流水
                 rebateOpenShop(belongOne,user,sisOpenAwardAssign.getAdvanceVal(),orderId,unionOrderId,1);
                 String memo = "1级会员(" + user.getWxNickName() + ")贡献了开店奖";
+                //插入一条开店返利日志
                 sisOpenAwardLogService.saveSisOpenAwardLog(belongOne.getMerchant().getId()
                         ,belongOne.getId(),user.getId(),sisOpenAwardAssign.getAdvanceVal(),memo,1,orderId);
             }
