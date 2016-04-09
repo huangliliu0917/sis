@@ -1,35 +1,33 @@
 package com.huotu.sis.controller;
 
 import com.huotu.common.base.HttpHelper;
-import com.huotu.huobanplus.base.toolService.ResourceService;
 import com.huotu.huobanplus.common.UserType;
-import com.huotu.huobanplus.common.entity.*;
+import com.huotu.huobanplus.common.entity.Goods;
+import com.huotu.huobanplus.common.entity.MerchantConfig;
+import com.huotu.huobanplus.common.entity.Product;
+import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.support.ProductSpecifications;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.MerchantRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.sdk.mall.service.MallInfoService;
+import com.huotu.huobanplus.smartui.entity.TemplatePage;
+import com.huotu.huobanplus.smartui.entity.support.Scope;
+import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
 import com.huotu.huobanplus.smartui.sdk.SmartPageRepository;
-import com.huotu.sis.common.MathHelper;
+import com.huotu.sis.common.*;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisInviteLog;
+import com.huotu.sis.exception.*;
+import com.huotu.sis.model.*;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisInviteRepository;
 import com.huotu.sis.repository.SisQualifiedMemberRepository;
 import com.huotu.sis.repository.SisRepository;
-import com.huotu.sis.common.EnumHelper;
-import com.huotu.sis.common.Msg;
-import com.huotu.sis.common.PublicParameterHolder;
-import com.huotu.sis.common.SysRegex;
-import com.huotu.sis.exception.*;
-import com.huotu.sis.model.*;
 import com.huotu.sis.service.*;
 import com.huotu.sis.service.impl.NoteSendHandle;
-import com.huotu.huobanplus.smartui.entity.TemplatePage;
-import com.huotu.huobanplus.smartui.entity.support.Scope;
-import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,8 +66,8 @@ public class SisWebUserController {
     private UserRepository userRepository;
     @Autowired
     private TemplatePageRepository templatePageRepository;
-    @Autowired
-    private ResourceService resourceService;
+//    @Autowired
+//    private ResourceService resourceService;
     @Autowired
     private SmartPageRepository resourceRepository;
     @Autowired
@@ -434,26 +432,26 @@ public class SisWebUserController {
         return "sisweb/sisHome";
     }
 
-    private AppSisBaseInfoModel toSisBaseInfoModel(Sis sis, User user) throws IOException {
-        //分享二维码的URL
-        String indexUrl = getSisCustomerUrl(user.getMerchant().getId(), user.getId());
-
-        AppSisBaseInfoModel appSisBaseInfoModel = new AppSisBaseInfoModel();
-        appSisBaseInfoModel.setUserId(user.getId());
-        appSisBaseInfoModel.setEnableSis(sis.isStatus());
-
-        if (StringUtils.isEmpty(sis.getImgPath()))
-            appSisBaseInfoModel.setImgUrl(resourceService.getResource(defaultHead).getURL().toString());
-        else
-            appSisBaseInfoModel.setImgUrl(resourceService.getResource(sis.getImgPath()).getURL().toString());
-        appSisBaseInfoModel.setSisId(sis.getId());
-        appSisBaseInfoModel.setTitle(sis.getTitle());
-        appSisBaseInfoModel.setSisDescription(sis.getDescription());
-        appSisBaseInfoModel.setShareTitle(sis.getShareTitle());
-        appSisBaseInfoModel.setShareDescription(sis.getShareDesc());
-        appSisBaseInfoModel.setIndexUrl(indexUrl);
-        return appSisBaseInfoModel;
-    }
+//    private AppSisBaseInfoModel toSisBaseInfoModel(Sis sis, User user) throws IOException {
+//        //分享二维码的URL
+//        String indexUrl = getSisCustomerUrl(user.getMerchant().getId(), user.getId());
+//
+//        AppSisBaseInfoModel appSisBaseInfoModel = new AppSisBaseInfoModel();
+//        appSisBaseInfoModel.setUserId(user.getId());
+//        appSisBaseInfoModel.setEnableSis(sis.isStatus());
+//
+//        if (StringUtils.isEmpty(sis.getImgPath()))
+//            appSisBaseInfoModel.setImgUrl(resourceService.getResource(defaultHead).getURL().toString());
+//        else
+//            appSisBaseInfoModel.setImgUrl(resourceService.getResource(sis.getImgPath()).getURL().toString());
+//        appSisBaseInfoModel.setSisId(sis.getId());
+//        appSisBaseInfoModel.setTitle(sis.getTitle());
+//        appSisBaseInfoModel.setSisDescription(sis.getDescription());
+//        appSisBaseInfoModel.setShareTitle(sis.getShareTitle());
+//        appSisBaseInfoModel.setShareDescription(sis.getShareDesc());
+//        appSisBaseInfoModel.setIndexUrl(indexUrl);
+//        return appSisBaseInfoModel;
+//    }
 
     /**
      * 获取商家域名

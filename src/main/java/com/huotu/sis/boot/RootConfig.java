@@ -1,13 +1,10 @@
 package com.huotu.sis.boot;
 
-import com.huotu.huobanplus.base.DataSupportConfig;
 import com.huotu.huobanplus.base.ResourceConfig;
-import com.huotu.huobanplus.common.CommonServiceSpringConfig;
 import com.huotu.huobanplus.common.DataServiceSpringConfig;
 import com.huotu.huobanplus.sdk.common.CommonClientSpringConfig;
 import com.huotu.huobanplus.sdk.mall.MallSDKConfig;
 import com.huotu.huobanplus.smartui.SmartUIDataServiceSpringConfig;
-import com.huotu.huobanplus.smartui.SmartUIServiceSpringConfig;
 import com.huotu.huobanplus.smartui.common.SmartuiClientSpringConfig;
 import org.luffy.lib.libspring.data.ClassicsRepositoryFactoryBean;
 import org.luffy.lib.libspring.logging.LoggingConfig;
