@@ -2,8 +2,8 @@ package cm.huotu.sis.controller;
 
 import cm.huotu.sis.common.WebTest;
 import cm.huotu.sis.pages.JuniorDetail;
-import cm.huotu.sis.pages.openShop;
 import cm.huotu.sis.pages.SisCenter;
+import cm.huotu.sis.pages.openShop;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.User;
@@ -19,7 +19,6 @@ import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SqlService;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -28,7 +27,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
