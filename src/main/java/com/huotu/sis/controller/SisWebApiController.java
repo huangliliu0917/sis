@@ -93,11 +93,14 @@ public class SisWebApiController {
         log.info("upgradeSisShop");
         ResultModel resultModel=new ResultModel();
         //第一步:参数有效性判断
-        String sign=request.getParameter("sign");
-        if (sign == null || !sign.equals(securityService.getSign(request))) {
-            resultModel.setCode(401);
-            resultModel.setMessage("授权失败：签名未通过！");
-            return resultModel;
+        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
+            String sign=request.getParameter("sign");
+            if (sign == null || !sign.equals(securityService.getSign(request))) {
+                resultModel.setCode(401);
+                resultModel.setMessage("授权失败：签名未通过！");
+                return resultModel;
+            }
+
         }
         String userId=request.getParameter("userid");
         if(StringUtils.isEmpty(userId)){

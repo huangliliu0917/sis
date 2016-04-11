@@ -65,7 +65,7 @@ public class SisLevelServiceImpl implements SisLevelService {
         //获取当前等级的开店商品
         Goods sisLevelGoods=null;
         for(OpenLevelGoodsModel o:openLevelGoodsModels){
-            if(o.getSisLevel().equals(sis.getSisLevel())){
+            if(o.getSisLevel().getId().equals(sis.getSisLevel().getId())){
                 sisLevelGoods=o.getGoods();
             }
         }
@@ -77,7 +77,10 @@ public class SisLevelServiceImpl implements SisLevelService {
         //获取补差价+当前等级的开店商品
         for(int i=openLevelGoodsModels.size()-1;i>=0;i--){
             Double levelGoodsprice=sisLevelGoods.getPrice()+orderItems.getAmount()*orderItems.getPrice();
-            if(levelGoodsprice>=openLevelGoodsModels.get(i).getGoods().getPrice()){
+            OpenLevelGoodsModel openLevelGoodsModel=openLevelGoodsModels.get(i);
+            if(levelGoodsprice>=openLevelGoodsModel.getGoods().getPrice()
+                    &&openLevelGoodsModel.getSisLevel().getExtraUpgrade()!=null&&
+                    openLevelGoodsModel.getSisLevel().getExtraUpgrade()==1){
                 return openLevelGoodsModels.get(i).getSisLevel();
             }
 
@@ -92,9 +95,11 @@ public class SisLevelServiceImpl implements SisLevelService {
         Sis sis=sisRepository.findByUser(user);
         //获取应该升级到的等级
         SisLevel sisLevel=getUpgradeSisLevel(sisConfig,sis,orderItems,user);
+
         if(sisLevel==null){
             return false;
         }
+        log.info("userID"+user.getId()+"can update level to "+sisLevel.getId());
         //把该等级保存到用户店中店表中
         saveSisLevel(sis,sisLevel);
 

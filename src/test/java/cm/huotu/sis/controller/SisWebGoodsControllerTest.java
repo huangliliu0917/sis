@@ -3,7 +3,6 @@ package cm.huotu.sis.controller;
 import cm.huotu.sis.common.WebTest;
 import cm.huotu.sis.pages.JuniorDetail;
 import cm.huotu.sis.pages.SisCenter;
-import cm.huotu.sis.pages.openShop;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.User;
@@ -11,11 +10,13 @@ import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.utils.DateUtil;
+import com.huotu.sis.common.StringHelper;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.model.SisDetailModel;
 import com.huotu.sis.model.SisSumAmountModel;
 import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.service.CommonConfigsService;
+import com.huotu.sis.service.SecurityService;
 import com.huotu.sis.service.SqlService;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -61,6 +62,9 @@ public class SisWebGoodsControllerTest extends WebTest {
 
     @Autowired
     private CommonConfigsService commonConfigService;
+
+    @Autowired
+    private SecurityService securityService;
 
     /**
      * 店铺中心页面的测试
@@ -209,6 +213,12 @@ public class SisWebGoodsControllerTest extends WebTest {
         assertThat(elements.get(0).getText().trim()).isEqualTo(goods.getStock() + "件").as("库存的比较");
         //感觉商品详情这边有点问题
 //        assertThat(elements.get(1).getText().trim()).isEqualTo(goods.getIntro()).as("商品详情");
+
+
+    }
+
+    @Test
+    public void qmyztest() throws Exception{
 
 
     }
