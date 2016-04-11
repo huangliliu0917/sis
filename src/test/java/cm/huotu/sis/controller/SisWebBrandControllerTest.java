@@ -8,9 +8,13 @@ import com.huotu.huobanplus.common.repository.BrandRepository;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.service.SisGoodsService;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -19,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,6 +76,21 @@ public class SisWebBrandControllerTest extends WebTest {
 //                null, null, brand.getId(), null, 1, 10);
 
     }
+
+//    @Before
+//    public void setCookies() throws Exception {
+//        Cookie cookie=new Cookie("name","jin","/",null);
+//        driver.manage().addCookie(cookie);
+//        Cookie cookie1 = new Cookie("password","123","/",null);
+//        driver.manage().addCookie(cookie1);
+//    }
+//
+//    @Test
+//    public void getCookies() throws Exception {
+//        driver.get("http://localhost/sisweb/getSisCenter?customerId="+4471);
+//        Set<Cookie> cookies=driver.manage().getCookies();
+//        cookies.stream().forEach(cookie -> System.out.println("作用域："+cookie.getDomain()));
+//    }
 
 
 }

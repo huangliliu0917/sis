@@ -6,6 +6,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;

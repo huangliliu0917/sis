@@ -997,6 +997,8 @@ public class SisWebUserController {
                 .mapToDouble(value
                         -> goodsRepository.findOne(value.getValue().getGoodsid()).getPrice()).findAny().getAsDouble();
         List<SisLevelUpgradeModel> models = new ArrayList<>();
+        log.info("sisLevels的长度是"+sisLevels.size());
+        log.info("openGoodsIdList的长度是"+sisConfig.getOpenGoodsIdlist().size());
         for (Map.Entry<Long, OpenGoodsIdLevelId> entry : sisConfig.getOpenGoodsIdlist().entrySet()) {
             sisLevels.stream().forEach(sisLevel -> {
                 if (entry.getValue().getLevelid().equals(sisLevel.getId())) {
