@@ -937,6 +937,9 @@ public class SisWebGoodsController {
                             appSisGoodsModel.setMinRebate((int) Math.rint(integral[0] * 100 / exchangeRate));
                             appSisGoodsModel.setMaxRebate((int) Math.rint(integral[1] * 100 / exchangeRate));
                         }
+                    }else if(null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.operator)){
+                        appSisGoodsModel.setMinRebate(0);
+                        appSisGoodsModel.setMaxRebate(0);
                     } else {
                         appSisGoodsModel.setMinRebate(0);
                         appSisGoodsModel.setMaxRebate(0);

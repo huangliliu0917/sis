@@ -165,27 +165,19 @@ public class UserServiceImpl implements UserService {
         //开店用户等级设置
         SisLevel sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());
         if(sisConfig.getOpenGoodsMode()==1&&sisConfig.getOpenMode()==1){
-            List<OrderItems> orderItemses=sisOrderItemsRepository.getOrderItemsByOrderId(orderId);
+            OrderItems orderItems=sisOrderItemsRepository.getOrderItemsByOrderId(orderId).get(0);
             OpenGoodsIdLevelIds openGoodsIdLevelIds=sisConfig.getOpenGoodsIdlist();
             //根据订单号找到该用户购买的开店等级
-            OpenGoodsIdLevelId openGoodsIdLevelId=null;
-            for(OrderItems o:orderItemses){
                 for(OpenGoodsIdLevelId ol:openGoodsIdLevelIds.values()){
-                    if(o.getGoodsId()!=null){
-                        if(o.getGoodsId().equals(ol.getGoodsid())){
-                            openGoodsIdLevelId=ol;
+                    if(orderItems.getGoodsId()!=null){
+                        if(Long.valueOf(orderItems.getGoodsId()).equals(ol.getGoodsid())){
+                            sisLevel=sisLevelRepository.findOne(ol.getLevelid());
                             break;
 
                         }
                     }
                 }
-                if(openGoodsIdLevelId!=null){
-                    break;
-                }
-            }
-            sisLevel=sisLevelRepository.findOne(openGoodsIdLevelId.getLevelid());
         }
-
         if (sis == null) {
             sis = new Sis();
             sis.setImgPath("");

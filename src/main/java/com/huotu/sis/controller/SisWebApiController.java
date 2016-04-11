@@ -17,6 +17,7 @@ import com.huotu.sis.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -75,6 +76,9 @@ public class SisWebApiController {
 
     @Autowired
     private SisLevelService sisLevelService;
+
+    @Autowired
+    private Environment environment;
 
     /**
      * 升级用户店中店
@@ -148,13 +152,17 @@ public class SisWebApiController {
         log.info("into openShop");
         ResultModel resultModel=new ResultModel();
 
-        //签名验证
-        String sign=request.getParameter("sign");
-        if (sign == null || !sign.equals(securityService.getSign(request))) {
-            resultModel.setCode(401);
-            resultModel.setMessage("授权失败：签名未通过！");
-            return resultModel;
+        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
+            //签名验证
+            String sign=request.getParameter("sign");
+            if (sign == null || !sign.equals(securityService.getSign(request))) {
+                resultModel.setCode(401);
+                resultModel.setMessage("授权失败：签名未通过！");
+                return resultModel;
+            }
+
         }
+
         //参数验证
         String userId=request.getParameter("userid");
         if(StringUtils.isEmpty(userId)){
