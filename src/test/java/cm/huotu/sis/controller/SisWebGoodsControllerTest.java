@@ -3,7 +3,6 @@ package cm.huotu.sis.controller;
 import cm.huotu.sis.common.WebTest;
 import cm.huotu.sis.pages.SisCenter;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
-import com.huotu.huobanplus.common.entity.Brand;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
 import com.huotu.huobanplus.common.repository.UserRepository;
@@ -13,11 +12,6 @@ import com.huotu.sis.entity.Sis;
 import com.huotu.sis.model.PublicParameterModel;
 import com.huotu.sis.repository.SisRepository;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jinzj on 2016/3/25.
