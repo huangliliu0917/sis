@@ -12,11 +12,9 @@ import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
 import com.huotu.sis.entity.SisConfig;
-import com.huotu.sis.exception.CustomerNotFoundException;
-import com.huotu.sis.exception.CustomerNotUseSisException;
-import com.huotu.sis.exception.GoodsNotFoundException;
-import com.huotu.sis.exception.ProductNotFoundException;
+import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.repository.SisConfigRepository;
+import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.service.CommonConfigsService;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -53,6 +51,9 @@ public class SisWebUserControllerTest extends WebTest {
 
     @Autowired
     private MerchantRepository merchantRepository;
+
+    @Autowired
+    private SisLevelRepository sisLevelRepository;
 
     /**
      * 模板页面
@@ -134,6 +135,19 @@ public class SisWebUserControllerTest extends WebTest {
             subDomain="";
         }
         return  "http://"+subDomain+"."+commonConfigService.getMallDomain();
+    }
+
+    @Test
+    public void findfirstOrderByLevelNoDescTest(){
+        SisLevel sisLevel;
+        for(int i=0;i<5;i++){
+            sisLevel=new SisLevel();
+            sisLevel.setLevelNo(i);
+            sisLevel.setLevelName(i+"级");
+            sisLevelRepository.save(sisLevel);
+        }
+//        SisLevel sisLevel1=sisLevelRepository.findTopByLevelNoOrderByLevelNoDesc();
+//        Assert.assertEquals("yes",5,sisLevel1.getLevelNo().intValue());
     }
 
 }

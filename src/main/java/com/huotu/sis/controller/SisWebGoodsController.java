@@ -7,9 +7,12 @@ import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.*;
 import com.huotu.huobanplus.common.entity.support.LevelPrice;
 import com.huotu.huobanplus.common.entity.support.RebateConfiguration;
+import com.huotu.huobanplus.common.entity.support.RebateTeam;
+import com.huotu.huobanplus.common.entity.support.RebateTeamManagerSetting;
 import com.huotu.huobanplus.common.model.RebateCompatible;
 import com.huotu.huobanplus.common.model.RebateInfo;
 import com.huotu.huobanplus.common.model.RebateMode;
+import com.huotu.huobanplus.common.model.adrebateconfig.ProductDisRebateDesc;
 import com.huotu.huobanplus.common.repository.*;
 import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.entity.Sis;
@@ -938,8 +941,41 @@ public class SisWebGoodsController {
                             appSisGoodsModel.setMaxRebate((int) Math.rint(integral[1] * 100 / exchangeRate));
                         }
                     }else if(null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.operator)){
-                        appSisGoodsModel.setMinRebate(0);
-                        appSisGoodsModel.setMaxRebate(0);
+                        Integer maxRebate=0;
+                        Integer minRebate=0;
+                        Integer levelNo=null;
+                        List<UserLevel> userLevels=userLevelRepository.findByMerchant_IdAndTypeOrderByLevelAsc(user.getMerchant().getId(),
+                                UserType.buddy,new PageRequest(0,1000)).getContent();
+                        if(userLevels!=null){
+                            for(int i=0;i<userLevels.size();i++){
+                                if(userLevels.get(i).getId().equals((long)user.getLevelId())){
+                                    levelNo=i;
+                                    break;
+                                }
+                            }
+                            if(levelNo!=null){
+                                RebateTeamManagerSetting rebateSetting=merchantConfig.getRebateTeamManagerSetting();
+                                List<String> levelKeys=getPossibleRebateRelations(-1,levelNo);
+                                if(rebateSetting!=null&&levelKeys!=null){
+                                    Double rebate=rebateSetting.getSaleAward();
+                                    for(RebateTeam rt:rebateSetting.getRebateTeams()){
+                                        for(String s:levelKeys){
+                                            if(rt.getRelation().equals(s)){
+                                                rebate=rebate+rt.getPercent();
+                                            }
+                                        }
+                                    }
+                                    List<ProductDisRebateDesc> productRebateConfigs=goods.getProductRebateConfigs();
+                                    if(productRebateConfigs!=null){
+                                        double maxAmount=getProductDisRebateDescsMaxAmount(productRebateConfigs);
+                                        maxRebate=(int)Math.rint(maxAmount*rebate/exchangeRate);
+                                        minRebate=maxRebate;
+                                    }
+                                }
+                            }
+                        }
+                        appSisGoodsModel.setMinRebate(minRebate);
+                        appSisGoodsModel.setMaxRebate(maxRebate);
                     } else {
                         appSisGoodsModel.setMinRebate(0);
                         appSisGoodsModel.setMaxRebate(0);
@@ -1122,6 +1158,45 @@ public class SisWebGoodsController {
         model.setTotal(count);
 
         return model;
+    }
+
+
+    /**
+     *
+     * 经营者模式，根据输入的小伙伴等级索引找出所有应该的返利的key
+     * @param startIndex   开始的小伙伴等级
+     * @param stopIndex    结束的小伙伴等级
+     * @return
+     */
+    private List<String> getPossibleRebateRelations(int startIndex, int stopIndex) {
+        List<String> lstResults = new ArrayList<>();
+        boolean flgSameLevel = startIndex == stopIndex;
+        int leftTopIndex = flgSameLevel ? stopIndex : stopIndex - 1;
+        int rightTopIndex = stopIndex;
+        for (int i = startIndex; i <= leftTopIndex; i++) {
+            for (int k = startIndex; k <= rightTopIndex; k++) {
+                int diff = k - i;
+                if (diff == 1 || diff == 0) {
+                    lstResults.add(i+"_"+k);
+                }
+            }
+        }
+        return lstResults;
+    }
+
+    /**
+     * 获取商品八级返利冗余字段里面返利最多的货品的钱
+     * @param productDisRebateDescs
+     * @return
+     */
+    private double getProductDisRebateDescsMaxAmount(List<ProductDisRebateDesc> productDisRebateDescs){
+        double maxAmount=0;
+        for(ProductDisRebateDesc p:productDisRebateDescs){
+            if(p.getAmount()>maxAmount){
+                maxAmount=p.getAmount();
+            }
+        }
+        return maxAmount;
     }
 
 }
