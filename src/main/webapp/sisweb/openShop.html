@@ -216,6 +216,7 @@
         var inviterId=$("input[name='inviterId']").val();
         var openGoodsId=$("input[name='openGoods']:checked").val();
 
+
         $.ajax({
             type:'POST',
             url: 'collectSisInfo',
@@ -238,7 +239,10 @@
         var isFree=/*[[${free}]]*/1;//0免费开店，1购买商品开店
         var url="";
         if(isFree==1){
-            url="showOpenShopGoodsDetail?customerId="+customerId+"&goodsId="+openGoodsId;
+            url="showOpenShopGoodsDetail?customerId="+customerId;
+            if(openGoodsId!=undefined&&openGoodsId.length>0){
+                url=url+"&goodsId="+openGoodsId;
+            }
 
         }
         if(isFree==0){

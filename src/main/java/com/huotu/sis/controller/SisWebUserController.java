@@ -979,6 +979,8 @@ public class SisWebUserController {
         if (Objects.isNull(extraGoods) || Objects.isNull(extraGoods.getSpecificationsCache())
                 || extraGoods.getSpecificationsCache().size() == 0)
             throw new SisException("补差额商品不存在，无法进行升级");
+
+
 //        String url = getMerchantSubDomain(customerId) + "/mall/SubmitOrder.aspx?" +
 //                "fastbuy=1&" +
 //                "traitems=" + goods.getId() + "_" + productId + "_1&" +
@@ -1036,8 +1038,12 @@ public class SisWebUserController {
             }
 
         }
-
         Collections.sort(models, (t1, t2) -> t1.getLevelNo().compareTo(t2.getLevelNo()));
+        //是否是最高等级
+        SisLevel topSisLevel=sisLevelRepository.findFirstByOrderByLevelNoDesc();
+        if(topSisLevel==null||topSisLevel.getId().equals(user.getLevelId())){
+            model.addAttribute("isTopSisLevel",true);
+        }
         model.addAttribute("levels", models);
         model.addAttribute("customerId", customerId);
         model.addAttribute("sis", sis);
