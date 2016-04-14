@@ -1040,8 +1040,8 @@ public class SisWebUserController {
         }
         Collections.sort(models, (t1, t2) -> t1.getLevelNo().compareTo(t2.getLevelNo()));
         //是否是最高等级
-        SisLevel topSisLevel=sisLevelRepository.findFirstByOrderByLevelNoDesc();
-        if(topSisLevel==null||topSisLevel.getId().equals(user.getLevelId())){
+        SisLevel topSisLevel=sisLevelRepository.findFirstByMerchantIdOrderByLevelNoDesc(customerId);
+        if(topSisLevel==null||topSisLevel.getId().equals(sis.getSisLevel().getId())){
             model.addAttribute("isTopSisLevel",true);
         }
         model.addAttribute("levels", models);

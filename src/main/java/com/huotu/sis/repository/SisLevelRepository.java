@@ -23,7 +23,7 @@ public interface SisLevelRepository extends JpaRepository<SisLevel, Long>,JpaSpe
     @Query("select sl from SisLevel as sl where sl.id in ?1")
     List<SisLevel> findByIdIn(List<Long> ids);
 
-    SisLevel findFirstByOrderByLevelNoDesc();
+    SisLevel findFirstByMerchantIdOrderByLevelNoDesc(Long merchantId);
 
 
 }
