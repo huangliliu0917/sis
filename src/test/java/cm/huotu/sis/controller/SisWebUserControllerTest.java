@@ -106,7 +106,7 @@ public class SisWebUserControllerTest extends WebTest {
         Long customerId = user.getMerchant().getId();
         webDriver.get("http://localhost/sisweb/showOpenShopGoodsDetail?customerId="+user.getMerchant().getId()+"&goodsId="+goods.getId());
         WebElement smallPic = webDriver.findElement(By.cssSelector("div.s_bd")).findElement(By.cssSelector("ul>li>a>img"));
-        assertThat(smallPic.getAttribute("src")).isEqualTo(goods.getSmallPic()).as("图片资源路径");
+        assertThat(smallPic.getAttribute("src")).isEqualTo(goods.getSmallPic().getValue()).as("图片资源路径");
         WebElement goodsTitle = webDriver.findElement(By.cssSelector("div.sp_bt")).findElement(By.cssSelector("a"));
         assertThat(goodsTitle.getText().trim()).isEqualTo(goods.getTitle()).as("商品标题");
         WebElement stock = webDriver.findElement(By.cssSelector("span.sp_hongzz")).findElement(By.cssSelector("a"));

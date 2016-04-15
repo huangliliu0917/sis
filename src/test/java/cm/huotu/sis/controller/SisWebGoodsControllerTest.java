@@ -10,7 +10,7 @@ import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.utils.DateUtil;
-import com.huotu.sis.common.StringHelper;
+import com.huotu.huobanplus.model.type.MallEmbedResource;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.model.SisDetailModel;
 import com.huotu.sis.model.SisSumAmountModel;
@@ -196,10 +196,10 @@ public class SisWebGoodsControllerTest extends WebTest {
         goods.setTitle(UUID.randomUUID().toString());
         goods.setScenes(0);
         goods.setOwner(user.getMerchant());
-        goods.setSmallPic(UUID.randomUUID().toString());
+        goods.setSmallPic(new MallEmbedResource(UUID.randomUUID().toString()));
         goods.setIntro(UUID.randomUUID().toString());
         goods.setStock(100);
-        pictureUrl.append(commonConfigService.getResoureServerUrl() + goods.getSmallPic());
+        pictureUrl.append(commonConfigService.getResoureServerUrl() + goods.getSmallPic().getValue());
         goodsRepository.saveAndFlush(goods);
         webDriver.get("http://localhost/sisweb/getSisGoodsDetail?goodId=" + goods.getId() + "&customerId=" + user.getMerchant().getId());
         //商品图片
@@ -216,12 +216,5 @@ public class SisWebGoodsControllerTest extends WebTest {
 
 
     }
-
-    @Test
-    public void qmyztest() throws Exception{
-
-
-    }
-
 
 }

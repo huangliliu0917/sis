@@ -291,7 +291,7 @@ public class SisWebGoodsController {
             goodsDetailModel.setIsUp(1);
         }
         StringBuilder picture = new StringBuilder();
-        picture.append(commonConfigService.getResoureServerUrl() + goods.getSmallPic());
+        picture.append(commonConfigService.getResoureServerUrl() + goods.getSmallPic().getValue());
         goodsDetailModel.setPicture(picture.toString());
         request.setAttribute("customerId", customerId);
         request.setAttribute("goodsDetailModel", goodsDetailModel);
@@ -984,8 +984,8 @@ public class SisWebGoodsController {
 
                 appSisGoodsModel.setGoodsId(goods.getId());
                 appSisGoodsModel.setGoodsName(goods.getTitle());
-                if (null != goods.getSmallPic() && goods.getSmallPic().length() > 0) {
-                    appSisGoodsModel.setImgUrl(resoureServerUrl + goods.getSmallPic());//图片路径
+                if (null != goods.getSmallPic().getValue() && goods.getSmallPic().getValue().length() > 0) {
+                    appSisGoodsModel.setImgUrl(resoureServerUrl + goods.getSmallPic().getValue());//图片路径
                 } else {
                     appSisGoodsModel.setImgUrl(img_path);
                 }

@@ -12,6 +12,7 @@ import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.MerchantRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
+import com.huotu.huobanplus.model.type.MallEmbedResource;
 import com.huotu.huobanplus.sdk.mall.service.MallInfoService;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
@@ -645,12 +646,15 @@ public class SisWebUserController {
                     for (OpenGoodsIdLevelId o : openGoodsIdLevelIds.values()) {
                         if (l.getId().equals(o.getLevelid())) {
                             Goods goods = goodsRepository.findOne(o.getGoodsid());
-                            sisLevelModel.setLevelId(l.getId());
-                            sisLevelModel.setLevelTitle(l.getLevelName());
-                            sisLevelModel.setGoodsId(goods.getId());
-                            sisLevelModel.setGoodsTitle(goods.getTitle());
-                            sisLevelModel.setGoodsPrice(goods.getPrice());
-                            sisLevelModels.add(sisLevelModel);
+                            if(goods!=null){
+                                sisLevelModel.setLevelId(l.getId());
+                                sisLevelModel.setLevelTitle(l.getLevelName());
+                                sisLevelModel.setGoodsId(goods.getId());
+                                sisLevelModel.setGoodsTitle(goods.getTitle());
+                                sisLevelModel.setGoodsPrice(goods.getPrice());
+                                sisLevelModels.add(sisLevelModel);
+
+                            }
                             break;
                         }
 
@@ -804,7 +808,7 @@ public class SisWebUserController {
             throw new ProductNotFoundException("开店货品不存在");
         }
 
-        goods.setSmallPic(commonConfigService.getMallApiWebUrl() + goods.getSmallPic());
+        goods.setSmallPic(new MallEmbedResource(commonConfigService.getMallApiWebUrl() + goods.getSmallPic().getValue()));
         int freeze = 0;
         Set<Product> products = goods.getProducts();
         if (products != null) {
