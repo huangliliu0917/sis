@@ -60,7 +60,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
         super.addInterceptors(registry);
         registry.addInterceptor(commonUserInterceptor)
                 .addPathPatterns("/sisweb/**")
-                .excludePathPatterns("/sisweb/auth","/sisweb/appLogin") ;
+                .excludePathPatterns("/sisweb/auth","/sisweb/appLogin","/sisweb/error") ;
 
     }
 
