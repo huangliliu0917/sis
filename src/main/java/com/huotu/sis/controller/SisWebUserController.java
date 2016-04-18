@@ -138,7 +138,7 @@ public class SisWebUserController {
         log.info("enter auth " + token + " " + sign);
         //进行校验
         if (sign == null || !sign.equals(securityService.getSign(request))) {
-            return "redirect:/sisweb/error.html";
+            return "redirect:/html/error";
         }
 
         log.info("auth sign passed");
@@ -171,7 +171,7 @@ public class SisWebUserController {
         }
 
         log.info("auth error " + code);
-        return "redirect:/sisweb/error.html";
+        return "redirect:/html/error";
     }
 
 

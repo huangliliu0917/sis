@@ -43,7 +43,7 @@ public class ControllerEnhance {
 
 
     private ModelAndView errorPage(String message) throws IOException {
-        ModelAndView modelAndView = new ModelAndView("/sisweb/error");
+        ModelAndView modelAndView = new ModelAndView("/html/error");
         modelAndView.addObject("errorMessage", message);
         return modelAndView;
     }

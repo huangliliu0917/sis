@@ -58,6 +58,7 @@ public class CommonUserInterceptor implements HandlerInterceptor {
         Long userId=0L;
         String userAgent=request.getHeader("User-Agent");
         log.info("useragent"+userAgent);
+        log.info("url:"+request.getRequestURL()+" canshu:"+request.getQueryString());
         String[] data= StringHelper.getRequestAppInfo(userAgent);
         if(data!=null&&data.length==3&&StringHelper.isTrueSign(data)){
                 userId=Long.parseLong(data[1]);

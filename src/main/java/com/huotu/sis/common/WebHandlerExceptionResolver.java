@@ -31,7 +31,7 @@ public class WebHandlerExceptionResolver implements HandlerExceptionResolver {
             }
 
             try {
-                return new ModelAndView("redirect:/sisweb/error?errorMessage="+ URLEncoder.encode(message,"utf-8"));
+                return new ModelAndView("redirect:/html/error?errorMessage="+ URLEncoder.encode(message,"utf-8"));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
