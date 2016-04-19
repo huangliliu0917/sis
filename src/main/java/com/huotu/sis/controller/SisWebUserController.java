@@ -971,11 +971,17 @@ public class SisWebUserController {
         if (Objects.isNull(sis.getSisLevel()) || Objects.isNull(sis.getSisLevel().getLevelNo())) {
             throw new SisException("您店铺没有店铺等级");
         }
+
         List<SisLevel> sisLevels = sisLevelService.getListBelongByLevelId(sis.getSisLevel().getLevelNo(), customerId);
 //        sisLevels.stream().forEach(sisLevel -> {
 //            SisLevelUpgradeModel sisLevelUpgradeModel = new SisLevelUpgradeModel();
 //        });
         SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
+
+        if(Objects.isNull(sisConfig)||sisConfig.getOpenGoodsMode()==null||sisConfig.getOpenGoodsMode()==0){
+            throw new SisException("店铺配置尚未初始化");
+        }
+
         if (Objects.isNull(sisConfig) || Objects.isNull(sisConfig.getOpenGoodsIdlist()) || Objects.isNull(sisConfig.getExtraUpGoodsId())) {
             throw new SisException("店铺配置尚未初始化");
         }
@@ -1016,10 +1022,12 @@ public class SisWebUserController {
 //                    sisLevelUpgradeModel.setGoodsUrl();
                     Goods goods = goodsRepository.findOne(entry.getValue().getGoodsid());
                     if (Objects.nonNull(goods.getPrice())) {
+                        //需要补的钱
                         Long price = Math.round(goods.getPrice() - originalPrice);
                         sisLevelUpgradeModel.setOriginalPrice(Math.round(goods.getPrice()));
                         sisLevelUpgradeModel.setCurrentPrice(price);
-                        String goodsUrl = url + "_" + price;
+                        int goodsNumber=new Double(Math.ceil((goods.getPrice()-originalPrice)/extraGoods.getPrice())).intValue();
+                        String goodsUrl = url + "_" + goodsNumber;
                         sisLevelUpgradeModel.setGoodsUrl(goodsUrl);
                         models.add(sisLevelUpgradeModel);
                     }
