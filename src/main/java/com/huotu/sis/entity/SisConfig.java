@@ -129,5 +129,9 @@ public class SisConfig {
     @Column(name = "EnableLevelUpgrade")
     private Boolean enableLevelUpgrade;
 
+    @Column(name = "HomePageColor",length = 200)
+    @Description("分享图片")
+    private String homePageColor;
+
 
 }

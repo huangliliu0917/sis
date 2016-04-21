@@ -57,6 +57,21 @@ public interface CommonConfigsService {
      */
     String getResourceServerUrl();
 
+
+
+    /**
+     * huobanplus上传资源的服务地址
+     * @return
+     */
+    String getResourcesHome();
+
+
+    /**
+     * huobanplus静态资源域名地址
+     * @return
+     */
+    String getResourcesUri();
+
     /**
      * 短信设置
      * @return

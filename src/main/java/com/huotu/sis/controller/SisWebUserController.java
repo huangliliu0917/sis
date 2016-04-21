@@ -109,9 +109,8 @@ public class SisWebUserController {
     @Autowired
     private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
 
+
     VerificationService verificationService;
-
-
 
 
     @PostConstruct
@@ -880,6 +879,10 @@ public class SisWebUserController {
             sharePic = commonConfigService.getResourceServerUrl() + merchantConfig.getLogoImg();
         }
         model.addAttribute("sharePic", sharePic);
+        if(!StringUtils.isEmpty(sisConfig.getSharePic())){
+            String invitePic=sisConfig.getSharePic();
+            model.addAttribute("invitePic",commonConfigService.getResourcesUri()+invitePic);
+        }
         model.addAttribute("customerUrl", getMerchantSubDomain(customerId));
         model.addAttribute("shareUrl", shareUrl);
         return "sisweb/inviteOpenShop";

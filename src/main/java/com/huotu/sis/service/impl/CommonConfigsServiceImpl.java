@@ -17,7 +17,7 @@ public class CommonConfigsServiceImpl implements CommonConfigsService {
 
     @Override
     public String getWebUrl() {
-        return env.getProperty("sisweb.weburl", "http://192.168.1.87:8080");
+        return env.getProperty("sisweb.weburl", "http://192.168.1.57:8081");
     }
 
     @Override
@@ -47,6 +47,16 @@ public class CommonConfigsServiceImpl implements CommonConfigsService {
     @Override
     public String getResourceServerUrl() {
         return env.getProperty("huotu.mall.resourcesUri", "http://res.51flashmall.com");
+    }
+
+    @Override
+    public String getResourcesHome() {
+        return env.getProperty("huotu.resourcesHome", (String) null);
+    }
+
+    @Override
+    public String getResourcesUri() {
+        return env.getProperty("huotu.resourcesUri", (String) null);
     }
 
     @Override
