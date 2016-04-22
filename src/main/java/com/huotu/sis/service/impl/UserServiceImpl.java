@@ -239,7 +239,7 @@ public class UserServiceImpl implements UserService {
                         findByLevel_IdAndGuideLevel_Id(
                                 belongOneSis.getSisLevel().getId(),
                                 ownSis.getSisLevel().getId());
-                //上线等级和自己等级无法匹配到返利余额
+                //团队等级和自己等级无法匹配到返利余额
                 if(sisOpenAwardAssign==null){
                     log.info("user"+user.getId()+"On-line level and their own level can't match to the rebate balance");
                     return;
