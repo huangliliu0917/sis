@@ -28,7 +28,7 @@
         <img src="images/iconfont-jiazai.gif" width="35px"/>
         <p style="padding-top:10px" class="tit_rem_big">正在开启</p>
     </div>
-    <p style=" width:45%; text-align:center; margin:0 auto; margin-top:8%"><img src="images/gm-open.png" width="100%"/></p>
+    <p style=" width:45%; text-align:center; margin:0 auto; margin-top:8%"><img th:src="${invitePic}==null?'images/gm-open.png':@{${invitePic}}" src="images/gm-open.png" width="100%"/></p>
 
 
     <form method="post" id="form1" th:object="${sisInviteLog}">

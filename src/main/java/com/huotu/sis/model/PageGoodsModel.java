@@ -19,6 +19,8 @@ public class PageGoodsModel {
 
     private int PageSize;
 
+
+
     @JsonProperty(value = "Rows")
     public List<PcSisGoodsModel> getRows() {
         return Rows;

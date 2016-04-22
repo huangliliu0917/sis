@@ -133,5 +133,9 @@ public class SisConfig {
     @Description("分享图片")
     private String homePageColor;
 
+    @Description("是否已经一键铺货")
+    @Column(name = "ShelvesAllGoods")
+    private Boolean shelvesAllGoods;
+
 
 }

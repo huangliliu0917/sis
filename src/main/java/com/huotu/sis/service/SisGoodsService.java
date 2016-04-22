@@ -1,6 +1,8 @@
 package com.huotu.sis.service;
 
 import com.huotu.huobanplus.common.entity.Goods;
+import com.huotu.huobanplus.common.entity.Merchant;
+import com.huotu.huobanplus.common.entity.User;
 import com.huotu.sis.entity.SisGoods;
 import org.springframework.data.domain.Page;
 
@@ -62,5 +64,16 @@ public interface SisGoodsService {
      * @return
      */
     List<SisGoods> getAllSisGoodsList(Long goodsId, Long userId, Long merchantId);
+
+    /**
+     * 一键铺货模式中，获取商家的商品
+     * @param merchant      商户
+     * @param user          用户
+     * @param page          第几页
+     * @param pageSize      每页几条
+     * @return
+     */
+    Page<SisGoods>getMallGoods(Merchant merchant, User user, int page, int pageSize);
+
 
 }

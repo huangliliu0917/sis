@@ -6,19 +6,19 @@ import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.BrandRepository;
 import com.huotu.huobanplus.common.repository.CategoryRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
+import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisBrand;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
-import com.huotu.sis.model.AppSisSortModel;
-import com.huotu.sis.repository.SisConfigRepository;
-import com.huotu.sis.repository.SisRepository;
-import com.huotu.sis.service.CommonConfigService;
-import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.exception.SisException;
+import com.huotu.sis.model.AppSisSortModel;
 import com.huotu.sis.model.PageSisBrandModel;
 import com.huotu.sis.model.PublicParameterModel;
 import com.huotu.sis.model.SisBrandModel;
+import com.huotu.sis.repository.SisConfigRepository;
+import com.huotu.sis.repository.SisRepository;
+import com.huotu.sis.service.CommonConfigService;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SisBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,11 +110,21 @@ public class SisWebBrandController {
     public PageSisBrandModel getBrandList(Long customerId,int page, int pageSize) throws SisException {
         Long userId = getCurrentUserId();
         User user = userRepository.findOne(userId);
+        Sis sis=sisRepository.findByUser(user);
         if (null == user)
             throw new SisException("用户不存在或者已过期");
 //        Page<Brand> pages = brandRepository.findByCustomerId(user.getMerchant().getId(), pageable);
-        Sort sort = new Sort(Sort.Direction.DESC, "orderWeight", "id");
-        Page<SisBrand> pages = sisBrandService.findByUserId(userId, page - 1, pageSize, sort);
+
+
+        Page<SisBrand> pages=null;
+        if(sis!=null&&sis.getShelvesAllGoods()!=null&&sis.getShelvesAllGoods()){
+            Sort sort = new Sort(Sort.Direction.DESC, "id");
+            pages = sisBrandService.findAllByUser(user, page - 1, pageSize, sort);
+        }else {
+            Sort sort = new Sort(Sort.Direction.DESC, "orderWeight", "id");
+            pages = sisBrandService.findByUserId(userId, page - 1, pageSize, sort);
+
+        }
         String detailsUrl ="getBrandDetail?customerId="+customerId+"&brandId=";
         List<SisBrandModel> list = new ArrayList<>();
         if (null != pages.getContent() && pages.getContent().size() > 0) {
@@ -122,6 +132,7 @@ public class SisWebBrandController {
                 Brand brand = sisBrand.getBrand();
                 SisBrandModel sisBrandModel = new SisBrandModel();
                 sisBrandModel.setBrandId(brand.getId());
+                sisBrandModel.setShelves(sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
                 sisBrandModel.setBrandName(brand.getBrandName());
                 sisBrandModel.setCustomerId(brand.getCustomerId());
                 sisBrandModel.setDetailsUrl(detailsUrl);
@@ -160,6 +171,7 @@ public class SisWebBrandController {
         if (null == user) {
             throw new SisException("用户不存在或者已过期");
         }
+        Sis sis=sisRepository.findByUser(user);
 
         Page<Brand> brandList = sisBrandService.getAllBrandByCustomerIdAndBrandName(user.getMerchant().getId(), keywords, page, pageSize);
 
@@ -171,6 +183,9 @@ public class SisWebBrandController {
                 SisBrandModel sisBrandModel = new SisBrandModel();
                 sisBrandModel.setBrandId(p.getId());
                 sisBrandModel.setBrandName(p.getBrandName());
+                if(sis!=null){
+                    sisBrandModel.setShelves(sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
+                }
                 sisBrandModel.setCustomerId(p.getCustomerId());
                 if (null != p.getBrandLogo() && p.getBrandLogo().length() > 0) {
                     sisBrandModel.setBrandLogo(commonConfigService.getResoureServerUrl() + p.getBrandLogo());
@@ -216,9 +231,13 @@ public class SisWebBrandController {
         if (null == user)
             throw new SisException("该用户不存在或者已经过期");
         Long count = sisBrandService.countByCustomerId(userId);
+        Sis sis =sisRepository.findByUser(user);
         model.addAttribute("user", user);
         model.addAttribute("customerId", customerId);
         model.addAttribute("count", count);
+        if(sis!=null){
+            model.addAttribute("shelvesModel",sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
+        }
         return "/sisweb/sisBrandList";
     }
 
@@ -301,7 +320,7 @@ public class SisWebBrandController {
             Long count = sisBrandService.countByCustomerId(userId);
             SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
             if (null != sisConfig && null != sisConfig.getMaxBrandNum()
-                    && Integer.parseInt(count.toString()) < sisConfig.getMaxBrandNum()) {
+                    && (Integer.parseInt(count.toString()) < sisConfig.getMaxBrandNum()||sisConfig.getMaxBrandNum()==0)) {
                 sisBrand = new SisBrand();
                 sisBrand.setSelected(Boolean.TRUE);
                 sisBrand.setBrand(brand);

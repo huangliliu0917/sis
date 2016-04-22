@@ -22,6 +22,8 @@
         /*]]>*/
     </script>
     <script src="js/sisAddGoods.js" th:src="@{/sisweb/js/recommendGoodsIndex.js}" type="text/javascript"></script>
+    <script src="js/chooseGoods.js" th:src="@{/sisweb/js/chooseGoods.js}" type="text/javascript"></script>
+    <!--店主专享-->
     <title>选品上架</title>
 </head>
 <style>
@@ -187,6 +189,7 @@
                 </div>
             </div>
         </div>
+        <button class="button-a" type="button" onclick="changeShelvesModel(this)" th:text="${shelvesModel}?'当前模式:一键铺货':'当前模式:自主选货'">一键铺货</button>
     </div>
 
     <div id="goodsOperDescprition" class="xf-xf" style="display: none">
@@ -217,15 +220,22 @@
 
     <label style="border-top: 1px solid #fff;" class="weui_cell weui_check_label">
         <div class="weui_cell_hd">
-            {{if row.goodSelected != true}}
-            <a href="javascript:void(0)" onclick="sisAddGoodsProvider.operateGoods({{row.goodsId}},this,1)">
-                <img src="images/a03.png" width="25px" />
-            </a>
+            {{if row.shelves!=true}}
+                {{if row.goodSelected != true}}
+                <a href="javascript:void(0)" onclick="sisAddGoodsProvider.operateGoods({{row.goodsId}},this,1)">
+                    <img src="images/a03.png" width="25px" />
+                </a>
+                {{else}}
+                <a href="javascript:void(0)" onclick="sisAddGoodsProvider.operateGoods({{row.goodsId}},this,0)">
+                    <img src="images/a06.png" width="25px" />
+                </a>
+                {{/if}}
             {{else}}
-            <a href="javascript:void(0)" onclick="sisAddGoodsProvider.operateGoods({{row.goodsId}},this,0)">
+            <a href="javascript:void(0)" onclick="">
                 <img src="images/a06.png" width="25px" />
             </a>
             {{/if}}
+
         </div>
         <div class="weui_cell_bd weui_cell_primary">
             <a href="{{row.detailsUrl}}{{row.goodsId}}"> <div style="float:left;" class="hrfg">

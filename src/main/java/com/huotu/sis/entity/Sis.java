@@ -114,4 +114,8 @@ public class Sis {
     @Column(name = "CustomerId")
     private Long customerId;
 
+    @Description("是否已经一键铺货")
+    @Column(name = "ShelvesAllGoods")
+    private Boolean shelvesAllGoods;
+
 }

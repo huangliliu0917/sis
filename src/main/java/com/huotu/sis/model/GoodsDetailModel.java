@@ -65,6 +65,11 @@ public class GoodsDetailModel {
      */
     private Integer directRebate;
 
+    /**
+     * 是否是一键铺货
+     */
+    private boolean shelves;
+
 
 
 

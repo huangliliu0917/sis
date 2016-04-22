@@ -70,4 +70,9 @@ public class PcSisGoodsModel {
      * 商品分享URL
      */
     private String shareUrl;
+
+    /**
+     * 是否一键铺货
+     */
+    private boolean shelves;
 }

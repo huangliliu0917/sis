@@ -1,19 +1,23 @@
 package com.huotu.sis.service.impl;
 
+import com.huotu.huobanplus.base.data.MutableSpecification;
 import com.huotu.huobanplus.common.entity.Goods;
+import com.huotu.huobanplus.common.entity.Merchant;
+import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.sis.entity.SisGoods;
 import com.huotu.sis.repository.SisGoodsRepository;
 import com.huotu.sis.service.SisGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +32,8 @@ public class SisGoodsServiceImpl implements SisGoodsService {
 
     @Autowired
     private GoodsRepository goodsRepository;
+
+
 
     @Override
     public Page<SisGoods> getSisGoodsList(Long customerId, Long userId, int page, int pageSize) {
@@ -145,6 +151,37 @@ public class SisGoodsServiceImpl implements SisGoodsService {
         };
 
         return sisGoodsRepository.findAll(specification);
+    }
+
+    @Override
+    public Page<SisGoods> getMallGoods(Merchant merchant, User user, int page, int pageSize) {
+        Sort sort= new Sort(Sort.Direction.DESC, "autoMarketDate");
+        Pageable pageable=new PageRequest(page,pageSize,sort);
+        Page<Goods> goodses=goodsRepository.findAll(new MutableSpecification<Goods>() {
+            @Override
+            public Predicate toPredicate(Root<Goods> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                return cb.and(
+                    cb.equal(root.get("owner").as(Merchant.class), merchant),
+                    cb.isTrue(root.get("marketable").as(Boolean.class)),
+                    cb.isFalse(root.get("disabled").as(Boolean.class))
+                );
+            }
+            @Override
+            public void beforeQuery(TypedQuery query) {
+
+            }
+        },pageable);
+        List<SisGoods> sisGoodses=new ArrayList<>();
+        for(Goods g:goodses){
+            SisGoods sisGoods=new SisGoods();
+            sisGoods.setDeleted(false);
+            sisGoods.setGoods(g);
+            sisGoods.setSelected(true);
+            sisGoods.setMerchant(merchant);
+            sisGoods.setUser(user);
+            sisGoodses.add(sisGoods);
+        }
+        return new PageImpl<SisGoods>(sisGoodses,pageable,goodses.getTotalElements());
     }
 
 }

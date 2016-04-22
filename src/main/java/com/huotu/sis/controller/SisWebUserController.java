@@ -663,6 +663,10 @@ public class SisWebUserController {
 
             model.addAttribute("openGoods", sisLevelModels);
         }
+        if(!StringUtils.isEmpty(sisConfig.getSharePic())){
+            String invitePic=sisConfig.getSharePic();
+            model.addAttribute("invitePic",commonConfigService.getResourcesUri()+invitePic);
+        }
         return "sisweb/openShop";
 
 
@@ -1065,5 +1069,42 @@ public class SisWebUserController {
         return "/sisweb/sisLevelUpgrade";
     }
 
-
+    /**
+     * 切换铺货模式(目前有一键铺货和自主选货)
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/switchShelves")
+    @ResponseBody
+    public ResultModel switchShelves() throws Exception{
+        ResultModel resultModel=new ResultModel();
+        PublicParameterModel ppm = PublicParameterHolder.get();
+        Long userId = ppm.getUserId();
+        if(userId==null){
+            resultModel.setCode(500);
+            resultModel.setMessage("未找到用户ID");
+            return resultModel;
+        }
+        User user =userRepository.findOne(userId);
+        if(Objects.isNull(user)){
+            resultModel.setCode(500);
+            resultModel.setMessage("未找到用户");
+            return resultModel;
+        }
+        Sis sis=sisRepository.findByUser(user);
+        if(Objects.isNull(sis)){
+            resultModel.setCode(500);
+            resultModel.setMessage("未找到店铺");
+            return resultModel;
+        }
+        Boolean shelvesAllGoods=sis.getShelvesAllGoods();
+        if(shelvesAllGoods==null){
+            shelvesAllGoods=false;
+        }
+        sis.setShelvesAllGoods(!shelvesAllGoods);
+        sisRepository.save(sis);
+        resultModel.setCode(200);
+        resultModel.setMessage("OK");
+        return resultModel;
+    }
 }

@@ -1,6 +1,7 @@
 package com.huotu.sis.service;
 
 import com.huotu.huobanplus.common.entity.Brand;
+import com.huotu.huobanplus.common.entity.User;
 import com.huotu.sis.entity.SisBrand;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,16 @@ public interface SisBrandService {
      * @return
      */
     Page<SisBrand> findByUserId(Long userId, int page, int pageSize, Sort sort);
+
+    /**
+     * 一键铺货模式中获取所有的品牌
+     * @param user
+     * @param page
+     * @param pageSize
+     * @param sort
+     * @return
+     */
+    Page<SisBrand> findAllByUser(User user, int page, int pageSize, Sort sort);
 
     /**
      * 某商户所有的品牌，分页

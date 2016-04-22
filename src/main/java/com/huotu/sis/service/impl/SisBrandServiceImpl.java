@@ -1,15 +1,13 @@
 package com.huotu.sis.service.impl;
 
 import com.huotu.huobanplus.common.entity.Brand;
+import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.BrandRepository;
 import com.huotu.sis.entity.SisBrand;
 import com.huotu.sis.repository.SisBrandRepository;
 import com.huotu.sis.service.SisBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +42,30 @@ public class SisBrandServiceImpl implements SisBrandService {
             );
             return predicate;
         }), pageable);
+    }
+
+    @Override
+    public Page<SisBrand> findAllByUser(User user, int page, int pageSize, Sort sort) {
+        Pageable pageable;
+        if (null != sort)
+            pageable = new PageRequest(page, pageSize, sort);
+        else
+            pageable = new PageRequest(page, pageSize);
+
+        Page<Brand> brands= brandRepository.findAll(((root, query, cb) -> {
+            Predicate predicate =cb.isFalse(root.get("disabled").as(Boolean.class));
+            return predicate;
+        }), pageable);
+
+        List<SisBrand> sisBrands=new ArrayList<>();
+        for(Brand b:brands){
+            SisBrand sisBrand=new SisBrand();
+            sisBrand.setSelected(true);
+            sisBrand.setUser(user);
+            sisBrand.setBrand(b);
+            sisBrands.add(sisBrand);
+        }
+        return new PageImpl<SisBrand>(sisBrands,pageable,brands.getTotalElements());
     }
 
     @Override

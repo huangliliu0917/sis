@@ -165,10 +165,14 @@
 
             <p style="clear:both;"></p>
             <li>
+                {{if !row.shelves}}
                 <a href="javascript:void(0)" onclick="operationOne({{row.goodsId}},0)"><p
                         class="fk_hrsdds tit_rem toptop-a">下架</p></a>
-                <a href="javascript:void(0)" onclick="operationOne({{row.goodsId}},2)"><p
+                {{/if}}
+                {{if !row.shelves}}
+                <a aria-disabled="true" href="javascript:void(0)" onclick="operationOne({{row.goodsId}},2)"><p
                         class="fk_hrsdds tit_rem toptop-b">置顶</p></a>
+                {{/if}}
                 <a href="{{row.shareUrl}}"><p
                         class="fk_hrsdds tit_rem toptop-a">分享</p></a>
             </li>

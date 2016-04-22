@@ -156,10 +156,12 @@
         <ul class="tabstyle" id="sisBrand_{{row.brandId}}">
             <li><a href="{{row.detailsUrl}}{{row.brandId}}"><img src="{{row.brandLogo}}" width="100%"/></a></li>
             <li class="updown-a">
+                {{if !row.shelves}}
                 <a href="javascript:void(0)" onclick="operationBrand({{row.brandId}},0)"><p style="margin-right: 10px;"
                                                                                             class="fk_hrsdds tit_rem  toptop-d">下架</p></a>
                 <a href="javascript:void(0)" onclick="operationBrand({{row.brandId}},2)"><p
                         class="xcjjxc fk_hrsdds tit_rem left-a toptop-d">置顶</p></a>
+                {{/if}}
             </li>
             <p style="clear:both; height:1px;"></p>
         </ul>

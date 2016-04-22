@@ -242,6 +242,7 @@ public class SisWebGoodsController {
     public String getSisGoodsDetail(Long goodId,Long customerId, HttpServletRequest request) throws IOException, SisException {
         Long userId = getCurrentUserId();
         User user = userRepository.findOne(userId);
+        Sis sis=sisRepository.findByUser(user);
 
         GoodsDetailModel goodsDetailModel = new GoodsDetailModel();
         Goods goods = goodsRepository.findOne(goodId);
@@ -293,6 +294,7 @@ public class SisWebGoodsController {
         StringBuilder picture = new StringBuilder();
         picture.append(commonConfigService.getResoureServerUrl() + goods.getSmallPic().getValue());
         goodsDetailModel.setPicture(picture.toString());
+        goodsDetailModel.setShelves(sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
         request.setAttribute("customerId", customerId);
         request.setAttribute("goodsDetailModel", goodsDetailModel);
         return "sisweb/goodsDetail";
@@ -312,12 +314,15 @@ public class SisWebGoodsController {
         if (null == user) {
             throw new SisException("该用户不存在或者已经过期");
         }
-
         Long count = sisGoodsService.countByUserId(customerId,userId);
+        Sis sis =sisRepository.findByUser(user);
         request.setAttribute("pageType", pageType);
         model.addAttribute("user", user);
         model.addAttribute("customerId", customerId);
         model.addAttribute("count", count);
+        if(sis!=null){
+            model.addAttribute("shelvesModel",sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
+        }
         return "/sisweb/sisGoodsList";
     }
 
@@ -339,7 +344,13 @@ public class SisWebGoodsController {
             throw new SisException("用户不存在或者已过期");
         }
         logger.debug("show sis goods list begin");
-        Page<SisGoods> pages = sisGoodsService.getSisGoodsList(user.getMerchant().getId(), user.getId(), page - 1, pageSize);
+        Sis sis=sisRepository.findByUser(user);
+        Page<SisGoods> pages;
+        if(sis==null||sis.getShelvesAllGoods()==null||!sis.getShelvesAllGoods()){
+            pages = sisGoodsService.getSisGoodsList(user.getMerchant().getId(), user.getId(), page - 1, pageSize);
+        }else{
+            pages = sisGoodsService.getMallGoods(user.getMerchant(), user, page - 1, pageSize);
+        }
         List<SisGoods> goodsList = pages.getContent();
         //计算直推返利/分销返利值
         List<PcSisGoodsModel> list = calculateValue(goodsList, user);
@@ -466,7 +477,8 @@ public class SisWebGoodsController {
             SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
 
             if (null != sisConfig && null != sisConfig.getMaxMartketableNum() &&
-                    Integer.parseInt(count.toString()) < sisConfig.getMaxMartketableNum()) {
+
+                    (Integer.parseInt(count.toString()) < sisConfig.getMaxMartketableNum()||sisConfig.getMaxMartketableNum()==0)) {
 
                 sisGoods = new SisGoods();
                 sisGoods.setMerchant(user.getMerchant());
@@ -995,6 +1007,7 @@ public class SisWebGoodsController {
                 appSisGoodsModel.setStock(goods.getStock());
                 appSisGoodsModel.setGoodSelected(sisGoods.isSelected());
                 appSisGoodsModel.setDetailsUrl(goodsUrl + "&goodId=");
+                appSisGoodsModel.setShelves(sis.getShelvesAllGoods()==null? false:sis.getShelvesAllGoods());
 //                logger.debug("sis goods share URL:" + getSisGoodsUrl(user.getMerchant().getId(), user.getId(), goods.getId()));
                 appSisGoodsModel.setShareUrl(goodsShareUrl + goods.getId());
                 list.add(appSisGoodsModel);
@@ -1105,10 +1118,15 @@ public class SisWebGoodsController {
         if (null == user) {
             throw new SisException("该用户不存在或者已经过期");
         }
+        Sis sis =sisRepository.findByUser(user);
         model.addAttribute("user", user);
         model.addAttribute("customerId", customerId);
         Long count = sisGoodsService.countByUserId(customerId,userId);
         model.addAttribute("count", count);
+        if(sis!=null){
+            model.addAttribute("shelvesModel",sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
+        }
+
         return "/sisweb/recommendGoodsIndex";
     }
 

@@ -16,4 +16,8 @@ public class SisBrandModel {
     private Long customerId;
     private boolean selected;
     private String detailsUrl;
+    /**
+     * 是否是一键铺货模式
+     */
+    private boolean shelves;
 }

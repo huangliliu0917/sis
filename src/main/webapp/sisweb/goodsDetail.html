@@ -99,8 +99,10 @@
         </div>
     </div>
     <p style="height: 40px;"></p>
-    <button th:if="*{isUp==1}" class="button-a" type="button" onclick="upGoods()">上架</button>
-    <button th:if="*{isUp==0}" class="button-a" type="button" onclick="downGoods()">下架</button>
+    <span th:if="!*{shelves}">
+        <button th:if="*{isUp==1}" class="button-a" type="button" onclick="upGoods()">上架</button>
+        <button th:if="*{isUp==0}" class="button-a" type="button" onclick="downGoods()">下架</button>
+    </span>
 </div>
 
 </body>
