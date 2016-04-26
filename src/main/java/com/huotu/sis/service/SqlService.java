@@ -13,7 +13,7 @@ import java.util.List;
 public interface SqlService {
 
     /**
-     * 根据用户ID查找出下线贡献的开店奖以及人数
+     * 根据用户ID查找出自己团队贡献的开店奖以及人数
      * @param userId
      * @return
      * @throws IOException
@@ -30,7 +30,7 @@ public interface SqlService {
 
 
     /**
-     * 查询我的下线开店记录
+     * 查询我的团队开店记录
      * @param userId    贡献人ID
      * @param srcType   层级
      * @param pageNo    查询的页数
