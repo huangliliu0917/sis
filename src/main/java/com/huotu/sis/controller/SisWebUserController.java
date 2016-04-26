@@ -4,7 +4,6 @@ import com.huotu.common.base.HttpHelper;
 import com.huotu.huobanplus.base.toolService.ResourceService;
 import com.huotu.huobanplus.common.UserType;
 import com.huotu.huobanplus.common.entity.Goods;
-import com.huotu.huobanplus.common.entity.MerchantConfig;
 import com.huotu.huobanplus.common.entity.Product;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.support.ProductSpecifications;
@@ -868,21 +867,24 @@ public class SisWebUserController {
             port = ":" + request.getServerPort();
 
         }
-        MerchantConfig merchantConfig = merchantConfigRepository.findByMerchantId(customerId);
-        String shareUrl = "http://" + request.getServerName() + port + request.getContextPath() +
-                "/sisweb/showOpenShop?gduid=" + userId + "&customerId=" + customerId;
-        model.addAttribute("userId", userId);
-        model.addAttribute("customerId", customerId);
-        model.addAttribute("shareTitle", convertShareContent(sisConfig.getShareTitle(), customerId, userId));
-        model.addAttribute("shareDesc", convertShareContent(sisConfig.getShareDesc(), customerId, userId));
-        String sharePic = "";
-        if (merchantConfig != null) {
-            sharePic = commonConfigService.getResourceServerUrl() + merchantConfig.getLogoImg();
-        }
-        model.addAttribute("sharePic", sharePic);
-        model.addAttribute("customerUrl", getMerchantSubDomain(customerId));
-        model.addAttribute("shareUrl", shareUrl);
-        return "sisweb/inviteOpenShop";
+//        MerchantConfig merchantConfig = merchantConfigRepository.findByMerchantId(customerId);
+//        String shareUrl = "http://" + request.getServerName() + port + request.getContextPath() +
+//                "/sisweb/showOpenShop?gduid=" + userId + "&customerId=" + customerId;
+//        model.addAttribute("userId", userId);
+//        model.addAttribute("customerId", customerId);
+//        model.addAttribute("shareTitle", convertShareContent(sisConfig.getShareTitle(), customerId, userId));
+//        model.addAttribute("shareDesc", convertShareContent(sisConfig.getShareDesc(), customerId, userId));
+//        String sharePic = "";
+//        if (merchantConfig != null) {
+//            sharePic = commonConfigService.getResourceServerUrl() + merchantConfig.getLogoImg();
+//        }
+//        model.addAttribute("sharePic", sharePic);
+//        model.addAttribute("customerUrl", getMerchantSubDomain(customerId));
+//        model.addAttribute("shareUrl", shareUrl);
+//        return "sisweb/inviteOpenShop";
+
+        model.addAttribute("customerId",customerId);
+        return "redirect:showOpenShopGoodsDetail";
 
     }
 
