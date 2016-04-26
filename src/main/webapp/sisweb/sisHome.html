@@ -101,7 +101,7 @@
             </a>
         </div>
     </div>
-    <div class="f-box">
+    <div th:if="${enableLevelUpgrade}" class="f-box">
         <div class="f-boxs">
             <a href="javascript:void(0)" th:href="@{/sisweb/sisLevelUpgrade(customerId=${customerId})}">
                 <div class="top11">

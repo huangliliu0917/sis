@@ -424,6 +424,7 @@ public class SisWebUserController {
         Long userId = ppm.getUserId();
         User user = userRepository.findOne(userId);
         Sis sis = sisRepository.findByUser(user);
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
         SisModel sisModel = new SisModel();
         sisModel.setSisName(sis.getTitle());
         sisModel.setSisDetail(sis.getDescription());
@@ -435,6 +436,9 @@ public class SisWebUserController {
             sisModel.setHead(user.getWeixinImageUrl());
         request.setAttribute("sisModel", sisModel);
         request.setAttribute("customerId", customerId);
+        if(sisConfig!=null){
+            request.setAttribute("enableLevelUpgrade",sisConfig.getEnableLevelUpgrade());
+        }
         return "sisweb/sisHome";
     }
 
