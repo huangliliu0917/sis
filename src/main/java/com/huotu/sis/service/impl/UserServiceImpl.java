@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long getUserId(HttpServletRequest request) {
-        if (env.acceptsProfiles("develop")){
+        if (env.acceptsProfiles("development")){
 //            userRepository.findAll();
 //            return 97278L;//146 4471商户 王明
             return 120034L;
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getLoginType(HttpServletRequest request) throws Exception {
-//        if (env.acceptsProfiles("develop")){
+//        if (env.acceptsProfiles("development")){
 //            return "1";
 //        }
         String encrypt = CookieHelper.get(request, loginApp);

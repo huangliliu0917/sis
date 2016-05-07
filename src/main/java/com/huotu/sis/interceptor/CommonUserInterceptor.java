@@ -68,7 +68,7 @@ public class CommonUserInterceptor implements HandlerInterceptor {
 
             log.info("enter interceptor");
 
-            if (!env.acceptsProfiles("develop")) {
+            if (!env.acceptsProfiles("development")) {
 
                 Long customerId = Long.parseLong(request.getParameter("customerId"));
                 Boolean toSSO = false;

@@ -39,7 +39,7 @@ public class YimeiVerificationService extends AbstractVerificationService implem
 
     @Override
     protected void doSend(VerificationCode code) throws InterrelatedException {
-        if (env.acceptsProfiles("test") || env.acceptsProfiles("develop"))
+        if (env.acceptsProfiles("test") || env.acceptsProfiles("development"))
             return;
         VerificationProject project=VerificationProject.fanmore;
         String smsContent = new Formatter(Locale.CHINA).format(project.getFormat(), code.getCode()).toString();
