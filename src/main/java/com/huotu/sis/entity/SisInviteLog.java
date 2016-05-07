@@ -40,6 +40,10 @@ public class SisInviteLog {
     private String mobile;
 
 
+    @Column(name = "WeChatId",length = 20)
+    @Description("手机号")
+    private String weChatId;
+
 
     @Column(name = "InviterId")
     @Description("邀请人会员Id")

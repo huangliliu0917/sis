@@ -40,6 +40,7 @@
         <div style="margin:40px 40px  0px 40px; position: relative">
             <input th:if="*{inviterId}!=null" type="hidden" id="inviterId" th:value="*{inviterId}" name="inviterId"/>
             <input class="input-name" id="realName" name="realName" placeholder="请输入您的真实姓名" maxlength="20" type="text"/>
+            <input class="input-name" id="weChatId " name="weChatId" placeholder="请输入您的微信号" maxlength="20" type="text"/>
             <input class="input-name" id="phone" name="mobile" placeholder="请输入您的店铺手机号" maxlength="20" type="text"/>
             <input class="input-name" id="code" name="code" placeholder="输入验证码" maxlength="20" type="text"/>
             <button  id="send" name="send" class=" button-code-a" type="button" title=""
@@ -178,6 +179,7 @@
         var flag;
         var realName=$("input[name='realName']").val();
         var phone=$("input[name='mobile']").val();
+        var weChatId=$("input[name='weChatId']").val();
         var openGoodsMode=/*[[${openGoodsMode}]]*/ '';
         if(realName.length==0){
             layer.msg("请填写真实姓名");
@@ -185,6 +187,10 @@
         }
         if(phone.length!=11){
             layer.msg("请填写有效的手机号");
+            return;
+        }
+        if(phone.length==0){
+            layer.msg("请填写微信号");
             return;
         }
         if(openGoodsMode==1){
@@ -200,7 +206,7 @@
         }
         $("#openNow").show();
         var customerId=/*[[${customerId}]]*/'';
-        submitInviteInfo(realName,phone,customerId);
+        submitInviteInfo(realName,phone,customerId,weChatId);
     }
 
 
@@ -212,7 +218,7 @@
      * @param phone         用户电话
      * @param customerId    商户ID
      */
-    function submitInviteInfo(realName,phone,customerId) {
+    function submitInviteInfo(realName,phone,customerId,weChatId) {
         var inviterId=$("input[name='inviterId']").val();
         var openGoodsId=$("input[name='openGoods']:checked").val();
 
@@ -221,7 +227,7 @@
             type:'POST',
             url: 'collectSisInfo',
             dataType: 'json',
-            data: {mobile:phone,inviterId:inviterId,realName:realName,customerId:customerId},
+            data: {mobile:phone,inviterId:inviterId,realName:realName,customerId:customerId,weChatId:weChatId},
             success:function(result){
                 if(result.code!=200){
                     layer.msg(result.message);

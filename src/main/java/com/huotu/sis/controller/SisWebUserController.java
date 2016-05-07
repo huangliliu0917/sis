@@ -682,9 +682,9 @@ public class SisWebUserController {
     @RequestMapping(value = "/collectSisInfo", method = RequestMethod.POST)
     @ResponseBody
     public ResultModel collectSisInfo(SisInviteLog sisInviteLog) throws Exception {
-        log.info("collectSisInfo" + sisInviteLog.getCustomerId() + " " + sisInviteLog.getRealName() + " " + sisInviteLog.getMobile());
+        log.info("collectSisInfo" + sisInviteLog.getCustomerId() + " " + sisInviteLog.getRealName() + " " + sisInviteLog.getMobile()+" "+sisInviteLog.getWeChatId());
         ResultModel resultModel = new ResultModel();
-        if (sisInviteLog.getCustomerId() == null || sisInviteLog.getMobile() == null || sisInviteLog.getRealName() == null) {
+        if (sisInviteLog.getCustomerId() == null || sisInviteLog.getMobile() == null || sisInviteLog.getRealName() == null||sisInviteLog.getWeChatId()==null) {
             resultModel.setCode(500);
             resultModel.setMessage("参数出错，无法收集邀请数据");
             return resultModel;
@@ -699,18 +699,6 @@ public class SisWebUserController {
         resultModel.setCode(200);
         resultModel.setMessage("OK");
         return resultModel;
-//        //判断是否有门槛
-//        SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
-//        if (sisConfig.getOpenMode() == 0) {//没有门槛
-//            User user = userRepository.findOne(userId);
-//            //开店
-//            userService.newOpen(user);
-//            log.debug(userId + "开店成功！");
-//            model.addAttribute("customerId",customerId);
-//            return "redirect:getSisCenter";//表示已经开店了
-//        }
-//        model.addAttribute("customerId",customerId);
-//        return "redirect:showOpenShopGoodsDetail";
     }
 
     /**

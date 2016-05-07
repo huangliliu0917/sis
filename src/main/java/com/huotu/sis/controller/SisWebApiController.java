@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -93,15 +94,12 @@ public class SisWebApiController {
         log.info("upgradeSisShop");
         ResultModel resultModel=new ResultModel();
         //第一步:参数有效性判断
-        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
-            String sign=request.getParameter("sign");
-            if (sign == null || !sign.equals(securityService.getSign(request))) {
-                resultModel.setCode(401);
-                resultModel.setMessage("授权失败：签名未通过！");
-                return resultModel;
-            }
-
+        if(!verifySign(request)){
+            resultModel.setCode(401);
+            resultModel.setMessage("授权失败：签名未通过！");
+            return resultModel;
         }
+
         String userId=request.getParameter("userid");
         if(StringUtils.isEmpty(userId)){
             resultModel.setCode(403);
@@ -148,22 +146,22 @@ public class SisWebApiController {
     }
 
 
-
+    /**
+     * 开店逻辑
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/openSisShop",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public ResultModel open(HttpServletRequest request) throws Exception {
         log.info("into openShop");
         ResultModel resultModel=new ResultModel();
-
-        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
-            //签名验证
-            String sign=request.getParameter("sign");
-            if (sign == null || !sign.equals(securityService.getSign(request))) {
-                resultModel.setCode(401);
-                resultModel.setMessage("授权失败：签名未通过！");
-                return resultModel;
-            }
-
+        //签名验证
+        if(!verifySign(request)){
+            resultModel.setCode(401);
+            resultModel.setMessage("授权失败：签名未通过！");
+            return resultModel;
         }
 
         //参数验证
@@ -218,12 +216,13 @@ public class SisWebApiController {
     public ResultModel calculateShopRebate(HttpServletRequest httpServletRequest) throws Exception {
 
         ResultModel resultModel = new ResultModel();
-        String sign=httpServletRequest.getParameter("sign");
-        if (sign == null || !sign.equals(securityService.getSign(httpServletRequest))) {
+
+        if(!verifySign(httpServletRequest)){
             resultModel.setCode(401);
             resultModel.setMessage("授权失败：签名未通过！");
             return resultModel;
         }
+
         String shopIdString=httpServletRequest.getParameter("shopid");
         if(StringUtils.isEmpty(shopIdString)){
             resultModel.setCode(402);
@@ -359,5 +358,18 @@ public class SisWebApiController {
         return  (int)Math.rint(100 * amount / exchangeRate);
     }
 
-
+    /**
+     * 判断签名有效性
+     * @param request
+     * @return
+     */
+    private boolean verifySign(HttpServletRequest request) throws UnsupportedEncodingException {
+        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
+            String sign=request.getParameter("sign");
+            if (sign == null || !sign.equals(securityService.getSign(request))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
