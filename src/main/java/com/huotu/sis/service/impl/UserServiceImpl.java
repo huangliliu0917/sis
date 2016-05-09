@@ -374,7 +374,10 @@ public class UserServiceImpl implements UserService {
                         SysConfigConstant.Total_Generation_TwoId).getValueForCode());
         Long beloneOneId=user.getBelongOne();
         User totalTowUser=null;
-        while (beloneOneId!=null&&beloneOneId!=0){
+        while (true){
+            if(beloneOneId==null||beloneOneId==0){
+                break;
+            }
             User beloneUser=userRepository.findOne(beloneOneId);
             if(totalTowId.equals(beloneUser.getLevelId())){
                 totalTowUser=beloneUser;
