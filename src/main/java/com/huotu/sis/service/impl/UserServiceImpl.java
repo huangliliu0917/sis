@@ -379,7 +379,7 @@ public class UserServiceImpl implements UserService {
                 break;
             }
             User beloneUser=userRepository.findOne(beloneOneId);
-            if(totalTowId.equals(beloneUser.getLevelId())){
+            if(totalTowId.equals((long)beloneUser.getLevelId())){
                 totalTowUser=beloneUser;
                 break;
             }
