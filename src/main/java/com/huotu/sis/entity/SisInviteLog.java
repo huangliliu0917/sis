@@ -41,7 +41,7 @@ public class SisInviteLog {
 
 
     @Column(name = "WeChatId",length = 20)
-    @Description("手机号")
+    @Description("微信号")
     private String weChatId;
 
 

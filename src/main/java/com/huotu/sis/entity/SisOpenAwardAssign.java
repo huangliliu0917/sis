@@ -28,6 +28,10 @@ public class SisOpenAwardAssign {
     @ManyToOne
     private Merchant merchant;
 
+    @Column(name = "UserLevel")
+    @Description("用户等级，总代1，总代2")
+    private Long userLevel;
+
     @Description("上线用户店铺的等级")
     @JoinColumn(name = "LevelId")
     @ManyToOne
@@ -40,7 +44,15 @@ public class SisOpenAwardAssign {
 
     @Column(name = "AdvanceVal")
     @Description("增加的余额")
-    private Double advanceVal;
+    private Double advanceVal=0.0;
+
+    @Column(name = "Integral")
+    @Description("增加的积分")
+    private Integer integral=0;
+
+    @Column(name = "UpgradeIntegral")
+    @Description("升级增加的积分")
+    private Integer upgradeIntegral=0;
 
     @Column(name = "GoldVal")
     @Description("增加的金币")

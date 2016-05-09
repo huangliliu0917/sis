@@ -1,6 +1,9 @@
 package com.huotu.sis.service;
 
+import com.huotu.huobanplus.common.entity.Order;
 import com.huotu.huobanplus.common.entity.User;
+import com.huotu.huobanplus.common.entity.UserFormalIntegral;
+import com.huotu.sis.entity.IndirectPushFlow;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisInviteLog;
 import com.huotu.sis.entity.SisLevel;
@@ -68,7 +71,39 @@ public interface UserService {
      * @param user          开店的用户
      * @throws Exception
      */
-    void countOpenShopAward(User user, String orderId, String unionOrderId,SisConfig sisConfig) throws Exception;
+    void countOpenShopAward(User user, String orderId, String unionOrderId) throws Exception;
+
+    /**
+     * 返利计算
+     * @param user      升级的用户
+     * @param order     订单
+     * @throws Exception
+     */
+    void countIntegral(User user,Order order) throws Exception;
+
+    /**
+     * 保存正式积分流水
+     * @throws Exception
+     */
+    UserFormalIntegral saveFormalIntegral(User user, Integer value, Order order) throws Exception;
+
+    /**
+     * 增加用户的冗余积分字段
+     * @param user
+     * @param value
+     * @throws Exception
+     */
+    void addUserIntegral(User user,Integer value) throws Exception;
+
+//    /**
+//     * let's go模式给上级返利
+//     * @param user           用户
+//     * @param orderId
+//     * @param unionOrderId
+//     * @param sisConfig
+//     * @throws Exception
+//     */
+//    void countLetGoOpenShopAward(User user, String orderId, String unionOrderId,SisConfig sisConfig) throws Exception;
 
 
     /**
@@ -105,5 +140,42 @@ public interface UserService {
      * @throws Exception
      */
     SisInviteLog findUserLatestInviteLog(Long acceptId) throws Exception;
+
+    /**
+     * 根据开店用户找到第上线为总代2的最近的那个用户
+     * @param user      用户
+     * @return
+     * @throws Exception
+     */
+    User findTotalGenerationTwoByUser(User user) throws Exception;
+
+
+    /**
+     * 获取总代类型：1.专卖店，2.旗舰店,0:未知
+     * @param sisLevelId
+     * @return
+     * @throws Exception
+     */
+    Integer getTotalGeneraltionType(Long sisLevelId) throws Exception;
+
+    /**
+     * 根据总代的Key返回总代等级的ID，找不到返回0
+     * @param key
+     * @return
+     * @throws Exception
+     */
+    Long getTotalGeneraltionId(String key) throws Exception;
+
+    /**
+     * 保存间推流水表
+     * @param user          当前用户
+     * @param order         贡献订单
+     * @return
+     * @throws Exception
+     */
+    IndirectPushFlow saveIndirectPushFlow(User user,Order order) throws Exception;
+
+
+
 
 }

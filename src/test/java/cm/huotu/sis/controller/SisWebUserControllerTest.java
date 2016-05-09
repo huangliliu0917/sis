@@ -16,6 +16,7 @@ import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.service.CommonConfigsService;
+import com.huotu.sis.service.UserService;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -54,6 +55,9 @@ public class SisWebUserControllerTest extends WebTest {
 
     @Autowired
     private SisLevelRepository sisLevelRepository;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 模板页面
@@ -148,6 +152,12 @@ public class SisWebUserControllerTest extends WebTest {
         }
 //        SisLevel sisLevel1=sisLevelRepository.findTopByLevelNoOrderByLevelNoDesc();
 //        Assert.assertEquals("yes",5,sisLevel1.getLevelNo().intValue());
+    }
+
+    @Test
+    public void testFindTotalGenerationTwoByUser() throws Exception{
+        User u=userRepository.findOne(97278L);
+        User user=userService.findTotalGenerationTwoByUser(userRepository.findOne(97278L));
     }
 
 }

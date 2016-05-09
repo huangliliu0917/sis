@@ -127,12 +127,16 @@ public class SisWebApiController {
             return resultModel;
 
         }
+        Order order=sisOrderRepository.findOne(orderId);
 
         log.info("user:"+userId+",upgradeSisShopOverOrderid:"+orderId);
         //第二步:升级
         boolean isUpgrade=sisLevelService.upgradeSisLevel(user,sisConfig,orderItems.get(0));
 
-        //第三步:返回结果
+        //第三步:升级返利
+        userService.countIntegral(user,order);
+
+        //第四步:返回结果
         if(isUpgrade){
             resultModel.setCode(200);
             resultModel.setMessage("OK");
@@ -184,9 +188,12 @@ public class SisWebApiController {
             return resultModel;
         }
         SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
-        if(sisConfig==null){
-            resultModel.setCode(500);
-            resultModel.setMessage(userId+"商户没有店中店配置信息");
+
+        if(sisConfig==null||sisConfig.getEnabled()==0||
+                sisConfig.getOpenGoodsMode()==null||sisConfig.getOpenGoodsMode()==0||
+                sisConfig.getOpenAwardMode()==null||sisConfig.getOpenAwardMode()==0){
+            resultModel.setCode(403);
+            resultModel.setMessage(userId+"商户无店中店配置或不是升级的条件");
             return resultModel;
         }
 
@@ -197,7 +204,7 @@ public class SisWebApiController {
         userService.newOpen(user,orderId,sisConfig);
         log.info(user.getId()+"openShopOver");
         //开店奖计算
-        userService.countOpenShopAward(user, orderId, unionorderId,sisConfig);
+        userService.countOpenShopAward(user, orderId, unionorderId);
         log.info(user.getId() + "openCountOver");
         //合伙人送股
         userService.givePartnerStock(user, orderId,sisConfig);
@@ -206,8 +213,6 @@ public class SisWebApiController {
         resultModel.setMessage("OK");
         return resultModel;
     }
-
-
 
 
     @ResponseStatus(HttpStatus.OK)

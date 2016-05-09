@@ -4,6 +4,7 @@ import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
+import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
@@ -11,8 +12,10 @@ import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
 import com.huotu.sis.model.OpenLevelGoodsModel;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
+import com.huotu.sis.repository.SisOpenAwardAssignRepository;
 import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.service.SisLevelService;
+import com.huotu.sis.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +45,16 @@ public class SisLevelServiceImpl implements SisLevelService {
     GoodsRepository goodsRepository;
 
     @Autowired
-    private SisLevelRepository sisLevelRepository;
+    SisLevelRepository sisLevelRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
+
+    @Autowired
+    UserService  userService;
 
     @Override
     public List<SisLevel> getListBelongByLevelId(Integer levelNo, Long customerId) {

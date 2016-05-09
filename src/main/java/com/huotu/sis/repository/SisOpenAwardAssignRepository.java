@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Repository
 public interface SisOpenAwardAssignRepository extends JpaRepository<SisOpenAwardAssign,Long> {
-    SisOpenAwardAssign findByLevel_IdAndGuideLevel_Id(Long levelId, Long ownLevelId);
+    SisOpenAwardAssign findByLevel_IdAndGuideLevel_IdAndUserLevel(Long levelId, Long ownLevelId,Long userLevel);
 
     List<SisOpenAwardAssign> findByMerchant_Id(Long customerId);
 

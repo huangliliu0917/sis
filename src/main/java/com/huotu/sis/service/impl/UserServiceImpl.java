@@ -2,17 +2,15 @@ package com.huotu.sis.service.impl;
 
 import com.huotu.common.base.CookieHelper;
 import com.huotu.common.base.RSAHelper;
-import com.huotu.huobanplus.common.entity.MallCptCfg;
-import com.huotu.huobanplus.common.entity.OrderItems;
-import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.MallCptCfgRepository;
-import com.huotu.huobanplus.common.repository.MallCptMembersRepository;
-import com.huotu.huobanplus.common.repository.UserRepository;
+import com.huotu.huobanplus.common.entity.*;
+import com.huotu.huobanplus.common.repository.*;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
+import com.huotu.sis.common.SysConfigConstant;
 import com.huotu.sis.entity.*;
-import com.huotu.sis.entity.support.*;
+import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
+import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
 import com.huotu.sis.repository.*;
 import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
@@ -53,13 +51,7 @@ public class UserServiceImpl implements UserService {
     private SisLevelRepository sisLevelRepository;
 
     @Autowired
-    private SisConfigRepository sisConfigRepository;
-
-    @Autowired
     private MallAdvanceLogsService mallAdvanceLogsService;
-
-    @Autowired
-    private SisService sisService;
 
     @Autowired
     private MallCptMembersRepository mallCptMembersRepository;
@@ -69,9 +61,6 @@ public class UserServiceImpl implements UserService {
     private MallCptStockLogService mallCptStockLogService;
 
     @Autowired
-    private SisOpenAwardLogService sisOpenAwardLogService;
-
-    @Autowired
     private SisInviteRepository sisInviteRepository;
 
     @Autowired
@@ -79,6 +68,18 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
+
+    @Autowired
+    private UserFormalIntegralRepository userFormalIntegralRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private SystemConfigRepository systemConfigRepository;
+
+    @Autowired
+    private IndirectPushFlowRepository indirectPushFlowRepository;
 
     @Override
     public Long getUserId(HttpServletRequest request) {
@@ -207,125 +208,77 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void countOpenShopAward(User user, String orderId, String unionOrderId,SisConfig sisConfig) throws Exception {
-        if (!Objects.isNull(sisConfig)) {
-            if (sisConfig.getEnabled() == 0 || sisConfig.getOpenMode() == 0) {
-                log.info(user.getMerchant().getId() + "Businessman is not enabled the inn in inn " +
-                        "configuration or configured with free open a shop, not rebate");
-                //店中店配置需要开启，并且是收费的,才有返利
-                return;
-            }
+    public void countOpenShopAward(User user, String orderId, String unionOrderId) throws Exception {
+        Order order=orderRepository.findOne(orderId);
+        //返利计算
+        countIntegral(user,order);
+        //间推,插流水
+        saveIndirectPushFlow(user,order);
+    }
 
-            //个性化返利模式
-            if(sisConfig.getOpenAwardMode()==1){
-                User belongOne=userRepository.findOne(user.getBelongOne());
-                //没有上级，无法返利
-                if(belongOne==null){
-                    log.info("user:"+user.getId()+"have no belongOneId");
-                    return;
-                }
-                Sis belongOneSis=sisRepository.findByUser(belongOne);
-                if(belongOneSis==null){
-                    log.info("user"+user.getId()+"belongOne have no sisShop");
-                    return;
-                }
-                //获取自己店铺
-                Sis ownSis=sisRepository.findByUser(user);
-                if(ownSis==null){
-                    log.info("user"+user.getId()+"won have no sisShop");
-                    return;
-                }
-                SisOpenAwardAssign sisOpenAwardAssign=sisOpenAwardAssignRepository.
-                        findByLevel_IdAndGuideLevel_Id(
-                                belongOneSis.getSisLevel().getId(),
-                                ownSis.getSisLevel().getId());
-                //上线等级和自己等级无法匹配到返利余额
-                if(sisOpenAwardAssign==null){
-                    log.info("user"+user.getId()+"On-line level and their own level can't match to the rebate balance");
-                    return;
-                }
-                //插入一条开店流水
-                rebateOpenShop(belongOne,user,sisOpenAwardAssign.getAdvanceVal(),orderId,unionOrderId,1);
-                String memo = "1级会员(" + user.getWxNickName() + ")贡献了开店奖";
-                //插入一条开店返利日志
-                sisOpenAwardLogService.saveSisOpenAwardLog(belongOne.getMerchant().getId()
-                        ,belongOne.getId(),user.getId(),sisOpenAwardAssign.getAdvanceVal(),memo,1,orderId);
-            }
-
-
-            //默认八层返利模式
-            if(sisConfig.getOpenAwardMode()==null||sisConfig.getOpenAwardMode()==0){
-                OpenSisAwards openSisAwards = sisConfig.getOpenSisAwards();
-                if (!Objects.isNull(openSisAwards)) {
-                    //获取开店奖设置的层级
-                    Integer tiers = openSisAwards.size();
-                    if (tiers > 0) {
-                        User rebateUser = user;//默认从自己开始返利
-
-                        double rebateMonery = 0;
-                        //遍历每一个层级的开店返利信息
-                        for (int i = 0; i < tiers; i++) {
-                            Sis sis = sisRepository.findByUser(rebateUser);
-                            if (Objects.isNull(sis)) {
-                                //用户未开启店中店，无法返利
-                                log.info("merchant=" + user.getMerchant().getId() + "Not to open the inn in inn to rebate！");
-                                //获取他的上级用户
-                                rebateUser = userRepository.findOne(rebateUser.getBelongOne());
-                                continue;
-                            }
-                            if (!sis.isStatus()) {
-                                //用户店中店被关闭,无法返利
-                                log.info("merchant=" + user.getMerchant().getId() + "Users to the inn in inn is closed to rebate！");
-                                //获取他的上级用户
-                                rebateUser = userRepository.findOne(rebateUser.getBelongOne());
-                                continue;
-                            }
-                            //获取返利信息
-                            OpenSisAward openSisAward = openSisAwards.get((long) i);
-                            //是否是个性化开店返利
-                            if (openSisAward.getUnified() == -1.0) {//是个性化
-                                //获取用户的店铺等级ID
-                                long levelId = sisService.getSisLevelId(rebateUser);
-                                for (LevelIdAndVal lv : openSisAward.getCustom()) {
-                                    if (lv.getLvid() == levelId) {//如果店铺的ID等于某个个性化返利的ID
-                                        //开店奖返利
-                                        rebateMonery = lv.getVal();
-                                        break;
-                                    }
-                                }
-                            } else if (openSisAward.getUnified() >= 0) {//不是个性化
-                                rebateMonery = openSisAward.getUnified();
-                            }
-                            //---------记录----------
-                            //给某个用户开店奖返利,包括插入流水
-                            rebateOpenShop(rebateUser,user,rebateMonery, orderId, unionOrderId,i);
-                            log.info(user.getId()+"");
-                            //插入一条开店返利日志
-                            String memo = i + "级会员(" + user.getWxNickName() + ")贡献了开店奖";
-                            sisOpenAwardLogService.saveSisOpenAwardLog(user.getMerchant().getId(), rebateUser.getId(),
-                                    user.getId(), rebateMonery, memo, i, orderId);
-
-                            //---------记录END----------
-
-                            //为下个层级返利做准备
-                            if (rebateUser.getBelongOne() <= 0) {
-                                //没有上级
-                                break;
-                            }
-                            //获取他的上级用户
-                            rebateUser = userRepository.findOne(rebateUser.getBelongOne());
-                        }
-                    }
-                } else {
-                    log.info("merchant=" + user.getMerchant().getId() + "Merchants set up shop level configuration error, " +
-                            "cannot rebate!");
-                }
-            }
-        } else {
-            log.info("merchant=" + user.getMerchant().getId() + "No the inn in inn configuration information for businesses" +
-                    "cannot rebate!");
+    @Override
+    public void countIntegral(User user, Order order) throws Exception {
+        User belongOne=userRepository.findOne(user.getBelongOne());
+        //没有上级，无法返利
+        if(belongOne==null){
+            log.info("user:"+user.getId()+"have no belongOneId");
+            return;
+        }
+        Sis belongOneSis=sisRepository.findByUser(belongOne);
+        if(belongOneSis==null){
+            log.info("user"+user.getId()+"belongOne have no sisShop");
+            return;
+        }
+        //获取自己店铺
+        Sis ownSis=sisRepository.findByUser(user);
+        if(ownSis==null){
+            log.info("user"+user.getId()+"won have no sisShop");
+            return;
         }
 
+        SisOpenAwardAssign sisOpenAwardAssign=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevel(
+                belongOneSis.getSisLevel().getId(),
+                ownSis.getSisLevel().getId(),(long)user.getLevelId());
+        if(sisOpenAwardAssign==null){
+            //无法找到升级返利配置信息
+            log.info("user"+user.getId()+"Upgrade rebate configuration information cannot be found");
+            return;
+        }
+        //增加返利积分流水
+        saveFormalIntegral(user,sisOpenAwardAssign.getIntegral(),order);
+        //用户冗余字段修改积分
+        addUserIntegral(user,sisOpenAwardAssign.getIntegral());
+
+    }
+
+    @Override
+    public UserFormalIntegral saveFormalIntegral(User user, Integer value, Order order) throws Exception {
+        if(value<=0){
+            log.info("user"+user.getId()+"add integral is 0");
+            return null;
+        }
+        UserFormalIntegral userFormalIntegral=new UserFormalIntegral();
+        userFormalIntegral.setMerchant(user.getMerchant());
+        userFormalIntegral.setOrder(order);
+        userFormalIntegral.setScore(value);
+        userFormalIntegral.setUser(user);
+        userFormalIntegral.setTime(new Date());
+        userFormalIntegral.setStatus(0);//todo 积分类型未定义
+        userFormalIntegralRepository.save(userFormalIntegral);
+        return userFormalIntegral;
+
+
+
+    }
+
+    @Override
+    public void addUserIntegral(User user, Integer value) throws Exception {
+        if(value<=0){
+            log.info("user"+user.getId()+"add integral is 0");
+            return;
+        }
+        user.setUserIntegral(user.getUserIntegral()+value);
+        userRepository.save(user);
     }
 
     @Override
@@ -411,5 +364,62 @@ public class UserServiceImpl implements UserService {
     @Override
     public SisInviteLog findUserLatestInviteLog(Long acceptId) throws Exception {
         return null;
+    }
+
+    @Override
+    public User findTotalGenerationTwoByUser(User user) throws Exception {
+        //总代2的等级ID
+        Long totalTowId=Long.parseLong(
+                systemConfigRepository.findOne(
+                        SysConfigConstant.Total_Generation_TwoId).getValueForCode());
+        Long beloneOneId=user.getBelongOne();
+        User totalTowUser=null;
+        while (beloneOneId!=null&&beloneOneId!=0){
+            User beloneUser=userRepository.findOne(beloneOneId);
+            if(totalTowId.equals(beloneUser.getLevelId())){
+                totalTowUser=beloneUser;
+                break;
+            }
+            beloneOneId=beloneUser.getBelongOne();
+        }
+        return totalTowUser;
+    }
+
+    @Override
+    public Integer getTotalGeneraltionType(Long sisLevelId) throws Exception {
+        if(getTotalGeneraltionId(SysConfigConstant.Total_Generation_OneId).equals(sisLevelId)){
+            return 1;
+        }
+        if(getTotalGeneraltionId(SysConfigConstant.Total_Generation_TwoId).equals(sisLevelId)){
+            return 2;
+        }
+        return 0;
+    }
+
+    @Override
+    public Long getTotalGeneraltionId(String key) throws Exception {
+        SystemConfig systemConfig=systemConfigRepository.findOne(key);
+        if(systemConfig!=null){
+            Long id=Long.parseLong(systemConfig.getValueForCode());
+            return id;
+        }
+        return 0L;
+    }
+
+    @Override
+    public IndirectPushFlow saveIndirectPushFlow(User user, Order order) throws Exception {
+        Sis sis=sisRepository.findByUser(user);
+        User totalTwoUser=findTotalGenerationTwoByUser(user);
+        IndirectPushFlow indirectPushFlow=new IndirectPushFlow();
+        indirectPushFlow.setOrder(order);
+        indirectPushFlow.setOwner(user);
+        indirectPushFlow.setTotalGenerationTwoUser(totalTwoUser);
+        indirectPushFlow.setTime(new Date().getTime());
+        if(sis.getSisLevel()!=null){
+            indirectPushFlow.setUserShopLevelType(getTotalGeneraltionType(sis.getSisLevel().getId()));
+        }
+        indirectPushFlowRepository.save(indirectPushFlow);
+
+        return indirectPushFlow;
     }
 }

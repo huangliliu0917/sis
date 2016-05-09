@@ -1,5 +1,6 @@
 package com.huotu.sis.entity;
 
+import com.huotu.huobanplus.common.entity.Order;
 import com.huotu.huobanplus.common.entity.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,12 @@ public class IndirectPushFlow {
      */
     @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private User totalGenerationTwoUser;
+
+    /**
+     * 所属订单
+     */
+    @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    private Order order;
 
     /**
      * 时间

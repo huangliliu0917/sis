@@ -37,6 +37,7 @@ public interface SisLevelService {
      */
     boolean upgradeSisLevel(User user, SisConfig sisConfig, OrderItems orderItems) throws Exception;
 
+
     /**
      * 保存店中店等级
      * @param sisLevel      用户保存的等级
