@@ -105,6 +105,9 @@ public class SisWebGoodsController {
     @Autowired
     private SisProfitService sisProfitService;
 
+    @Autowired
+    private SystemConfigRepository systemConfigRepository;
+
     /**
      * 查找品牌对应的商品列表详情
      *
@@ -1260,4 +1263,55 @@ public class SisWebGoodsController {
 
     }
 
+
+    @Autowired
+    private IndirectPushFlowRepository indirectPushFlowRepository;
+
+    /**
+     * 我的团队
+     * <p>
+     * 总代1 统计直推人数
+     * 总代2 统计直推人数与间推人数
+     *
+     * @param customerId
+     * @return
+     */
+    @RequestMapping(value = "/myTeam", method = RequestMethod.GET)
+    public String myTeam(String customerId, Model model) {
+        Long userId = getCurrentUserId();
+        User user = userRepository.findOne(userId);
+        Integer levelId = user.getLevelId();
+        SystemConfig systemConfigOne = systemConfigRepository.findOne("TotalGenerationOneId");
+        SystemConfig systemConfigTwo = systemConfigRepository.findOne("TotalGenerationTwoId");
+        List<SisMyTeamModel> list = new ArrayList<>();
+
+
+        if (systemConfigOne.getValueForCode().equals(levelId.toString())) {
+
+            Long directNumber = userRepository.countByBelongOne(userId);
+            //总代1
+            SisMyTeamModel sisMyTeamModel = new SisMyTeamModel();
+            sisMyTeamModel.setName("直推人数");
+            sisMyTeamModel.setNum(directNumber);
+            list.add(sisMyTeamModel);
+
+        } else if (systemConfigTwo.getValueForCode().equals(levelId.toString())) {
+            Long directNumber = userRepository.countByBelongOne(userId);
+            //总代2
+            SisMyTeamModel sisMyTeamModel = new SisMyTeamModel();
+            sisMyTeamModel.setName("直推人数");
+            sisMyTeamModel.setNum(directNumber);
+            list.add(sisMyTeamModel);
+
+            Long indirectNumber = indirectPushFlowRepository.countByTotalGenerationTwoUser(user);
+            sisMyTeamModel = new SisMyTeamModel();
+            sisMyTeamModel.setName("间推人数");
+            sisMyTeamModel.setNum(indirectNumber);
+            list.add(sisMyTeamModel);
+        }
+
+        model.addAttribute("list", list);
+        return "sisweb/myTeam";
+
+    }
 }
