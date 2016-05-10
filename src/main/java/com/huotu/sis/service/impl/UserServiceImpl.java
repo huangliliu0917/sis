@@ -390,10 +390,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer getTotalGeneraltionType(Long sisLevelId) throws Exception {
-        if(getTotalGeneraltionId(SysConfigConstant.Total_Generation_OneId).equals(sisLevelId)){
+        if(getTotalGeneraltionId(SysConfigConstant.SpecialShop_Id).equals(sisLevelId)){
             return 1;
         }
-        if(getTotalGeneraltionId(SysConfigConstant.Total_Generation_TwoId).equals(sisLevelId)){
+        if(getTotalGeneraltionId(SysConfigConstant.FlagshipShop_Id).equals(sisLevelId)){
             return 2;
         }
         return 0;

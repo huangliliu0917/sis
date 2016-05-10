@@ -151,7 +151,7 @@ public interface UserService {
 
 
     /**
-     * 获取总代类型：1.专卖店，2.旗舰店,0:未知
+     * 获取店铺等级：1.专卖店，2.旗舰店,0:未知
      * @param sisLevelId
      * @return
      * @throws Exception
@@ -159,8 +159,8 @@ public interface UserService {
     Integer getTotalGeneraltionType(Long sisLevelId) throws Exception;
 
     /**
-     * 根据总代的Key返回总代等级的ID，找不到返回0
-     * @param key
+     * 根据店铺等级的Key或总代的Key返回店铺等级ID或总代等级的ID，找不到返回0
+     * @param key           ID代号
      * @return
      * @throws Exception
      */
