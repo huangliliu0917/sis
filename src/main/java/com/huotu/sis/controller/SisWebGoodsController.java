@@ -16,7 +16,6 @@ import com.huotu.huobanplus.common.model.adrebateconfig.ProductDisRebateDesc;
 import com.huotu.huobanplus.common.repository.*;
 import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.entity.*;
-import com.huotu.sis.entity.support.ProfitUser;
 import com.huotu.sis.repository.*;
 import com.huotu.sis.service.*;
 import com.huotu.sis.common.PublicParameterHolder;
@@ -29,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -98,12 +96,6 @@ public class SisWebGoodsController {
     private CommonConfigsService commonConfigsService;
     @Autowired
     private SisGoodsRecommendService sisGoodsRecommendService;
-    @Autowired
-    private SisProfitRepository sisProfitRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private SisProfitService sisProfitService;
 
     /**
      * 查找品牌对应的商品列表详情
@@ -1193,71 +1185,6 @@ public class SisWebGoodsController {
             }
         }
         return maxAmount;
-    }
-
-
-    /**
-     * 计算直推奖
-     * <p>
-     * -(1)、插入流水表Hot_UserTempIntegral_History
-     * -(2)、用户表Hot_UserBaseInfo-》UB_UserTempIntegral更新
-     *
-     * @param httpServletRequest request请求
-     * @return
-     * @throws Exception
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/calculateShopRebate", method = {RequestMethod.POST, RequestMethod.GET})
-    @ResponseBody
-    public ResultModel calculateShopRebate(HttpServletRequest httpServletRequest) throws Exception {
-        String sign = httpServletRequest.getParameter("sign");
-        String shopIdString = httpServletRequest.getParameter("shopId");
-        int shopId = Integer.parseInt(shopIdString);
-        String orderId = httpServletRequest.getParameter("orderId");
-        String unionOrderId = httpServletRequest.getParameter("unionOrderId");
-        ResultModel resultModel = new ResultModel();
-        System.out.println(shopId + "" + orderId + "" + unionOrderId);
-        Order order = sisOrderRepository.findOne(orderId);
-        List<OrderItems> orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId);
-
-        //测试得到orderItems对象
-        orderItems.forEach(System.out::println);
-        SisLevel sisLevel = sisLevelRepository.findOne((long) shopId);
-        User user = userRepository.findOne((long) order.getUserId());
-//        List<SISProfit> profits = sisProfitRepository.findByMerchant_Id(order.getMerchant().getId());
-//        if(Objects.isNull(profits)){
-//            resultModel.setCode(500);
-//            resultModel.setMessage("直推利润未配置");
-//        }
-        double totalPrize = 0;//总共的价格
-        for (int i = 0; i < orderItems.size(); i++) {
-            int zhituiPrize = (int) orderItems.get(i).getZhituiPrize();
-            totalPrize += zhituiPrize;
-        }
-        Integer userLevelStatus = userService.getTotalUserType((long) user.getLevelId());
-        if (userLevelStatus == 1) {
-
-        } else if (userLevelStatus == 2) {
-            List<SISProfit> profits = sisProfitService.findAllByUserLevelId((long) user.getLevelId(),
-                    user.getMerchant().getId(), null);
-
-        } else {
-            resultModel.setCode(500);
-            resultModel.setMessage("当前用户不属于可获利的等级");
-            return resultModel;
-        }
-        UserTempIntegralHistory utih = new UserTempIntegralHistory();
-        int totalPrizeInt = (int) totalPrize;
-        System.out.println(totalPrizeInt);
-        utih.setIntegral(totalPrizeInt);
-        utih.setUnionOrderId(unionOrderId);
-        utih.setStatus(0);
-        utih.setOrder(order);
-        utihRepository.save(utih);
-        resultModel.setCode(200);
-        resultModel.setMessage("签名成功");
-        return resultModel;
-
     }
 
 }
