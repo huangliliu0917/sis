@@ -15,19 +15,14 @@ import com.huotu.huobanplus.common.model.RebateMode;
 import com.huotu.huobanplus.common.model.adrebateconfig.ProductDisRebateDesc;
 import com.huotu.huobanplus.common.repository.*;
 import com.huotu.huobanplus.common.utils.DateUtil;
-import com.huotu.sis.entity.Sis;
-import com.huotu.sis.entity.SisConfig;
-import com.huotu.sis.entity.SisGoods;
-import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.*;
+import com.huotu.sis.entity.support.ProfitUser;
 import com.huotu.sis.repository.*;
-import com.huotu.sis.service.SisGoodsService;
+import com.huotu.sis.service.*;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.exception.UserNotFoundException;
 import com.huotu.sis.model.*;
-import com.huotu.sis.service.CommonConfigsService;
-import com.huotu.sis.service.SisGoodsRecommendService;
-import com.huotu.sis.service.SqlService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +98,12 @@ public class SisWebGoodsController {
     private CommonConfigsService commonConfigsService;
     @Autowired
     private SisGoodsRecommendService sisGoodsRecommendService;
+    @Autowired
+    private SisProfitRepository sisProfitRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private SisProfitService sisProfitService;
 
     /**
      * 查找品牌对应的商品列表详情
@@ -116,7 +117,7 @@ public class SisWebGoodsController {
      */
     @RequestMapping(value = "/getGoodsListByBrandId", method = RequestMethod.POST)
     @ResponseBody
-    public PageGoodsModel getGoodsListByBrandId(int page, int pageSize, Long brandId,Long customerId) throws IOException, SisException {
+    public PageGoodsModel getGoodsListByBrandId(int page, int pageSize, Long brandId, Long customerId) throws IOException, SisException {
         Long userId = getCurrentUserId();
         User user = userRepository.findOne(userId);
         if (null == user) {
@@ -178,7 +179,7 @@ public class SisWebGoodsController {
      * @throws IOException  IO异常，SisException 店中店异常
      */
     @RequestMapping(value = "/sisIndex", method = RequestMethod.GET)
-    public String sisIndex(Long customerId,Model model) throws IOException, SisException {
+    public String sisIndex(Long customerId, Model model) throws IOException, SisException {
         Long userId = getCurrentUserId();
         User user = userRepository.findOne(userId);
         if (null == user)
@@ -239,7 +240,7 @@ public class SisWebGoodsController {
      * @throws IOException
      */
     @RequestMapping(value = "/getSisGoodsDetail", method = RequestMethod.GET)
-    public String getSisGoodsDetail(Long goodId,Long customerId, HttpServletRequest request) throws IOException, SisException {
+    public String getSisGoodsDetail(Long goodId, Long customerId, HttpServletRequest request) throws IOException, SisException {
         Long userId = getCurrentUserId();
         User user = userRepository.findOne(userId);
 
@@ -252,7 +253,7 @@ public class SisWebGoodsController {
 //        }
         SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user);
 
-        if(null==sisGoods){
+        if (null == sisGoods) {
             sisGoods = new SisGoods();
             sisGoods.setGoods(goods);
             sisGoods.setDeleted(false);
@@ -313,7 +314,7 @@ public class SisWebGoodsController {
             throw new SisException("该用户不存在或者已经过期");
         }
 
-        Long count = sisGoodsService.countByUserId(customerId,userId);
+        Long count = sisGoodsService.countByUserId(customerId, userId);
         request.setAttribute("pageType", pageType);
         model.addAttribute("user", user);
         model.addAttribute("customerId", customerId);
@@ -440,8 +441,8 @@ public class SisWebGoodsController {
 
 
         if (operType == 0) {
-            List<SisGoods> sisGoodsList = sisGoodsService.getAllSisGoodsList(goodsId,userId,customerId);
-            if (null == sisGoodsList || sisGoodsList.size()==0) {
+            List<SisGoods> sisGoodsList = sisGoodsService.getAllSisGoodsList(goodsId, userId, customerId);
+            if (null == sisGoodsList || sisGoodsList.size() == 0) {
                 modelMap.addAttribute("success", Boolean.FALSE);
                 modelMap.addAttribute("msg", "商品已下架或已被删除");
                 return modelMap;
@@ -560,7 +561,7 @@ public class SisWebGoodsController {
         }
         //订单数量
 //        Long orderCount = orderService.getCountByUserId(userId);
-        Long orderCount = userTempIntegralHistoryService.getCountByUserId(userId,500);
+        Long orderCount = userTempIntegralHistoryService.getCountByUserId(userId, 500);
         model.addAttribute("orderCount", orderCount);
         Date now = new Date();
         Date startDate = DateUtil.makeStartDate(now);
@@ -579,7 +580,7 @@ public class SisWebGoodsController {
         } catch (IOException e) {
             logger.debug("error share url:" + e);
         }
-        model.addAttribute("indexUrl", indexUrl+"&__newframe");
+        model.addAttribute("indexUrl", indexUrl + "&__newframe");
 
         //总收益
         List<UserTempIntegralHistory> list = userTempIntegralHistoryService.getListByUserIdAndDate(userId, 1, 500, null, null);
@@ -588,7 +589,7 @@ public class SisWebGoodsController {
             integrals += history.getIntegral();
         }
         model.addAttribute("integrals", integrals);
-        model.addAttribute("shareUrl","/sisweb/inviteOpenShop?customerId="+user.getMerchant().getId()+"&__newframe");
+        model.addAttribute("shareUrl", "/sisweb/inviteOpenShop?customerId=" + user.getMerchant().getId() + "&__newframe");
 
         return "/sisweb/sisCenter";
     }
@@ -600,12 +601,12 @@ public class SisWebGoodsController {
      * @throws SisException
      */
     @RequestMapping(value = "/orderIndex", method = RequestMethod.GET)
-    public String goToSisOrderList(Long customerId,Model model) throws SisException {
+    public String goToSisOrderList(Long customerId, Model model) throws SisException {
         Long userId = getCurrentUserId();
         User user = userRepository.findOne(userId);
         if (null == user)
             throw new SisException("该用户不存在或者已经过期");
-        model.addAttribute("customerId",customerId);
+        model.addAttribute("customerId", customerId);
         return "/sisweb/sisOrderList";
     }
 
@@ -692,65 +693,58 @@ public class SisWebGoodsController {
     }
 
 
-    /**
-     * 计算直推奖
-     * <p>
-     * -(1)、插入流水表Hot_UserTempIntegral_History
-     * -(2)、用户表Hot_UserBaseInfo-》UB_UserTempIntegral更新
-     *
-     * @param httpServletRequest request请求
-     * @return
-     * @throws Exception
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/calculateShopRebate", method = {RequestMethod.POST, RequestMethod.GET})
-    @ResponseBody
-    public ResultModel calculateShopRebate(HttpServletRequest httpServletRequest) throws Exception {
-        String sign = httpServletRequest.getParameter("sign");
-        String shopIdString = httpServletRequest.getParameter("shopId");
-        int shopId = Integer.parseInt(shopIdString);
-        String orderId = httpServletRequest.getParameter("orderId");
-        String unionOrderId = httpServletRequest.getParameter("unionOrderId");
-        ResultModel resultModel = new ResultModel();
-//        if (sign != "9389e8a5c32eefa3134340640fb4ceaa\n") {
-//            resultModel.setCode(401);
-//            resultModel.setMessage("签名失败");
-//            return resultModel;
+//    /**
+//     * 计算直推奖
+//     * <p>
+//     * -(1)、插入流水表Hot_UserTempIntegral_History
+//     * -(2)、用户表Hot_UserBaseInfo-》UB_UserTempIntegral更新
+//     *
+//     * @param httpServletRequest request请求
+//     * @return
+//     * @throws Exception
+//     */
+//    @ResponseStatus(HttpStatus.OK)
+//    @RequestMapping(value = "/calculateShopRebate", method = {RequestMethod.POST, RequestMethod.GET})
+//    @ResponseBody
+//    public ResultModel calculateShopRebate(HttpServletRequest httpServletRequest) throws Exception {
+//        String sign = httpServletRequest.getParameter("sign");
+//        String shopIdString = httpServletRequest.getParameter("shopId");
+//        int shopId = Integer.parseInt(shopIdString);
+//        String orderId = httpServletRequest.getParameter("orderId");
+//        String unionOrderId = httpServletRequest.getParameter("unionOrderId");
+//        ResultModel resultModel = new ResultModel();
+//        System.out.println(shopId + "" + orderId + "" + unionOrderId);
+//        Order order = sisOrderRepository.findOne(orderId);
+//        List<OrderItems> orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId);
 //
+//        //测试得到orderItems对象
+//        orderItems.forEach(System.out::println);
+//        SisLevel sisLevel = sisLevelRepository.findOne((long) shopId);
+//        System.out.println("sislevel rate:" + sisLevel.getRebateRate());
+////        int sisShopLevel=sisLevel.getLevelNo().intValue();
+////        SisConfig sisConfig=sisConfigRepository.findByMerchantId(order.getMerchant().getId());
+////        String rebate=sisConfig.getRebateSetting();
+//        double rate = 0;//所需要计算出来的那个比例值
+//        rate = sisLevel.getRebateRate();
+//        double totalPrize = 0;//总共的直推积分
+//        for (int i = 0; i < orderItems.size(); i++) {
+//            int zhituiPrize = (int) orderItems.get(i).getZhituiPrize();
+//            totalPrize += zhituiPrize;
 //        }
-        System.out.println(shopId + "" + orderId + "" + unionOrderId);
-        Order order = sisOrderRepository.findOne(orderId);
-        List<OrderItems> orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId);
-
-        for (OrderItems i : orderItems) {//测试得到orderItems对象
-            System.out.println(i);
-        }
-        SisLevel sisLevel = sisLevelRepository.findOne((long) shopId);
-        System.out.println("sislevel rate:" + sisLevel.getRebateRate());
-//        int sisShopLevel=sisLevel.getLevelNo().intValue();
-//        SisConfig sisConfig=sisConfigRepository.findByMerchantId(order.getMerchant().getId());
-//        String rebate=sisConfig.getRebateSetting();
-        double rate = 0;//所需要计算出来的那个比例值
-        rate = sisLevel.getRebateRate();
-        double totalPrize = 0;//总共的直推积分
-        for (int i = 0; i < orderItems.size(); i++) {
-            int zhituiPrize = (int) orderItems.get(i).getZhituiPrize();
-            totalPrize += zhituiPrize;
-        }
-        totalPrize = (totalPrize * rate);
-        UserTempIntegralHistory utih = new UserTempIntegralHistory();
-        int totalPrizeInt = (int) totalPrize;
-        System.out.println(totalPrizeInt);
-        utih.setIntegral(totalPrizeInt);
-        utih.setUnionOrderId(unionOrderId);
-        utih.setStatus(0);
-        utih.setOrder(order);
-        utihRepository.save(utih);
-        resultModel.setCode(200);
-        resultModel.setMessage("签名成功");
-        return resultModel;
-
-    }
+//        totalPrize = (totalPrize * rate);
+//        UserTempIntegralHistory utih = new UserTempIntegralHistory();
+//        int totalPrizeInt = (int) totalPrize;
+//        System.out.println(totalPrizeInt);
+//        utih.setIntegral(totalPrizeInt);
+//        utih.setUnionOrderId(unionOrderId);
+//        utih.setStatus(0);
+//        utih.setOrder(order);
+//        utihRepository.save(utih);
+//        resultModel.setCode(200);
+//        resultModel.setMessage("签名成功");
+//        return resultModel;
+//
+//    }
 
     /**
      * 根据店中店商品列表，计算直推返利/分销返利区间 后再返回
@@ -940,36 +934,36 @@ public class SisWebGoodsController {
                             appSisGoodsModel.setMinRebate((int) Math.rint(integral[0] * 100 / exchangeRate));
                             appSisGoodsModel.setMaxRebate((int) Math.rint(integral[1] * 100 / exchangeRate));
                         }
-                    }else if(null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.operator)){
-                        Integer maxRebate=0;
-                        Integer minRebate=0;
-                        Integer levelNo=null;
-                        List<UserLevel> userLevels=userLevelRepository.findByMerchant_IdAndTypeOrderByLevelAsc(user.getMerchant().getId(),
-                                UserType.buddy,new PageRequest(0,1000)).getContent();
-                        if(userLevels!=null){
-                            for(int i=0;i<userLevels.size();i++){
-                                if(userLevels.get(i).getId().equals((long)user.getLevelId())){
-                                    levelNo=i;
+                    } else if (null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.operator)) {
+                        Integer maxRebate = 0;
+                        Integer minRebate = 0;
+                        Integer levelNo = null;
+                        List<UserLevel> userLevels = userLevelRepository.findByMerchant_IdAndTypeOrderByLevelAsc(user.getMerchant().getId(),
+                                UserType.buddy, new PageRequest(0, 1000)).getContent();
+                        if (userLevels != null) {
+                            for (int i = 0; i < userLevels.size(); i++) {
+                                if (userLevels.get(i).getId().equals((long) user.getLevelId())) {
+                                    levelNo = i;
                                     break;
                                 }
                             }
-                            if(levelNo!=null){
-                                RebateTeamManagerSetting rebateSetting=merchantConfig.getRebateTeamManagerSetting();
-                                List<String> levelKeys=getPossibleRebateRelations(-1,levelNo);
-                                if(rebateSetting!=null&&levelKeys!=null){
-                                    Double rebate=rebateSetting.getSaleAward();
-                                    for(RebateTeam rt:rebateSetting.getRebateTeams()){
-                                        for(String s:levelKeys){
-                                            if(rt.getRelation().equals(s)){
-                                                rebate=rebate+rt.getPercent();
+                            if (levelNo != null) {
+                                RebateTeamManagerSetting rebateSetting = merchantConfig.getRebateTeamManagerSetting();
+                                List<String> levelKeys = getPossibleRebateRelations(-1, levelNo);
+                                if (rebateSetting != null && levelKeys != null) {
+                                    Double rebate = rebateSetting.getSaleAward();
+                                    for (RebateTeam rt : rebateSetting.getRebateTeams()) {
+                                        for (String s : levelKeys) {
+                                            if (rt.getRelation().equals(s)) {
+                                                rebate = rebate + rt.getPercent();
                                             }
                                         }
                                     }
-                                    List<ProductDisRebateDesc> productRebateConfigs=goods.getProductRebateConfigs();
-                                    if(productRebateConfigs!=null){
-                                        double maxAmount=getProductDisRebateDescsMaxAmount(productRebateConfigs);
-                                        maxRebate=(int)Math.rint(maxAmount*rebate/exchangeRate);
-                                        minRebate=maxRebate;
+                                    List<ProductDisRebateDesc> productRebateConfigs = goods.getProductRebateConfigs();
+                                    if (productRebateConfigs != null) {
+                                        double maxAmount = getProductDisRebateDescsMaxAmount(productRebateConfigs);
+                                        maxRebate = (int) Math.rint(maxAmount * rebate / exchangeRate);
+                                        minRebate = maxRebate;
                                     }
                                 }
                             }
@@ -1071,7 +1065,7 @@ public class SisWebGoodsController {
     @ResponseBody
     public PageOpenShopModel getJuniorDetailListAjax(Integer srcType, Long customerId, Integer pageSize, Integer page) throws
             IOException, UserNotFoundException, SisException {
-        System.out.println("srcType:"+srcType);
+        System.out.println("srcType:" + srcType);
         Long userId = getCurrentUserId();
         if (userId == null) {
             throw new UserNotFoundException("用户不存在");
@@ -1098,7 +1092,7 @@ public class SisWebGoodsController {
      * @throws SisException
      */
     @RequestMapping(value = "/recommendGoodsIndex", method = RequestMethod.GET)
-    public String recommendGoodsIndex(Long customerId,Model model) throws IOException, SisException {
+    public String recommendGoodsIndex(Long customerId, Model model) throws IOException, SisException {
         Long userId = getCurrentUserId();
         User user = userRepository.findOne(userId);
         if (null == user) {
@@ -1106,31 +1100,32 @@ public class SisWebGoodsController {
         }
         model.addAttribute("user", user);
         model.addAttribute("customerId", customerId);
-        Long count = sisGoodsService.countByUserId(customerId,userId);
+        Long count = sisGoodsService.countByUserId(customerId, userId);
         model.addAttribute("count", count);
         return "/sisweb/recommendGoodsIndex";
     }
 
     /**
      * 获取商家推荐的商品
-     * @param page          第几页
-     * @param pageSize      每页条数
-     * @param keywords      商品民称
-     * @param customerId    商户ID
+     *
+     * @param page       第几页
+     * @param pageSize   每页条数
+     * @param keywords   商品民称
+     * @param customerId 商户ID
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/getRecommendGoodsList",method = RequestMethod.POST)
+    @RequestMapping(value = "/getRecommendGoodsList", method = RequestMethod.POST)
     @ResponseBody
-    public PageGoodsModel getRecommendGoodsList(int page, int pageSize,Long customerId,
+    public PageGoodsModel getRecommendGoodsList(int page, int pageSize, Long customerId,
                                                 @RequestParam(required = false) String keywords) throws Exception {
         Long userId = getCurrentUserId();
-        User user=userRepository.findOne(userId);
-        if(user==null){
+        User user = userRepository.findOne(userId);
+        if (user == null) {
             throw new UserNotFoundException("用户不存在或已过期");
         }
         Page<SisGoods> sisGoodsList = sisGoodsRecommendService.findSisRecommendGoodsModel
-                (customerId,user,keywords,new PageRequest(page-1,pageSize));
+                (customerId, user, keywords, new PageRequest(page - 1, pageSize));
 //        if (goodsList != null && goodsList.getContent() != null) {
 //            goodsList.forEach(p -> {
 //                List<SisGoods> sisGoodsListTemp = sisGoodsService.getAllSisGoodsList(p.getId(), user.getId(),
@@ -1149,7 +1144,7 @@ public class SisWebGoodsController {
         List<PcSisGoodsModel> list = calculateValue(sisGoodsList.getContent(), user);
         //
         PageGoodsModel model = new PageGoodsModel();
-        int count = (int)sisGoodsList.getTotalElements();
+        int count = (int) sisGoodsList.getTotalElements();
         int pageCount = sisGoodsList.getTotalPages();
         model.setRows(list);
         model.setPageCount(pageCount);
@@ -1162,10 +1157,10 @@ public class SisWebGoodsController {
 
 
     /**
-     *
      * 经营者模式，根据输入的小伙伴等级索引找出所有应该的返利的key
-     * @param startIndex   开始的小伙伴等级
-     * @param stopIndex    结束的小伙伴等级
+     *
+     * @param startIndex 开始的小伙伴等级
+     * @param stopIndex  结束的小伙伴等级
      * @return
      */
     private List<String> getPossibleRebateRelations(int startIndex, int stopIndex) {
@@ -1177,7 +1172,7 @@ public class SisWebGoodsController {
             for (int k = startIndex; k <= rightTopIndex; k++) {
                 int diff = k - i;
                 if (diff == 1 || diff == 0) {
-                    lstResults.add(i+"_"+k);
+                    lstResults.add(i + "_" + k);
                 }
             }
         }
@@ -1186,17 +1181,83 @@ public class SisWebGoodsController {
 
     /**
      * 获取商品八级返利冗余字段里面返利最多的货品的钱
+     *
      * @param productDisRebateDescs
      * @return
      */
-    private double getProductDisRebateDescsMaxAmount(List<ProductDisRebateDesc> productDisRebateDescs){
-        double maxAmount=0;
-        for(ProductDisRebateDesc p:productDisRebateDescs){
-            if(p.getAmount()>maxAmount){
-                maxAmount=p.getAmount();
+    private double getProductDisRebateDescsMaxAmount(List<ProductDisRebateDesc> productDisRebateDescs) {
+        double maxAmount = 0;
+        for (ProductDisRebateDesc p : productDisRebateDescs) {
+            if (p.getAmount() > maxAmount) {
+                maxAmount = p.getAmount();
             }
         }
         return maxAmount;
+    }
+
+
+    /**
+     * 计算直推奖
+     * <p>
+     * -(1)、插入流水表Hot_UserTempIntegral_History
+     * -(2)、用户表Hot_UserBaseInfo-》UB_UserTempIntegral更新
+     *
+     * @param httpServletRequest request请求
+     * @return
+     * @throws Exception
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/calculateShopRebate", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public ResultModel calculateShopRebate(HttpServletRequest httpServletRequest) throws Exception {
+        String sign = httpServletRequest.getParameter("sign");
+        String shopIdString = httpServletRequest.getParameter("shopId");
+        int shopId = Integer.parseInt(shopIdString);
+        String orderId = httpServletRequest.getParameter("orderId");
+        String unionOrderId = httpServletRequest.getParameter("unionOrderId");
+        ResultModel resultModel = new ResultModel();
+        System.out.println(shopId + "" + orderId + "" + unionOrderId);
+        Order order = sisOrderRepository.findOne(orderId);
+        List<OrderItems> orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId);
+
+        //测试得到orderItems对象
+        orderItems.forEach(System.out::println);
+        SisLevel sisLevel = sisLevelRepository.findOne((long) shopId);
+        User user = userRepository.findOne((long) order.getUserId());
+//        List<SISProfit> profits = sisProfitRepository.findByMerchant_Id(order.getMerchant().getId());
+//        if(Objects.isNull(profits)){
+//            resultModel.setCode(500);
+//            resultModel.setMessage("直推利润未配置");
+//        }
+        double totalPrize = 0;//总共的价格
+        for (int i = 0; i < orderItems.size(); i++) {
+            int zhituiPrize = (int) orderItems.get(i).getZhituiPrize();
+            totalPrize += zhituiPrize;
+        }
+        Integer userLevelStatus = userService.getTotalUserType((long) user.getLevelId());
+        if (userLevelStatus == 1) {
+
+        } else if (userLevelStatus == 2) {
+            List<SISProfit> profits = sisProfitService.findAllByUserLevelId((long) user.getLevelId(),
+                    user.getMerchant().getId(), null);
+
+        } else {
+            resultModel.setCode(500);
+            resultModel.setMessage("当前用户不属于可获利的等级");
+            return resultModel;
+        }
+        UserTempIntegralHistory utih = new UserTempIntegralHistory();
+        int totalPrizeInt = (int) totalPrize;
+        System.out.println(totalPrizeInt);
+        utih.setIntegral(totalPrizeInt);
+        utih.setUnionOrderId(unionOrderId);
+        utih.setStatus(0);
+        utih.setOrder(order);
+        utihRepository.save(utih);
+        resultModel.setCode(200);
+        resultModel.setMessage("签名成功");
+        return resultModel;
+
     }
 
 }

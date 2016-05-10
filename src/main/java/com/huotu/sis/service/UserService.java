@@ -176,6 +176,12 @@ public interface UserService {
     IndirectPushFlow saveIndirectPushFlow(User user,Order order) throws Exception;
 
 
-
+    /**
+     * 获取用户等级：1.总代一小伙伴，2.总代二小伙伴,0:未知
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    Integer getTotalUserType(Long userId) throws Exception;
 
 }

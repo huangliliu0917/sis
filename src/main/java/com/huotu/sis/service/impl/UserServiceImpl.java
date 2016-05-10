@@ -425,4 +425,15 @@ public class UserServiceImpl implements UserService {
 
         return indirectPushFlow;
     }
+
+    @Override
+    public Integer getTotalUserType(Long userId) throws Exception{
+        if(getTotalGeneraltionId(SysConfigConstant.Total_Generation_OneId).equals(userId)){
+            return 1;
+        }
+        if(getTotalGeneraltionId(SysConfigConstant.Total_Generation_TwoId).equals(userId)){
+            return 2;
+        }
+        return 0;
+    }
 }
