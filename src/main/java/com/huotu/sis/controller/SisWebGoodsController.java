@@ -16,7 +16,6 @@ import com.huotu.huobanplus.common.model.adrebateconfig.ProductDisRebateDesc;
 import com.huotu.huobanplus.common.repository.*;
 import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.entity.*;
-import com.huotu.sis.entity.support.ProfitUser;
 import com.huotu.sis.repository.*;
 import com.huotu.sis.service.*;
 import com.huotu.sis.common.PublicParameterHolder;
@@ -29,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -98,12 +96,6 @@ public class SisWebGoodsController {
     private CommonConfigsService commonConfigsService;
     @Autowired
     private SisGoodsRecommendService sisGoodsRecommendService;
-    @Autowired
-    private SisProfitRepository sisProfitRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private SisProfitService sisProfitService;
 
     @Autowired
     private SystemConfigRepository systemConfigRepository;
