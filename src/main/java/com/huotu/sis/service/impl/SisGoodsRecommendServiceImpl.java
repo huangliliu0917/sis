@@ -77,7 +77,11 @@ public class SisGoodsRecommendServiceImpl implements SisGoodsRecommendService {
 //                sisGoodses.add(goods);
 //            }
         });
-        query=entityManager.createNativeQuery(SqlHelper.getCountSisRecommendGoodsSql(title));
+        query=entityManager.createQuery(SqlHelper.getCountSisRecommendGoodsSql(title));
+        query.setParameter("customerId",customerId);
+        if(!StringUtils.isEmpty(title)){
+            query.setParameter("title","%"+title+"%");
+        }
 
         list = query.getResultList();
 

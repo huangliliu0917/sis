@@ -3,10 +3,7 @@ package com.huotu.sis.service;
 import com.huotu.huobanplus.common.entity.Order;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.UserFormalIntegral;
-import com.huotu.sis.entity.IndirectPushFlow;
-import com.huotu.sis.entity.SisConfig;
-import com.huotu.sis.entity.SisInviteLog;
-import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,17 +72,18 @@ public interface UserService {
 
     /**
      * 返利计算
-     * @param user      升级的用户
-     * @param order     订单
+     * @param user          升级的用户
+     * @param order         订单
+     * @param integralType  积分类型
      * @throws Exception
      */
-    void countIntegral(User user,Order order) throws Exception;
+    void countIntegral(User user,Order order,IntegralType integralType) throws Exception;
 
     /**
      * 保存正式积分流水
      * @throws Exception
      */
-    UserFormalIntegral saveFormalIntegral(User user, Integer value, Order order) throws Exception;
+    UserFormalIntegral saveFormalIntegral(User user, Integer value, Order order, IntegralType integralType) throws Exception;
 
     /**
      * 增加用户的冗余积分字段

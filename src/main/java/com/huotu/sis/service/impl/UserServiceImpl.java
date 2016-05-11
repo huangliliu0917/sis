@@ -211,13 +211,13 @@ public class UserServiceImpl implements UserService {
     public void countOpenShopAward(User user, String orderId, String unionOrderId) throws Exception {
         Order order=orderRepository.findOne(orderId);
         //返利计算
-        countIntegral(user,order);
+        countIntegral(user,order,IntegralType.open);
         //间推,插流水
         saveIndirectPushFlow(user,order);
     }
 
     @Override
-    public void countIntegral(User user, Order order) throws Exception {
+    public void countIntegral(User user, Order order,IntegralType integralType) throws Exception {
         User belongOne=userRepository.findOne(user.getBelongOne());
         //没有上级，无法返利
         if(belongOne==null){
@@ -245,14 +245,14 @@ public class UserServiceImpl implements UserService {
             return;
         }
         //增加返利积分流水
-        saveFormalIntegral(user,sisOpenAwardAssign.getIntegral(),order);
+        saveFormalIntegral(user,sisOpenAwardAssign.getIntegral(),order,integralType);
         //用户冗余字段修改积分
         addUserIntegral(user,sisOpenAwardAssign.getIntegral());
 
     }
 
     @Override
-    public UserFormalIntegral saveFormalIntegral(User user, Integer value, Order order) throws Exception {
+    public UserFormalIntegral saveFormalIntegral(User user, Integer value, Order order,IntegralType integralType) throws Exception {
         if(value<=0){
             log.info("user"+user.getId()+"add integral is 0");
             return null;
@@ -263,7 +263,7 @@ public class UserServiceImpl implements UserService {
         userFormalIntegral.setScore(value);
         userFormalIntegral.setUser(user);
         userFormalIntegral.setTime(new Date());
-        userFormalIntegral.setStatus(0);//todo 积分类型未定义
+        userFormalIntegral.setStatus(integralType.getIndex());
         userFormalIntegralRepository.save(userFormalIntegral);
         return userFormalIntegral;
 
