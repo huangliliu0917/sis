@@ -514,17 +514,19 @@ public class SisWebApiController {
                             * oneBelongProfit.getProfit() / 100, exchangeRate);
                     saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
                             contributeUserType, desc, now2, order);
-                }
-                //总代二小伙伴的积分利润
-                if (Objects.nonNull(belongOneUser.getBelongOne())) {
-                    User belongTwoUser = userService.findTotalGenerationTwoByUser(belongOneUser);
-                    if (Objects.nonNull(belongTwoUser)) {
-                        int belongTwoIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100
-                                * oneBelongProfit.getProfit() / 100, exchangeRate);
-                        saveHistory(customerId, belongTwoIntegral, unionOrderId, belongOneUser, contriUser,
-                                contributeUserType, desc, now2, order);
+
+                    //总代二小伙伴的积分利润
+                    if (Objects.nonNull(belongOneUser.getBelongOne())) {
+                        User belongTwoUser = userService.findTotalGenerationTwoByUser(belongOneUser);
+                        if (Objects.nonNull(belongTwoUser)) {
+                            int belongTwoIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100
+                                    * oneBelongProfit.getProfit() / 100, exchangeRate);
+                            saveHistory(customerId, belongTwoIntegral, unionOrderId, belongOneUser, contriUser,
+                                    contributeUserType, desc, now2, order);
+                        }
                     }
                 }
+
             }
             resultModel.setCode(200);
             resultModel.setMessage("OK");
