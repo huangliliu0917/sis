@@ -97,9 +97,9 @@ public class SpringWebTest {
 
     @After
     public void afterTest() {
-        if (webDriver != null) {
-            webDriver.close();
-        }
+//        if (webDriver != null) {
+//            webDriver.close();
+//        }
     }
 
 
