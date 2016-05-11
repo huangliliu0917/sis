@@ -5,6 +5,7 @@ import com.huotu.huobanplus.common.entity.*;
 import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.utils.DateUtil;
+import com.huotu.sis.entity.IntegralType;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
@@ -134,7 +135,7 @@ public class SisWebApiController {
         boolean isUpgrade=sisLevelService.upgradeSisLevel(user,sisConfig,orderItems.get(0));
 
         //第三步:升级返利
-        userService.countIntegral(user,order);
+        userService.countIntegral(user,order, IntegralType.upgrade);
 
         //第四步:返回结果
         if(isUpgrade){

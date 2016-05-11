@@ -55,16 +55,15 @@ public class SqlHelper {
     public static String getCountSisRecommendGoodsSql(String title){
         StringBuffer hql=new StringBuffer();
         //分页
-        hql.append("SELECT count(*) FROM Mall_Goods as mg " +
-                "        INNER JOIN SIS_Goods_Recommend as sgr ON mg.Goods_Id=sgr.GoodsId " +
-                "        LEFT JOIN SIS_SisGoods as sg ON mg.Goods_Id=sg.GOODS_Goods_Id and sg.USER_UB_UserID=? " +
-                " WHERE sgr.CustomerId=? and  " +
-                " mg.Goods_Scenes=0 AND " +
-                " mg.Marketable=1 and " +
-                " mg.Disabled=0 and " +
-                " sg.deleted=0 ");
+        hql.append("SELECT count(sgr) " +
+                " FROM Goods as mg " +
+                "        LEFT JOIN  SisGoodsRecommend as sgr ON mg.id=sgr.goodsId " +
+                " WHERE sgr.customerId=:customerId and " +
+                " mg.scenes=0 AND " +
+                " mg.marketable=true and " +
+                " mg.disabled=false");
         if(!StringUtils.isEmpty(title)){
-            hql.append(" and  mg.Name LIKE ? ");
+            hql.append(" and  mg.title LIKE :title ");
         }
 //        hql.append("ORDER BY sgr.SortNo DESC,sgr.RecId DESC");
         return hql.toString();
@@ -80,12 +79,11 @@ public class SqlHelper {
         StringBuffer hql=new StringBuffer();
         //分页
         hql.append("SELECT " +
-                "mg," +
-                "sg.selected " +
-                " FROM Goods as mg " +
-                "        INNER JOIN SisGoodsRecommend as sgr ON mg.id=sgr.goodsId " +
-                "        LEFT JOIN SisGoods as sg ON mg=sg.goods and sg.user=:user " +
-                " WHERE sgr.customerId=:customerId and  " +
+                "mg,sg.selected " +
+                " FROM  Goods as mg " +
+                "        LEFT JOIN  SisGoodsRecommend as sgr ON mg.id=sgr.goodsId " +
+                "        LEFT JOIN SisGoods as sg ON sg.goods=mg and sg.user=:user" +
+                " WHERE sgr.customerId=:customerId  and " +
                 " mg.scenes=0 AND " +
                 " mg.marketable=true and " +
                 " mg.disabled=false");
