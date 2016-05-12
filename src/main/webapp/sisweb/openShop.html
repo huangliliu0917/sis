@@ -13,6 +13,7 @@
     <script type="text/javascript" src="layer/layer.js"></script>
     <link rel="stylesheet" type="text/css" href="css/common.css"/>
     <link rel="stylesheet" type="text/css" href="css/weui.minweui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/weui.minweuia.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/fksc.css"/>
     <link rel="stylesheet" type="text/css" href="layer/skin/layer.css"/>
     <link rel="stylesheet" type="text/css" href="layer/skin/layer.ext.css"/>
@@ -41,14 +42,15 @@
             <input th:if="*{inviterId}!=null" type="hidden" id="inviterId" th:value="*{inviterId}" name="inviterId"/>
             <input class="input-name" id="realName" name="realName" placeholder="请输入您的真实姓名" maxlength="20" type="text"/>
             <input class="input-name" id="phone" name="mobile" placeholder="请输入您的店铺手机号" maxlength="20" type="text"/>
-            <input class="input-name" id="code" name="code" placeholder="输入验证码" maxlength="20" type="text"/>
+            <input style="width: 60%" class="input-name" id="code" name="code" placeholder="输入验证码" maxlength="20" type="text"/>
             <button  id="send" name="send" class=" button-code-a" type="button" title=""
                      onclick="javascript:sendSMS(this);">获取验证码</button>
         </div>
 
         <!--店铺等级选择-->
         <div th:if="${openGoodsMode==1}" style="margin:0px 40px" class="weui_cells weui_cells_checkbox">
-            <label th:each="og:${openGoods}" style="border-top: 1px solid #fff; border-bottom:1px solid #ddd;" class="weui_cell weui_check_label">
+            <label th:each="og:${openGoods}"
+                   th:style="${ogStat.count}==1?'border-top: 1px solid #fff; border-bottom:1px solid #ddd;'" class="weui_cell weui_check_label">
                 <div class="weui_cell_hd">
                     <input th:value="${og.goodsId}"  type="radio" name="openGoods" class="weui_check" checked="checked"/>
                     <i class="weui_icon_checked"></i>
