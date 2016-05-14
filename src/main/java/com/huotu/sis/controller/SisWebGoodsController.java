@@ -66,8 +66,7 @@ public class SisWebGoodsController {
     CommonConfigsService commonConfigService;
     @Autowired
     UTIHRepository utihRepository;
-    @Autowired
-    private UserLevelRepository userLevelRepository;
+
     @Autowired
     private MerchantConfigRepository merchantConfigRepository;
     @Autowired
@@ -87,8 +86,7 @@ public class SisWebGoodsController {
     private SisRepository sisRepository;
     @Autowired
     private SisConfigRepository sisConfigRepository;
-    @Autowired
-    private SisLevelRepository sisLevelRepository;
+
     @Autowired
     private BrandRepository brandRepository;
     @Autowired
@@ -103,6 +101,12 @@ public class SisWebGoodsController {
 
     @Autowired
     private IndirectPushFlowRepository indirectPushFlowRepository;
+
+    @Autowired
+    UserLevelRepository userLevelRepository;
+
+    @Autowired
+    SuperBuddyRepository superBuddyRepository;
 
     /**
      * 查找品牌对应的商品列表详情
@@ -1195,6 +1199,8 @@ public class SisWebGoodsController {
     }
 
 
+
+
     /**
      * 我的团队
      * <p>
@@ -1213,10 +1219,23 @@ public class SisWebGoodsController {
         SystemConfig systemConfigTwo = systemConfigRepository.findOne("TotalGenerationTwoId");
         Date date = DateHelper.getThisDayBegin();
 
-
         SisMyTeamModel sisMyTeamModel = new SisMyTeamModel();
+        sisMyTeamModel.setName(user.getWxNickName());
+
+        sisMyTeamModel.setPartnerLevelName("无");
+        UserLevel userLevel = userLevelRepository.findOne((long) user.getLevelId());
+        if (userLevel != null) sisMyTeamModel.setPartnerLevelName(userLevel.getLevelName());
+
+        sisMyTeamModel.setBelongOneName("无");
+        User belongOneUser = userRepository.findOne(user.getBelongOne());
+        if (belongOneUser != null) sisMyTeamModel.setBelongOneName(belongOneUser.getWxNickName());
+
+        SuperBuddy superBuddy = superBuddyRepository.findOne(user.getSuperBuddy());
+        if (superBuddy != null) sisMyTeamModel.setTeamName(superBuddy.getTeamName());
+
         if (systemConfigOne.getValueForCode().equals(levelId.toString())) {
             //总代1
+            sisMyTeamModel.setTodayNumber(1L);
             Long directNumber = userRepository.countByBelongOne(userId);
             sisMyTeamModel.setDirectNumber(directNumber);
 
@@ -1225,6 +1244,7 @@ public class SisWebGoodsController {
 
         } else if (systemConfigTwo.getValueForCode().equals(levelId.toString())) {
             //总代2
+            sisMyTeamModel.setType(2L);
             Long directNumber = userRepository.countByBelongOne(userId);
             sisMyTeamModel.setDirectNumber(directNumber);
             Long indirectNumber = indirectPushFlowRepository.countByTotalGenerationTwoUser(user);

@@ -22,36 +22,61 @@
 
         <div style="background-color: #fff">
             <div class="my_menu_btn2 sd  tit_rem_big">
-
-        <span style="margin:0px 8px;" class="fximg">
-        <img src="images/fx01.png" th:href="@{/sisweb/images/fx01.png}"/>
-        </span>
-        <span>
-        我的团队
-        </span>
+            <span style="margin:0px 8px;" class="fximg">
+            <img src="images/fx01.png" th:href="@{/sisweb/images/fx01.png}"/>
+            </span>
+            <span>
+            我的团队
+            </span>
             </div>
         </div>
         <!--end菜单2-->
         <div style="display: box; display: -ms-box; display: -webkit-box; display: flex; display: -ms-flexbox; display: -webkit-flex;"
              th:object="${list}">
+
             <table class="tablePanel" style="width: 100%; margin: 10px 0px;" cellspacing="1" cellpadding="0">
                 <tbody>
+
                 <tr>
                     <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
                     <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="${directNumber} + '1'">0</p>
+                        <p style="text-align: center" th:text="*{name}">0</p>
                     </td>
                 </tr>
                 <tr>
+                    <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
+                    <td class="boxtd" style="text-align: center">
+                        <p style="text-align: center" th:text="*{partnerLevelName}">0</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
+                    <td class="boxtd" style="text-align: center">
+                        <p style="text-align: center" th:text="*{belongOneName}">0</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
+                    <td class="boxtd" style="text-align: center">
+                        <p style="text-align: center" th:text="*{teamName}">0</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
+                    <td class="boxtd" style="text-align: center">
+                        <p style="text-align: center" th:text="*{directNumber} + '人'">0</p>
+                    </td>
+                </tr>
+                <tr th:if="*{type eq 1}">
                     <td class="boxtd fffx"><p style="text-align: center">间推总人数</p></td>
                     <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="${indirectNumber} + '1'">0</p>
+                        <p style="text-align: center" th:text="*{indirectNumber} + '人'">0</p>
                     </td>
                 </tr>
                 <tr>
                     <td class="boxtd fffx"><p style="text-align: center">今日新增</p></td>
                     <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="${todayNumber} + '1'">0</p>
+                        <p style="text-align: center" th:text="*{todayNumber} + '人'">0</p>
                     </td>
                 </tr>
                 </tbody>

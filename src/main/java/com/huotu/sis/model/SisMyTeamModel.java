@@ -10,6 +10,29 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SisMyTeamModel {
+
+    /**
+     * 姓名
+     */
+    private String name;
+
+    /**
+     * 店铺店铺等级名称
+     */
+    private String partnerLevelName;
+    /**
+     * 上级姓名
+     */
+    private String belongOneName;
+    /**
+     * 团队名称
+     */
+    private String teamName;
+
+    /**
+     * 类型 1总代1 2总代2
+     */
+    private Long type;
     /**
      * 直推人数
      */
