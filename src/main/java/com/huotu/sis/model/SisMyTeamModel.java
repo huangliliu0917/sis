@@ -10,7 +10,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SisMyTeamModel {
-    private String name;
-    private Long num;
+    /**
+     * 直推人数
+     */
+    private Long directNumber;
+    /**
+     * 间推人数
+     */
+    private Long indirectNumber;
 
+    /**
+     * 新增人数(直推+间推)
+     */
+    private Long todayNumber;
 }

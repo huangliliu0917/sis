@@ -1,5 +1,6 @@
 package com.huotu.sis.controller;
 
+import com.huotu.common.base.DateHelper;
 import com.huotu.huobanplus.common.UserType;
 import com.huotu.huobanplus.common.dataService.AdvanceQuatoRebateService;
 import com.huotu.huobanplus.common.dataService.NormalRebateService;
@@ -1194,11 +1195,6 @@ public class SisWebGoodsController {
     }
 
 
-
-
-
-
-
     /**
      * 我的团队
      * <p>
@@ -1215,34 +1211,31 @@ public class SisWebGoodsController {
         Integer levelId = user.getLevelId();
         SystemConfig systemConfigOne = systemConfigRepository.findOne("TotalGenerationOneId");
         SystemConfig systemConfigTwo = systemConfigRepository.findOne("TotalGenerationTwoId");
-        List<SisMyTeamModel> list = new ArrayList<>();
+        Date date = DateHelper.getThisDayBegin();
 
 
+        SisMyTeamModel sisMyTeamModel = new SisMyTeamModel();
         if (systemConfigOne.getValueForCode().equals(levelId.toString())) {
-
-            Long directNumber = userRepository.countByBelongOne(userId);
             //总代1
-            SisMyTeamModel sisMyTeamModel = new SisMyTeamModel();
-            sisMyTeamModel.setName("直推人数");
-            sisMyTeamModel.setNum(directNumber);
-            list.add(sisMyTeamModel);
+            Long directNumber = userRepository.countByBelongOne(userId);
+            sisMyTeamModel.setDirectNumber(directNumber);
+
+            Long todayDirectNumber = userRepository.countTodayByBelongOne(userId, date);
+            sisMyTeamModel.setTodayNumber(todayDirectNumber);
 
         } else if (systemConfigTwo.getValueForCode().equals(levelId.toString())) {
-            Long directNumber = userRepository.countByBelongOne(userId);
             //总代2
-            SisMyTeamModel sisMyTeamModel = new SisMyTeamModel();
-            sisMyTeamModel.setName("直推人数");
-            sisMyTeamModel.setNum(directNumber);
-            list.add(sisMyTeamModel);
-
+            Long directNumber = userRepository.countByBelongOne(userId);
+            sisMyTeamModel.setDirectNumber(directNumber);
             Long indirectNumber = indirectPushFlowRepository.countByTotalGenerationTwoUser(user);
-            sisMyTeamModel = new SisMyTeamModel();
-            sisMyTeamModel.setName("间推人数");
-            sisMyTeamModel.setNum(indirectNumber);
-            list.add(sisMyTeamModel);
+            sisMyTeamModel.setIndirectNumber(indirectNumber);
+
+            Long todayDirectNumber = userRepository.countTodayByBelongOne(userId, date);
+            Long todayIndirectNumber = indirectPushFlowRepository.countTodayByTotalGenerationTwoUser(user, date.getTime());
+            sisMyTeamModel.setTodayNumber(todayDirectNumber + todayIndirectNumber);
         }
 
-        model.addAttribute("list", list);
+        model.addAttribute("list", sisMyTeamModel);
         return "sisweb/myTeam";
 
     }
