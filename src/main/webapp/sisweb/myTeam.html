@@ -32,13 +32,26 @@
             </div>
         </div>
         <!--end菜单2-->
-        <div style="display: box; display: -ms-box; display: -webkit-box; display: flex; display: -ms-flexbox; display: -webkit-flex;">
+        <div style="display: box; display: -ms-box; display: -webkit-box; display: flex; display: -ms-flexbox; display: -webkit-flex;"
+             th:object="${list}">
             <table class="tablePanel" style="width: 100%; margin: 10px 0px;" cellspacing="1" cellpadding="0">
                 <tbody>
-                <tr th:each="item:${list}">
-                    <td class="boxtd fffx"><p style="text-align: center" th:text="${item.name}"></p></td>
+                <tr>
+                    <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
                     <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="${item.num} + '人'">0</p>
+                        <p style="text-align: center" th:text="${directNumber} + '1'">0</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="boxtd fffx"><p style="text-align: center">间推总人数</p></td>
+                    <td class="boxtd" style="text-align: center">
+                        <p style="text-align: center" th:text="${indirectNumber} + '1'">0</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="boxtd fffx"><p style="text-align: center">今日新增</p></td>
+                    <td class="boxtd" style="text-align: center">
+                        <p style="text-align: center" th:text="${todayNumber} + '1'">0</p>
                     </td>
                 </tr>
                 </tbody>
