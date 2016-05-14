@@ -806,11 +806,19 @@ public class SisWebUserController {
         }
         goods.setStock(goods.getStock() - freeze);
         model.addAttribute("good", goods);
-        String url = getMerchantSubDomain(customerId) + "/mall/SubmitOrder.aspx?" +
-                "fastbuy=1&" +
-                "traitems=" + goods.getId() + "_" + productId + "_1&" +
-                "customerid=" + customerId + "&" +
-                "showwxpaytitle=1" + "&" + "returl=/UserCenter/ShopInShop/OpenSuccess.aspx%3Fcustomerid%3D" + customerId;
+        String url;
+        if(environment.acceptsProfiles("develop")||environment.acceptsProfiles("development")){
+            PublicParameterModel ppm = PublicParameterHolder.get();
+            Long userId = ppm.getUserId();
+            url="/sisapi/openSisShop?userid="+userId+"&orderid=2014030766369854&unionorderid=2014030766369854";
+        }else {
+            url = getMerchantSubDomain(customerId) + "/mall/SubmitOrder.aspx?" +
+                    "fastbuy=1&" +
+                    "traitems=" + goods.getId() + "_" + productId + "_1&" +
+                    "customerid=" + customerId + "&" +
+                    "showwxpaytitle=1" + "&" + "returl=/UserCenter/ShopInShop/OpenSuccess.aspx%3Fcustomerid%3D" + customerId;
+
+        }
         model.addAttribute("goodsUrl", url);
         model.addAttribute("customerId", customerId);
         String resUrl = commonConfigService.getResourceServerUrl();
@@ -1016,6 +1024,9 @@ public class SisWebUserController {
                         sisLevelUpgradeModel.setCurrentPrice(price);
                         int goodsNumber=new Double(Math.ceil((goods.getPrice()-originalPrice)/extraGoods.getPrice())).intValue();
                         String goodsUrl = url + "_" + goodsNumber;
+                        if(environment.acceptsProfiles("develop")||environment.acceptsProfiles("development")){
+                            goodsUrl="/sisapi/upgradeSisShop?userid="+userId+"&orderid=2014030766369854";
+                        }
                         sisLevelUpgradeModel.setGoodsUrl(goodsUrl);
                         models.add(sisLevelUpgradeModel);
                     }
