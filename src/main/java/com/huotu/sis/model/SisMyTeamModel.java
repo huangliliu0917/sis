@@ -3,6 +3,8 @@ package com.huotu.sis.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * Created by lgh on 2016/5/9.
  */
@@ -46,4 +48,22 @@ public class SisMyTeamModel {
      * 新增人数(直推+间推)
      */
     private Long todayNumber;
+
+    /**
+     * 开店总额
+     */
+    private BigDecimal openMoney;
+    /**
+     * 直推总额
+     */
+    private BigDecimal pushMoney;
+
+    /**
+     * 时间
+     */
+    private String[] date;
+    /**
+     * 金额
+     */
+    private BigDecimal[] money;
 }

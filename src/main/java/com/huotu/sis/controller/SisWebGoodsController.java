@@ -4,6 +4,7 @@ import com.huotu.common.base.DateHelper;
 import com.huotu.huobanplus.common.UserType;
 import com.huotu.huobanplus.common.dataService.AdvanceQuatoRebateService;
 import com.huotu.huobanplus.common.dataService.NormalRebateService;
+import com.huotu.huobanplus.common.dataService.UserFormalIntegralService;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.*;
 import com.huotu.huobanplus.common.entity.support.LevelPrice;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -107,6 +109,12 @@ public class SisWebGoodsController {
 
     @Autowired
     SuperBuddyRepository superBuddyRepository;
+
+    @Autowired
+    private UserFormalIntegralRepository userFormalIntegralRepository;
+
+    @Autowired
+    private UserFormalIntegralService userFormalIntegralService;
 
     /**
      * 查找品牌对应的商品列表详情
@@ -1199,8 +1207,6 @@ public class SisWebGoodsController {
     }
 
 
-
-
     /**
      * 我的团队
      * <p>
@@ -1255,7 +1261,32 @@ public class SisWebGoodsController {
             sisMyTeamModel.setTodayNumber(todayDirectNumber + todayIndirectNumber);
         }
 
-        model.addAttribute("list", sisMyTeamModel);
+        Integer openMoney1 = userFormalIntegralRepository.getSumRebateByUserAndStatus(user, 700);
+        Integer openMoney2 = userFormalIntegralRepository.getSumRebateByUserAndStatus(user, 701);
+        Integer pushMoney1 = userFormalIntegralRepository.getSumRebateByUserAndStatus(user, 500);
+        BigDecimal openMoney = new BigDecimal(0);
+        BigDecimal pushMoney = new BigDecimal(0);
+        if (openMoney1 != null) openMoney = openMoney.add(new BigDecimal(openMoney1));
+        if (openMoney2 != null) openMoney = openMoney.add(new BigDecimal(openMoney2));
+
+        if (pushMoney1 != null) pushMoney = pushMoney.add(new BigDecimal(pushMoney1));
+
+
+        Map<String, Integer> sevenData = userFormalIntegralService.countSevenDay(user);
+        String[] moneyDate = new String[sevenData.size()];
+        BigDecimal[] money = new BigDecimal[sevenData.size()];
+        Integer count = 0;
+        for (String key : sevenData.keySet()) {
+            moneyDate[count] = key;
+            money[count] = new BigDecimal(sevenData.get(key));
+            count++;
+        }
+
+        sisMyTeamModel.setOpenMoney(openMoney);
+        sisMyTeamModel.setPushMoney(pushMoney);
+        sisMyTeamModel.setDate(moneyDate);
+        sisMyTeamModel.setMoney(money);
+        model.addAttribute("data", sisMyTeamModel);
         return "sisweb/myTeam";
 
     }

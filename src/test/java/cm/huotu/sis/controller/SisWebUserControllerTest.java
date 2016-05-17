@@ -2,6 +2,7 @@ package cm.huotu.sis.controller;
 
 import cm.huotu.sis.common.WebTest;
 import cm.huotu.sis.pages.Template;
+import com.huotu.common.base.DateHelper;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.support.ProductSpecifications;
@@ -23,8 +24,8 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
+import javax.persistence.Query;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -158,6 +159,31 @@ public class SisWebUserControllerTest extends WebTest {
     public void testFindTotalGenerationTwoByUser() throws Exception{
         User u=userRepository.findOne(97278L);
         User user=userService.findTotalGenerationTwoByUser(userRepository.findOne(97278L));
+    }
+
+
+    @Test
+    public void testB()
+    {
+        User user = userRepository.findOne(3560L);
+
+        Map<String, Integer> result = new HashMap<>();
+        Date date = DateHelper.getThisDayBegin();
+        Date sevenDate = new Date(date.getTime() - 1000 * 3600 * 24 * 6);
+
+        StringBuilder hql = new StringBuilder();
+        hql.append("select FUNC('CONVERT',varchar(100),u.time,23) d,sum(u.score) from UserFormalIntegral u " +
+                "where u.user=:user and (u.status=700 or u.status=701 or u.status=500) and u.time>=:time group by d order by d asc");
+        Query query = entityManager.createQuery(hql.toString());
+        query.setParameter("user", user);
+        query.setParameter("time", sevenDate);
+        List list = query.getResultList();
+        list.forEach(o -> {
+            Object[] objects = (Object[]) o;
+            result.put(objects[0].toString(), Integer.parseInt(objects[1].toString()));
+        });
+
+
     }
 
 }

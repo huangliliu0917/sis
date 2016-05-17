@@ -8,88 +8,231 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
     <meta name="format-detection" content="telephone=no"/>
     <meta name="description" content=""/>
-    <link rel="stylesheet" type="text/css" href="css/common_lq.css" th:href="@{/sisweb/css/common_lq.css}"/>
-    <link rel="stylesheet" type="text/css" href="css/fx.css" th:href="@{/sisweb/css/fx.css}"/>
+    <link rel="stylesheet" type="text/css" href="css/common_myteam.css" th:href="@{/sisweb/css/common_myteam.css}"/>
+
+    <script th:src="@{/sisweb/js/jquery-1.8.2.js}" src="js/jquery-1.8.2.js"></script>
+    <script th:src="@{/sisweb/js/highcharts.js}" src="js/highcharts.js"></script>
     <title>我的团队</title>
-    <style>
-
-    </style>
 </head>
+<style>
+    .letsa {
+        color: #d1b570;
+        font-size: 16px
+    }
 
-<body gtools_scp_screen_capture_injected="true" style="zoom: 1;">
-<aside>
-    <div class="commfont">
+    .letsa_a1 {
+        text-align: center;
+    }
 
-        <div style="background-color: #fff">
-            <div class="my_menu_btn2 sd  tit_rem_big">
-            <span style="margin:0px 8px;" class="fximg">
-            <img src="images/fx01.png" th:href="@{/sisweb/images/fx01.png}"/>
-            </span>
-            <span>
-            我的团队
-            </span>
-            </div>
+    .letsa_a1 .t0 {
+        font-size: 12px;
+        color: #d1b570
+    }
+
+    .tjtx {
+        text-align: center;
+        padding: 10px 0px
+    }
+
+    .tjtx img {
+        border-radius: 100px
+    }
+
+    .tjbt {
+        padding: 6px 10px;
+        font-size: 14px;
+        border-left: 4px solid #111;
+        background-color: #ddd;
+    }
+
+    .xtb {
+        width: 16px;
+        vertical-align: text-bottom;
+        margin-right: 6px
+    }
+</style>
+<body style="background-color:#f1f1f1">
+
+<div style="background-color:#111">
+    <p class="tjtx"><img style="width:70px; height:70px;" src="images/ll.jpg"/></p>
+    <div class="letsa">
+        <div class="letsa_a1">
+            <p><b th:text="${data.name}"></b>【<span th:text="${data.partnerLevelName}"></span>】</p>
+            <p class=" t0"><img src="images/sjsj.png" class="xtb"/>上级：<span th:text="${data.belongOneName}"></span><span
+                    style="padding:0px 6px">|</span><img src="images/tdtd.png" class="xtb"/>团队：<span
+                    th:text="${data.teamName}"></span></p>
+            <p style="height:10px;clear:both"></p>
         </div>
-        <!--end菜单2-->
-        <div style="display: box; display: -ms-box; display: -webkit-box; display: flex; display: -ms-flexbox; display: -webkit-flex;"
-             th:object="${list}">
-
-            <table class="tablePanel" style="width: 100%; margin: 10px 0px;" cellspacing="1" cellpadding="0">
-                <tbody>
-
-                <tr>
-                    <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
-                    <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="*{name}">0</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
-                    <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="*{partnerLevelName}">0</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
-                    <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="*{belongOneName}">0</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
-                    <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="*{teamName}">0</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="boxtd fffx"><p style="text-align: center">直推总人数</p></td>
-                    <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="*{directNumber} + '人'">0</p>
-                    </td>
-                </tr>
-                <tr th:if="*{type eq 1}">
-                    <td class="boxtd fffx"><p style="text-align: center">间推总人数</p></td>
-                    <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="*{indirectNumber} + '人'">0</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="boxtd fffx"><p style="text-align: center">今日新增</p></td>
-                    <td class="boxtd" style="text-align: center">
-                        <p style="text-align: center" th:text="*{todayNumber} + '人'">0</p>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!--end菜单3-->
-
-        <p class="fn-clear h20">
-        </p>
     </div>
-    <div id="mbotomm_hackdiv" style="height: 8px;"></div>
-</aside>
-<div></div>
+</div>
+
+<div style="font-size:14px">
+
+    <style>
+        .sbn-float-ul ul {
+            list-style: none;
+            margin: 0;
+        }
+
+        .sbn-float-ul {
+            width: 100%;
+            overflow: hidden;
+            zoom: 1;
+            display: -webkit-flex;
+            display: flex;
+        }
+
+        .sbn-float-ul li {
+            float: left;
+            text-align: center;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            display: block;
+            flex: 1;
+            -ms-flex: 1;
+            -webkit-flex: 1;
+            box-flex: 1;
+            -ms-box-flex: 1;
+            -webkit-box-flex: 1;
+        }
+
+        .sbn-float-ul li .con {
+            border-right: 1px solid #D2D2D2;
+        }
+
+        .sbn-float-ul li:last-child .con {
+            border-right: none;
+        }
+
+        .aa {
+            background-color: #FF0004;
+        }
+
+        .pjf_4ge li {
+            width: 25%;
+        }
+
+        .pjf_5ge li {
+            width: 20%;
+        }
+
+        .pjf_3ge li {
+            width: 33.3%;
+        }
+
+        .pjf_2ge li {
+            width: 50%;
+        }
+
+        .sbn-zdy {
+            background-color: #fff;
+            padding: 8px 0px 3px 0px;
+            border-bottom: 1px solid #ddd
+        }
+
+        .sbn-zdy li {
+            height: 40px;
+        }
+
+        .sbn-zdy li.on {
+            border-bottom: 1px solid #FF0004
+        }
+
+        .smfont {
+            font-size: 12px;
+            color: #111;
+            margin-top: 2px
+        }
+
+        .whidden {
+            width: 99%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            color: #B98912;
+        }
+    </style>
+
+    <div class="sbn-zdy">
+        <ul class="sbn-float-ul  pjf_3ge ">
+            <li>
+                <p class="whidden" th:text="${data.todayNumber}">0</p>
+                <p class="smfont">今日新增</p>
+            </li>
+            <li>
+                <p class="whidden" th:text="${data.directNumber}">0</p>
+                <p class="smfont">直推人数</p>
+            </li>
+            <li th:if="*{data.type eq 1}">
+                <p class="whidden" th:text="${data.indirectNumber}">0</p>
+                <p class="smfont">间推人数</p>
+            </li>
+        </ul>
+    </div>
+</div>
+<div style="padding:10px 10px 0px 10px; font-size:12px; background-color:#fff">
+    <p style="padding:4px 10px 0px 10px"><span>朝云馆零售收入：</span><span style="float:right;    color: #B98912;"
+                                                                    th:text="${'￥' + data.openMoney}">￥0</span>
+    </p>
+    <p style="padding:0px 10px 4px 10px"><span>零售收入：</span><span style="float:right;    color: #B98912;"
+                                                                 th:text="${'￥' + data.pushMoney}">￥0</span></p>
+</div>
+<div style="padding:10px 10px;background:#fff;" id="chart">
+</div>
 </body>
+
+<script th:inline="javascript">
+
+    var categories = /*[[${data.date}]]*/ [];
+    var data = /*[[${data.money}]]*/ [];
+
+    $('#chart').highcharts({
+        chart: {
+            type: 'column'
+        },
+        reflow: true,
+        colors: ['#111'],
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        //categories 传入时间参数
+        xAxis: {
+            categories: categories,
+            labels: {
+                rotation: 0,
+                style: {
+                    fontSize: 10
+                }
+            },
+            title: {
+                text: '七日营收',
+                style: {
+                    color: '#111'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: ''
+            }
+
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            headerFormat: '',
+            pointFormat: '<b>¥{point.y}</b>'
+        },
+        //data 传入对应时间的金钱参数参数
+        series: [{
+            data: data
+        }]
+    });
+</script>
 </html>
