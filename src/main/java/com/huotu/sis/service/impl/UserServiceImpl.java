@@ -81,6 +81,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private IndirectPushFlowRepository indirectPushFlowRepository;
 
+    @Autowired
+    private SisOpenAwardLogService sisOpenAwardLogService;
+
     @Override
     public Long getUserId(HttpServletRequest request) {
         if (env.acceptsProfiles("development")){
@@ -246,6 +249,13 @@ public class UserServiceImpl implements UserService {
         }
         //增加返利积分流水
         saveFormalIntegral(user,sisOpenAwardAssign.getIntegral(),order,integralType);
+
+        //店中店返利流水
+        String contributionName=user.getWxNickName()==null?"":user.getWxNickName();
+        String remark="一级会员"+contributionName+integralType.getName();
+        sisOpenAwardLogService.saveSisOpenAwardLog(user.getMerchant().getId(),user.getBelongOne(),user.getId()
+        ,sisOpenAwardAssign.getIntegral().doubleValue(),remark,1,order.getId());
+
         //用户冗余字段修改积分
         addUserIntegral(user,sisOpenAwardAssign.getIntegral());
 
@@ -396,7 +406,7 @@ public class UserServiceImpl implements UserService {
         if(getTotalGeneraltionId(SysConfigConstant.FlagshipShop_Id).equals(sisLevelId)){
             return 2;
         }
-        return 0;
+        return null;
     }
 
     @Override

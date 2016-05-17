@@ -138,7 +138,7 @@ public class SisWebApiController {
         //第二步:升级
         boolean isUpgrade = sisLevelService.upgradeSisLevel(user, sisConfig, orderItems.get(0));
 
-        //第三步:升级返利
+        //第三步:返利
         userService.countIntegral(user,order, IntegralType.upgrade);
 
         //第四步:返回结果

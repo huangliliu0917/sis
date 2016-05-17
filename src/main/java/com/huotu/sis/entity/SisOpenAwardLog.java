@@ -50,6 +50,10 @@ public class SisOpenAwardLog {
     @Description("贡献店主Id(会员ID)")
     private Long contribShopId;
 
+    @Column(name = "BelongOneId")
+    @Description("贡献店主购买人上线Id(会员ID)")
+    private Long belongOneId;
+
 
     @Column(name = "Amount")
     @Description("金额")
@@ -68,6 +72,12 @@ public class SisOpenAwardLog {
     @Column(name = "AddTime")
     @Description("添加时间")
     private Date addTime;
+
+    @Column(name = "PosMonthTag")
+    @Description("添加时间年月(201605)")
+    private Integer posMonthTag;
+
+
 
     @Column(name = "OrderId")
     @Description("贡献订单号")

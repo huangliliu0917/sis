@@ -1,5 +1,6 @@
 package com.huotu.sis.service.impl;
 
+import com.huotu.sis.common.StringHelper;
 import com.huotu.sis.entity.SisOpenAwardLog;
 import com.huotu.sis.repository.SisOpenAwardLogRepository;
 import com.huotu.sis.service.SisOpenAwardLogService;
@@ -32,10 +33,14 @@ public class SisOpenAwardLogServiceImpl implements SisOpenAwardLogService {
         sisOpenAwardLog.setContribShopId(contribShopId);
         sisOpenAwardLog.setAmount(amount);
         sisOpenAwardLog.setRemark(remark);
-        sisOpenAwardLog.setAddTime(new Date());
+        Date date=new Date();
+        sisOpenAwardLog.setAddTime(date);
+        sisOpenAwardLog.setPosMonthTag(StringHelper.getPosMonthTag(date));
         sisOpenAwardLog.setSrcType(srcType);
         sisOpenAwardLog.setOrderId(orderId);
         sisOpenAwardLog=sisOpenAwardLogRepository.save(sisOpenAwardLog);
         return sisOpenAwardLog;
     }
+
+
 }
