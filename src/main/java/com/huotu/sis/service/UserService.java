@@ -149,7 +149,7 @@ public interface UserService {
 
 
     /**
-     * 获取店铺等级：1.专卖店，2.旗舰店,0:未知
+     * 获取店铺等级：1.专卖店，2.旗舰店,null:未知
      * @param sisLevelId
      * @return
      * @throws Exception

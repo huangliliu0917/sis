@@ -8,9 +8,9 @@ import com.huotu.sis.entity.SisOpenAwardLog;
 public interface SisOpenAwardLogService {
 
     /**
-     * 保存开店记录
+     * 保存店中店开店，返利等记录
      * @param customerId        商户ID
-     * @param shopId            拿开店奖店主Id
+     * @param shopId            拿奖店主Id
      * @param contribShopId     贡献店主Id
      * @param amount            金额
      * @param remark            备注

@@ -14,10 +14,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -136,5 +133,18 @@ public class StringHelper {
         String s=data[1]+data[2]+SECRET;
         String sign= DigestUtils.md5DigestAsHex(s.getBytes("UTF-8")).toLowerCase();
         return sign.equals(data[0]);
+    }
+
+    /**
+     * 将日期转换为年月格式如：201605(int类型)
+     * @param date 时间
+     * @return
+     */
+    public static int getPosMonthTag(Date date){
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(date);
+        int year=calendar.get(Calendar.YEAR);
+        int month=calendar.get(Calendar.MONTH)+1;
+        return year*100+month;
     }
 }
