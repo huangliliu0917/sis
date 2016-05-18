@@ -199,7 +199,7 @@ public class SisWebGoodsControllerTest extends WebTest {
         goods.setSmallPic(new MallEmbedResource(UUID.randomUUID().toString()));
         goods.setIntro(UUID.randomUUID().toString());
         goods.setStock(100);
-        pictureUrl.append(commonConfigService.getResoureServerUrl() + goods.getSmallPic().getValue());
+        pictureUrl.append(commonConfigService.getResourceServerUrl() + goods.getSmallPic().getValue());
         goodsRepository.saveAndFlush(goods);
         webDriver.get("http://localhost/sisweb/getSisGoodsDetail?goodId=" + goods.getId() + "&customerId=" + user.getMerchant().getId());
         //商品图片

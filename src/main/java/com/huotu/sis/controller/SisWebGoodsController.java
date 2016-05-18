@@ -300,7 +300,7 @@ public class SisWebGoodsController {
         }
 
         goodsDetailModel.setStore(goods.getStock()); //-1是无限制
-        String resUrl = commonConfigService.getResoureServerUrl();
+        String resUrl = commonConfigService.getResourceServerUrl();
         goodsDetailModel.setDetail(goods.getIntro().replaceAll("src=\"/resource/", "src=\"" + resUrl + "/resource/"));
         goodsDetailModel.setGoodsId(goodId);
         if (sisGoods != null && sisGoods.isSelected() == true) {
@@ -309,7 +309,7 @@ public class SisWebGoodsController {
             goodsDetailModel.setIsUp(1);
         }
         StringBuilder picture = new StringBuilder();
-        picture.append(commonConfigService.getResoureServerUrl() + goods.getSmallPic().getValue());
+        picture.append(commonConfigService.getResourceServerUrl() + goods.getSmallPic().getValue());
         goodsDetailModel.setPicture(picture.toString());
         request.setAttribute("customerId", customerId);
         request.setAttribute("goodsDetailModel", goodsDetailModel);
@@ -801,7 +801,7 @@ public class SisWebGoodsController {
                 merchantRebateInfo.setRebate(merchantConfig.getByQuato());
             }
         }
-        String resoureServerUrl = commonConfigService.getResoureServerUrl();
+        String resoureServerUrl = commonConfigService.getResourceServerUrl();
         StringBuffer stringBuffer = new StringBuffer();
         String webUrl = commonConfigsService.getWebUrl();
         if (Objects.isNull(webUrl)) {
