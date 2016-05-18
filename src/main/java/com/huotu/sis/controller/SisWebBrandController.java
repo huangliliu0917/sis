@@ -6,19 +6,18 @@ import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.BrandRepository;
 import com.huotu.huobanplus.common.repository.CategoryRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
+import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisBrand;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
-import com.huotu.sis.model.AppSisSortModel;
-import com.huotu.sis.repository.SisConfigRepository;
-import com.huotu.sis.repository.SisRepository;
-import com.huotu.sis.service.CommonConfigService;
-import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.exception.SisException;
+import com.huotu.sis.model.AppSisSortModel;
 import com.huotu.sis.model.PageSisBrandModel;
 import com.huotu.sis.model.PublicParameterModel;
 import com.huotu.sis.model.SisBrandModel;
+import com.huotu.sis.repository.SisConfigRepository;
+import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SisBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +59,7 @@ public class SisWebBrandController {
     private SisBrandService sisBrandService;
 
     @Autowired
-    CommonConfigService commonConfigService;
+    CommonConfigsService commonConfigService;
 
     @Autowired
     private CommonConfigsService commonConfigsService;
@@ -126,7 +125,7 @@ public class SisWebBrandController {
                 sisBrandModel.setCustomerId(brand.getCustomerId());
                 sisBrandModel.setDetailsUrl(detailsUrl);
                 if (null != brand.getBrandLogo() && brand.getBrandLogo().length() > 0) {
-                    sisBrandModel.setBrandLogo(commonConfigService.getResoureServerUrl() + brand.getBrandLogo());//todo 图片路径
+                    sisBrandModel.setBrandLogo(commonConfigService.getResourceServerUrl() + brand.getBrandLogo());//todo 图片路径
                 } else {
                     sisBrandModel.setBrandLogo(img_path);   //todo
                 }
@@ -173,7 +172,7 @@ public class SisWebBrandController {
                 sisBrandModel.setBrandName(p.getBrandName());
                 sisBrandModel.setCustomerId(p.getCustomerId());
                 if (null != p.getBrandLogo() && p.getBrandLogo().length() > 0) {
-                    sisBrandModel.setBrandLogo(commonConfigService.getResoureServerUrl() + p.getBrandLogo());
+                    sisBrandModel.setBrandLogo(commonConfigService.getResourceServerUrl() + p.getBrandLogo());
                 } else {
                     sisBrandModel.setBrandLogo(img_path);
                 }
@@ -246,7 +245,7 @@ public class SisWebBrandController {
             throw new SisException("无法找到该品牌！");
         }
         if (null != brand.getBrandLogo() && brand.getBrandLogo().length() > 0) {
-            brand.setBrandLogo(commonConfigService.getResoureServerUrl() + brand.getBrandLogo());//todo 图片路径
+            brand.setBrandLogo(commonConfigService.getResourceServerUrl() + brand.getBrandLogo());//todo 图片路径
         } else {
             brand.setBrandLogo(img_path);   //todo
         }
