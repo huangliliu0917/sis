@@ -47,7 +47,7 @@ public class SisOpenAwardAssign {
     private Double advanceVal=0.0;
 
     @Column(name = "Integral")
-    @Description("增加的积分")
+    @Description("开店增加的积分")
     private Integer integral=0;
 
     @Column(name = "UpgradeIntegral")
