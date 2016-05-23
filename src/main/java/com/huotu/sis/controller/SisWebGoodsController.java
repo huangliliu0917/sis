@@ -578,18 +578,18 @@ public class SisWebGoodsController {
         }
         //订单数量
 //        Long orderCount = orderService.getCountByUserId(userId);
-        Long orderCount = userTempIntegralHistoryService.getCountByUserId(userId, 500);
-        model.addAttribute("orderCount", orderCount);
+//        Long orderCount = userTempIntegralHistoryService.getCountByUserId(userId, 500);
+//        model.addAttribute("orderCount", orderCount);
         Date now = new Date();
         Date startDate = DateUtil.makeStartDate(now);
         Date endDate = DateUtil.makeEndDate(now);
         //今日返利
-        List<UserTempIntegralHistory> historyList = userTempIntegralHistoryService.getListByUserIdAndDate(userId, 1, 500, startDate, endDate);
-        int todayIntegrals = 0;
-        for (UserTempIntegralHistory history : historyList) {
-            todayIntegrals += history.getIntegral();
-        }
-        model.addAttribute("todayIntegrals", todayIntegrals);
+//        List<UserTempIntegralHistory> historyList = userTempIntegralHistoryService.getListByUserIdAndDate(userId, 1, 500, startDate, endDate);
+//        int todayIntegrals = 0;
+//        for (UserTempIntegralHistory history : historyList) {
+//            todayIntegrals += history.getIntegral();
+//        }
+//        model.addAttribute("todayIntegrals", todayIntegrals);
 
         String indexUrl = null;
         try {
@@ -600,12 +600,12 @@ public class SisWebGoodsController {
         model.addAttribute("indexUrl", indexUrl + "&__newframe");
 
         //总收益
-        List<UserTempIntegralHistory> list = userTempIntegralHistoryService.getListByUserIdAndDate(userId, 1, 500, null, null);
-        int integrals = 0;
-        for (UserTempIntegralHistory history : list) {
-            integrals += history.getIntegral();
-        }
-        model.addAttribute("integrals", integrals);
+//        List<UserTempIntegralHistory> list = userTempIntegralHistoryService.getListByUserIdAndDate(userId, 1, 500, null, null);
+//        int integrals = 0;
+//        for (UserTempIntegralHistory history : list) {
+//            integrals += history.getIntegral();
+//        }
+//        model.addAttribute("integrals", integrals);
         model.addAttribute("shareUrl", "/sisweb/inviteOpenShop?customerId=" + user.getMerchant().getId() + "&__newframe");
 
         return "/sisweb/sisCenter";
