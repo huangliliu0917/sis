@@ -127,7 +127,17 @@
                     </a>
                 </li>
             </ul>
+            <ul>
+                <li class="on state_switch">
+                    <a href="javascript:void(0)" th:href="@{/sisweb/recommendGoodsIndex(customerId=${customerId})}">
+                        <p><img src="images/x60.png" width="45px" /></p>
+                        <p>查看商品</p>
+                    </a>
+                </li>
+                <li style="border-right:0px" >
 
+                </li>
+            </ul>
         </div>
     </div>
     <script th:if="${sis!=null}" th:inline="javascript">
