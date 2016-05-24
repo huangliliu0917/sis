@@ -513,7 +513,7 @@ public class SisWebApiController {
             //上级
             SISProfit oneBelongProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
             //总代二
-            Long value = userService.getValueByKey(SysConfigConstant.Total_Generation_TwoId);
+//            Long value = userService.getValueByKey(SysConfigConstant.Total_Generation_TwoId);
 //            SISProfit twoProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
             //自己的直推积分
             int ownerIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100, exchangeRate);
@@ -538,21 +538,10 @@ public class SisWebApiController {
                             int belongTwoIntegral = getIntegralRateByRate(totalPrize
                                     * twoBelongProfit.getProfit() / 100, exchangeRate);
                             log.info("two level integral：" + belongOneIntegral);
-                            saveHistory(customerId, belongTwoIntegral, unionOrderId, belongOneUser, contriUser,
+                            saveHistory(customerId, belongTwoIntegral, unionOrderId, belongTwoUser, contriUser,
                                     contributeUserType, desc, now2, order);
                         }
                     }
-                    //总代二小伙伴的积分利润
-//                    if (Objects.nonNull(belongOneUser.getBelongOne())) {
-//                        User belongTwoUser = userService.findTotalGenerationTwoByUser(belongOneUser);
-//                        if (Objects.nonNull(belongTwoUser)) {
-//                            int belongTwoIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100
-//                                    * oneBelongProfit.getProfit() / 100, exchangeRate);
-//                            log.info("上上级积分：" + belongOneIntegral);
-//                            saveHistory(customerId, belongTwoIntegral, unionOrderId, belongOneUser, contriUser,
-//                                    contributeUserType, desc, now2, order);
-//                        }
-//                    }
                 }
 
             }
