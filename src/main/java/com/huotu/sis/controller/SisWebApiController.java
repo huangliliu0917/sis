@@ -510,8 +510,7 @@ public class SisWebApiController {
                     customerId, sisLevel.getId());
             //自己
             SISProfit ownerProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.owner)).findAny().get();
-            //上级
-            SISProfit oneBelongProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
+//            SISProfit oneBelongProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
             //总代二
 //            Long value = userService.getValueByKey(SysConfigConstant.Total_Generation_TwoId);
 //            SISProfit twoProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
@@ -520,28 +519,51 @@ public class SisWebApiController {
             //保存临时积分
             saveHistory(customerId, ownerIntegral, unionOrderId, user, contriUser, contributeUserType, desc, now2, order);
             if (Objects.nonNull(user.getBelongOne())) {
-                //上级的积分,总代一
+                //上级的积分
                 User belongOneUser = userRepository.findOne(user.getBelongOne());
                 if (Objects.nonNull(belongOneUser)) {
-                    int belongOneIntegral = getIntegralRateByRate(totalPrize * oneBelongProfit.getProfit() / 100, exchangeRate);
-                    log.info("one level integral：" + belongOneIntegral);
-                    saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
-                            contributeUserType, desc, now2, order);
                     Integer belongOneLevelStatus = userService.getTotalUserType((long) belongOneUser.getLevelId());
-                    if (belongOneLevelStatus == 1 && Objects.nonNull(belongOneUser.getBelongOne())) {
-                        User belongTwoUser = userService.findTotalGenerationTwoByUser(belongOneUser);
-                        if (Objects.nonNull(belongTwoUser)) {
-                            List<SISProfit> twoProfits = sisProfitService.findAllByUserLevelId((long) belongTwoUser.getLevelId(),
-                                    customerId, null);
-                            SISProfit twoBelongProfit = twoProfits.stream().filter(item ->
-                                    item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
-                            int belongTwoIntegral = getIntegralRateByRate(totalPrize
-                                    * twoBelongProfit.getProfit() / 100, exchangeRate);
-                            log.info("two level integral：" + belongOneIntegral);
-                            saveHistory(customerId, belongTwoIntegral, unionOrderId, belongTwoUser, contriUser,
-                                    contributeUserType, desc, now2, order);
+                    List<SISProfit> oneProfits;
+                    //如果上级是总代一
+                    if (belongOneLevelStatus == 1) {
+                        Long oneShopLevelId = sisService.getSisLevelId(belongOneUser);//店主店铺等级ID
+                        oneProfits = sisProfitService.findAllByUserLevelId((long) belongOneUser.getLevelId(),
+                                customerId, oneShopLevelId);
+                        SISProfit oneBelongProfit = oneProfits.stream().filter(item ->
+                                item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
+                        int belongOneIntegral = getIntegralRateByRate(totalPrize * oneBelongProfit.getProfit() / 100, exchangeRate);
+                        log.info("one level integral：" + belongOneIntegral);
+                        saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
+                                contributeUserType, desc, now2, order);
+                        //如果上上级有总代二
+                        if (Objects.nonNull(belongOneUser.getBelongOne())) {
+                            User belongTwoUser = userService.findTotalGenerationTwoByUser(belongOneUser);
+                            if (Objects.nonNull(belongTwoUser)) {
+                                List<SISProfit> twoProfits = sisProfitService.findAllByUserLevelId((long) belongTwoUser.getLevelId(),
+                                        customerId, null);
+                                SISProfit twoBelongProfit = twoProfits.stream().filter(item ->
+                                        item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
+                                int belongTwoIntegral = getIntegralRateByRate(totalPrize
+                                        * twoBelongProfit.getProfit() / 100, exchangeRate);
+                                log.info("two level integral：" + belongOneIntegral);
+                                saveHistory(customerId, belongTwoIntegral, unionOrderId, belongTwoUser, contriUser,
+                                        contributeUserType, desc, now2, order);
+                            }
                         }
+                    } else if (belongOneLevelStatus == 2) {
+                        //自己就是总代二
+                        oneProfits = sisProfitService.findAllByUserLevelId((long) belongOneUser.getLevelId(),
+                                customerId, null);
+                        SISProfit oneBelongProfit = oneProfits.stream().filter(item ->
+                                item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
+                        int belongOneIntegral = getIntegralRateByRate(totalPrize * oneBelongProfit.getProfit() / 100, exchangeRate);
+                        log.info("one level integral：" + belongOneIntegral);
+                        saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
+                                contributeUserType, desc, now2, order);
                     }
+
+
+
                 }
 
             }
