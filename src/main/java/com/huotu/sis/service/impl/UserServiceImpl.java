@@ -240,15 +240,16 @@ public class UserServiceImpl implements UserService {
         }
 
         SisOpenAwardAssign sisOpenAwardAssign=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevel(
-                belongOneSis.getSisLevel().getId(),
-                ownSis.getSisLevel().getId(),(long)user.getLevelId());
+                (long)belongOne.getLevelId(),
+                belongOneSis.getSisLevel(),
+                ownSis.getSisLevel()).get(0);
         if(sisOpenAwardAssign==null){
             //无法找到升级返利配置信息
             log.info("user"+user.getId()+"Upgrade rebate configuration information cannot be found");
             return;
         }
         //增加返利积分流水
-        saveFormalIntegral(user,sisOpenAwardAssign.getIntegral(),order,integralType);
+        saveFormalIntegral(user,belongOne,sisOpenAwardAssign.getIntegral(),order,integralType);
 
         //店中店返利流水
         String contributionName=user.getWxNickName()==null?"":user.getWxNickName();
@@ -262,18 +263,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserFormalIntegral saveFormalIntegral(User user, Integer value, Order order,IntegralType integralType) throws Exception {
+    public UserFormalIntegral saveFormalIntegral(User user, User beloneOne,Integer value, Order order,IntegralType integralType) throws Exception {
         if(value<=0){
-            log.info("user"+user.getId()+"add integral is 0");
+            log.info("user"+beloneOne.getId()+"add integral is 0");
             return null;
         }
         UserFormalIntegral userFormalIntegral=new UserFormalIntegral();
-        userFormalIntegral.setMerchant(user.getMerchant());
+        userFormalIntegral.setMerchant(beloneOne.getMerchant());
         userFormalIntegral.setOrder(order);
+        userFormalIntegral.setUserLevelId((long)beloneOne.getLevelId());
         userFormalIntegral.setScore(value);
-        userFormalIntegral.setUser(user);
+        userFormalIntegral.setUser(beloneOne);
         userFormalIntegral.setTime(new Date());
         userFormalIntegral.setStatus(integralType.getIndex());
+        userFormalIntegral.setDesc("1级会员"+user.getWxNickName()+"贡献"+ integralType.getName());
         userFormalIntegralRepository.save(userFormalIntegral);
         return userFormalIntegral;
 
@@ -423,6 +426,9 @@ public class UserServiceImpl implements UserService {
     public IndirectPushFlow saveIndirectPushFlow(User user, Order order) throws Exception {
         Sis sis=sisRepository.findByUser(user);
         User totalTwoUser=findTotalGenerationTwoByUser(user);
+        if(totalTwoUser==null){
+            return null;
+        }
         IndirectPushFlow indirectPushFlow=new IndirectPushFlow();
         indirectPushFlow.setOrder(order);
         indirectPushFlow.setOwner(user);

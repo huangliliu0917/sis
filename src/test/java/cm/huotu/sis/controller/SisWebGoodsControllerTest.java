@@ -14,6 +14,8 @@ import com.huotu.huobanplus.model.type.MallEmbedResource;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.model.SisDetailModel;
 import com.huotu.sis.model.SisSumAmountModel;
+import com.huotu.sis.repository.SisLevelRepository;
+import com.huotu.sis.repository.SisOpenAwardAssignRepository;
 import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SecurityService;
@@ -65,6 +67,12 @@ public class SisWebGoodsControllerTest extends WebTest {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private SisLevelRepository sisLevelRepository;
+
+    @Autowired
+    private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
 
     /**
      * 店铺中心页面的测试
@@ -216,5 +224,4 @@ public class SisWebGoodsControllerTest extends WebTest {
 
 
     }
-
 }

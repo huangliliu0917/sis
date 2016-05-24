@@ -390,6 +390,8 @@ public class SisWebApiController {
     @ResponseBody
     public ResultModel calculateShopRebate(HttpServletRequest httpServletRequest) throws Exception {
 
+        log.info("进入直推奖计算");
+
         ResultModel resultModel = new ResultModel();
 
         if (!verifySign(httpServletRequest)) {
@@ -418,8 +420,10 @@ public class SisWebApiController {
             resultModel.setMessage("参数错误：没有unionorderId！");
             return resultModel;
         }
+        log.info("查询店主");
 
         User user = userRepository.findOne(shopId);//店主(会员)
+        log.info("店主用户名："+user.getWxNickName());
         if (Objects.isNull(user)) {
             resultModel.setCode(500);
             resultModel.setMessage("未找到店主");
@@ -497,6 +501,7 @@ public class SisWebApiController {
         }
 
         Integer userLevelStatus = userService.getTotalUserType((long) user.getLevelId());
+        log.info("店主级别："+userLevelStatus);
         //总代一小伙伴
         if (userLevelStatus == 1) {
             List<SISProfit> profits = sisProfitService.findAllByUserLevelId((long) user.getLevelId(),
@@ -513,6 +518,7 @@ public class SisWebApiController {
                 if (Objects.nonNull(belongOneUser)) {
                     int belongOneIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100
                             * oneBelongProfit.getProfit() / 100, exchangeRate);
+                    log.info("上级积分："+belongOneIntegral);
                     saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
                             contributeUserType, desc, now2, order);
 
@@ -522,6 +528,7 @@ public class SisWebApiController {
                         if (Objects.nonNull(belongTwoUser)) {
                             int belongTwoIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100
                                     * oneBelongProfit.getProfit() / 100, exchangeRate);
+                            log.info("上上级积分："+belongOneIntegral);
                             saveHistory(customerId, belongTwoIntegral, unionOrderId, belongOneUser, contriUser,
                                     contributeUserType, desc, now2, order);
                         }
@@ -550,6 +557,7 @@ public class SisWebApiController {
                             * oneBelongProfit.getProfit() / 100, exchangeRate);
                     saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
                             contributeUserType, desc, now2, order);
+                    log.info("上级积分："+belongOneIntegral);
                 }
             }
             resultModel.setCode(200);
@@ -569,6 +577,7 @@ public class SisWebApiController {
         utih.setIntegral(integral);
         utih.setUnionOrderId(unionOrderId);
         utih.setUserId(user.getId());//受益人的id
+        log.info("收益人id"+user.getId());
         utih.setStatus(0);
         utih.setAddTime(new Date());
         utih.setContributeBelongOne(contriUser.getBelongOne().intValue());
@@ -591,5 +600,6 @@ public class SisWebApiController {
         integral = user.getUserTempIntegral() + integral;
         user.setUserTempIntegral(integral);
         userRepository.save(user);
+        log.info("保存直推奖成功");
     }
 }

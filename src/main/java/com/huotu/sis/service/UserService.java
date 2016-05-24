@@ -83,7 +83,7 @@ public interface UserService {
      * 保存正式积分流水
      * @throws Exception
      */
-    UserFormalIntegral saveFormalIntegral(User user, Integer value, Order order, IntegralType integralType) throws Exception;
+    UserFormalIntegral saveFormalIntegral(User user,User beloneOne, Integer value, Order order, IntegralType integralType) throws Exception;
 
     /**
      * 增加用户的冗余积分字段
