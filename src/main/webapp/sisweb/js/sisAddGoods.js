@@ -24,8 +24,10 @@ var goodsPageType = null;
 
 sisAddGoodsProvider.init = function (pageType) {
     goodsPageType = pageType;
-    sisAddGoodsProvider.getGoods(null);
-    sisAddGoodsProvider.initCategoryList();
+    //sisAddGoodsProvider.getGoods(null);
+    //sisAddGoodsProvider.initCategoryList();
+    var goodsKeywords = $("#goodsKeywords").val();
+    sisAddGoodsProvider.getGoods(goodsKeywords, 1);
 }
 sisAddGoodsProvider.initCategoryList = function () {
     $.ajax({

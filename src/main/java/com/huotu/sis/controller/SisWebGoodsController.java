@@ -19,6 +19,7 @@ import com.huotu.huobanplus.common.repository.*;
 import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.entity.*;
+import com.huotu.sis.entity.support.ProfitUser;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.exception.UserNotFoundException;
 import com.huotu.sis.model.*;
@@ -121,6 +122,10 @@ public class SisWebGoodsController {
 
     @Autowired
     private UserFormalIntegralService userFormalIntegralService;
+
+    @Autowired
+    SisProfitRepository sisProfitRepository;
+
 
     /**
      * 查找品牌对应的商品列表详情
@@ -293,10 +298,11 @@ public class SisWebGoodsController {
 
         List<PcSisGoodsModel> pcSisGoodsModels = calculateValue(sisGoodsList, user);
         if (null != pcSisGoodsModels && pcSisGoodsModels.size() == 1) {
-            goodsDetailModel.setPrice(pcSisGoodsModels.get(0).getPrice());
-            goodsDetailModel.setDirectRebate(pcSisGoodsModels.get(0).getDirectRebate());
-            goodsDetailModel.setMinRebate(pcSisGoodsModels.get(0).getMinRebate());
-            goodsDetailModel.setMaxRebate(pcSisGoodsModels.get(0).getMaxRebate());
+            //todo 去除
+//            goodsDetailModel.setPrice(pcSisGoodsModels.get(0).getPrice());
+//            goodsDetailModel.setDirectRebate(pcSisGoodsModels.get(0).getDirectRebate());
+//            goodsDetailModel.setMinRebate(pcSisGoodsModels.get(0).getMinRebate());
+//            goodsDetailModel.setMaxRebate(pcSisGoodsModels.get(0).getMaxRebate());
         }
 
         goodsDetailModel.setStore(goods.getStock()); //-1是无限制
@@ -404,14 +410,16 @@ public class SisWebGoodsController {
             throw new SisException("用户不存在或已过期");
         }
         Page<Goods> goodsList = sisGoodsService.getAllGoodsByCustomerIdAndTitleAndCatPath(user.getMerchant().getId(),
-                keywords, categoryId, null, sortOption, page, pageSize);
+                keywords, null, null, 0, page, pageSize);
 
         List<SisGoods> sisGoodsList = new ArrayList<>();
         if (goodsList != null && goodsList.getContent() != null) {
             sisGoodsList = getGoodsListForSelected(goodsList.getContent(), user);
         }
         //计算直推返利/分销返利值
-        List<PcSisGoodsModel> list = calculateValue(sisGoodsList, user);
+        List<PcSisGoodsModel> list = countRebate(sisGoodsList, user);
+
+
         //
         PageGoodsModel model = new PageGoodsModel();
         int count = (int) goodsList.getTotalElements();
@@ -424,6 +432,54 @@ public class SisWebGoodsController {
 
         return model;
     }
+
+
+    private List<PcSisGoodsModel> countRebate(List<SisGoods> sisGoodsList, User user) throws SisException, IOException {
+        List<PcSisGoodsModel> list = new ArrayList<>();
+
+        String resoureServerUrl = commonConfigService.getResourceServerUrl();
+        StringBuffer stringBuffer = new StringBuffer();
+        String webUrl = commonConfigsService.getWebUrl();
+        if (Objects.isNull(webUrl)) {
+            throw new SisException("店中店网站地址未配置");
+        }
+        stringBuffer.append(webUrl);
+        stringBuffer.append("/sisweb/getSisGoodsDetail?customerId=" + user.getMerchant().getId());
+        String goodsUrl = stringBuffer.toString();
+
+        String goodsShareUrl = getSisGoodsUrl(user.getMerchant().getId(), user.getId());
+
+        Sis sis = sisRepository.findByUser(user);
+
+        Double rebate = sisProfitRepository.getProfitByMerchantAndUserLevelAndSisLevel(user.getMerchant(), (long) user.getLevelId(), sis.getSisLevel(), ProfitUser.owner);
+        if (rebate == null) rebate = 0D;
+        else rebate = rebate / 100;
+
+        for (SisGoods sisGoods : sisGoodsList) {
+            Goods goods = sisGoods.getGoods();
+
+            PcSisGoodsModel appSisGoodsModel = new PcSisGoodsModel();
+            appSisGoodsModel.setMinRebate(Math.round(goods.getShopRebateMin() * rebate * 100) * 0.01D);
+            appSisGoodsModel.setMaxRebate(Math.round(goods.getShopRebateMax() * rebate * 100) * 0.01D);
+
+            appSisGoodsModel.setGoodsId(goods.getId());
+            appSisGoodsModel.setGoodsName(goods.getTitle());
+            if (null != goods.getSmallPic().getValue() && goods.getSmallPic().getValue().length() > 0) {
+                appSisGoodsModel.setImgUrl(resoureServerUrl + goods.getSmallPic().getValue());//图片路径
+            } else {
+                appSisGoodsModel.setImgUrl(img_path);
+            }
+            appSisGoodsModel.setProfit(goods.getPrice() - goods.getCost());
+            appSisGoodsModel.setStock(goods.getStock());
+            appSisGoodsModel.setGoodSelected(sisGoods.isSelected());
+            appSisGoodsModel.setDetailsUrl(goodsUrl + "&goodId=");
+            appSisGoodsModel.setShareUrl(goodsShareUrl + goods.getId());
+            appSisGoodsModel.setPrice(goods.getPrice());
+            list.add(appSisGoodsModel);
+        }
+        return list;
+    }
+
 
     /**
      * 操作店中店商品

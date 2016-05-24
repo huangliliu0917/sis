@@ -168,63 +168,7 @@
             </div>
         </div>
 
-        <div class="app-edit">
-            <div class="xcj">
-                <div class="superli clearfix editing">
-                    <div class="control-group">
-                        <div class="hr_screen">
-                            <ul style="border-bottom: 1px solid #ddd;" id= "catgeory" class="float-ul flex-ul" >
-                                <li href="javascript:void(0)">
-                                    <a href="javascript:void(0)" th:href="@{/sisweb/recommendGoodsIndex(customerId=${customerId})}"><p>店主专享</p></a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0)" th:href="@{/sisweb/getBrandListPage(customerId=${customerId})}"><p>品牌</p></a>
-                                </li>
-                                <li class="on state_switch" href="javascript:void(0)" onclick="sisAddGoodsProvider.openOrHidePageTypes(this)">
-                                    <p>筛选</p>
-                                </li>
-                            </ul>
-                            <div class="hr_key" id="pageTypes">
-                                <ul>
-                                    <li id="categoryLi" class="hot-keywords  border-none">
-                                        <a id="categoryA" class="keyword" href="javascript:void(0)" onclick="sisAddGoodsProvider.openOrHideCategoryWin(this)">
-                                            分类
-                                        </a>
-                                    </li>
-                                    <li id="conditionLi" class="keynomal">
-                                        <a id="conditionA" class="keyword2" href="javascript:void(0)" onclick="sisAddGoodsProvider.openOrHideSortWin(this)">
-                                            条件
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
 
-
-                            <div id="mask" class="bacrgba" style="display:none;top: 148px;">
-                                <div class="pos-a" id="categoryList">
-                                </div>
-                                <div class="pos-a" id="sortList">
-                                    <div class="hr_word">
-                                        <p class="xxk2">
-                                            <a href="javascript:void(0)" onclick="sisAddGoodsProvider.sortOperation(this)" sortOption="0" >直推返利
-                                            </a>
-                                        </p>
-                                        <p class="xxk2">
-                                            <a href="javascript:void(0)" onclick="sisAddGoodsProvider.sortOperation(this)" sortOption="1" >商品人气
-                                            </a>
-                                        </p>
-                                        <p class="xxk2">
-                                            <a href="javascript:void(0)" onclick="sisAddGoodsProvider.sortOperation(this)" sortOption="2" >上架时间
-                                            </a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div id="goodsOperDescprition" class="xf-xf" style="display: none">
@@ -255,19 +199,9 @@
     {{each Rows as row i}}
 
     <label style="border-top: 1px solid #fff;" class="weui_cell weui_check_label">
-        <div class="weui_cell_hd">
-            {{if row.goodSelected != true}}
-            <a href="javascript:void(0)" onclick="sisAddGoodsProvider.operateGoods({{row.goodsId}},this,1)">
-                <img src="images/a03.png" width="25px" />
-            </a>
-            {{else}}
-            <a href="javascript:void(0)" onclick="sisAddGoodsProvider.operateGoods({{row.goodsId}},this,0)">
-                <img src="images/a06.png" width="25px" />
-            </a>
-            {{/if}}
-        </div>
+
         <div class="weui_cell_bd weui_cell_primary">
-            <a href="{{row.detailsUrl}}{{row.goodsId}}"> <div style="float:left;" class="hrfg">
+            <a> <div style="float:left;" class="hrfg">
                 <img src="{{row.imgUrl}}" class="fk_hrtab" /></div>
                 <div>
                     <p class="fk_hrsd tit_rem">{{row.goodsName}}</p>
@@ -276,12 +210,13 @@
                         会员价:<i style="color:#EB5A28">￥{{row.price}}</i>
 
                                                  </span></p>
-                    <p class="fk_hrsdds tit_rem">分销积分:
-                        {{if row.minRebate != row.maxRebate}}  <!--不相等则 显示区间-->
-                        {{row.minRebate}}-{{row.maxRebate}}
-                        {{else}}    <!--相等则 直接显示某个值-->
-                        {{row.minRebate}} {{/if}}
-                        <span class="cj-right">直推积分:{{row.directRebate}}</span></p>
+                    <p class="fk_hrsdds tit_rem">
+                        {{if row.minRebate==row.maxRebate}}
+                        <span class="cj-right">零售奖金:{{row.minRebate}}元</span>
+                        {{else}}
+                        <span class="cj-right">零售奖金:{{row.minRebate}}-{{row.maxRebate}}元</span>
+                        {{/if}}
+                    </p>
                 </div>
             </a>
         </div>

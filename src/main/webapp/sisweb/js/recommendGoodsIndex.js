@@ -18,11 +18,12 @@ $(function () {
 var sisAddGoodsProvider = {};
 
 var categoryId = null;
-var sortOption = null;
+var sortOption = 0;
 
 var goodsPageType = null;
 
 sisAddGoodsProvider.init = function (pageType) {
+    alert(pageType);
     goodsPageType = pageType;
     sisAddGoodsProvider.getGoods(null);
 }
@@ -145,71 +146,6 @@ sisAddGoodsProvider.getGoodsByNameAndCategory = function () {
     var goodsKeywords = $("#goodsKeywords").val();
     $(window).unbind("scroll");//解除下拉条事件，防止下拉后，商品list组件重复刷新
     sisAddGoodsProvider.getGoods(goodsKeywords);
-}
-
-/**
- *
- * @param goodsId
- * @param obj
- * @param operType 上架：1
- *                  下架：0
- */
-sisAddGoodsProvider.operateGoods = function (goodsId, obj, operType) {
-    if ($("#categoryList").is(":visible") || $("#sortList").is(":visible")) {
-        return;
-    }
-
-    var goodsCount = $("#goodsCount").val();
-    $("#resultMsg").text("操作中...");
-    $("#resultDescription").show();
-    $.ajax({
-        url: 'operGoods',
-        type: 'POST',
-        data: {
-            "goodsId": goodsId,
-            "operType": operType,
-            "customerId":customerId
-        },
-        dataType: "json",
-        success: function (result) {
-            $("#resultDescription").hide();
-            if (result.success) {
-                if (operType == 1) {
-                    $(obj).attr("onclick", "sisAddGoodsProvider.operateGoods(" + goodsId + ",this,0)");
-                    $('img', obj).attr("src", "images/a06.png");
-                    goodsCount++;
-                    $("#goodsCount").val(goodsCount);
-                    $("#goodsMsg").text("上架成功");
-                    $("#goodsNum").text("已上架商品"+goodsCount);
-                    $("#goodsOperDescprition").show();
-                    setTimeout('$("#goodsOperDescprition").hide()',1000);
-                }
-                else if (operType == 0) {
-                    //$(obj).parent("p").hide();
-                    $(obj).attr("onclick", "sisAddGoodsProvider.operateGoods(" + goodsId + ",this,1)");
-                    $('img', obj).attr("src", "images/a03.png");
-                    goodsCount--;
-                    $("#goodsCount").val(goodsCount);
-                    $("#goodsMsg").text("下架成功");
-                    $("#goodsNum").text("已上架商品"+goodsCount);
-                    $("#goodsOperDescprition").show();
-                    setTimeout('$("#goodsOperDescprition").hide()',1000);
-                }
-            } else {
-                //jBox.alert(result.msg);
-                $("#goodsMsg").text(result.msg);
-                $("#goodsNum").text("");
-                $("#goodsOperDescprition").show();
-                setTimeout('$("#goodsOperDescprition").hide()',1000);
-            }
-        },error:function(){
-            $("#resultDescription").hide();
-            $("#goodsMsg").text("系统繁忙，请稍后再试");
-            $("#goodsNum").text("");
-            $("#goodsOperDescprition").show();
-            setTimeout('$("#goodsOperDescprition").hide()',1000);
-        }
-    });
 }
 
 /**

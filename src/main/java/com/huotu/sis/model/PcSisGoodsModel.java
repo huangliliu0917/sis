@@ -38,17 +38,17 @@ public class PcSisGoodsModel {
     /**
      * 分销返利最大值
      */
-    private Integer maxRebate;
+    private double maxRebate;
 
     /**
      * 分销返利最小值
      */
-    private Integer minRebate;
+    private double minRebate;
 
     /**
      * 直推返利
      */
-    private Integer directRebate;
+    private double directRebate;
 
     /**
      * 库存量
