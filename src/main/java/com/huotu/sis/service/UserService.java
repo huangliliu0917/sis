@@ -182,4 +182,6 @@ public interface UserService {
      */
     Integer getTotalUserType(Long userId) throws Exception;
 
+    Long getValueByKey(String key) throws Exception;
+
 }
