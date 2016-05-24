@@ -2,14 +2,12 @@ package com.huotu.sis.controller;
 
 import com.huotu.huobanplus.common.UserType;
 import com.huotu.huobanplus.common.entity.*;
+import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.utils.DateUtil;
-import com.huotu.sis.entity.SISProfit;
-import com.huotu.sis.entity.IntegralType;
-import com.huotu.sis.entity.Sis;
-import com.huotu.sis.entity.SisConfig;
-import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.common.SysConfigConstant;
+import com.huotu.sis.entity.*;
 import com.huotu.sis.entity.support.ProfitUser;
 import com.huotu.sis.model.ResultModel;
 import com.huotu.sis.repository.*;
@@ -79,6 +77,9 @@ public class SisWebApiController {
     private SisLevelService sisLevelService;
 
     @Autowired
+    private GoodsRepository goodsRepository;
+
+    @Autowired
     private Environment environment;
     @Autowired
     private SisProfitRepository sisProfitRepository;
@@ -139,7 +140,7 @@ public class SisWebApiController {
         boolean isUpgrade = sisLevelService.upgradeSisLevel(user, sisConfig, orderItems.get(0));
 
         //第三步:返利
-        userService.countIntegral(user,order, IntegralType.upgrade);
+        userService.countIntegral(user, order, IntegralType.upgrade);
 
         //第四步:返回结果
         if (isUpgrade) {
@@ -390,7 +391,7 @@ public class SisWebApiController {
     @ResponseBody
     public ResultModel calculateShopRebate(HttpServletRequest httpServletRequest) throws Exception {
 
-        log.info("进入直推奖计算");
+        log.info("begin zhituijiang");
 
         ResultModel resultModel = new ResultModel();
 
@@ -420,15 +421,14 @@ public class SisWebApiController {
             resultModel.setMessage("参数错误：没有unionorderId！");
             return resultModel;
         }
-        log.info("查询店主");
 
         User user = userRepository.findOne(shopId);//店主(会员)
-        log.info("店主用户名："+user.getWxNickName());
         if (Objects.isNull(user)) {
             resultModel.setCode(500);
             resultModel.setMessage("未找到店主");
             return resultModel;
         }
+        log.info("user weixin name：" + user.getWxNickName());
         Long shopLevelId = sisService.getSisLevelId(user);//店主店铺等级ID
         if (Objects.isNull(shopLevelId)) {
             resultModel.setCode(500);
@@ -484,15 +484,17 @@ public class SisWebApiController {
         double totalPrize = 0;
         for (int i = 0; i < orderItems.size(); i++) {
             double prize = orderItems.get(i).getZhituiPrize();
+//            Goods goods = goodsRepository.findOne((long)orderItems.get(i).getGoodsId());
+//            double prize = goods.getPrice();
             totalPrize += prize;
         }
-        if(totalPrize==0){
+        if (totalPrize == 0) {
             resultModel.setCode(500);
             resultModel.setMessage("商品售价为0，无法获利");
             return resultModel;
         }
         User contriUser = userRepository.findOne((long) order.getUserId());//得到贡献人
-        String desc = "店主直推奖，订单号 :" + orderId;
+        String desc = "dianzhu order :" + orderId;
         int contributeUserType;
         if (contriUser.getUserType() == UserType.normal) {
             contributeUserType = 0;
@@ -501,38 +503,56 @@ public class SisWebApiController {
         }
 
         Integer userLevelStatus = userService.getTotalUserType((long) user.getLevelId());
-        log.info("店主级别："+userLevelStatus);
+        log.info("dianzhu level：" + userLevelStatus);
         //总代一小伙伴
         if (userLevelStatus == 1) {
             List<SISProfit> profits = sisProfitService.findAllByUserLevelId((long) user.getLevelId(),
                     customerId, sisLevel.getId());
+            //自己
             SISProfit ownerProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.owner)).findAny().get();
+            //上级
             SISProfit oneBelongProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
+            //总代二
+            Long value = userService.getValueByKey(SysConfigConstant.Total_Generation_TwoId);
+//            SISProfit twoProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
             //自己的直推积分
             int ownerIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100, exchangeRate);
             //保存临时积分
             saveHistory(customerId, ownerIntegral, unionOrderId, user, contriUser, contributeUserType, desc, now2, order);
             if (Objects.nonNull(user.getBelongOne())) {
-                //上级的积分
+                //上级的积分,总代一
                 User belongOneUser = userRepository.findOne(user.getBelongOne());
                 if (Objects.nonNull(belongOneUser)) {
-                    int belongOneIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100
-                            * oneBelongProfit.getProfit() / 100, exchangeRate);
-                    log.info("上级积分："+belongOneIntegral);
+                    int belongOneIntegral = getIntegralRateByRate(totalPrize * oneBelongProfit.getProfit() / 100, exchangeRate);
+                    log.info("one level integral：" + belongOneIntegral);
                     saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
                             contributeUserType, desc, now2, order);
-
-                    //总代二小伙伴的积分利润
-                    if (Objects.nonNull(belongOneUser.getBelongOne())) {
+                    Integer belongOneLevelStatus = userService.getTotalUserType((long) belongOneUser.getLevelId());
+                    if (belongOneLevelStatus == 1 && Objects.nonNull(belongOneUser.getBelongOne())) {
                         User belongTwoUser = userService.findTotalGenerationTwoByUser(belongOneUser);
                         if (Objects.nonNull(belongTwoUser)) {
-                            int belongTwoIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100
-                                    * oneBelongProfit.getProfit() / 100, exchangeRate);
-                            log.info("上上级积分："+belongOneIntegral);
+                            List<SISProfit> twoProfits = sisProfitService.findAllByUserLevelId((long) belongTwoUser.getLevelId(),
+                                    customerId, null);
+                            SISProfit twoBelongProfit = twoProfits.stream().filter(item ->
+                                    item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
+                            int belongTwoIntegral = getIntegralRateByRate(totalPrize
+                                    * twoBelongProfit.getProfit() / 100, exchangeRate);
+                            log.info("two level integral：" + belongOneIntegral);
                             saveHistory(customerId, belongTwoIntegral, unionOrderId, belongOneUser, contriUser,
                                     contributeUserType, desc, now2, order);
                         }
                     }
+                    //总代二小伙伴的积分利润
+//                    if (Objects.nonNull(belongOneUser.getBelongOne())) {
+//                        User belongTwoUser = userService.findTotalGenerationTwoByUser(belongOneUser);
+//                        if (Objects.nonNull(belongTwoUser)) {
+//                            int belongTwoIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100
+//                                    * oneBelongProfit.getProfit() / 100, exchangeRate);
+//                            log.info("上上级积分：" + belongOneIntegral);
+//                            saveHistory(customerId, belongTwoIntegral, unionOrderId, belongOneUser, contriUser,
+//                                    contributeUserType, desc, now2, order);
+//                        }
+//                    }
                 }
 
             }
@@ -544,22 +564,22 @@ public class SisWebApiController {
             List<SISProfit> profits = sisProfitService.findAllByUserLevelId((long) user.getLevelId(),
                     customerId, null);
             SISProfit ownerProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.owner)).findAny().get();
-            SISProfit oneBelongProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
+//            SISProfit oneBelongProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
             //自己的直推积分
             int ownerIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100, exchangeRate);
             //保存临时积分
             saveHistory(customerId, ownerIntegral, unionOrderId, user, contriUser, contributeUserType, desc, now2, order);
-            if (Objects.nonNull(user.getBelongOne())) {
-                //上级的积分
-                User belongOneUser = userRepository.findOne(user.getBelongOne());
-                if (Objects.nonNull(belongOneUser)) {
-                    int belongOneIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100
-                            * oneBelongProfit.getProfit() / 100, exchangeRate);
-                    saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
-                            contributeUserType, desc, now2, order);
-                    log.info("上级积分："+belongOneIntegral);
-                }
-            }
+//            if (Objects.nonNull(user.getBelongOne())) {
+//                //上级的积分
+//                User belongOneUser = userRepository.findOne(user.getBelongOne());
+//                if (Objects.nonNull(belongOneUser)) {
+//                    int belongOneIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100
+//                            * oneBelongProfit.getProfit() / 100, exchangeRate);
+//                    saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
+//                            contributeUserType, desc, now2, order);
+//                    log.info("上级积分：" + belongOneIntegral);
+//                }
+//            }
             resultModel.setCode(200);
             resultModel.setMessage("OK");
             return resultModel;
@@ -577,7 +597,6 @@ public class SisWebApiController {
         utih.setIntegral(integral);
         utih.setUnionOrderId(unionOrderId);
         utih.setUserId(user.getId());//受益人的id
-        log.info("收益人id"+user.getId());
         utih.setStatus(0);
         utih.setAddTime(new Date());
         utih.setContributeBelongOne(contriUser.getBelongOne().intValue());
@@ -600,6 +619,6 @@ public class SisWebApiController {
         integral = user.getUserTempIntegral() + integral;
         user.setUserTempIntegral(integral);
         userRepository.save(user);
-        log.info("保存直推奖成功");
+        log.info("zhituijaing success");
     }
 }

@@ -452,4 +452,13 @@ public class UserServiceImpl implements UserService {
         }
         return 0;
     }
+
+    public Long getValueByKey(String key) throws  Exception{
+        SystemConfig systemConfig=systemConfigRepository.findOne(key);
+        if(systemConfig!=null){
+            Long id=Long.parseLong(systemConfig.getValueForCode());
+            return id;
+        }
+        return null;
+    }
 }
