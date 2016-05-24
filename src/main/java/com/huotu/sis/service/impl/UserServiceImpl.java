@@ -238,27 +238,39 @@ public class UserServiceImpl implements UserService {
             log.info("user"+user.getId()+"won have no sisShop");
             return;
         }
-
-        SisOpenAwardAssign sisOpenAwardAssign=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevel(
+        List<SisOpenAwardAssign> sisOpenAwardAssigns=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevel(
                 (long)belongOne.getLevelId(),
                 belongOneSis.getSisLevel(),
-                ownSis.getSisLevel()).get(0);
-        if(sisOpenAwardAssign==null){
+                ownSis.getSisLevel());
+        if(sisOpenAwardAssigns.isEmpty()){
             //无法找到升级返利配置信息
             log.info("user"+user.getId()+"Upgrade rebate configuration information cannot be found");
             return;
         }
-        //增加返利积分流水
-        saveFormalIntegral(user,belongOne,sisOpenAwardAssign.getIntegral(),order,integralType);
+
+        SisOpenAwardAssign sisOpenAwardAssign=sisOpenAwardAssigns.get(0);
+        //增加的钱
+        Integer addIntegral=0;
+        if(IntegralType.open.equals(integralType)){
+            addIntegral=sisOpenAwardAssign.getIntegral();
+
+        }
+        if(IntegralType.upgrade.equals(integralType)){
+            addIntegral=sisOpenAwardAssign.getUpgradeIntegral();
+
+        }
+
+        //增加正式返利积分流水
+        saveFormalIntegral(user,belongOne,addIntegral,order,integralType);
 
         //店中店返利流水
         String contributionName=user.getWxNickName()==null?"":user.getWxNickName();
         String remark="一级会员"+contributionName+integralType.getName();
         sisOpenAwardLogService.saveSisOpenAwardLog(user.getMerchant().getId(),user.getBelongOne(),user.getId()
-        ,sisOpenAwardAssign.getIntegral().doubleValue(),remark,1,order.getId());
+        ,addIntegral.doubleValue(),remark,1,order.getId());
 
         //用户冗余字段修改积分
-        addUserIntegral(user,sisOpenAwardAssign.getIntegral());
+        addUserIntegral(belongOne,addIntegral);
 
     }
 
