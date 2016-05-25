@@ -13,10 +13,9 @@ import com.huotu.sis.common.StringHelper;
 import com.huotu.sis.entity.SisOpenAwardLog;
 import com.huotu.sis.repository.SisOpenAwardLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -25,19 +24,18 @@ import java.util.List;
  */
 
 @Service
-public class AppStartService implements ApplicationListener<ContextRefreshedEvent> {
+public class AppStartService {
     @Autowired
     SisOpenAwardLogRepository sisOpenAwardLogRepository;
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-        if (event.getApplicationContext().getParent() == null) {
-            List<SisOpenAwardLog> sisOpenAwardLogs=sisOpenAwardLogRepository.findByPosMonthTagIsNull();
-            if(sisOpenAwardLogs!=null&&!sisOpenAwardLogs.isEmpty()){
-                for(SisOpenAwardLog s:sisOpenAwardLogs){
-                    s.setPosMonthTag(StringHelper.getPosMonthTag(s.getAddTime()));
-                }
-                sisOpenAwardLogRepository.save(sisOpenAwardLogs);
+
+    @PostConstruct
+    public void onApplicationEvent() {
+        List<SisOpenAwardLog> sisOpenAwardLogs=sisOpenAwardLogRepository.findByPosMonthTagIsNull();
+        if(sisOpenAwardLogs!=null&&!sisOpenAwardLogs.isEmpty()){
+            for(SisOpenAwardLog s:sisOpenAwardLogs){
+                s.setPosMonthTag(StringHelper.getPosMonthTag(s.getAddTime()));
             }
+            sisOpenAwardLogRepository.save(sisOpenAwardLogs);
         }
     }
 
