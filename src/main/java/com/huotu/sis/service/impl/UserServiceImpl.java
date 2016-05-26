@@ -266,8 +266,8 @@ public class UserServiceImpl implements UserService {
         //店中店返利流水
         String contributionName=user.getWxNickName()==null?"":user.getWxNickName();
         String remark="一级会员"+contributionName+integralType.getName();
-        sisOpenAwardLogService.saveSisOpenAwardLog(user.getMerchant().getId(),user.getBelongOne(),user.getId()
-        ,addIntegral.doubleValue(),remark,1,order.getId());
+        sisOpenAwardLogService.saveSisOpenAwardLog(user.getMerchant().getId(),user.getBelongOne(),
+                user.getId(),addIntegral.doubleValue(),remark,1,integralType.getIndex(),order.getId());
 
         //用户冗余字段修改积分
         addUserIntegral(belongOne,addIntegral);

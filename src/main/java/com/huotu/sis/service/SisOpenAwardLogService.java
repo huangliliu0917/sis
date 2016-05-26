@@ -14,11 +14,12 @@ public interface SisOpenAwardLogService {
      * @param contribShopId     贡献店主Id
      * @param amount            金额
      * @param remark            备注
+     * @param openType          开店类型
      * @param srcType           来源(层级)
      * @param orderId           贡献订单号
      * @throws Exception
      */
     SisOpenAwardLog saveSisOpenAwardLog(Long customerId, Long shopId, Long contribShopId, Double amount,
-                                        String remark, Integer srcType, String orderId) throws Exception;
+                                        String remark, Integer srcType,Integer openType, String orderId) throws Exception;
 
 }

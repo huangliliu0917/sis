@@ -67,6 +67,10 @@ public class SisOpenAwardLog {
     @Description("来源(层级)")
     private Integer srcType;
 
+    @Column(name = "OpenType")
+    @Description("开店类型：700：开店，701：店铺升级")
+    private Integer openType;
+
 
     @Temporal(value = TemporalType.TIMESTAMP)
     @Column(name = "AddTime")
