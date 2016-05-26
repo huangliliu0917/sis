@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -466,8 +467,8 @@ public class SisWebGoodsController {
 
             DoubleSummaryStatistics doubleSummaryStatistics = listDesc.stream().mapToDouble((x) -> x.getAmount()).summaryStatistics();
 
-            appSisGoodsModel.setMinRebate(Math.round(doubleSummaryStatistics.getMin() * rebate * 100) * 0.01D);
-            appSisGoodsModel.setMaxRebate(Math.round(doubleSummaryStatistics.getMax() * rebate * 100) * 0.01D);
+            appSisGoodsModel.setMinRebate(get2Double(doubleSummaryStatistics.getMin() * rebate));
+            appSisGoodsModel.setMaxRebate(get2Double(doubleSummaryStatistics.getMax() * rebate));
 
             appSisGoodsModel.setGoodsId(goods.getId());
             appSisGoodsModel.setGoodsName(goods.getTitle());
@@ -485,6 +486,11 @@ public class SisWebGoodsController {
             list.add(appSisGoodsModel);
         }
         return list;
+    }
+
+    public double get2Double(double a) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        return new Double(df.format(a).toString());
     }
 
 
