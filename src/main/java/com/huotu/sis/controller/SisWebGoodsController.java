@@ -1,5 +1,6 @@
 package com.huotu.sis.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.huotu.common.base.DateHelper;
 import com.huotu.huobanplus.common.UserType;
 import com.huotu.huobanplus.common.dataService.AdvanceQuatoRebateService;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -459,8 +461,14 @@ public class SisWebGoodsController {
             Goods goods = sisGoods.getGoods();
 
             PcSisGoodsModel appSisGoodsModel = new PcSisGoodsModel();
-            appSisGoodsModel.setMinRebate(Math.round(goods.getShopRebateMin() * rebate * 100) * 0.01D);
-            appSisGoodsModel.setMaxRebate(Math.round(goods.getShopRebateMax() * rebate * 100) * 0.01D);
+
+            List<ShopRebateDescModel> listDesc = JSON.parseArray(goods.getShopRebateDesc(), ShopRebateDescModel.class);
+
+
+            DoubleSummaryStatistics doubleSummaryStatistics = listDesc.stream().mapToDouble((x) -> x.getAmount()).summaryStatistics();
+
+            appSisGoodsModel.setMinRebate(get2Double(doubleSummaryStatistics.getMin() * rebate));
+            appSisGoodsModel.setMaxRebate(get2Double(doubleSummaryStatistics.getMax() * rebate));
 
             appSisGoodsModel.setGoodsId(goods.getId());
             appSisGoodsModel.setGoodsName(goods.getTitle());
@@ -478,6 +486,11 @@ public class SisWebGoodsController {
             list.add(appSisGoodsModel);
         }
         return list;
+    }
+
+    public double get2Double(double a) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        return new Double(df.format(a).toString());
     }
 
 
