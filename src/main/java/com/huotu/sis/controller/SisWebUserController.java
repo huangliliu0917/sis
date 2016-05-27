@@ -206,11 +206,11 @@ public class SisWebUserController {
 //            }
 
             //sis.setImgPath(imgPath);
-            sis.setShareDesc(sisModel.getShareDetail());
+//            sis.setShareDesc(sisModel.getShareDetail());
 
-            sis.setShareTitle(sisModel.getShareTitle());
+//            sis.setShareTitle(sisModel.getShareTitle());
             sis.setTitle(sisModel.getSisName());
-            sis.setDescription(sisModel.getSisDetail());
+//            sis.setDescription(sisModel.getSisDetail());
             sisRepository.saveAndFlush(sis);
             request.setAttribute("customerId", customerId);
             return "sisweb/sisHome";
@@ -1043,7 +1043,11 @@ public class SisWebUserController {
                     if(stringList==null){
                         stringList=new ArrayList<>();
                     }
-                    stringList.add("• 推荐一家"+s.getGuideLevel().getLevelName()+"获得"+Math.round(s.getAdvanceVal())+"元");
+                    String treatment="• 推荐一家"+s.getGuideLevel().getLevelName()+"获得"+s.getIntegral()+"积分";
+                    if(s.getUpgradeIntegral()!=null&&s.getUpgradeIntegral()!=0){
+                        treatment=treatment+",下线用户升级到"+s.getGuideLevel().getLevelName()+"获得"+s.getUpgradeIntegral()+"积分";
+                    }
+                    stringList.add(treatment);
                     su.setTreatments(stringList);
                 }
             }
