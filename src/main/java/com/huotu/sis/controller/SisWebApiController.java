@@ -529,8 +529,17 @@ public class SisWebApiController {
                         Long oneShopLevelId = sisService.getSisLevelId(belongOneUser);//店主店铺等级ID
                         oneProfits = sisProfitService.findAllByUserLevelId((long) belongOneUser.getLevelId(),
                                 customerId, oneShopLevelId);
-                        SISProfit oneBelongProfit = oneProfits.stream().filter(item ->
-                                item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
+                        SISProfit oneBelongProfit;
+                        Sis sis = sisRepository.findByUser(belongOneUser);
+                        //专卖店 todo 待改
+                        if (sis.getSisLevel().getId().equals(""))
+                            oneBelongProfit = oneProfits.stream().filter(item ->
+                                    item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
+                        else //旗舰店
+                            oneBelongProfit = oneProfits.stream().filter(item ->
+                                    item.getProfitUser().equals(ProfitUser.oneBelongFlagship)).findAny().get();
+
+
                         int belongOneIntegral = getIntegralRateByRate(totalPrize * oneBelongProfit.getProfit() / 100, exchangeRate);
                         log.info("one level integral：" + belongOneIntegral);
                         saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
@@ -561,7 +570,6 @@ public class SisWebApiController {
                         saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
                                 contributeUserType, desc, now2, order);
                     }
-
 
 
                 }

@@ -5,5 +5,12 @@ package com.huotu.sis.entity.support;
  */
 public enum ProfitUser {
     owner,
-    oneBelong
+    /**
+     * 直推专卖
+     */
+    oneBelong,
+    /**
+     * 直推旗舰
+     */
+    oneBelongFlagship
 }
