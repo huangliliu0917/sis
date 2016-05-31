@@ -1014,19 +1014,19 @@ public class SisWebGoodsController {
     @RequestMapping(value = "/ownerJuniorList", method = RequestMethod.GET)
     public String getOwnerJuniorList(Long customerId, Model model) throws UserNotFoundException, SisException, IOException {
         Long userId = getCurrentUserId();
-        model.addAttribute("errorMessage","系统升级中~~~");
-        return "/html/error";
-//        if (userId == null) {
-//            throw new UserNotFoundException("用户不存在");
-//        }
-//        User user = userRepository.findOne(userId);
-//        if (null == user)
-//            throw new SisException("该用户不存在或者已经过期");
-//
-//        List<SisSumAmountModel> list = sqlService.getListGroupBySrcType(userId);
-//        model.addAttribute("list", list);
-//        model.addAttribute("customerId", customerId);
-//        return "/sisweb/ownerJuniorList";
+//        model.addAttribute("errorMessage","系统升级中~~~");
+//        return "/html/error";
+        if (userId == null) {
+            throw new UserNotFoundException("用户不存在");
+        }
+        User user = userRepository.findOne(userId);
+        if (null == user)
+            throw new SisException("该用户不存在或者已经过期");
+
+        List<SisSumAmountModel> list = sqlService.getListGroupBySrcType(userId);
+        model.addAttribute("list", list.get(0));
+        model.addAttribute("customerId", customerId);
+        return "/sisweb/ownerJuniorList";
     }
 
 
