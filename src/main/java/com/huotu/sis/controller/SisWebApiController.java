@@ -932,21 +932,21 @@ public class SisWebApiController {
         log.info("dianzhujifen:"+ownerIntegralAll+" shangjijifen:"+belongOneIntegralAll+" shangshangjijifen:"+belongTwoIntegralAll);
         if (ownerIntegralAll > 0) {
             String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
-                    , "自己", nickname, ownerIntegralAll, customerId, user.getId());
+                    , "", nickname, ownerIntegralAll, customerId, user.getId());
             if(!"OK".equals(ownerStatus)){
                 log.info("integral for owner error:"+ownerStatus);
             }
         }
         if (belongOneIntegralAll > 0) {
             String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
-                    , "一级", nickname, belongOneIntegralAll, customerId, belongOneUser.getId());
+                    , "", nickname, belongOneIntegralAll, customerId, belongOneUser.getId());
             if(!"OK".equals(ownerStatus)){
                 log.info("integral for belongOne error:"+ownerStatus);
             }
         }
         if (belongTwoIntegralAll > 0) {
             String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
-                    , "二级", nickname, belongTwoIntegralAll, customerId, belongTwoUser.getId());
+                    , "", nickname, belongTwoIntegralAll, customerId, belongTwoUser.getId());
             if(!"OK".equals(ownerStatus)){
                 log.info("integral for belongTwo error:"+ownerStatus);
             }
