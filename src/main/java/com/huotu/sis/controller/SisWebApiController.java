@@ -741,7 +741,7 @@ public class SisWebApiController {
                             ownerProfitPrice = profitConfigs.stream().filter(config -> config.getProfitKey().equals("zong1_zm_self")).findAny().get().getProfitValue();
                         }
                         int ownerIntegral = getIntegralRateByRate(prize * ownerProfitPrice / 100, exchangeRate);
-                        ownerIntegralAll+=ownerIntegral;
+                        ownerIntegralAll += ownerIntegral;
                         saveHistory(customerId, ownerIntegral, unionOrderId, user, contriUser, contributeUserType, desc, now2, order, 500);
 //                        mallInfoService.pushMessage(orderId,order.getTitle(),)
                         if (Objects.nonNull(user.getBelongOne())) {
@@ -763,7 +763,7 @@ public class SisWebApiController {
 
 
                                     int belongOneIntegral = getIntegralRateByRate(prize * oneBelongProfitPrice / 100, exchangeRate);
-                                    belongOneIntegralAll+=belongOneIntegral;
+                                    belongOneIntegralAll += belongOneIntegral;
                                     log.info("one level integral：" + belongOneIntegral);
                                     saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
                                             contributeUserType, desc, now2, order, 501);
@@ -783,7 +783,7 @@ public class SisWebApiController {
                                                 twoBelongProfitPrice = profitConfigs.stream().filter(config -> config.getProfitKey().equals("zong2_qj")).findAny().get().getProfitValue();
                                             int belongTwoIntegral = getIntegralRateByRate(prize
                                                     * twoBelongProfitPrice / 100, exchangeRate);
-                                            belongTwoIntegralAll+=belongTwoIntegral;
+                                            belongTwoIntegralAll += belongTwoIntegral;
                                             saveHistory(customerId, belongTwoIntegral, unionOrderId, belongTwoUser, contriUser,
                                                     contributeUserType, desc, now2, order, 502);
                                         }
@@ -803,7 +803,7 @@ public class SisWebApiController {
                                         oneBelongProfitPrice = profitConfigs.stream().filter(config -> config.getProfitKey().equals("zong2_qj")).findAny().get().getProfitValue();
                                     }
                                     int belongOneIntegral = getIntegralRateByRate(prize * oneBelongProfitPrice / 100, exchangeRate);
-                                    belongOneIntegralAll+=belongOneIntegral;
+                                    belongOneIntegralAll += belongOneIntegral;
                                     saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
                                             contributeUserType, desc, now2, order, 501);
                                 }
@@ -815,7 +815,7 @@ public class SisWebApiController {
                         double ownerProfitPrice = profitConfigs.stream().filter(config -> config.getProfitKey().equals("zong2_self")).findAny().get().getProfitValue();
                         //自己的直推积分
                         int ownerIntegral = getIntegralRateByRate(prize * ownerProfitPrice / 100, exchangeRate);
-                        ownerIntegralAll+=ownerIntegral;
+                        ownerIntegralAll += ownerIntegral;
                         //保存临时积分
                         saveHistory(customerId, ownerIntegral, unionOrderId, user, contriUser, contributeUserType, desc, now2, order, 500);
                     }
@@ -832,7 +832,7 @@ public class SisWebApiController {
                 SISProfit ownerProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.owner)).findAny().get();
                 //自己的直推积分
                 int ownerIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100, exchangeRate);
-                ownerIntegralAll+=ownerIntegral;
+                ownerIntegralAll += ownerIntegral;
                 //保存临时积分
                 saveHistory(customerId, ownerIntegral, unionOrderId, user, contriUser, contributeUserType, desc, now2, order, 500);
                 if (Objects.nonNull(user.getBelongOne())) {
@@ -860,7 +860,7 @@ public class SisWebApiController {
 
 
                             int belongOneIntegral = getIntegralRateByRate(totalPrize * oneBelongProfit.getProfit() / 100, exchangeRate);
-                            belongOneIntegralAll+=belongOneIntegral;
+                            belongOneIntegralAll += belongOneIntegral;
                             log.info("one level integral：" + belongOneIntegral);
                             saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
                                     contributeUserType, desc, now2, order, 501);
@@ -884,7 +884,7 @@ public class SisWebApiController {
                                                 item.getProfitUser().equals(ProfitUser.oneBelongFlagship)).findAny().get();
                                     int belongTwoIntegral = getIntegralRateByRate(totalPrize
                                             * twoBelongProfit.getProfit() / 100, exchangeRate);
-                                    belongTwoIntegralAll+=belongTwoIntegral;
+                                    belongTwoIntegralAll += belongTwoIntegral;
                                     log.info("two level integral：" + belongOneIntegral);
                                     saveHistory(customerId, belongTwoIntegral, unionOrderId, belongTwoUser, contriUser,
                                             contributeUserType, desc, now2, order, 502);
@@ -907,7 +907,7 @@ public class SisWebApiController {
                                 oneBelongProfit = oneProfits.stream().filter(item ->
                                         item.getProfitUser().equals(ProfitUser.oneBelongFlagship)).findAny().get();
                             int belongOneIntegral = getIntegralRateByRate(totalPrize * oneBelongProfit.getProfit() / 100, exchangeRate);
-                            belongOneIntegralAll+=belongOneIntegral;
+                            belongOneIntegralAll += belongOneIntegral;
                             log.info("one level integral：" + belongOneIntegral);
                             saveHistory(customerId, belongOneIntegral, unionOrderId, belongOneUser, contriUser,
                                     contributeUserType, desc, now2, order, 501);
@@ -925,7 +925,7 @@ public class SisWebApiController {
 //            SISProfit oneBelongProfit = profits.stream().filter(item -> item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
                 //自己的直推积分
                 int ownerIntegral = getIntegralRateByRate(totalPrize * ownerProfit.getProfit() / 100, exchangeRate);
-                ownerIntegralAll+=ownerIntegral;
+                ownerIntegralAll += ownerIntegral;
                 //保存临时积分
                 saveHistory(customerId, ownerIntegral, unionOrderId, user, contriUser, contributeUserType, desc, now2, order, 500);
             } else {
@@ -934,8 +934,18 @@ public class SisWebApiController {
                 return resultModel;
             }
         }
-        if(ownerIntegralAll>0){
-//            mallInfoService.pushMessage(order.getId(),order.getTitle(),order.get)
+        String nickname = contriUser.getLoginName() + "(" + contriUser.getWxNickName() + ")";
+        if (ownerIntegralAll > 0) {
+            mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
+                    , "自己", nickname, ownerIntegralAll, customerId, user.getId());
+        }
+        if (belongOneIntegralAll > 0) {
+            mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
+                    , "一级", nickname, belongOneIntegralAll, customerId, belongOneUser.getId());
+        }
+        if (belongTwoIntegralAll > 0) {
+            mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
+                    , "二级", nickname, belongTwoIntegralAll, customerId, belongTwoUser.getId());
         }
         resultModel.setCode(200);
         resultModel.setMessage("该订单商品的直推返利全部个性化");
