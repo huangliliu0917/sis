@@ -25,10 +25,7 @@ import com.huotu.sis.exception.SisException;
 import com.huotu.sis.exception.UserNotFoundException;
 import com.huotu.sis.model.*;
 import com.huotu.sis.repository.*;
-import com.huotu.sis.service.CommonConfigsService;
-import com.huotu.sis.service.SisGoodsRecommendService;
-import com.huotu.sis.service.SisGoodsService;
-import com.huotu.sis.service.SqlService;
+import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +35,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -400,7 +398,7 @@ public class SisWebGoodsController {
     public PageGoodsModel getGoodsList(int page, int pageSize,
                                        @RequestParam(required = false) String keywords,
                                        @RequestParam(required = false) Long categoryId,
-                                       @RequestParam(required = false) Integer sortOption) throws IOException, SisException {
+                                       @RequestParam(required = false) Integer sortOption) throws Exception {
         Long userId = getCurrentUserId();
         User user;
         if (userId != null) {
@@ -435,8 +433,10 @@ public class SisWebGoodsController {
         return model;
     }
 
+    @Autowired
+    private UserService userService;
 
-    private List<PcSisGoodsModel> countRebate(List<SisGoods> sisGoodsList, User user) throws SisException, IOException {
+    private List<PcSisGoodsModel> countRebate(List<SisGoods> sisGoodsList, User user) throws Exception {
         List<PcSisGoodsModel> list = new ArrayList<>();
 
         String resoureServerUrl = commonConfigService.getResourceServerUrl();
@@ -454,6 +454,10 @@ public class SisWebGoodsController {
         Sis sis = sisRepository.findByUser(user);
 
         Double rebate = sisProfitRepository.getProfitByMerchantAndUserLevelAndSisLevel(user.getMerchant(), (long) user.getLevelId(), sis.getSisLevel(), ProfitUser.owner);
+        if (userService.getTotalUserType((long) user.getLevelId()) == 2) {
+            rebate = sisProfitRepository.getProfitByMerchantAndUserLevel(user.getMerchant(), (long) user.getLevelId(), ProfitUser.owner);
+        }
+
         if (rebate == null) rebate = 0D;
         else rebate = rebate / 100;
 
@@ -482,7 +486,14 @@ public class SisWebGoodsController {
             appSisGoodsModel.setGoodSelected(sisGoods.isSelected());
             appSisGoodsModel.setDetailsUrl(goodsUrl + "&goodId=");
             appSisGoodsModel.setShareUrl(goodsShareUrl + goods.getId());
-            appSisGoodsModel.setPrice(goods.getPrice());
+
+            if (goods.getPricesCache() != null) {
+                appSisGoodsModel.setPrice(goods.getPricesCache().get(0).getMinPrice());
+            } else {
+                appSisGoodsModel.setPrice(goods.getPrice());
+            }
+
+
             list.add(appSisGoodsModel);
         }
         return list;

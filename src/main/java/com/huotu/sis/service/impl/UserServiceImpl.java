@@ -455,11 +455,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer getTotalUserType(Long userId) throws Exception{
-        if(getTotalGeneraltionId(SysConfigConstant.Total_Generation_OneId).equals(userId)){
+    public Integer getTotalUserType(Long levelId) throws Exception{
+        if(getTotalGeneraltionId(SysConfigConstant.Total_Generation_OneId).equals(levelId)){
             return 1;
         }
-        if(getTotalGeneraltionId(SysConfigConstant.Total_Generation_TwoId).equals(userId)){
+        if(getTotalGeneraltionId(SysConfigConstant.Total_Generation_TwoId).equals(levelId)){
             return 2;
         }
         return 0;

@@ -22,4 +22,6 @@ public interface SisProfitRepository extends JpaSpecificationExecutor<SISProfit>
     @Query("select p.profit from SISProfit p where p.merchant=?1 and p.userLevel=?2 and p.level=?3 and p.profitUser=?4")
     Double getProfitByMerchantAndUserLevelAndSisLevel(Merchant merchant, Long userLevel, SisLevel level,ProfitUser profitUser);
 
+    @Query("select p.profit from SISProfit p where p.merchant=?1 and p.userLevel=?2   and p.profitUser=?3")
+    Double getProfitByMerchantAndUserLevel(Merchant merchant, Long userLevel,ProfitUser profitUser);
 }

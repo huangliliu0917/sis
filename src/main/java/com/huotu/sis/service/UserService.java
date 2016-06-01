@@ -176,11 +176,11 @@ public interface UserService {
 
     /**
      * 获取用户等级：1.总代一小伙伴，2.总代二小伙伴,0:未知
-     * @param userId
+     * @param leverId
      * @return
      * @throws Exception
      */
-    Integer getTotalUserType(Long userId) throws Exception;
+    Integer getTotalUserType(Long leverId) throws Exception;
 
     Long getValueByKey(String key) throws Exception;
 
