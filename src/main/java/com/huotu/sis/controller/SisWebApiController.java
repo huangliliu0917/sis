@@ -741,12 +741,12 @@ public class SisWebApiController {
                                 Integer belongOneLevelStatus = userService.getTotalUserType((long) belongOneUser.getLevelId());
                                 //如果上级是总代一
                                 if (belongOneLevelStatus == 1) {
-                                    Long oneShopLevelId = sisService.getSisLevelId(belongOneUser);//店主店铺等级ID
+//                                    Long oneShopLevelId = sisService.getSisLevelId(belongOneUser);//店主店铺等级ID
                                     //查询是专卖店还是旗舰店
-                                    Integer oneSisLevelStatus = userService.getTotalGeneraltionType(oneShopLevelId);
+//                                    Integer oneSisLevelStatus = userService.getTotalGeneraltionType(oneShopLevelId);
                                     double oneBelongProfitPrice;
                                     //专卖店 todo 待改
-                                    if (oneSisLevelStatus == 1)
+                                    if (ownerSisLevelStatus == 1)
                                         oneBelongProfitPrice = profitConfigs.getOneBelongOneUserLevelMonopoly();
                                     else //旗舰店
                                         oneBelongProfitPrice = profitConfigs.getOneBelongOneUserLevelFlagship();
@@ -760,12 +760,12 @@ public class SisWebApiController {
                                     if (Objects.nonNull(belongOneUser.getBelongOne())) {
                                         User belongTwoUser = userService.findTotalGenerationTwoByUser(belongOneUser);
                                         if (Objects.nonNull(belongTwoUser)) {
-                                            Long twoShopLevelId = sisService.getSisLevelId(belongTwoUser);//店主店铺等级ID
+//                                            Long twoShopLevelId = sisService.getSisLevelId(belongTwoUser);//店主店铺等级ID
                                             //查询是专卖店还是旗舰店
-                                            Integer twoSisLevelStatus = userService.getTotalGeneraltionType(twoShopLevelId);
+//                                            Integer twoSisLevelStatus = userService.getTotalGeneraltionType(twoShopLevelId);
                                             double twoBelongProfitPrice;
                                             //专卖店 todo 待改
-                                            if (twoSisLevelStatus == 1)
+                                            if (ownerSisLevelStatus == 1)
                                                 twoBelongProfitPrice = profitConfigs.getOneBelongMonopolyTwo();
                                             else //旗舰店
                                                 twoBelongProfitPrice = profitConfigs.getOneBelongFlagshipTwo();
@@ -778,13 +778,13 @@ public class SisWebApiController {
                                 } else if (belongOneLevelStatus == 2) {
                                     //上级就是总代二
 
-                                    Long oneShopLevelId = sisService.getSisLevelId(belongOneUser);//店主店铺等级ID
+//                                    Long oneShopLevelId = sisService.getSisLevelId(belongOneUser);//店主店铺等级ID
 
                                     //查询是专卖店还是旗舰店
-                                    Integer oneSisLevelStatus = userService.getTotalGeneraltionType(oneShopLevelId);
+//                                    Integer oneSisLevelStatus = userService.getTotalGeneraltionType(oneShopLevelId);
                                     double oneBelongProfitPrice;
                                     //专卖店 todo 待改
-                                    if (oneSisLevelStatus == 1)
+                                    if (belongOneLevelStatus == 1)
                                         oneBelongProfitPrice = profitConfigs.getOneBelongMonopolyTwo();
                                     else {//旗舰店
                                         oneBelongProfitPrice = profitConfigs.getOneBelongFlagshipTwo();
@@ -832,9 +832,9 @@ public class SisWebApiController {
                                     customerId, oneShopLevelId);
                             SISProfit oneBelongProfit;
                             //查询是专卖店还是旗舰店
-                            Integer oneSisLevelStatus = userService.getTotalGeneraltionType(oneShopLevelId);
+//                            Integer oneSisLevelStatus = userService.getTotalGeneraltionType(oneShopLevelId);
                             //专卖店 todo 待改
-                            if (oneSisLevelStatus == 1)
+                            if (belongOneLevelStatus == 1)
                                 oneBelongProfit = oneProfits.stream().filter(item ->
                                         item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
                             else //旗舰店
@@ -850,14 +850,14 @@ public class SisWebApiController {
                             if (Objects.nonNull(belongOneUser.getBelongOne())) {
                                 User belongTwoUser = userService.findTotalGenerationTwoByUser(belongOneUser);
                                 if (Objects.nonNull(belongTwoUser)) {
-                                    Long twoShopLevelId = sisService.getSisLevelId(belongTwoUser);//店主店铺等级ID
+//                                    Long twoShopLevelId = sisService.getSisLevelId(belongTwoUser);//店主店铺等级ID
                                     List<SISProfit> twoProfits = sisProfitService.findAllByUserLevelId((long) belongTwoUser.getLevelId(),
                                             customerId, null);
                                     SISProfit twoBelongProfit;
                                     //查询是专卖店还是旗舰店
-                                    Integer twoSisLevelStatus = userService.getTotalGeneraltionType(twoShopLevelId);
+//                                    Integer twoSisLevelStatus = userService.getTotalGeneraltionType(twoShopLevelId);
                                     //专卖店 todo 待改
-                                    if (twoSisLevelStatus == 1)
+                                    if (belongOneLevelStatus == 1)
                                         twoBelongProfit = twoProfits.stream().filter(item ->
                                                 item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
                                     else //旗舰店
@@ -875,12 +875,12 @@ public class SisWebApiController {
                             oneProfits = sisProfitService.findAllByUserLevelId((long) belongOneUser.getLevelId(),
                                     customerId, null);
 
-                            Long oneShopLevelId = sisService.getSisLevelId(belongOneUser);//店主店铺等级ID
+//                            Long oneShopLevelId = sisService.getSisLevelId(belongOneUser);//店主店铺等级ID
                             SISProfit oneBelongProfit;
                             //查询是专卖店还是旗舰店
-                            Integer oneSisLevelStatus = userService.getTotalGeneraltionType(oneShopLevelId);
+//                            Integer oneSisLevelStatus = userService.getTotalGeneraltionType(oneShopLevelId);
                             //专卖店 todo 待改
-                            if (oneSisLevelStatus == 1)
+                            if (belongOneLevelStatus == 1)
                                 oneBelongProfit = oneProfits.stream().filter(item ->
                                         item.getProfitUser().equals(ProfitUser.oneBelong)).findAny().get();
                             else //旗舰店
