@@ -8,10 +8,7 @@ import com.huotu.huobanplus.common.dataService.NormalRebateService;
 import com.huotu.huobanplus.common.dataService.UserFormalIntegralService;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.*;
-import com.huotu.huobanplus.common.entity.support.LevelPrice;
-import com.huotu.huobanplus.common.entity.support.RebateConfiguration;
-import com.huotu.huobanplus.common.entity.support.RebateTeam;
-import com.huotu.huobanplus.common.entity.support.RebateTeamManagerSetting;
+import com.huotu.huobanplus.common.entity.support.*;
 import com.huotu.huobanplus.common.model.RebateCompatible;
 import com.huotu.huobanplus.common.model.RebateInfo;
 import com.huotu.huobanplus.common.model.RebateMode;
@@ -454,7 +451,9 @@ public class SisWebGoodsController {
         Sis sis = sisRepository.findByUser(user);
 
         Double rebate = sisProfitRepository.getProfitByMerchantAndUserLevelAndSisLevel(user.getMerchant(), (long) user.getLevelId(), sis.getSisLevel(), ProfitUser.owner);
-        if (userService.getTotalUserType((long) user.getLevelId()) == 2) {
+        Integer userStatus = userService.getTotalUserType((long) user.getLevelId());
+        Integer sisStatus = userService.getTotalGeneraltionType(sis.getSisLevel().getId());
+        if (userStatus == 2) {
             rebate = sisProfitRepository.getProfitByMerchantAndUserLevel(user.getMerchant(), (long) user.getLevelId(), ProfitUser.owner);
         }
 
@@ -466,13 +465,28 @@ public class SisWebGoodsController {
 
             PcSisGoodsModel appSisGoodsModel = new PcSisGoodsModel();
 
-            List<ShopRebateDescModel> listDesc = JSON.parseArray(goods.getShopRebateDesc(), ShopRebateDescModel.class);
+            if (goods.getProfited()) {
+                double rebateNow = 0;
+                List<ProfitConfig> profitConfigs = goods.getProfitConfigs();
+                if (userStatus == 1 && sisStatus == 1) {
+                    rebateNow = profitConfigs.stream().filter(item -> item.getProfitKey().equals("zong1_zm_self")).findAny().get().getProfitValue();
+                } else if (userStatus == 1 && sisStatus == 2) {
+                    rebateNow = profitConfigs.stream().filter(item -> item.getProfitKey().equals("zong1_qj_self")).findAny().get().getProfitValue();
+                } else if (userStatus == 2) {
+                    rebateNow = profitConfigs.stream().filter(item -> item.getProfitKey().equals("zong2_self")).findAny().get().getProfitValue();
+                }
+                appSisGoodsModel.setMinRebate(get2Double(goods.getShopRebateMin() * rebateNow / 100));
+            } else {
+                appSisGoodsModel.setMinRebate(get2Double(goods.getShopRebateMin() * rebate));
+            }
 
-
-            DoubleSummaryStatistics doubleSummaryStatistics = listDesc.stream().mapToDouble((x) -> x.getAmount()).summaryStatistics();
-
-            appSisGoodsModel.setMinRebate(get2Double(doubleSummaryStatistics.getMin() * rebate));
-            appSisGoodsModel.setMaxRebate(get2Double(doubleSummaryStatistics.getMax() * rebate));
+//            List<ShopRebateDescModel> listDesc = JSON.parseArray(goods.getShopRebateDesc(), ShopRebateDescModel.class);
+//
+//
+//            DoubleSummaryStatistics doubleSummaryStatistics = listDesc.stream().mapToDouble((x) -> x.getAmount()).summaryStatistics();
+//
+//            appSisGoodsModel.setMinRebate(get2Double(doubleSummaryStatistics.getMin() * rebate));
+//            appSisGoodsModel.setMaxRebate(get2Double(doubleSummaryStatistics.getMax() * rebate));
 
             appSisGoodsModel.setGoodsId(goods.getId());
             appSisGoodsModel.setGoodsName(goods.getTitle());
@@ -487,8 +501,8 @@ public class SisWebGoodsController {
             appSisGoodsModel.setDetailsUrl(goodsUrl + "&goodId=");
             appSisGoodsModel.setShareUrl(goodsShareUrl + goods.getId());
 
-            if (goods.getPricesCache() != null) {
-                appSisGoodsModel.setPrice(goods.getPricesCache().get(0).getMinPrice());
+            if (goods.getPricesCache() != null && goods.getPricesCache().get(user.getLevelId()) != null) {
+                appSisGoodsModel.setPrice(goods.getPricesCache().get((long) user.getLevelId()).getMinPrice());
             } else {
                 appSisGoodsModel.setPrice(goods.getPrice());
             }
