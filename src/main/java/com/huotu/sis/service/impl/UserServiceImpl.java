@@ -84,8 +84,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private SisOpenAwardLogService sisOpenAwardLogService;
 
-    @Autowired
-    private UserService userService;
 
     @Override
     public Long getUserId(HttpServletRequest request) {
@@ -245,16 +243,16 @@ public class UserServiceImpl implements UserService {
                 ",beloneSisLevelId:"+belongOneSis.getSisLevel().getId()+",beloneLevelId:"+belongOne.getLevelId());
 
         SisOpenAwardAssign sisOpenAwardAssign;
-        Integer levelType=userService.getTotalUserType((long)belongOne.getLevelId());
+        Integer levelType=getTotalUserType((long)belongOne.getLevelId());
         switch (levelType){
             case 1:
-                sisOpenAwardAssign=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevel(
-                        (long)belongOne.getLevelId(), belongOneSis.getSisLevel(), ownSis.getSisLevel()
+                sisOpenAwardAssign=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevelAndMerchant(
+                        (long)belongOne.getLevelId(), belongOneSis.getSisLevel(), ownSis.getSisLevel(),user.getMerchant()
                 );
                 break;
             case 2:
-                sisOpenAwardAssign=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_Id(
-                        (long)belongOne.getLevelId(), belongOneSis.getSisLevel()
+                sisOpenAwardAssign=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndMerchant(
+                        (long)belongOne.getLevelId(), belongOneSis.getSisLevel(),user.getMerchant()
                 );
                 break;
             default:

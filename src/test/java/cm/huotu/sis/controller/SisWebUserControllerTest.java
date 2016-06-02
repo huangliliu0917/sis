@@ -211,7 +211,8 @@ public class SisWebUserControllerTest extends WebTest {
         sisOpenAwardAssign.setLevel(belongOne);
         sisOpenAwardAssign.setUserLevel(100L);
         sisOpenAwardAssignRepository.saveAndFlush(sisOpenAwardAssign);
-        SisOpenAwardAssign finds=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevel(100L,belongOne,won);
+        SisOpenAwardAssign finds=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevelAndMerchant(
+                100L,belongOne,won,null);
         Calendar calendar=Calendar.getInstance();
     }
 
