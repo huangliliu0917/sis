@@ -500,10 +500,24 @@ public class SisWebGoodsController {
             appSisGoodsModel.setGoodSelected(sisGoods.isSelected());
             appSisGoodsModel.setDetailsUrl(goodsUrl + "&goodId=");
             appSisGoodsModel.setShareUrl(goodsShareUrl + goods.getId());
+//            log.info("userLevelId:" + user.getLevelId());
+//            log.info("cache:" + goods.getPricesCache().get(user.getLevelId()));
+            boolean havePriceCache = false;
+            if (goods.getPricesCache() != null) {
+                for (Long key : goods.getPricesCache().keySet()) {
+//                    log.info("key:" + key);
+                    if (goods.getPricesCache().get(key) != null && key == user.getLevelId()) {
+//                        log.info("value: " + goods.getPricesCache().get(key).getLevel() + " " + goods.getPricesCache().get(key).getMaxPrice());
 
-            if (goods.getPricesCache() != null && goods.getPricesCache().get(user.getLevelId()) != null) {
-                appSisGoodsModel.setPrice(goods.getPricesCache().get((long) user.getLevelId()).getMinPrice());
-            } else {
+                        appSisGoodsModel.setPrice(goods.getPricesCache().get(key).getMinPrice());
+                        havePriceCache = true;
+                        break;
+                    }
+                }
+            }
+
+
+            if (!havePriceCache) {
                 appSisGoodsModel.setPrice(goods.getPrice());
             }
 
