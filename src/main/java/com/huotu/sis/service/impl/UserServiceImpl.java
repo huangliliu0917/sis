@@ -84,6 +84,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private SisOpenAwardLogService sisOpenAwardLogService;
 
+    @Autowired
+    private UserService userService;
+
     @Override
     public Long getUserId(HttpServletRequest request) {
         if (env.acceptsProfiles("development")){
@@ -238,17 +241,33 @@ public class UserServiceImpl implements UserService {
             log.info("user"+user.getId()+"won have no sisShop");
             return;
         }
-        List<SisOpenAwardAssign> sisOpenAwardAssigns=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevel(
-                (long)belongOne.getLevelId(),
-                belongOneSis.getSisLevel(),
-                ownSis.getSisLevel());
-        if(sisOpenAwardAssigns.isEmpty()){
+        log.info("userSisLevelId:"+ownSis.getSisLevel().getId()+
+                ",beloneSisLevelId:"+belongOneSis.getSisLevel().getId()+",beloneLevelId:"+belongOne.getLevelId());
+
+        SisOpenAwardAssign sisOpenAwardAssign;
+        Integer levelType=userService.getTotalUserType((long)belongOne.getLevelId());
+        switch (levelType){
+            case 1:
+                sisOpenAwardAssign=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevel(
+                        (long)belongOne.getLevelId(), belongOneSis.getSisLevel(), ownSis.getSisLevel()
+                );
+                break;
+            case 2:
+                sisOpenAwardAssign=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_Id(
+                        (long)belongOne.getLevelId(), belongOneSis.getSisLevel()
+                );
+                break;
+            default:
+                sisOpenAwardAssign=null;
+        }
+
+        if(sisOpenAwardAssign==null){
             //无法找到升级返利配置信息
             log.info("user"+user.getId()+"Upgrade rebate configuration information cannot be found");
             return;
         }
 
-        SisOpenAwardAssign sisOpenAwardAssign=sisOpenAwardAssigns.get(0);
+
         //增加的钱
         Integer addIntegral=0;
         if(IntegralType.open.equals(integralType)){
@@ -287,7 +306,8 @@ public class UserServiceImpl implements UserService {
         userFormalIntegral.setScore(value);
         userFormalIntegral.setUser(beloneOne);
         userFormalIntegral.setTime(new Date());
-        userFormalIntegral.setStatus(integralType.getIndex());
+//        userFormalIntegral.setStatus(integralType.getIndex());
+        userFormalIntegral.setNewStatus(integralType.getIndex());
         userFormalIntegral.setDesc("1级会员"+user.getWxNickName()+"贡献"+ integralType.getName());
         userFormalIntegralRepository.save(userFormalIntegral);
         return userFormalIntegral;

@@ -14,9 +14,10 @@ import java.util.List;
 @Repository
 public interface SisOpenAwardAssignRepository extends JpaRepository<SisOpenAwardAssign,Long> {
     @Query("select s from SisOpenAwardAssign as s where s.userLevel=?1 and s.level=?2 and s.guideLevel=?3")
-    List<SisOpenAwardAssign> findByLevel_IdAndGuideLevel_IdAndUserLevel(Long userLevel,SisLevel level,SisLevel guideLevel);
+    SisOpenAwardAssign findByLevel_IdAndGuideLevel_IdAndUserLevel(Long userLevel,SisLevel level,SisLevel guideLevel);
 
-    SisOpenAwardAssign findByLevelAndGuideLevelAndUserLevel(SisLevel level, SisLevel ownLevel, Long userLevel);
+    @Query("select s from SisOpenAwardAssign as s where s.userLevel=?1 and s.level=?2")
+    SisOpenAwardAssign findByLevel_IdAndGuideLevel_Id(Long userLevel,SisLevel level);
 
     List<SisOpenAwardAssign> findByMerchant_Id(Long customerId);
 

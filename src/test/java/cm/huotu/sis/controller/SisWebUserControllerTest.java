@@ -14,8 +14,10 @@ import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.SisOpenAwardAssign;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
+import com.huotu.sis.repository.SisOpenAwardAssignRepository;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.UserService;
 import org.junit.Test;
@@ -59,6 +61,10 @@ public class SisWebUserControllerTest extends WebTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
+
 
     /**
      * 模板页面
@@ -185,5 +191,30 @@ public class SisWebUserControllerTest extends WebTest {
 
 
     }
+
+
+    @Test
+    public void testPeizhi() throws Exception{
+        SisLevel belongOne=new SisLevel();
+        belongOne.setLevelNo(1);
+        belongOne=sisLevelRepository.saveAndFlush(belongOne);
+
+        SisLevel won=new SisLevel();
+        won.setLevelNo(2);
+        won=sisLevelRepository.saveAndFlush(won);
+
+
+
+
+        SisOpenAwardAssign sisOpenAwardAssign=new SisOpenAwardAssign();
+        sisOpenAwardAssign.setGuideLevel(won);
+        sisOpenAwardAssign.setLevel(belongOne);
+        sisOpenAwardAssign.setUserLevel(100L);
+        sisOpenAwardAssignRepository.saveAndFlush(sisOpenAwardAssign);
+        SisOpenAwardAssign finds=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndUserLevel(100L,belongOne,won);
+        Calendar calendar=Calendar.getInstance();
+    }
+
+
 
 }
