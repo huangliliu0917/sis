@@ -206,9 +206,9 @@ public class SisWebUserController {
 //            }
 
             //sis.setImgPath(imgPath);
-//            sis.setShareDesc(sisModel.getShareDetail());
+            sis.setShareDesc(sisModel.getShareDetail());
 
-//            sis.setShareTitle(sisModel.getShareTitle());
+            sis.setShareTitle(sisModel.getShareTitle());
             sis.setTitle(sisModel.getSisName());
 //            sis.setDescription(sisModel.getSisDetail());
             sisRepository.saveAndFlush(sis);

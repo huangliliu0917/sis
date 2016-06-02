@@ -67,14 +67,14 @@
 //        $.jBox.tip("请输入店铺描述");
 //        return;
 //      }
-//      if (shareTitle.length == 0) {
-//        $.jBox.tip("请输入店铺分享标题");
-//        return;
-//      }
-//      if (shareDetail.length == 0) {
-//        $.jBox.tip("请输入店铺分享详情");
-//        return;
-//      }
+      if (shareTitle.length == 0) {
+        $.jBox.tip("请输入店铺分享标题");
+        return;
+      }
+      if (shareDetail.length == 0) {
+        $.jBox.tip("请输入店铺分享详情");
+        return;
+      }
       $('#form1').attr("action","updateSisProfile?customerId="+$("#customerId").val());
       $('#form1').submit();
     }
@@ -191,20 +191,20 @@
                    <!--type="text"/>-->
           <!--</p>-->
         <!--</div>-->
-        <!--<div>-->
-          <!--<p class="textcen">-->
-            <!--<span class="tit">分享标题：</span>-->
-            <!--<input id="shareTitle" name="shareTitle" th:value="*{shareTitle}" placeholder="" maxlength="100"-->
-                   <!--type="text"/>-->
-          <!--</p>-->
-        <!--</div>-->
-        <!--<div>-->
-          <!--<p class="textcen">-->
-            <!--<span class="tit">分享内容：</span>-->
-            <!--<input id="shareDetail" name="shareDetail" th:value="*{shareDetail}" placeholder=""-->
-                   <!--maxlength="100" type="text"/>-->
-          <!--</p>-->
-        <!--</div>-->
+        <div>
+          <p class="textcen">
+            <span class="tit">分享标题：</span>
+            <input id="shareTitle" name="shareTitle" th:value="*{shareTitle}" placeholder="" maxlength="100"
+                   type="text"/>
+          </p>
+        </div>
+        <div>
+          <p class="textcen">
+            <span class="tit">分享内容：</span>
+            <input id="shareDetail" name="shareDetail" th:value="*{shareDetail}" placeholder=""
+                   maxlength="100" type="text"/>
+          </p>
+        </div>
       </form>
     </div>
     <p class="textcen rq">
