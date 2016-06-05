@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
@@ -931,27 +932,40 @@ public class SisWebApiController {
         String nickname = contriUser.getLoginName() + "(" + contriUser.getWxNickName() + ")";
         log.info("dianzhujifen:" + ownerIntegralAll + " shangjijifen:" + belongOneIntegralAll + " shangshangjijifen:" + belongTwoIntegralAll);
         if (ownerIntegralAll > 0) {
-//            user.setUserTempIntegral(user.getUserTempIntegral() + ownerIntegralAll);
-            String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
-                    , "", nickname, ownerIntegralAll, customerId, user.getId());
-            if (!"OK".equals(ownerStatus)) {
-                log.info("integral for owner error:" + ownerStatus);
+            try{
+                String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
+                        , "", nickname, ownerIntegralAll, customerId, user.getId());
+                if (!"OK".equals(ownerStatus)) {
+                    log.info("integral for owner error:" + ownerStatus);
+                }
+            }catch (IOException e){
+                log.info(user.getId()+" tuisong error");
             }
+
         }
         if (belongOneIntegralAll > 0) {
-//            belongOneUser.setUserTempIntegral(belongOneUser.getUserTempIntegral() + belongOneIntegralAll);
-            String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
-                    , "", nickname, belongOneIntegralAll, customerId, belongOneUser.getId());
-            if (!"OK".equals(ownerStatus)) {
-                log.info("integral for belongOne error:" + ownerStatus);
+            try{
+                String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
+                        , "", nickname, belongOneIntegralAll, customerId, belongOneUser.getId());
+                if (!"OK".equals(ownerStatus)) {
+                    log.info("integral for belongOne error:" + ownerStatus);
+                }
+            }catch (IOException e){
+                log.info(belongOneUser.getId()+" tuisong error");
             }
+
         }
         if (belongTwoIntegralAll > 0) {
-//            belongTwoUser.setUserTempIntegral(belongTwoUser.getUserTempIntegral() + belongTwoIntegralAll);
-            String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
-                    , "", nickname, belongTwoIntegralAll, customerId, belongTwoUser.getId());
-            if (!"OK".equals(ownerStatus)) {
-                log.info("integral for belongTwo error:" + ownerStatus);
+
+            try{
+                String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
+                        , "", nickname, belongTwoIntegralAll, customerId, belongTwoUser.getId());
+                if (!"OK".equals(ownerStatus)) {
+                    log.info("integral for belongTwo error:" + ownerStatus);
+                }
+            }
+            catch (IOException e){
+                log.info(belongTwoUser.getId()+" tuisong error");
             }
         }
         resultModel.setCode(200);
