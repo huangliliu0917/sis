@@ -931,7 +931,7 @@ public class SisWebApiController {
         String nickname = contriUser.getLoginName() + "(" + contriUser.getWxNickName() + ")";
         log.info("dianzhujifen:" + ownerIntegralAll + " shangjijifen:" + belongOneIntegralAll + " shangshangjijifen:" + belongTwoIntegralAll);
         if (ownerIntegralAll > 0) {
-            user.setUserTempIntegral(user.getUserTempIntegral() + ownerIntegralAll);
+//            user.setUserTempIntegral(user.getUserTempIntegral() + ownerIntegralAll);
             String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
                     , "", nickname, ownerIntegralAll, customerId, user.getId());
             if (!"OK".equals(ownerStatus)) {
@@ -939,7 +939,7 @@ public class SisWebApiController {
             }
         }
         if (belongOneIntegralAll > 0) {
-            belongOneUser.setUserTempIntegral(belongOneUser.getUserTempIntegral() + belongOneIntegralAll);
+//            belongOneUser.setUserTempIntegral(belongOneUser.getUserTempIntegral() + belongOneIntegralAll);
             String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
                     , "", nickname, belongOneIntegralAll, customerId, belongOneUser.getId());
             if (!"OK".equals(ownerStatus)) {
@@ -947,7 +947,7 @@ public class SisWebApiController {
             }
         }
         if (belongTwoIntegralAll > 0) {
-            belongTwoUser.setUserTempIntegral(belongTwoUser.getUserTempIntegral() + belongTwoIntegralAll);
+//            belongTwoUser.setUserTempIntegral(belongTwoUser.getUserTempIntegral() + belongTwoIntegralAll);
             String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
                     , "", nickname, belongTwoIntegralAll, customerId, belongTwoUser.getId());
             if (!"OK".equals(ownerStatus)) {
