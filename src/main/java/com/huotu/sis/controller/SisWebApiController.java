@@ -969,7 +969,7 @@ public class SisWebApiController {
             }
         }
         resultModel.setCode(200);
-        resultModel.setMessage("该订单商品的直推返利全部个性化");
+        resultModel.setMessage("直推积分成功");
         return resultModel;
     }
 
