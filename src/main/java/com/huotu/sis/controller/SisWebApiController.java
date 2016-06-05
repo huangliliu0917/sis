@@ -931,6 +931,19 @@ public class SisWebApiController {
         }
         String nickname = contriUser.getLoginName() + "(" + contriUser.getWxNickName() + ")";
         log.info("dianzhujifen:" + ownerIntegralAll + " shangjijifen:" + belongOneIntegralAll + " shangshangjijifen:" + belongTwoIntegralAll);
+        //先把积分全部加上
+        if (ownerIntegralAll > 0) {
+            user.setUserTempIntegral(user.getUserTempIntegral()+ownerIntegralAll);
+            userRepository.save(user);
+        }
+        if (belongOneIntegralAll > 0) {
+            belongOneUser.setUserTempIntegral(belongOneIntegralAll+belongOneUser.getUserTempIntegral());
+            userRepository.save(belongOneUser);
+        }
+        if(belongTwoIntegralAll>0){
+            belongTwoUser.setUserTempIntegral(belongTwoIntegralAll+belongTwoUser.getUserTempIntegral());
+            userRepository.save(belongTwoUser);
+        }
         if (ownerIntegralAll > 0) {
             try{
                 String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
@@ -956,7 +969,6 @@ public class SisWebApiController {
 
         }
         if (belongTwoIntegralAll > 0) {
-
             try{
                 String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
                         , "", nickname, belongTwoIntegralAll, customerId, belongTwoUser.getId());
@@ -1011,9 +1023,9 @@ public class SisWebApiController {
         utih.setUserGroupId(0L);//进行21个设值.
         utihRepository.save(utih);
 
-        integral = user.getUserTempIntegral() + integral;
-        user.setUserTempIntegral(integral);
-        userRepository.save(user);
-        log.info("zhituijaing success");
+//        integral = user.getUserTempIntegral() + integral;
+//        user.setUserTempIntegral(integral);
+//        userRepository.save(user);
+        log.info("zhituijiang success");
     }
 }
