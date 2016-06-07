@@ -12,7 +12,7 @@ package com.huotu.sis.service.impl;
 import com.huotu.sis.entity.VerificationCode;
 import com.huotu.sis.common.TTDSSMSHelper;
 import com.huotu.sis.exception.InterrelatedException;
-import com.huotu.sis.model.ResultModel;
+import com.huotu.sis.model.sisweb.ResultModel;
 import com.huotu.sis.service.VerificationService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

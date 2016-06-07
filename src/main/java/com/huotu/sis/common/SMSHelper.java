@@ -10,7 +10,7 @@
 package com.huotu.sis.common;
 
 
-import com.huotu.sis.model.ResultModel;
+import com.huotu.sis.model.sisweb.ResultModel;
 
 public class SMSHelper {
     private static String serverUrl = "http://222.73.117.156/msg/HttpBatchSendSM";

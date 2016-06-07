@@ -1,6 +1,6 @@
 package com.huotu.sis.common;
 
-import com.huotu.sis.model.PublicParameterModel;
+import com.huotu.sis.model.sisweb.PublicParameterModel;
 
 /**
  * Created by lgh on 2016/1/8.

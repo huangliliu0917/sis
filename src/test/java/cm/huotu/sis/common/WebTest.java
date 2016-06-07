@@ -4,7 +4,7 @@ import cm.huotu.sis.filter.ParamFilter;
 import com.huotu.sis.boot.MVCConfig;
 import com.huotu.sis.boot.RootConfig;
 import com.huotu.sis.common.PublicParameterHolder;
-import com.huotu.sis.model.PublicParameterModel;
+import com.huotu.sis.model.sisweb.PublicParameterModel;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;

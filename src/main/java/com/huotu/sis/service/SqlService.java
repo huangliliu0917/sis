@@ -1,7 +1,7 @@
 package com.huotu.sis.service;
 
-import com.huotu.sis.model.SisDetailModel;
-import com.huotu.sis.model.SisSumAmountModel;
+import com.huotu.sis.model.sisweb.SisDetailModel;
+import com.huotu.sis.model.sisweb.SisSumAmountModel;
 import org.springframework.data.domain.Page;
 
 import java.io.IOException;
