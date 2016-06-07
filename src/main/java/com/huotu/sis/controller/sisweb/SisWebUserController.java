@@ -1080,8 +1080,13 @@ public class SisWebUserController {
      */
     @RequestMapping(value = "/switchShelves")
     @ResponseBody
-    public ResultModel switchShelves() throws Exception{
+    public ResultModel switchShelves(Long customerId) throws Exception{
         ResultModel resultModel=new ResultModel();
+        if (Objects.isNull(customerId)) {
+            resultModel.setCode(500);
+            resultModel.setMessage("未找到商家");
+            return resultModel;
+        }
         PublicParameterModel ppm = PublicParameterHolder.get();
         Long userId = ppm.getUserId();
         if(userId==null){

@@ -10,12 +10,20 @@
     <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
     <link rel="stylesheet" type="text/css" href="css/fksc.css" th:href="@{/sisweb/css/fksc.css}"/>
     <link rel="stylesheet" type="text/css" href="css/weui.minweui.min.css" th:href="@{/sisweb/css/weui.minweui.min.css}"/>
-    <link href="jBox/Skins/Green/jbox.css" th:href="@{/sisweb/jBox/Skins/Green/jbox.css}" rel="stylesheet" type="text/css" />
+    <!--<link href="jBox/Skins/Green/jbox.css" th:href="@{/sisweb/jBox/Skins/Green/jbox.css}" rel="stylesheet" type="text/css" />-->
     <script src="js/jquery.min.js" th:src="@{/sisweb/js/jquery.min.js}" type="text/javascript"></script>
     <script src="js/jquery-1.7.2.min.js" th:src="@{/sisweb/js/jquery-1.7.2.min.js}" type="text/javascript"></script>
     <script src="js/template.js" th:src="@{/sisweb/js/template.js}" type="text/javascript"></script>
     <script src="JLoad/jquery.Jload.js" th:src="@{/sisweb/JLoad/jquery.Jload.js}" type="text/javascript"></script>
-    <script type="text/javascript" src="jBox/jquery.jBox-2.3.min.js" th:src="@{/sisweb/jBox/jquery.jBox-2.3.min.js}"></script>
+    <!--<script type="text/javascript" src="jBox/jquery.jBox-2.3.min.js" th:src="@{/sisweb/jBox/jquery.jBox-2.3.min.js}"></script>-->
+
+    <script type="text/javascript" src="../resource/layer/layer.js"
+            th:src="@{/resource/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
+          th:href="@{/resource/layer/skin/layer.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.ext.css"
+          th:href="@{/resource/layer/skin/layer.ext.css}"/>
+
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         var customerId = /*[[${customerId}]]*/ 0;
