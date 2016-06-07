@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+
+    <title>
+        精选商品列表
+    </title>
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.content.css}" />
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"
+            th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>
+
+    <!--<script type="text/javascript" src="../resource/3rdParty/My97DatePicker/WdatePicker.js"-->
+            <!--th:src="@{/resource/3rdParty/My97DatePicker/WdatePicker.js}"></script>-->
+    <script type="text/javascript" src="../resource/layer/layer.js"
+            th:src="@{/resource/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
+          th:src="@{/resource/layer/skin/layer.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.ext.css"
+          th:src="@{/resource/layer/skin/layer.ext.css}"/>
+
+    <style type="text/css">
+        .over {
+            background-color: #00ff21;
+        }
+
+        .p_prt, .p_prted {
+            cursor: pointer;
+            width: 17px;
+            height: 18px;
+            display: inline-block;
+            display: -moz-inline-stack;
+            line-height: 18px;
+            vertical-align: top;
+            text-align: left;
+            margin: 2px 0 0 0;
+            color: #000;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body onload="start()" marginwidth="0" marginheight="0" style="background-color: #f1f1f1;">
+
+<div id="asaimsg" class="AsaiDivShow2" style="display: block">
+    <input type="hidden" id="eventLogger" />
+
+    <P align="right" style="margin: 0px; padding: 0px;">
+    </P>
+
+    <!--分类筛选:<select onchange="javascript:changePage();" id="categoryList" style="width: 200px;">-->
+    <!--<option th:remove="all" value="999">女装</option>-->
+    <!--</select>-->
+    <p align="center">关键字：<input type="text" id="searchName"/>&nbsp;&nbsp;&nbsp;<a class="btn-lit btn-middle" id="search" href="javascript:getGoodsList(0)" style="margin-bottom: 3px;"><span style="color: #fff">搜索</span></a></p>
+    <div id="goodsListByNameAndCategory"></div>
+    <table class="data-table even1" width="80%" border="0" cellspacing="0"
+           cellpadding="0">
+        <thead>
+        <tr class="even">
+            <th style="display: none"></th>
+            <th scope="col">商品名称</th>
+            <th scope="col">商品价格（元）</th>
+            <th scope="col">库存</th>
+            <th scope="col">操作</th>
+        </tr>
+        </thead>
+        <tbody id="goodListByNameAndCategory">
+
+        </tbody>
+    </table>
+    <div id="pagebar" style="display: none" class="pager-bar">
+        <input type="hidden" id="noNumber" value="0"/>
+        <input type="hidden" id="maxNumber" value="0"/>
+        <a class="button-white" href="javascript:queryForst()"><span>首页</span></a>
+        <a class="button-white" href="javascript:queryUp(-1)">
+            <span>上一页</span>
+        </a>
+        <a class="button-white" href="javascript:queryVoid(1)">
+            <span>下一页</span>
+        </a>
+        <a class="button-white" href="javascript:queryLast()">
+            <span>未页</span>
+        </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第
+        <input id="current-index" onkeydown="J.EnterSubmit(event, Pager.Jump);" class="input-small" style="text-align:center;" type="text" value="1"/>页&nbsp;&nbsp;&nbsp;&nbsp;
+        <a class="button-white" href="javascript:goToNo();"><span>跳转</span></a>
+    </div>
+
+
+
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    function start(){
+        getGoodsList(0);
+    }
+
+    function modifyGoods(obj,goodsId){
+        $(obj).attr("disabled","disabled");
+//        var goodsId = $(obj).attr("id");
+        var type=1;
+        if($(obj).text()=="取消"){
+            type=0
+        }
+        $.ajax({
+            type:'GET',
+            url: 'modifySisRecommendGood',
+            dataType: 'json',
+            data: {goodsId:goodsId,type:type},
+            success:function(result){
+                if(result.code==200){
+                    layer.msg('操作成功', {icon: 1});
+                    if(type==0){
+                        $(obj).text("推荐")
+                    }else {
+                        $(obj).text("取消推荐")
+                    }
+                    $(obj).removeAttr("disabled");
+
+                }else {
+                    layer.msg(result.message, {icon: 1});
+                }
+            },
+            error:function(e){
+                layer.msg("更新出错，请检查网络");
+            }
+        });
+    }
+
+
+
+    function getGoodsList(pageNo){
+        var index=layer.load(0, {shade: false});
+//        $("#goodListByNameAndCategory").empty();
+//        var path=$("#categoryList option:selected").val();
+        var name=$("#searchName").val();
+        //ajax请求商品列表
+        $.ajax({
+            type:'GET',
+            url: 'showGoodsList',
+            dataType: 'json',
+            data: {title:name,pageNo:pageNo,pageSize:17},
+            success:function(result){
+                if(result.code==200){
+                    $("#goodListByNameAndCategory").empty();
+                    layer.close(index);
+                    goods=result.data;
+                    $.each(goods,function(){
+                        var goodsTitle=this.title;
+                        var goodsPrice=this.price;
+                        var goodsStock=this.stock;
+                        var isRecommend=this.isRecommend;
+                        var goodsId=this.id;
+                        var operationText="推荐";
+                        if(isRecommend==0){
+                            operationText="取消推荐"
+                        }
+                        $("#goodListByNameAndCategory").append('' +
+                                '<tr> ' +
+                                '<th style="display: none">'+goodsId+'</th> ' +
+                                '<td class="txt55 c">'+goodsTitle+'</td> ' +
+                                '<td class="txt21 c">'+goodsPrice+'</td>' +
+                                '<td class="txt21 c">'+goodsStock+'</td>' +
+                                '<td class="txt21 c">' +
+                                '<a href="javascript:void(0)" onclick="modifyGoods(this,'+goodsId+')" >'+operationText+'</a>' +
+                                '</td> ' +
+                                '</tr>');
+                    })
+                    //最大页数
+                    $("#maxNumber").attr("value", result.message);
+                    $("#noNumber").attr("value",pageNo);
+                    $("#current-index").attr("value",pageNo+1);
+                    $("#pagebar").show();
+
+                }else {
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.msg("获取商品出错，请检查网络");
+            }
+        });
+    }
+
+    function queryVoid(no) {//下页
+        var size = 0;
+        var numberBug = Number($("#maxNumber").val());//最大页数
+        size = Number($("#noNumber").val())+no;//前往的页数
+        if(size>numberBug){
+            layer.msg("已经在最后一页了");
+            return;
+//            size=numberBug;
+        }
+        $("#noNumber").attr("value", size);
+        getGoodsList(size);
+    }
+    function queryUp(no) {//上页
+        var size = 0;
+        size = Number($("#noNumber").val())+no;//前往的页数
+        if (0 > size) {
+            layer.msg("已经在首页了");
+            return;
+//            size = 0;
+        }
+        $("#noNumber").attr("value", size);
+        getGoodsList(size);
+    }
+    function queryForst() {//首页
+        $("#pageNoStr").attr("value", 0);
+        getGoodsList(0);
+    }
+    function queryLast() {//尾页
+        var numberBug = Number($("#maxNumber").val())-1;//最大页数
+        if(0>numberBug){
+            numberBug=0;
+        }
+        $("#noNumber").attr("value", numberBug);
+        getGoodsList(numberBug);
+    }
+    function goToNo() {
+        var size = Number($("#current-index").val())-1;
+        var numberBug = Number($("#maxNumber").val());//最大页数
+        if (size > numberBug) {
+            size = numberBug;
+        }
+        if(0>size){
+            size=0;
+        }
+        $("#pageNoStr").attr("value", size);
+        getGoodsList(size);
+    }
+
+    function changePage(){
+        $("#noNumber").attr("value", 0);
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

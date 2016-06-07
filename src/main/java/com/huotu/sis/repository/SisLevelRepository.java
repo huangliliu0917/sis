@@ -25,5 +25,8 @@ public interface SisLevelRepository extends JpaRepository<SisLevel, Long>,JpaSpe
 
     SisLevel findFirstByMerchantIdOrderByLevelNoDesc(Long merchantId);
 
+    List<SisLevel> findAll();
+    List<SisLevel> findByMerchantIdOrderByLevelNoAsc(Long customerId);
+
 
 }

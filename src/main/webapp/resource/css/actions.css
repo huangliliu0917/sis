@@ -1,0 +1,83 @@
+﻿@charset "utf-8";
+/* CSS Document */
+.clearfix:before, .clearfix:after {
+   
+  line-height: 0;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
+
+.superli {
+  position: relative;
+}
+.superli {
+  position: relative;
+  cursor: move;
+  -webkit-user-select: none;
+}
+.superli:last-child {
+  border-bottom: none;
+}
+.app-edit .superli.editing:hover .actions,.app-edit .superli.editing.active .actions {
+  display: inline-block;
+}
+.app-edit .superli .actions {
+  display: inline-block;
+}
+.app-browse .superli .actions
+{
+    display:none;
+}
+.app-edit .superli .actions {
+  position: absolute;
+  display: none;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  border: 2px dashed rgba(255,0,0,0.5);
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  z-index: 2;
+}
+.app-edit .superli .actions .actions-wrap {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.app-edit .superli .actions span {
+  display: inline-block;
+  background-color: rgba(0,0,0,0.3);
+  color: #fff;
+  padding: 0 5px;
+  margin-left: 1px;
+  font-size: 12px;
+}
+.app-edit .superli .sort,.app-browse .superli .sort
+{
+    display:none;
+      position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -10px;
+  cursor: move;
+}
+.app-edit .superli:hover .sort,.app-edit .superli.active .sort {
+  display: block;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -10px;
+  cursor: move;
+}
+
+.app-edit .superli .sort-handler {
+  width: 17px;
+  height: 20px;
+  display: inline-block;
+  background-image: url(../images/dds.png); background-repeat:no-repeat;
+}

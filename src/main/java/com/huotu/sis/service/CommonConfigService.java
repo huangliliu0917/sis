@@ -24,4 +24,25 @@ public interface CommonConfigService {
     String getResoureServerUrl();
 
 
+    /**
+     * 获取后台主域名
+     * @return
+     */
+    String getMainHost();
+
+
+    /**
+     * 上传资源的服务地址
+     * @return
+     */
+    String getResourcesHome();
+
+
+    /**
+     * 静态资源域名地址
+     * @return
+     */
+    String getResourcesUri();
+
+
 }

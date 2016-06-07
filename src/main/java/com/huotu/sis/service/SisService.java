@@ -1,6 +1,9 @@
 package com.huotu.sis.service;
 
 import com.huotu.huobanplus.common.entity.User;
+import com.huotu.sis.entity.Sis;
+import com.huotu.sis.model.sis.SisSearchModel;
+import org.springframework.data.domain.Page;
 
 /**
  * Created by Administrator on 2016/1/29.
@@ -22,4 +25,13 @@ public interface SisService {
      * @throws Exception
      */
     Integer getSisLevel(User user) throws Exception;
+
+
+    /**
+     * 查找店中店的记录
+     * @param sisSearchModel    查询model
+     * @return
+     * @throws Exception
+     */
+    Page<Sis> findSisList(SisSearchModel sisSearchModel) throws Exception;
 }

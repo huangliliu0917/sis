@@ -25,4 +25,20 @@ public class CommonConfigServiceImpl implements CommonConfigService {
     }
 
 
+    @Override
+    public String getMainHost() {
+        return environment.getProperty("huotu.sis.web.url", "http://pdmall.51flashmall.com");
+    }
+
+    @Override
+    public String getResourcesHome() {
+        return environment.getProperty("huotu.resourcesHome", (String) null);
+    }
+
+    @Override
+    public String getResourcesUri() {
+        return environment.getProperty("huotu.resourcesUri", (String) null);
+    }
+
+
 }

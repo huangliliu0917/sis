@@ -118,21 +118,15 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
         rootTemplateResolver.setPrefix("/");
         rootTemplateResolver.setSuffix(".html");
         rootTemplateResolver.setCharacterEncoding("UTF-8");
-
         // start cache
         if(environment.acceptsProfiles("development")||environment.acceptsProfiles("develop")){
             rootTemplateResolver.setCacheable(false);
         }
-
         engine.setTemplateResolver(rootTemplateResolver);
         resolver.setContentType("text/html;charset=utf-8");
         resolver.setTemplateEngine(engine);
-//        resolver.setOrder(99);
         resolver.setOrder(2147483647 + 10);
-//        resolver.setViewNames(new String[]{"*.html"});
         resolver.setCharacterEncoding("UTF-8");
-//        resolver.setPrefix("/WEB-INF/views/");
-//        resolver.setSuffix(".jsp");
         resolver.setExcludedViewNames(new String[]{
                 "content/**"
         });

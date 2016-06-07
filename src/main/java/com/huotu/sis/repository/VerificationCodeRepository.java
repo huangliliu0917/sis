@@ -12,6 +12,7 @@ package com.huotu.sis.repository;
 import com.huotu.sis.entity.VerificationCode;
 import com.huotu.sis.model.sisweb.VerificationType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -21,7 +22,8 @@ import java.util.List;
  * Created by lgh on 2015/8/27.
  */
 @Repository
-public interface VerificationCodeRepository extends JpaRepository<VerificationCode, Long> {
+public interface VerificationCodeRepository extends JpaRepository<VerificationCode, Long>,
+        JpaSpecificationExecutor<VerificationCode> {
 
     /**
      * 根据手机号,商户号和场景返回验证码

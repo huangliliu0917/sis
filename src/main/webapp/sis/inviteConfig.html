@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>
+        邀请开店设置
+    </title>
+    <link rel="stylesheet" href="../resource/css/fmwebbb.css"
+          th:href="@{/resource/css/fmwebbb.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/css/search.css"
+          th:href="@{/resource/css/search.css}" />
+    <link rel="stylesheet" type="text/css" href="../resource/css/newonedow.css"
+          th:href="@{/resource/css/newonedow.css}" />
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.content.css}" />
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"
+            th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>
+    <script type="text/javascript" src="../resource/js/ajaxfileupload.js"
+            th:src="@{/resource/js/ajaxfileupload.js}"></script>
+    <script type="text/javascript" src="../resource/layer/layer.js"
+            th:src="@{/resource/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
+          th:href="@{/resource/layer/skin/layer.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.ext.css"
+          th:href="@{/resource/layer/skin/layer.ext.css}"/>
+</head>
+<body>
+<!--@thymesVar id="sisConfig" type="com.huotu.huobanplus.sis.model.entity.SisConfig"-->
+<form method="post" action="saveInviteConfig" id="form1" th:object="${sisConfig}">
+    <div class="container">
+        <div class="blank10">
+        </div>
+        <div class="search block" style="display: block;">
+            <div class="h">
+      <span class="icon-sprite icon-magnifier">
+      </span>
+                <h3>邀请开店设置</h3>
+            </div>
+            <div class="cnt-wp" style="padding: 35px 10px 10px;">
+                <div id="makeTab" class="cnt om-tabs om-widget om-widget-content om-corner-all" style="width: auto; height: auto;">
+
+                    <!-- 以下设置表单-->
+                    <div class="om-tabs-panels om-widget-content om-corner-bottom">
+                        <div class="om-widget om-panel">
+                            <div id="tab0001" class="om-panel-body om-widget-content om-panel-noheader om-state-nobd">
+                                <div class="division">
+                                    <div></div>
+                                    <div></div>
+                                    <table id="submitTable" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+
+                                        <tr>
+                                            <th>邀请开店连接标题:</th>
+                                            <td style="border-top: 1px solid #ddd;">
+                                                <span id="sharezx"></span>
+                                                <input th:value="*{shareTitle}" maxlength="50" style="width:170px"
+                                                       name="shareTitle" type="text" id="shareTitle" class="input-normal"
+                                                       placeholder=""/>
+
+                                            </td>
+
+                                        </tr>
+                                        <p style="clean:both;"></p>
+                                        <tr>
+                                            <th>邀请开店连接描述:</th>
+                                            <td><textarea th:text="*{ShareDesc}" id="ShareDesc" name="ShareDesc" class="input-normal" style=" width: 393px; height: 76px;"></textarea>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>邀请开店连接图片:</th>
+                                            <td>
+
+                                                <div id="uploadpicCover" style="width: 80px; height: 80px; border: 1px solid #ccc; float: left; background: #efefef; line-height: 80px; text-align: center; color: #ccc;">
+                                                    <span th:style="'display:none'">未上传</span>
+                                                    <img th:src="*{SharePic}==''?'../resource/images/gm-open.png':@{*{SharePic}}" id="share_img"  width="80px" height="80px"/>
+                                                    <!--<img th:src="@{/_resource/image/sharePic.jpg}"  id="share_img"  width="80px" height="80px"/>-->
+                                                    <input th:value="*{SharePic}" type="hidden" name="SharePic"/>
+                                                </div>
+
+                                                <div style="margin-left: 10px; float: left; line-height: 80px;padding-top: 30px;">
+                                                    <a id="uploadpic" class="btn-lit jUploader-button" href="#" style="cursor: pointer; position: relative; overflow: hidden; direction: ltr;">
+                                                        <span style="color: #c1b3a9">
+                                                                上传
+                                                        </span>
+                                                        <input type="file" onchange="uploadImage()"  name="shareImage" id="shareImage" style="position: absolute; right: 0px; top: 0px; margin: 0px; opacity: 0; padding: 0px; font-family: Arial; font-size: 118px; vertical-align: baseline; cursor: pointer;"/>
+                                                    </a>
+                                                </div>
+                                                <input name="txtReplyUrl1" type="hidden" id="txtReplyUrl1" value="/resource/images/wechat/mall_cat_def.png"/>
+                                            </td>
+                                        </tr>
+
+
+                                        </tbody>
+
+                                    </table>
+                                    <p>（标签:[name]:分享人昵称，[mgt]:商家名称）</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+                <!--是否在资讯栏目发一篇介绍范围结束-->
+
+                <!--以下是按钮-->
+                <div style="text-align: center; margin-top:12px" >
+
+                    <a id="audit" class="btn-lit" href="javascript:submitForm1();" style="color:#fff">
+        <span>
+        保存设置
+        </span>
+                    </a>
+                </div>
+                <!--按钮结束-->
+
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+    var goods;
+    //图片上传
+    function uploadImage() {
+        var loadPic=layer.load(0, {shade: false});
+        $.ajaxFileUpload({
+            url: 'UploadImg',
+            secureuri: false,
+            fileElementId: 'shareImage',
+            dataType: 'json',
+            data: null,
+            success: function(resultModel) {
+                if(resultModel.code==1){
+                    layer.close(loadPic);
+                    layer.msg("上传成功");
+                    $("#share_img").attr("src",resultModel.message);
+                    $("#share_img").show();
+                    $("#uploadpicCover").children("span").hide();
+                    $("input[name='SharePic']").val(resultModel.url);
+                }
+            },
+            error: function(data, status, e) {
+                layer.close(loadPic);
+                layer.msg("上传失败，请检查网络后重试"+e);
+            }
+        });
+    }
+
+
+    //提交帖子
+    function submitForm1() {
+        var shareTitle = $("#shareTitle").val();
+        var content = $("#ShareDesc").val();
+        var imgUrl=$("input[name='SharePic']").val();
+
+        if (shareTitle.length == 0) {
+            layer.msg("请输入分享标题");
+            return;
+        }
+//        if (imgUrl.length == 0) {
+//            $.jBox.tip("请上传分享图片");
+//            return;
+//        }
+        if (content.length==0) {
+            layer.msg("请输入分享内容");
+            return;
+        }
+
+//        $.jBox.confirm("友情提示", "即将保存内容，确定继续吗？",function(v,h,f){
+//            if (v == 'ok')
+//               ajax();
+//        });
+
+        layer.confirm('即将保存内容，确定继续吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            ajax();
+        }, function(){
+        });
+
+    }
+
+    function ajax(){
+        var submit=layer.load(0, {shade: false});
+        $.ajax({
+            type:'POST',
+            url: 'saveInviteConfig',
+            dataType: 'json',
+            data: {
+                "shareTitle":$("input[name='shareTitle']").val(),
+                "ShareDesc":$("#ShareDesc").val(),
+                "SharePic":$("input[name='SharePic']").val(),
+            },
+            success:function(result){
+                layer.close(submit);
+                if(result.code==200){
+                    layer.msg("保存成功");
+                }else {
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.close(submit);
+                layer.msg("获取商品出错，请检查网络");
+            }
+        });
+    }
+    //初始化进页面
+    function firstLoad() {
+        /*<![CDATA[*/
+        if(share!=null){
+            //将类型选择禁用(修改模式)
+            $("input[name='share_img']").attr("disabled",true);
+            switch (share.$name){
+                case 'information':
+                    $("input[name='shareType']").eq(0).attr("checked","checked");
+                    break;
+                case 'group':
+                    $("input[name='shareType']").eq(1).attr("checked","checked");
+                    break;
+                case 'crowdFunding':
+                    $("input[name='shareType']").eq(2).attr("checked","checked");
+                    break;
+            }
+        }else{
+            $("input[name='shareType']").eq(0).attr("checked","checked");
+        }
+
+        /*]]>*/
+
+
+    }
+
+
+</script>
+</body>
+</html>

@@ -15,4 +15,6 @@ public interface SisOpenAwardAssignRepository extends JpaRepository<SisOpenAward
 
     List<SisOpenAwardAssign> findByMerchant_Id(Long customerId);
 
+
+
 }

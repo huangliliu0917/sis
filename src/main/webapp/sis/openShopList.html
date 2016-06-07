@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>
+        开店小伙伴列表
+    </title>
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.content.css}" />
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"
+            th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery.utils.js"
+            th:src="@{/resource/3rdParty/js/jquery.utils.js}"></script>
+    <link href="../resource/3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/jBox/Skins/Green/jbox.css}"/>
+    <script type="text/javascript" src="../resource/3rdParty/jBox/jquery.jBox-2.3.min.js"
+            th:src="@{/resource/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>
+    <script type="text/javascript" src="../resource/3rdParty/js/admin.js"
+            th:src="@{/resource/3rdParty/js/admin.js}"></script>
+    <link href="../resource/3rdParty/omTabs/themes/default/operamasks-ui.min.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/omTabs/themes/default/operamasks-ui.min.css}"/>
+    <script src="../resource/3rdParty/jqueryui/jquery-ui-1.8.20.min.js"
+            th:src="@{/resource/3rdParty/jqueryui/jquery-ui-1.8.20.min.js}"></script>
+    <link href="../resource/3rdParty/jqueryui/jquery-ui-1.10.3.custom.min.css" rel="stylesheet"
+          th:href="@{/resource/3rdParty/jqueryui/jquery-ui-1.10.3.custom.min.css}"/>
+    <script src="../resource/3rdParty/Knockout/knockout-2.3.0.js"
+            th:src="@{/resource/3rdParty/Knockout/knockout-2.3.0.js}"></script>
+    <script type="text/javascript" src="../resource/3rdParty/My97DatePicker/WdatePicker.js"
+            th:src="@{/resource/3rdParty/My97DatePicker/WdatePicker.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        function searchShares() {
+            $('#btnSearch').click();
+        }
+
+        function searchShareAll() {
+            $('#btnSearchAll').click();
+        }
+        /*]]>*/
+    </script>
+    <style type="text/css">
+        .over {
+            background-color: #00ff21;
+        }
+
+        .p_prt, .p_prted {
+            cursor: pointer;
+            width: 17px;
+            height: 18px;
+            display: inline-block;
+            display: -moz-inline-stack;
+            line-height: 18px;
+            vertical-align: top;
+            text-align: left;
+            margin: 2px 0 0 0;
+            color: #000;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body marginwidth="0" marginheight="0">
+<form method="get" action="showSisList" id="form1" th:object="${sisSearchModel}">
+    <input hidden="hidden" id="pageNoStr" name="pageNoStr" th:value="*{pageNoStr}"/>
+    <div class="container">
+        <div class="blank10">
+        </div>
+        <div class="search block">
+            <div class="h">
+                <span class="icon-sprite icon-magnifier"></span>
+
+                <h3>店铺筛选</h3>
+
+            </div>
+            <div class="tl corner">
+            </div>
+            <div class="tr corner">
+            </div>
+            <div class="bl corner">
+            </div>
+            <div class="br corner">
+            </div>
+            <div class="cnt-wp">
+                <div class="cnt">
+
+                    <div class="search-bar">
+                        <label>开店小伙伴登录名：</label>
+                        <input th:value="*{userLoginName}" name="userLoginName" type="text" id="shareTitle" class="input-small" style="width: 120px;"/>
+                        <br/>
+                        <br/>
+                        &nbsp;&nbsp;
+                        <label class="first ">开店时间：</label>
+
+                        <input name="startTime" type="text" id="startTime" placeholder=" [开始日期]"
+                               th:value="*{startTime}"
+                               class="input-normal Wdate"
+                               onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false})"/>
+                        <input name="endTime" type="text" id="endTime" placeholder=" [结束日期]"
+                               th:value="*{endTime}"
+                               class="input-normal Wdate"
+                               onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,minDate:'#F{$dp.$D(\'startTime\')}'})"/>
+
+                        &nbsp;
+                        <br/>
+                        <br/>
+                        <div style="display: none;">
+                            <input type="submit" name="btnSearch" value="" id="btnSearch"/>
+                            <input type="submit" name="btnSearchAll" value="" id="btnSearchAll"/>
+                        </div>
+                        <label><a class="btn-lit btn-middle" id="search" href="javascript:searchShares();"
+                                  style="margin-bottom: 3px;"><span>搜索</span></a></label>
+                        <label><a class="btn-lit btn-middle" id="searchAll" href="javascript:searchShareAll();"
+                                  style="margin-bottom: 3px;"><span>显示全部</span></a></label>
+
+                        <br/>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="blank10">
+        </div>
+        <div class="block">
+            <div class="h">
+                <span class="icon-sprite icon-list"></span>
+
+                <h3 style="float: left; width: 144px;">店铺 </h3>
+
+            </div>
+            <div class="tl corner">
+            </div>
+            <div class="tr corner">
+            </div>
+            <div class="bl corner">
+            </div>
+            <div class="br corner">
+            </div>
+            <div class="cnt-wp">
+
+                <div id="Div1" class="om-tabs om-widget om-widget-content om-corner-all" style="height: auto;">
+
+                    <div class="om-tabs-panels om-widget-content om-corner-bottom">
+
+                        <div class="om-widget om-panel ">
+                            <div id="Div2"
+                                 class="om-panel-body om-widget-content om-panel-noheader om-state-nobd">
+                                <div class="cnt">
+                                    <table class="data-table even1" width="100%" border="0"
+                                           cellspacing="0"
+                                           cellpadding="0">
+                                        <tr>
+                                            <th scope="col"></th>
+
+                                            <th scope="col">店铺图片</th>
+
+                                            <th scope="col">店铺标题</th>
+
+                                            <th scope="col">店铺描述</th>
+
+                                            <th scope="col">开店小伙伴</th>
+
+                                            <th scope="col">店铺等级</th>
+
+                                            <th scope="col">店铺状态</th>
+
+                                            <th scope="col">分享标题</th>
+
+                                            <th scope="col">分享描述</th>
+
+                                            <th scope="col">开店时间</th>
+                                        </tr>
+
+                                        <tbody th:remove="all-but-first" id="o1">
+
+                                        <tr th:if="${allSisList}!=null" th:each="sis:${allSisList}" class="even">
+                                            <td class="txt20 c" style="width: 15px;" th:text="${sisStat.count}">
+                                                1
+                                            </td>
+
+                                            <td class="txt20 c">
+                                                <img src="#" width="100%" th:src="@{${sis.imgPath}}"/>
+                                            </td>
+
+                                            <td class="txt40 c" th:text="${sis.title}">
+                                               店铺标题
+                                            </td>
+
+                                            <td class="txt80 c" th:text="${sis.description}">
+                                                店铺描述
+                                            </td>
+
+                                            <td class="txt40 c" th:text="${sis.user}!=null?${sis.user.loginName}">
+                                                开店小伙伴
+                                            </td>
+
+                                            <td class="txt20 c" th:text="${sis.sisLevel}!=null?${sis.sisLevel.levelName}:'无'">
+                                                店铺等级
+                                            </td>
+
+                                            <td class="txt20 c" th:text="${sis.status}?'开启':'关闭'">
+                                                店铺状态
+                                            </td>
+
+                                            <td class="txt40 c" th:text="${sis.shareTitle}">
+                                                分享标题
+                                            </td>
+
+                                            <td class="txt80 c" th:text="${sis.shareDesc}">
+                                                分享描述
+                                            </td>
+
+                                            <td class="txt80 c" th:text="${sis.openTime}!=null?${#calendars.format(sis.openTime,'yyyy-MM-dd HH:mm:ss')}">
+                                                2016-5-5
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="pager-bar">
+                                    <div class="msg" style="margin-left: 10px;">共
+                                        <span th:text="${totalRecords}">2</span>条记录，当前第
+                                        <span th:text="${pageNo}+1" id="noNumber">1</span>/共
+                                        <span th:text="${totalPages}==0?1:${totalPages}"  id="numberBug">1</span>页，每页
+                                        <span>10</span>条记录
+                                    </div>
+                                    <a class="button-white" href="javascript:queryForst()"><span>首页</span></a>
+                                    <a class="button-white" href="javascript:queryUp(-1)">
+                                        <span>上一页</span>
+                                    </a>
+                                    <a class="button-white" href="javascript:queryVoid(1)">
+                                        <span>下一页</span>
+                                    </a>
+                                    <a class="button-white" href="javascript:queryLast()">
+                                        <span>未页</span>
+                                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第
+                                    <input id="current-index" onkeydown="J.EnterSubmit(event, Pager.Jump);"
+                                           class="input-small" style="text-align:center;" type="text" value="1"
+                                            th:value="${pageNo}+1"/>页&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a class="button-white" href="javascript:goToNo();"><span>跳转</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    function searchShares() {
+        $('#form1').submit();
+    }
+    function queryVoid(no) {//下页
+        var size = 0;
+        var numberBug = Number($("#numberBug").text());//最大页数
+        size = Number($("#noNumber").text())-1 + Number(no);//前往的页数
+        if (size >= numberBug) {
+            size = numberBug-1;
+        }
+        $("#pageNoStr").attr("value", size);
+        $('#form1').submit();
+    }
+    function queryUp(no) {//上页
+        var size = 0;
+        var numberBug = Number($("#numberBug").text());//最大页数
+        size = Number($("#noNumber").text()) + Number(no)-1;//前往的页数
+        if (size > numberBug) {
+            size = numberBug;
+        }
+        if (size < 0) {
+            size = 0;
+        }
+        $("#pageNoStr").attr("value", size);
+        $('#form1').submit();
+    }
+    function queryForst() {//首页
+        $("#pageNoStr").attr("value", 0);
+        $('#form1').submit();
+    }
+    function queryLast() {//尾页
+        var numberBug = Number($("#numberBug").text());//最大页数
+        $("#pageNoStr").attr("value", numberBug-1);
+        $('#form1').submit();
+    }
+    function goToNo() {
+        var size = Number($("#current-index").val());
+        var numberBug = Number($("#numberBug").text());//最大页数
+        if (size >= numberBug) {
+            size = numberBug-1;
+        }
+        $("#pageNoStr").attr("value", size);
+        $('#form1').submit();
+    }
+    function searchShareAll() {
+        $("#userLoginName").attr("value", "");
+        $("#startTime").attr("value", "");
+        $("#endTime").attr("value", "");
+        $("#pageNoStr").attr("value", 0);
+        $('#form1').submit();
+    }
+    function createRight() {//左页面点击事件
+        searchShareAll();
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

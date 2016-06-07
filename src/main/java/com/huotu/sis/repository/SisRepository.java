@@ -12,13 +12,14 @@ package com.huotu.sis.repository;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.sis.entity.Sis;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 /**
  * @author CJ
  */
 @RepositoryRestResource
-public interface SisRepository extends JpaRepository<Sis, Long> {
+public interface SisRepository extends JpaRepository<Sis, Long>,JpaSpecificationExecutor<Sis> {
     Sis findByUser(User user);
 //    Sis findOne(Long sisId);
 //    Sis save(Sis sis);

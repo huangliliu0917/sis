@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>
+        精选商品列表
+    </title>
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.content.css}" />
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"
+            th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>
+    <script type="text/javascript" src="../resource/3rdParty/My97DatePicker/WdatePicker.js"
+            th:src="@{/resource/3rdParty/My97DatePicker/WdatePicker.js}"></script>
+    <script type="text/javascript" src="../resource/layer/layer.js"
+            th:src="@{/resource/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
+          th:src="@{/resource/layer/skin/layer.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.ext.css"
+          th:src="@{/resource/layer/skin/layer.ext.css}"/>
+    <!--<script type="text/javascript" th:inline="javascript">-->
+        <!--/*<![CDATA[*/-->
+        <!--function searchShares() {-->
+            <!--$('#btnSearch').click();-->
+        <!--}-->
+
+        <!--function searchShareAll() {-->
+            <!--$('#btnSearchAll').click();-->
+        <!--}-->
+        <!--/*]]>*/-->
+    <!--</script>-->
+    <style type="text/css">
+        .over {
+            background-color: #00ff21;
+        }
+
+        .p_prt, .p_prted {
+            cursor: pointer;
+            width: 17px;
+            height: 18px;
+            display: inline-block;
+            display: -moz-inline-stack;
+            line-height: 18px;
+            vertical-align: top;
+            text-align: left;
+            margin: 2px 0 0 0;
+            color: #000;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body marginwidth="0" marginheight="0">
+<form method="get" action="showSisRecommendGoodsList" id="form1">
+    <input hidden="hidden" id="pageNoStr" name="pageNoStr" th:value="${pageNoStr}"/>
+    <div class="container">
+        <div class="blank10">
+        </div>
+        <div class="block">
+            <div class="h">
+                <span class="icon-sprite icon-list"></span>
+
+                <h3 style="float: left; width: 144px;">店主专享商品</h3>
+
+                <div class="bar">
+                    <a class="btn-lit aucontrol" href="#" onclick="loadGoodsList()">
+                        <span>新增商品</span></a>
+                </div>
+
+            </div>
+            <div class="tl corner">
+            </div>
+            <div class="tr corner">
+            </div>
+            <div class="bl corner">
+            </div>
+            <div class="br corner">
+            </div>
+            <div class="cnt-wp">
+
+                <div id="Div1" class="om-tabs om-widget om-widget-content om-corner-all" style="height: auto;">
+
+                    <div class="om-tabs-panels om-widget-content om-corner-bottom">
+
+                        <div class="om-widget om-panel ">
+                            <div id="Div2"
+                                 class="om-panel-body om-widget-content om-panel-noheader om-state-nobd">
+                                <div class="cnt">
+                                    <table class="data-table even1" width="100%" border="0"
+                                           cellspacing="0"
+                                           cellpadding="0">
+                                        <tr>
+                                            <th scope="col"></th>
+
+                                            <th scope="col">商品名称</th>
+
+                                            <th scope="col">商品价格</th>
+
+                                            <th scope="col">库存</th>
+
+                                            <th scope="col">操作</th>
+                                        </tr>
+
+                                        <tbody th:remove="all-but-first" id="o1">
+
+                                        <tr th:if="${allGoodsList}!=null" th:each="g:${allGoodsList}" class="even">
+                                            <td class="txt20 c" style="width: 15px;" th:text="${gStat.count}">
+                                                1
+                                            </td>
+
+                                            <td class="txt40 c" th:text="${g.title}">
+                                                18067253205
+                                            </td>
+
+                                            <td class="txt80 c" th:text="'￥'+${g.price}">
+                                                6677
+                                            </td>
+
+                                            <td class="txt80 c" th:text="${g.stock}">
+                                                6677
+                                            </td>
+
+                                            <td  class="txt20 c">
+                                                <a href="#" onclick="editoregoods(this)" th:attr="id=${g.id}">置顶</a>
+                                                |<a href="#" onclick="deletegoods(this)" th:attr="id=${g.id}">删除</a>
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="pager-bar">
+                                    <div class="msg" style="margin-left: 10px;">共
+                                        <span th:text="${totalRecords}">2</span>条记录，当前第
+                                        <span th:text="${pageNoStr}+1" id="noNumber">1</span>/共
+                                        <span th:text="${totalPages}==0?1:${totalPages}"  id="numberBug">1</span>页，每页
+                                        <span>20</span>条记录
+                                    </div>
+                                    <a class="button-white" href="javascript:queryForst()"><span>首页</span></a>
+                                    <a class="button-white" href="javascript:queryUp(-1)">
+                                        <span>上一页</span>
+                                    </a>
+                                    <a class="button-white" href="javascript:queryVoid(1)">
+                                        <span>下一页</span>
+                                    </a>
+                                    <a class="button-white" href="javascript:queryLast()">
+                                        <span>未页</span>
+                                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第
+                                    <input id="current-index" onkeydown="J.EnterSubmit(event, Pager.Jump);"
+                                           class="input-small" style="text-align:center;" type="text" value="1"
+                                           th:value="${pageNoStr}+1"/>页&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a class="button-white" href="javascript:goToNo();"><span>跳转</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    function ajaxeditorgoods(goodsId,type){
+        $.ajax({
+            type:'GET',
+            url: 'modifySisRecommendGood',
+            dataType: 'json',
+            data: {goodsId:goodsId,type:type},
+            success:function(result){
+                if(result.code==200){
+                    layer.msg('操作成功', {icon: 1});
+                    window.location.reload();
+//                        $(obj).parent().parent().hide();
+                }else {
+                    layer.msg(result.message, {icon: 1});
+                }
+            },
+            error:function(e){
+                layer.msg("更新出错，请检查网络");
+            }
+        });
+
+    }
+    function editoregoods(obj){
+        var goodsId = $(obj).attr("id");
+        ajaxeditorgoods(goodsId,2)
+    }
+
+    function deletegoods(obj){
+
+        layer.confirm('确定删除精选商品？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            var goodsId = $(obj).attr("id");
+            ajaxeditorgoods(goodsId,0)
+        }, function(){
+        });
+
+
+    }
+
+    function loadGoodsList(){
+        layer.open({
+            type: 2,
+            title: '挑选商品',
+            shadeClose: true,
+            shade: false,
+            area: ['893px', '600px'],
+            content: 'selectGoodsList.html',
+            end:function(){
+                window.location.reload();
+            }
+        });
+
+    }
+
+
+
+    function searchCodes() {
+        $('#form1').submit();
+    }
+    function queryVoid(no) {//下页
+        var size = 0;
+        var numberBug = Number($("#numberBug").text());//最大页数
+        size = Number($("#noNumber").text())-1 + Number(no);//前往的页数
+        if (size >= numberBug) {
+            size = numberBug-1;
+        }
+        $("#pageNoStr").attr("value", size);
+        $('#form1').submit();
+    }
+    function queryUp(no) {//上页
+        var size = 0;
+        var numberBug = Number($("#numberBug").text());//最大页数
+        size = Number($("#noNumber").text()) + Number(no)-1;//前往的页数
+        if (size > numberBug) {
+            size = numberBug;
+        }
+        if (size < 0) {
+            size = 0;
+        }
+        $("#pageNoStr").attr("value", size);
+        $('#form1').submit();
+    }
+    function queryForst() {//首页
+        $("#pageNoStr").attr("value", 0);
+        $('#form1').submit();
+    }
+    function queryLast() {//尾页
+        var numberBug = Number($("#numberBug").text());//最大页数
+        $("#pageNoStr").attr("value", numberBug-1);
+        $('#form1').submit();
+    }
+    function goToNo() {
+        var size = Number($("#current-index").val());
+        var numberBug = Number($("#numberBug").text());//最大页数
+        if (size >= numberBug) {
+            size = numberBug-1;
+        }
+        $("#pageNoStr").attr("value", size);
+        $('#form1').submit();
+    }
+//    function searchCodesAll() {
+//        $("#mobile").attr("value", "");
+//        $("#startTime").attr("value", "");
+//        $("#endTime").attr("value", "");
+//        $("#pageNoStr").attr("value", 0);
+//        $('#form1').submit();
+//    }
+    function createRight() {//左页面点击事件
+        searchShareAll();
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

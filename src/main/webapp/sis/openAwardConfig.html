@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>
+        开店设置
+    </title>
+    <link rel="stylesheet" href="../resource/css/fmwebbb.css"
+          th:href="@{/resource/css/fmwebbb.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/css/search.css"
+          th:href="@{/resource/css/search.css}" />
+    <link rel="stylesheet" type="text/css" href="../resource/css/newonedow.css"
+          th:href="@{/resource/css/newonedow.css}" />
+    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.content.css}" />
+    <link href="../resource/css/settlements.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/css/settlements.css}"/>
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"
+            th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>
+
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <script type="text/javascript" src="../resource/layer/layer.js"
+            th:src="@{/resource/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
+          th:href="@{/resource/layer/skin/layer.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.ext.css"
+          th:href="@{/resource/layer/skin/layer.ext.css}"/>
+
+</head>
+<body onload="shopSet()">
+<form method="post" action="" id="form1">
+    <div class="container">
+        <div class="blank10">
+        </div>
+        <div class="search block" style="display: block;">
+            <div class="h">
+      <span class="icon-sprite icon-magnifier">
+      </span>
+                <h3>一级上线返利</h3>
+            </div>
+            <div class="cnt-wp" style="padding: 35px 10px 10px;">
+                <div id="makeTab" class="cnt om-tabs om-widget om-widget-content om-corner-all" style="width: auto; height: auto;">
+
+                    <!-- 以下设置表单-->
+                    <div class="om-tabs-panels om-widget-content om-corner-bottom">
+                        <div class="om-widget om-panel">
+                            <div id="tab0001" class="om-panel-body om-widget-content om-panel-noheader om-state-nobd">
+                                <div class="division">
+                                    <div>
+                                        <label>是否启用</label>
+                                            <input id="openAwardMode0" onchange="setOpenAward()" value="0" type="radio" name="openAwardMode" th:checked="*{openAwardMode==0||openAwardMode==null}"/>
+                                            <label style="padding-left: 0" for="openAwardMode0">关闭</label>
+                                            <input id="openAwardMode1" onchange="setOpenAward()" value="1" type="radio" name="openAwardMode" th:checked="*{openAwardMode==1}"/>
+                                            <label style="padding-left: 0" for="openAwardMode1">启用</label>
+                                    </div>
+                                    <table id="submitTable" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+                                        <tr th:each="s:${sisLevelOpenAwardModels}">
+
+                                            <th th:attr="levelid=''+${s.levelId}" th:text="${s.levelName}">一级店铺:</th>
+                                            <td>
+                                                    <span th:attr="ownLevelId=''+${s.ownLevelId}" th:text="${s.ownLevelName}">一级店铺</span>
+                                                    <input type="text" th:value="${s.award==null?0:s.award}"/><span>元</span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+
+                                    </table>
+                                    <p>第一列为返利用户店铺的等级，第二列为开店用户店铺的等级。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!--以下是按钮-->
+                <div style="text-align: center; margin-top:12px" >
+                    <a id="save" class="btn-lit" href="javascript:submitForm1();" style=" margin-right:10px;color:#fff">
+        <span>
+        确定设置
+        </span>
+                    </a>
+                </div>
+                <!--按钮结束-->
+
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    function submitForm1() {
+        layer.confirm('即将保存内容，确定继续吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            saveSisOpenAward();
+        }, function(){
+        });
+
+//
+//        $.jBox.confirm("友情提示", "即将保存内容，确定继续吗？",function(v,h,f){
+//            if (v == 'ok')
+//
+////                $("#form1").submit();
+//        });
+
+    }
+
+    function saveSisOpenAward(){
+        var levelsAward;
+        var openAwardMode=$("input[name='openAwardMode']:checked").val();
+        if(openAwardMode==1){
+            var trs=$("#submitTable").find("tr");
+            var array=[];
+            var rex=/^[0-9,.]*$/;
+            var boolean=false;
+            trs.each(function(){
+                var levelid=$(this).children("th").attr("levelid");
+                var ownlevelid=$(this).find("span").first().attr("ownLevelId");
+                var award=$(this).find("input").val();
+                if(!rex.test(award)){
+                    boolean=true;
+                }
+                var list = {levelId:levelid,ownlevelId:ownlevelid,award:award};
+                array.push(list);
+            });
+            if(boolean){
+                layer.msg("请输入正确的数字");
+                return;
+            }
+            levelsAward=JSON.stringify(array);
+        }
+
+        var sub=layer.load(0, {shade: false});
+
+        $.ajax({
+            type:'POST',
+            url: 'saveAwardConfig',
+            dataType: 'json',
+            data: {
+                levelsAward:levelsAward,
+                type:openAwardMode
+            },
+            success:function(result){
+                if(result.code==200){
+//                    layer.close(sub);
+                    layer.close(sub);
+                    layer.msg("保存成功");
+                }else {
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.close(sub);
+                layer.msg("保存失败");
+            }
+        });
+    }
+
+    //初始化
+    function shopSet(){
+        setOpenAward();
+    }
+
+    function setOpenAward(){
+        var openAwardMode=$("input[name='openAwardMode']:checked").val();
+        if(openAwardMode==0){
+            $("#submitTable").hide();
+
+        }
+        if(openAwardMode==1){
+            $("#submitTable").show();
+        }
+
+
+
+    }
+
+
+
+    /*]]>*/
+
+</script>
+</body>
+</html>

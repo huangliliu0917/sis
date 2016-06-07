@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head id="Head1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>店铺新增等级</title>
+    <link href="../../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <link href="../../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.content.css}"/>
+    <link href="../../resource/css/settlements.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/css/settlements.css}"/>
+    <script type="text/javascript" src="../../resource/3rdParty/js/jquery-1.4.2.min.js"
+            th:src="@{/resource/3rdParty/js/jquery-1.7.2.min.js}"></script>
+    <script type="text/javascript" src="../../resource/3rdParty/js/jquery.utils.js"
+            th:src="@{/resource/3rdParty/js/jquery.utils.js}"></script>
+    <link href="../../resource/3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/jBox/Skins/Green/jbox.css}"/>
+    <script type="text/javascript" src="../../resource/3rdParty/jBox/jquery.jBox-2.3.min.js"
+            th:src="@{/resource/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/settlements.css"
+          th:href="@{/resource/css/settlements.css}"/>
+    <script type="text/javascript" src="../../resource/3rdParty/js/admin.js"
+            th:src="@{/resource/3rdParty/js/admin.js}"></script>
+    <script type="text/javascript" src="../../resource/3rdParty/My97DatePicker/WdatePicker.js"
+            th:src="@{/resource/3rdParty/My97DatePicker/WdatePicker.js}"></script>
+    <script type="text/javascript" src="../../resource/js/ajaxfileupload.js"
+            th:src="@{/resource/js/ajaxfileupload.js}"></script>
+
+</head>
+
+<body >
+<form method="post" action="saveLevelSetConfig1" id="form1" >
+    <input type="hidden" name="id" />
+    <div class="container">
+        <div class="blank10">
+        </div>
+        <div class="search block" style="display: block;">
+            <div class="h">
+      <span class="icon-sprite icon-magnifier">
+      </span>
+                <h3>店铺新增等级</h3>
+            </div>
+            <div class="cnt-wp" style="padding: 35px 10px 10px;">
+                <div id="makeTab" class="cnt om-tabs om-widget om-widget-content om-corner-all" style="width: auto; height: auto;">
+
+                    <!-- 以下设置表单-->
+                    <div class="om-tabs-panels om-widget-content om-corner-bottom">
+                        <div class="om-widget om-panel">
+                            <div id="tab0001" class="om-panel-body om-widget-content om-panel-noheader om-state-nobd">
+                                <div class="division">
+                                    <div></div>
+                                    <div></div>
+                                    <table id="submitTable" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+
+
+                                        <tr>
+                                            <th>店铺Id:</th>
+                                            <td style="border-top: 1px solid #ddd;">
+                                                <span id="sharezx2"></span>
+                                                <input maxlength="13" style="width:170px" name="customerId" type="text"
+                                                       id="title1"
+                                                       class="input-normal" placeholder=""/></td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <th>店铺等级:</th>
+                                            <td style="border-top: 1px solid #ddd;">
+                                                <span id="sharezx"></span>
+                                                <input maxlength="13" style="width:170px" name="level" type="text" id="title1"
+                                                       class="input-normal" placeholder=""/></td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <th>团队店铺数量:</th>
+                                            <td style="border-top: 1px solid #ddd;">
+                                                <span id="sharezx132"></span>
+                                                <input maxlength="13" style="width:170px" name="amount1" type="text"
+                                                       id="title222"  class="input-normal" placeholder=""/></td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <th>直推店铺数量:</th>
+                                            <td style="border-top: 1px solid #ddd;">
+                                                <span id="sharezx2"></span>
+                                                <input maxlength="13" style="width:170px" name="amount2" type="text"
+                                                       id="title3"  class="input-normal" placeholder=""/></td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <th>等级别名:</th>
+                                            <td style="border-top: 1px solid #ddd;">
+                                                <span id="sharezx3"></span>
+                                                <input maxlength="13" style="width:170px" name="nickname" type="text"
+                                                       id="title"  class="input-normal" placeholder=""/></td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <th>直推比例:</th>
+                                            <td style="border-top: 1px solid #ddd;">
+                                                <span id="sharezx32"></span>
+                                                <input maxlength="13" style="width:170px" name="rebate" type="text"
+                                                       id="title2"  class="input-normal" placeholder=""/></td>
+
+                                        </tr>
+
+                                        <p style="clean:both;"></p>
+
+
+
+
+
+
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!--是否在资讯栏目发一篇介绍范围结束-->
+
+                <!--以下是按钮-->
+                <div style="text-align: center; margin-top:12px" >
+                    <a class="btn-lit" href="javascript:submitForm1();">
+        <span>
+        保存
+        </span>
+                    </a>
+                </div>
+                <!--按钮结束-->
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="blank10"></div>
+<script type="text/javascript" th:inline="javascript">
+
+
+    function recommendGoods(){
+        $.jBox("iframe:http://www.baidu.com", {
+            title: "百度一下",
+            width: 800,
+            height: 350,
+            buttons: { '关闭': true }
+        });
+    }
+
+
+
+    function submitForm1() {
+
+//        var sisID = $("#sisID").val();
+//
+//        if (sisID.length == 0) {
+//            $.jBox.tip("请输入id");
+//            return;
+//        }
+
+
+        var customerId=$("input[name='customerId']").val();
+        if (customerId.length == 0) {
+            $.jBox.tip("请输入店铺id");
+            return;
+        }
+        var level=$("input[name='level']").val();
+        if (level.length == 0) {
+            $.jBox.tip("请输入店铺等级");
+            return;
+        }
+        var amount1=$("input[name='amount1']").val();
+        if (amount1.length == 0) {
+            $.jBox.tip("请输入直推店铺数量");
+            return;
+        }
+        var amount2=$("input[name='amount2']").val();
+        if (amount2.length == 0) {
+            $.jBox.tip("请输入团队店铺数量");
+            return;
+        }
+        var nickname=$("input[name='nickname']").val();
+        if (nickname.length == 0) {
+            $.jBox.tip("请输入等级别名");
+            return;
+        }
+        var rebate=$("input[name='rebate']").val();
+        if (rebate.length == 0) {
+            $.jBox.tip("请输入直推比例");
+            return;
+        }
+
+        $.jBox.confirm("友情提示", "确定保存新增店铺等级吗",function(v,h,f){
+            if (v == 'ok')
+                $("#form1").submit();
+            else if (v == 'cancel')
+                return;
+        });
+    }
+
+
+    function useLinkchange(obj){
+        var link=$("input[name='useLink']:checked").val();
+        if(link==0){
+            window.editor.readonly(false);
+            $("#linkUrl").attr("disabled",true);
+        }
+        if(link==1){
+            window.editor.readonly(true);
+
+            $("#linkUrl").attr("disabled",false);
+        }
+    }
+
+
+    function changeType() {
+        $("#useLink").fadeIn();
+        $("#linkUrlTr").fadeIn();
+//            $("#enabledRecommendProduct").fadeIn();
+//            $("#recommend").fadeIn();
+        var urlFlag=$("input[name='useLink']:checked").val();
+        if(urlFlag==0){
+            $("input[name='linkUrl']").attr("disabled",true);
+            window.editor.readonly(false);
+        }else{
+            window.editor.readonly(true);
+        }
+    }
+</script>
+<script charset="utf-8" src="richText/kindeditor-min.js" th:src="@{/richText/kindeditor-min.js}"></script>
+<script charset="utf-8" src="richText/lang/zh_CN.js" th:src="@{/richText/lang/zh_CN.js}"></script>
+<script charset="utf-8" src="richText/init.js" th:src="@{/richText/init.js}"></script>
+</body>
+</html>

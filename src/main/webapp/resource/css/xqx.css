@@ -1,0 +1,15 @@
+@charset "utf-8";
+/* CSS Document */
+
+  html{ font-size:62.5%} 
+.commfont{ font-size:1.4rem;}
+.commfont .tit_rem{ font-size:1.2rem}
+.commfont .tit_rem{ font-size:1.2rem}
+.commfont .tit_rem_big{ font-size:1.5rem}
+.commfont .tit_rem_small{font-size:0.8rem}
+.commfont .tit_rem_big_big{ font-size:2rem}
+.commfont .h1{ font-weight:bold; padding-top:10px; padding-bottom:5px}
+ .navnav{ padding:5px 20px; }
+ .time{ color:#7C7C7C; padding:0px 0px 5px 0px;}
+ .time .lan{ color:#3387F9}
+ .fr{ float:right} .red{ color:red}
