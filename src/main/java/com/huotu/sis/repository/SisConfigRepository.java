@@ -16,4 +16,7 @@ public interface SisConfigRepository extends JpaRepository<SisConfig, Long> {
 
     SisConfig findByMerchantId(@Param("merchantId") Long merchantId);
 
+//    @Query("select sc from SisConfig as sc where sc.merchantId=?1")
+//    SisConfig findByMerchantId(Long merchantId);
+
 }

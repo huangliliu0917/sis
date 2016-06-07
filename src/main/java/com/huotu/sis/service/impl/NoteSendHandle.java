@@ -2,7 +2,7 @@ package com.huotu.sis.service.impl;
 
 import com.huotu.sis.exception.InterrelatedException;
 import com.huotu.sis.exception.NoteSendException;
-import com.huotu.sis.model.NoteModel;
+import com.huotu.sis.model.sisweb.NoteModel;
 import com.huotu.sis.service.VerificationService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

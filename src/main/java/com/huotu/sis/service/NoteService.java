@@ -1,6 +1,6 @@
 package com.huotu.sis.service;
 
-import com.huotu.sis.model.NoteModel;
+import com.huotu.sis.model.sisweb.NoteModel;
 
 /**
  * Created by lgh on 2015/12/30.

@@ -10,7 +10,7 @@
 package com.huotu.sis.repository;
 
 import com.huotu.sis.entity.VerificationCode;
-import com.huotu.sis.model.VerificationType;
+import com.huotu.sis.model.sisweb.VerificationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -5,7 +5,7 @@ import com.huotu.huobanplus.common.entity.User;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
-import com.huotu.sis.model.OpenLevelGoodsModel;
+import com.huotu.sis.model.sisweb.OpenLevelGoodsModel;
 
 import java.util.List;
 

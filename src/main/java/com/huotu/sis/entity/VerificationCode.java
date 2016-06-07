@@ -10,7 +10,7 @@
 package com.huotu.sis.entity;
 
 
-import com.huotu.sis.model.VerificationType;
+import com.huotu.sis.model.sisweb.VerificationType;
 import lombok.Getter;
 import lombok.Setter;
 

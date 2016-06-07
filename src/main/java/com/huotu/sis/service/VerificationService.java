@@ -10,7 +10,7 @@
 package com.huotu.sis.service;
 
 import com.huotu.sis.exception.InterrelatedException;
-import com.huotu.sis.model.NoteModel;
+import com.huotu.sis.model.sisweb.NoteModel;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

@@ -1,16 +1,13 @@
 package cm.huotu.sis.pages;
 
-import com.huotu.sis.model.SisDetailModel;
+import com.huotu.sis.model.sisweb.SisDetailModel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

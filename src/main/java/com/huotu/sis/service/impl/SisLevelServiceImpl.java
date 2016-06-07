@@ -8,7 +8,7 @@ import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
-import com.huotu.sis.model.OpenLevelGoodsModel;
+import com.huotu.sis.model.sisweb.OpenLevelGoodsModel;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.repository.SisRepository;

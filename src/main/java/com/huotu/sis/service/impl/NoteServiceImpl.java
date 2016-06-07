@@ -2,8 +2,8 @@ package com.huotu.sis.service.impl;
 
 import com.huotu.sis.common.EnumHelper;
 import com.huotu.sis.common.StringHelper;
-import com.huotu.sis.model.NoteModel;
-import com.huotu.sis.model.VerificationType;
+import com.huotu.sis.model.sisweb.NoteModel;
+import com.huotu.sis.model.sisweb.VerificationType;
 import com.huotu.sis.service.NoteService;
 import org.springframework.stereotype.Service;
 

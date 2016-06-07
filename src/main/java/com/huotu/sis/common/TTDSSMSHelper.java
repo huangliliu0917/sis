@@ -11,7 +11,7 @@ package com.huotu.sis.common;
 
 
 import com.alibaba.fastjson.JSON;
-import com.huotu.sis.model.ResultModel;
+import com.huotu.sis.model.sisweb.ResultModel;
 import org.springframework.util.DigestUtils;
 
 import java.util.Base64;

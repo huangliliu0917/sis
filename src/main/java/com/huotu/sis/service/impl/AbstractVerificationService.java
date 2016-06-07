@@ -13,7 +13,7 @@ import com.huotu.sis.entity.VerificationCode;
 import com.huotu.sis.repository.VerificationCodeRepository;
 import com.huotu.sis.common.SysRegex;
 import com.huotu.sis.exception.InterrelatedException;
-import com.huotu.sis.model.NoteModel;
+import com.huotu.sis.model.sisweb.NoteModel;
 import com.huotu.sis.service.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;

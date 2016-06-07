@@ -11,7 +11,7 @@ package com.huotu.sis.common;
 
 import com.alibaba.fastjson.JSON;
 import com.huotu.common.api.ICommonEnum;
-import com.huotu.sis.model.EnumModel;
+import com.huotu.sis.model.sisweb.EnumModel;
 
 import java.util.ArrayList;
 import java.util.List;
