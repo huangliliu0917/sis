@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>
+        后台店铺等级管理
+    </title>
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.content.css}" />
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"
+            th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery.utils.js"
+            th:src="@{/resource/3rdParty/js/jquery.utils.js}"></script>
+    <link href="../resource/3rdParty/omTabs/themes/default/operamasks-ui.min.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/omTabs/themes/default/operamasks-ui.min.css}"/>
+
+    <script type="text/javascript" src="../resource/layer/layer.js"
+            th:src="@{/resource/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
+          th:href="@{/resource/layer/skin/layer.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.ext.css"
+          th:href="@{/resource/layer/skin/layer.ext.css}"/>
+
+
+    <style type="text/css">
+        .over {
+            background-color: #00ff21;
+        }
+
+        .p_prt, .p_prted {
+            cursor: pointer;
+            width: 17px;
+            height: 18px;
+            display: inline-block;
+            display: -moz-inline-stack;
+            line-height: 18px;
+            vertical-align: top;
+            text-align: left;
+            margin: 2px 0 0 0;
+            color: #000;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body marginwidth="0" marginheight="0">
+<form method="post"  action="saveLevelSetConfig" id="form1"  th:object="${sisLevel}">
+    <input hidden="hidden" id="pageNoStr" name="pageNoStr"/>
+    <input hidden="hidden" id="ownerType" name="ownerType" value="1"/>
+    <div class="container">
+        <div class="blank10">
+        </div>
+
+        <div class="blank10">
+        </div>
+        <div class="block">
+            <div class="h">
+                <span class="icon-sprite icon-list"></span>
+
+                <h3 style="float: left; width: 144px;">后台店铺等级管理</h3>
+
+                <div class="bar">
+                    <a class="btn-lit aucontrol" href=""  th:href="@{/sis/jumpToAddLevelSet}">
+                        <span>新增</span></a>
+
+                </div>
+
+            </div>
+            <div class="tl corner">
+            </div>
+            <div class="tr corner">
+            </div>
+            <div class="bl corner">
+            </div>
+            <div class="br corner">
+            </div>
+            <div class="cnt-wp">
+
+                <div id="Div1" class="om-tabs om-widget om-widget-content om-corner-all" style="height: auto;">
+                    <div class="om-tabs-headers om-helper-reset om-helper-clearfix om-widget-header om-corner-all header-no-border"
+                         style="height: 28px;">
+                        <ul style="height: 28px; line-height: 28px;">
+                            <span class="left-placeholder"></span>
+
+                            <!--<input id="isLevelSet_0" type="radio" name="isLevelSet" value="0" checked="checked"/>-->
+                            <!--<label for="isLevelSet_0">自动</label>-->
+                            <!--<input id="isLevelSet_1" type="radio" name="isLevelSet" value="1" />-->
+                            <!--<label for="isLevelSet_1">不升级</label>-->
+
+                            <span class="right-placeholder"></span>
+                        </ul>
+                    </div>
+                    <div class="om-tabs-panels om-widget-content om-corner-bottom">
+
+                        <div class="om-widget om-panel ">
+                            <div id="Div2"
+                                 class="om-panel-body om-widget-content om-panel-noheader om-state-nobd">
+                                <div class="cnt">
+                                    <table class="data-table even1" width="100%" border="0"
+                                           cellspacing="0"
+                                           cellpadding="0">
+                                        <tr>
+                                            <th scope="col">商铺Id</th>
+
+                                            <th scope="col">店铺等级</th>
+
+                                            <!--<th scope="col">直推店铺数量</th>-->
+
+                                            <!--<th scope="col">团队店铺数量</th>-->
+
+                                            <th scope="col">等级别名</th>
+
+                                            <!--<th scope="col">直推奖比例</th>-->
+
+                                            <th scope="col">是否允许补差价</th>
+
+                                            <th scope="col">修改</th>
+
+
+                                        </tr>
+
+                                        <tbody th:remove="all-but-first" id="o1">
+
+                                        <tr id="tab" th:each="levelSets:${sisLevelSetModels}">
+
+                                            <td  name="amount1" class="bbn" align="center"
+                                                 th:text="${levelSets.customerId}"  style="border-top: 1px solid #ddd;"></td>
+
+                                            <td  name="level" class="aaa" height="30" align="center"
+                                                 th:text="${levelSets.level}+级店铺"  style="border-top: 1px solid #ddd;"></td>
+
+
+                                            <!--<td  name="amount1" class="bbn" align="center"-->
+                                                 <!--th:text="${levelSets.zhituidianpuAmount}"  style="border-top: 1px solid #ddd;"></td>-->
+                                            <!--<td name="amount2" class="ccn" align="center"-->
+                                                <!--th:text="${levelSets.tuanduidianpuAmount}" style="border-top: 1px solid #ddd;"></td>-->
+                                            <td name="nickname" class="ddn" align="center"
+                                                th:text="${levelSets.nickname}"  style="border-top: 1px solid #ddd;"></td>
+                                            <!--<td name="nickname" class="ddn" align="center"-->
+                                                <!--th:text="${levelSets.rebate}+'%'"  style="border-top: 1px solid-->
+                                            <!--#ddd;"></td>-->
+
+
+
+                                            <!--th:text="${levelSets.extraUpgrade}"-->
+                                            <td align="center" height="30px" style="border-top: 1px solid #ddd;" name="extraUpgrade"
+
+                                                th:text="${levelSets.extraUpgrade==1?'是':'否'}">
+                                            </td>
+                                            <!--<td align="center" height="30px" style="border-top: 1px solid #ddd;" name="extraUpgrade"-->
+
+                                                <!--th:if="${levelSets.extraUpgrade eq 0||levelSets.extraUpgrade==null}" th:text="否">-->
+
+                                            <!--</td>-->
+                                            <td align="center" height="30px" style="border-top: 1px solid #ddd;">
+                                                <a th:href="@{/sis/jumpToChangeLevelSet(id=${levelSets.id})}"
+                                                   th:text="编辑">编辑</a>
+                                            </td>
+
+
+
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="pager-bar">
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+
+    function delLevel(obj){
+        var id=$(obj).attr("id");
+        url='jumpToDeleteLevelSet?id='+id;
+        if(confirm('确定删除？')){
+            window.location.href=url;
+        }
+    }
+    /*]]>*/
+</script>
+</body>
+</html>
