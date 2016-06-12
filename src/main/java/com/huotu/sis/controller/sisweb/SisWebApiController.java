@@ -148,7 +148,16 @@ public class SisWebApiController {
     }
 
 
-
+    /**
+     * 开店操作，具体步骤：
+     * 1.开启店中店
+     * 2.用户返利
+     * 3.合伙人送股
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/openSisShop",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public ResultModel open(HttpServletRequest request) throws Exception {
