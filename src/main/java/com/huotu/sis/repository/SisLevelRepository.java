@@ -28,5 +28,8 @@ public interface SisLevelRepository extends JpaRepository<SisLevel, Long>,JpaSpe
     List<SisLevel> findAll();
     List<SisLevel> findByMerchantIdOrderByLevelNoAsc(Long customerId);
 
+    @Query("select max(l.levelNo) from SisLevel as l where l.merchantId=?1")
+    Object findTopSisLevel(Long customerId);
+
 
 }

@@ -40,21 +40,23 @@ sisAddBrandProvider.getBrands = function(keywords) {
         data.keywords = keywords;
     }
     //$("#loading").show();
+    var loadBrands=layer.load(0, {shade: false});
     $("#brandsList").hide();
-    $("#resultMsg").text("加载中...");
-    $("#resultDescription").show();
+    //$("#resultMsg").text("加载中...");
+    //$("#resultDescription").show();
 
     $("#brandsList").Jload({
         url: "getBrandList",
         method: "POST",
-        msgImg: "/sisweb/JLoad/img/loading_cart.gif",
+        //msgImg: "/sisweb/JLoad/img/loading_cart.gif",
         data: data,
         noneTemplete: "<div style='text-align:center;'>没有数据</div>",// 没有数据模版
         isArtTemplete: true,
         Templete: $("#brandsTemplate").html()
     },function(){
+        layer.close(loadBrands);
         //$("#loading").hide();
-        $("#resultDescription").hide();
+        //$("#resultDescription").hide();
         $("#brandsList").show();
     });
 
@@ -77,9 +79,10 @@ sisAddBrandProvider.operateBrands = function(brandId, obj, operType) {
 
     var brandCount = $("#brandCount").val();
 
+    var modifyBrand=layer.load(0, {shade: false});
     //jBox.tip("正在操作...", "loading");
-    $("#resultMsg").text("操作中...");
-    $("#resultDescription").show();
+    //$("#resultMsg").text("操作中...");
+    //$("#resultDescription").show();
     $.ajax({
         url: 'operBrand',
         type: 'POST',
@@ -87,7 +90,8 @@ sisAddBrandProvider.operateBrands = function(brandId, obj, operType) {
             "operType": operType,customerId:customerId },
         dataType: "json",
         success: function (result) {
-            $("#resultDescription").hide();
+            layer.close(modifyBrand);
+            //$("#resultDescription").hide();
             if (result.success) {
                 if (operType==1) {
                     $(obj).attr("onclick","sisAddBrandProvider.operateBrands(" +brandId+ ",this,0)");

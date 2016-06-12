@@ -474,7 +474,6 @@ public class OpenSisShopController {
             sisLevelSetModel.setId(sisLevels.get(i).getId().intValue());
             sisLevelSetModel.setLevel(sisLevels.get(i).getLevelNo());
             sisLevelSetModel.setCustomerId(sisLevels.get(i).getMerchantId());
-
             sisLevelSetModel.setTuanduidianpuAmount(sisLevels.get(i).getUpTeamShopNum());
             sisLevelSetModel.setZhituidianpuAmount(sisLevels.get(i).getUpShopNum());
             sisLevelSetModel.setNickname(sisLevels.get(i).getLevelName());
@@ -485,7 +484,7 @@ public class OpenSisShopController {
         }
 
         model.addAttribute("sisLevelSetModels", sisLevelSetModels);
-        return "/sis/levelSet";
+        return "/sis/newLevelSet";
     }
 
 
@@ -498,7 +497,7 @@ public class OpenSisShopController {
      * @throws Exception
      */
     @RequestMapping(value = "/jumpToAddLevelSet", method = RequestMethod.GET)
-    public String jumpToAddLevelSet(@CustomerId Long customerId, Model model) throws
+    public String jumpToAddLevelSet(@CustomerId Long customerId,SisLevel sisLevel, Model model) throws
             Exception {
         if (environment.acceptsProfiles("develop")) {
             customerId = 4471L;
@@ -506,13 +505,20 @@ public class OpenSisShopController {
         if (customerId == null) {
             throw new Exception("商户ID不存在");
         }
-        List<SisLevelSetModel> sisLevelSetModels = new ArrayList<SisLevelSetModel>();
-        SisLevelSetModel sisLevelSetModel = new SisLevelSetModel();
-        sisLevelSetModel.setNickname("请输入对应的值");
-        sisLevelSetModels.add(sisLevelSetModel);
-        model.addAttribute("sisLevelSetModels", sisLevelSetModels);
-
-        return "/sis/addLevelSet";
+//        List<SisLevelSetModel> sisLevelSetModels = new ArrayList<SisLevelSetModel>();
+//        SisLevelSetModel sisLevelSetModel = new SisLevelSetModel();
+//        sisLevelSetModel.setNickname("请输入对应的值");
+//        sisLevelSetModels.add(sisLevelSetModel);
+//        model.addAttribute("sisLevelSetModels", sisLevelSetModels);
+//        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantId(customerId);
+        Integer levelNo=0;
+        Object topLevel=sisLevelRepository.findTopSisLevel(customerId);
+        if(topLevel!=null){
+            levelNo=Integer.parseInt(String.valueOf(topLevel))+1;
+        }
+        sisLevel.setLevelNo(levelNo);
+        model.addAttribute("sisLevel", sisLevel);
+        return "/sis/newAddLevelSet";
     }
 
 
@@ -609,6 +615,40 @@ public class OpenSisShopController {
             model.addAttribute("sisLevelSetModels", sisLevelSetModels);
         }
         return "/sis/addLevelSet";
+    }
+
+
+    /**
+     * 保存店中店等级
+     * @param newSisLevel
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveSisLevel",method = RequestMethod.POST)
+    public String saveSisLevel(@CustomerId Long customerId,SisLevel newSisLevel) throws Exception{
+        if (environment.acceptsProfiles("develop")) {
+            customerId = 4471L;
+        }
+        if (customerId == null) {
+            throw new Exception("商户ID不存在");
+        }
+        if(newSisLevel==null){
+            throw new Exception("没有店铺信息");
+        }
+
+        if(newSisLevel.getId()==null){
+            newSisLevel.setMerchantId(customerId);
+        }else {
+            SisLevel oldSisLevel=sisLevelRepository.findOne(newSisLevel.getId());
+            newSisLevel.setMerchantId(oldSisLevel.getMerchantId());
+            newSisLevel.setRrmark(oldSisLevel.getRrmark());
+            newSisLevel.setUpTeamShopNum(oldSisLevel.getUpTeamShopNum());
+            newSisLevel.setUpShopNum(oldSisLevel.getUpShopNum());
+            newSisLevel.setRebateRate(oldSisLevel.getRebateRate());
+            newSisLevel.setIsSystem(oldSisLevel.getIsSystem());
+        }
+        sisLevelRepository.save(newSisLevel);
+        return "redirect:levelSet";
     }
 
     //修改店铺信息
@@ -742,10 +782,8 @@ public class OpenSisShopController {
      */
     @RequestMapping(value = "/jumpToChangeLevelSet", method = RequestMethod.GET)
     public String jumpToChangeLevelSet(Long id, Model model) throws Exception {
-
-
         SisLevel sisLevel = sisLevelRepository.findOne(id);
         model.addAttribute("sisLevel", sisLevel);
-        return "/sis/updateLevelSet";
+        return "/sis/newAddLevelSet";
     }
 }

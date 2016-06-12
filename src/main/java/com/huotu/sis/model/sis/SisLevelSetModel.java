@@ -6,101 +6,51 @@ import lombok.Setter;
 /**
  * Created by lgh on 2016/3/31.
  */
+@Getter
+@Setter
 public class SisLevelSetModel {
-
-    @Getter
-    @Setter
+    /**
+     * 商户ID
+     */
     private long customerId;
 
+    /**
+     * 直推比例
+     */
     private double rebate;
 
-    public static Integer isLevelSet;
-
+    /**
+     * 等级ID
+     */
     private int id;
 
+    /**
+     * 等级序号
+     */
     private int level;
 
+    /**
+     * 直推店铺数量
+     */
     private Integer zhituidianpuAmount;
 
+    /**
+     * 团队店铺数量
+     */
     private Integer tuanduidianpuAmount;
 
+    /**
+     * 等级名称
+     */
     private String nickname;
 
+    /**
+     * 是否为默认等级
+     */
     private Integer isSystem;
 
+    /**
+     * 是否启用补差价 0：不启用，1：启用
+     */
     private Integer extraUpgrade;
-
-    public void setExtraUpgrade(Integer extraUpgrade) {this.extraUpgrade = extraUpgrade;}
-
-    public Integer getExtraUpgrade() {return extraUpgrade;}
-
-    public void setIsSystem(Integer isSystem)
-    {
-        this.isSystem = isSystem;
-    }
-
-    public Integer getIsSystem()
-    {
-        return isSystem;
-    }
-
-    public int getLevel()
-    {
-        return level;
-    }
-
-    public int getId()
-    {
-        return id;
-    }
-
-    public void setId(int id)
-    {
-        this.id = id;
-    }
-
-    public int getZhituidianpuAmount()
-    {
-        return zhituidianpuAmount;
-    }
-
-    public int getTuanduidianpuAmount()
-    {
-        return tuanduidianpuAmount;
-    }
-
-    public String getNickname()
-    {
-        return nickname;
-    }
-
-    public void setLevel(int level)
-    {
-        this.level = level;
-    }
-
-    public void setZhituidianpuAmount(int zhituidianpuAmount)
-    {
-        this.zhituidianpuAmount = zhituidianpuAmount;
-    }
-
-    public void setTuanduidianpuAmount(int tuanduidianpuAmount)
-    {
-        this.tuanduidianpuAmount = tuanduidianpuAmount;
-    }
-
-    public void setNickname(String nickname)
-    {
-        this.nickname = nickname;
-    }
-
-    public double getRebate()
-    {
-        return rebate;
-    }
-
-    public void setRebate(double rebate)
-    {
-        this.rebate = rebate;
-    }
 }

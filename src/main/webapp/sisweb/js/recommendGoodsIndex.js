@@ -121,22 +121,24 @@ sisAddGoodsProvider.getGoods = function (keywords, searchFlag) {
         data.keywords = keywords;
     }
 
-    $("#resultMsg").text("加载中...");
-    $("#resultDescription").show();
+    var loadGoods=layer.load(0, {shade: false});
+    //$("#resultMsg").text("加载中...");
+    //$("#resultDescription").show();
     //$("#loading").show();
     $("#goodsList").hide();
 
     $("#goodsList").Jload({
         url: "getRecommendGoodsList",
         method: "POST",
-        msgImg: "/sisweb/JLoad/img/loading_cart.gif",
+        //msgImg: "/sisweb/JLoad/img/loading_cart.gif",
         data: data,
         noneTemplete: "<div style='text-align:center;'>没有数据</div>",// 没有数据模版
         isArtTemplete: true,
         Templete: $("#goodsTemplate").html()
     }, function () {
+        layer.close(loadGoods);
         //$("#loading").hide();
-        $("#resultDescription").hide();
+        //$("#resultDescription").hide();
         $("#goodsList").show();
     });
 }
@@ -160,8 +162,9 @@ sisAddGoodsProvider.operateGoods = function (goodsId, obj, operType) {
     }
 
     var goodsCount = $("#goodsCount").val();
-    $("#resultMsg").text("操作中...");
-    $("#resultDescription").show();
+    var modifyGoods=layer.load(0, {shade: false});
+    //$("#resultMsg").text("操作中...");
+    //$("#resultDescription").show();
     $.ajax({
         url: 'operGoods',
         type: 'POST',
@@ -172,7 +175,8 @@ sisAddGoodsProvider.operateGoods = function (goodsId, obj, operType) {
         },
         dataType: "json",
         success: function (result) {
-            $("#resultDescription").hide();
+            layer.close(modifyGoods);
+            //$("#resultDescription").hide();
             if (result.success) {
                 if (operType == 1) {
                     $(obj).attr("onclick", "sisAddGoodsProvider.operateGoods(" + goodsId + ",this,0)");
@@ -203,7 +207,8 @@ sisAddGoodsProvider.operateGoods = function (goodsId, obj, operType) {
                 setTimeout('$("#goodsOperDescprition").hide()',1000);
             }
         },error:function(){
-            $("#resultDescription").hide();
+            layer.close(modifyGoods);
+            //$("#resultDescription").hide();
             $("#goodsMsg").text("系统繁忙，请稍后再试");
             $("#goodsNum").text("");
             $("#goodsOperDescprition").show();
@@ -225,7 +230,8 @@ sisAddGoodsProvider.operateBrands = function (brandId, obj, operType) {
 
     }
 
-    jBox.tip("正在操作...", "loading");
+    //jBox.tip("正在操作...", "loading");
+    layer.msg("正在操作...");
     $.ajax({
         url: 'operBrand',
         type: 'POST',
@@ -240,17 +246,20 @@ sisAddGoodsProvider.operateBrands = function (brandId, obj, operType) {
                     $(obj).attr("onclick", "sisAddGoodsProvider.operateBrands(" + brandId + ",this,0)");
                     $(obj.children[0]).removeClass("git-a");
                     $(obj.children[0]).addClass("git-a git-pos");
-                    jBox.tip("上架成功");
+                    //jBox.tip("上架成功");
+                    layer.msg("上架成功");
                 }
                 else if (operType == 0) {
                     //$(obj).parent("p").hide();
                     $(obj).attr("onclick", "sisAddGoodsProvider.operateBrands(" + brandId + ",this,1)");
                     $(obj.children[0]).removeClass("git-a git-pos");
                     $(obj.children[0]).addClass("git-a");
-                    jBox.tip("下架成功");
+                    //jBox.tip("下架成功");
+                    layer.msg("下架成功");
                 }
             } else {
-                jBox.tip(result.msg);
+                //jBox.tip(result.msg);
+                layer.msg(result.msg);
             }
         }
     });

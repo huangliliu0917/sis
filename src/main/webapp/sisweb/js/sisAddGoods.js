@@ -172,8 +172,9 @@ sisAddGoodsProvider.getGoods = function (keywords, searchFlag) {
     }
 
     //$("#loading").show();
-    $("#resultMsg").text("加载中...");
-    $("#resultDescription").show();
+    //$("#resultMsg").text("加载中...");
+    //$("#resultDescription").show();
+    var loadGoods=layer.load(0, {shade: false});
     $("#goodsList").hide();
     $("#pageTypes").hide();
     $("#mask").hide();
@@ -181,14 +182,15 @@ sisAddGoodsProvider.getGoods = function (keywords, searchFlag) {
     $("#goodsList").Jload({
         url: "getGoodsList",
         method: "POST",
-        msgImg: "/sisweb/JLoad/img/loading_cart.gif",
+        //msgImg: "/sisweb/JLoad/img/loading_cart.gif",
         data: data,
         noneTemplete: "<div style='text-align:center;'>没有数据</div>",// 没有数据模版
         isArtTemplete: true,
         Templete: $("#goodsTemplate").html()
     }, function () {
+        layer.close(loadGoods);
         //$("#loading").hide();
-        $("#resultDescription").hide();
+        //$("#resultDescription").hide();
         $("#goodsList").show();
     });
 }
@@ -211,8 +213,10 @@ sisAddGoodsProvider.operateGoods = function (goodsId, obj, operType) {
         return;
     }
     var goodsCount = $("#goodsCount").val();
-    $("#resultMsg").text("操作中...");
-    $("#resultDescription").show();
+    //$("#resultMsg").text("操作中...");
+    //$("#resultDescription").show();
+    var modifyGoods=layer.load(0, {shade: false});
+
 
     $.ajax({
         url: 'operGoods',
@@ -224,7 +228,8 @@ sisAddGoodsProvider.operateGoods = function (goodsId, obj, operType) {
         },
         dataType: "json",
         success: function (result) {
-            $("#resultDescription").hide();
+            layer.close(modifyGoods);
+            //$("#resultDescription").hide();
             if (result.success) {
                 if (operType == 1) {
                     $(obj).attr("onclick", "sisAddGoodsProvider.operateGoods(" + goodsId + ",this,0)");
