@@ -470,15 +470,15 @@ public class SisWebGoodsController {
                 List<ProfitConfig> profitConfigs = goods.getProfitConfigs();
                 if (userStatus == 1 && sisStatus == 1) {
                     Optional<ProfitConfig> optional = profitConfigs.stream().filter(item -> item.getProfitKey().equals("zong1_zm_self")).findAny();
-                    if(null!=optional)
+                    if(optional.isPresent())
                         rebateNow = optional.get().getProfitValue();
                 } else if (userStatus == 1 && sisStatus == 2) {
                     Optional<ProfitConfig> optional =profitConfigs.stream().filter(item -> item.getProfitKey().equals("zong1_qj_self")).findAny();
-                    if(null!=optional)
+                    if(optional.isPresent())
                         rebateNow = optional.get().getProfitValue();
                 } else if (userStatus == 2) {
                     Optional<ProfitConfig> optional = profitConfigs.stream().filter(item -> item.getProfitKey().equals("zong2_self")).findAny();
-                    if(null!=optional)
+                    if(optional.isPresent())
                         rebateNow = optional.get().getProfitValue();
                 }
                 appSisGoodsModel.setMinRebate(get2Double(goods.getShopRebateMin() * rebateNow / 100));
