@@ -220,7 +220,29 @@ public class SisWebApiController {
 
 
 
+    /**
+     * 计算直推奖 straight push prize
+     * @param httpServletRequest
+     * @return
+     * @throws Exception
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/calShopRebate", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public ResultModel calShopRebate(HttpServletRequest httpServletRequest) throws Exception {
+        ResultModel resultModel=new ResultModel();
+        return resultModel;
+    }
 
+
+
+
+    /**
+     * 计算直推奖
+     * @param httpServletRequest
+     * @return
+     * @throws Exception
+     */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/calculateShopRebate", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
@@ -315,7 +337,7 @@ public class SisWebApiController {
         double totalPrize = 0;
         for (int i = 0; i < orderItems.size(); i++) {
             double zhituiPrize =  orderItems.get(i).getZhituiPrize();
-            totalPrize += zhituiPrize;
+            totalPrize += zhituiPrize*orderItems.get(i).getAmount();
         }
         totalPrize = (totalPrize * rate)/100;
         UserTempIntegralHistory utih = new UserTempIntegralHistory();

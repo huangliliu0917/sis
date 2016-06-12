@@ -164,6 +164,7 @@ public class UserServiceImpl implements UserService {
         SisInviteLog sisInviteLog = sisInviteRepository.findFirstByAcceptIdOrderByAcceptTimeDesc(user.getId());
         //开店用户等级设置
         SisLevel sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());
+        //多个开店商品，有等级
         if (sisConfig.getOpenGoodsMode() == 1 && sisConfig.getOpenMode() == 1) {
             OrderItems orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId).get(0);
             OpenGoodsIdLevelIds openGoodsIdLevelIds = sisConfig.getOpenGoodsIdlist();

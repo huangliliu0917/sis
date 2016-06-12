@@ -11,6 +11,7 @@ package com.huotu.sis.entity;
 
 import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
 import com.huotu.sis.entity.support.OpenSisAwards;
+import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.rest.core.annotation.Description;
@@ -67,6 +68,12 @@ public class SisConfig {
     @Lob
     private OpenSisAwards OpenSisAwards;
 
+    @SuppressWarnings("JpaAttributeTypeInspection")
+    @Column(name = "RebateTeamManagerSetting",columnDefinition = "longtext")
+    @Description("直推奖")
+    @Lob
+    private SisRebateTeamManagerSetting sisRebateTeamManagerSetting;
+
     @Column(name = "MaxMartketableNum")
     @Description("最大上架商品数")
     private Integer maxMartketableNum;
@@ -101,12 +108,6 @@ public class SisConfig {
     @Column(name = "SharePic",length = 200)
     @Description("分享图片")
     private String SharePic;
-
-//    @Column(name = "Open_Award",columnDefinition = "longtext")
-//    @Description("直推奖")
-//    @Lob
-//    private SisRebateSetting sisRebateSetting;
-
 
     @Column(name = "Open_AwardMode")
     @Description("返利模式 0:默认八级返利，1：根据店铺的等级返利")
