@@ -7,6 +7,7 @@ import com.huotu.sis.entity.SisLevel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created by lgh on 2015/12/30.
@@ -105,5 +106,13 @@ public interface UserService {
      * @throws Exception
      */
     SisInviteLog findUserLatestInviteLog(Long acceptId) throws Exception;
+
+    /**
+     * 根据用户ID得到该用户产生关系（上级，上上级等）的一条线
+     * @param userId
+     * @return
+     * @since 2.0
+     */
+    List<User> getAllRelationByUserId(Long userId);
 
 }
