@@ -79,8 +79,10 @@ public class SpringWebTest {
 //        else
 //            mockMvc = webAppContextSetup(context)
 //                    .build();
+//        mockMvc = webAppContextSetup(context)
+//                .addFilters(paramFilter)
+//                .build();
         mockMvc = webAppContextSetup(context)
-                .addFilters(paramFilter)
                 .build();
     }
     @Before
@@ -97,9 +99,9 @@ public class SpringWebTest {
 
     @After
     public void afterTest() {
-        if (webDriver != null) {
-            webDriver.close();
-        }
+//        if (webDriver != null) {
+//            webDriver.close();
+//        }
     }
 
 

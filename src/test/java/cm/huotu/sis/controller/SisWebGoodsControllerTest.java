@@ -18,6 +18,7 @@ import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SecurityService;
 import com.huotu.sis.service.SqlService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -40,6 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Transactional(value = "transactionManager")
+@Ignore
 public class SisWebGoodsControllerTest extends WebTest {
 
     @Autowired

@@ -9,6 +9,7 @@ import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.service.SisGoodsService;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -33,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Transactional(value = "transactionManager")
+@Ignore
 public class SisWebBrandControllerTest extends WebTest {
 
     @Autowired
@@ -76,21 +78,6 @@ public class SisWebBrandControllerTest extends WebTest {
 //                null, null, brand.getId(), null, 1, 10);
 
     }
-
-//    @Before
-//    public void setCookies() throws Exception {
-//        Cookie cookie=new Cookie("name","jin","/",null);
-//        driver.manage().addCookie(cookie);
-//        Cookie cookie1 = new Cookie("password","123","/",null);
-//        driver.manage().addCookie(cookie1);
-//    }
-//
-//    @Test
-//    public void getCookies() throws Exception {
-//        driver.get("http://localhost/sisweb/getSisCenter?customerId="+4471);
-//        Set<Cookie> cookies=driver.manage().getCookies();
-//        cookies.stream().forEach(cookie -> System.out.println("作用域："+cookie.getDomain()));
-//    }
 
 
 }

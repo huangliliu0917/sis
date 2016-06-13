@@ -422,6 +422,13 @@ public class UserServiceImpl implements UserService {
         return list;
     }
 
+    /**
+     * 递归查找上级用户
+     *
+     * @param user
+     * @param list
+     * @return
+     */
     private List<User> getParentByUser(User user, List<User> list) {
         List<Long> idList = new ArrayList<>();
         if (null != user.getBelongOne() && user.getBelongOne().intValue() > 0 && null != user.getBelongTwo()
@@ -431,23 +438,18 @@ public class UserServiceImpl implements UserService {
             idList.add(user.getBelongTwo());
             idList.add(user.getBelongThree());
             List<User> users = userRepository.findByUserIds(idList);
-            int size = users.size();
+//            上级
+            Optional<User> oneBelongUser = users.stream().filter(oneUser -> oneUser.getId().equals(user.getBelongOne())).findAny();
+            addUserList(oneBelongUser, list);
+//            上上级
+            Optional<User> twoBelongUser = users.stream().filter(oneUser -> oneUser.getId().equals(user.getBelongTwo())).findAny();
+            addUserList(twoBelongUser, list);
+//            上上上级
             User belongThree = null;
-            for (User item : users) {
-                Optional<User> optional = list.stream().filter(baseUser->baseUser.getId().equals(item.getId())).findAny();
-                if(optional.isPresent())
-                    break;
-                if (user.getBelongOne().equals(item.getId())) {
-                    list.add(size, item);
-                }
-                if (user.getBelongTwo().equals(item.getId())) {
-                    list.add(size + 1, item);
-                }
-                if (user.getBelongThree().equals(item.getId())) {
-                    belongThree = item;
-                    list.add(size + 2, item);
-                }
-            }
+            Optional<User> threeBelongUser = users.stream().filter(oneUser -> oneUser.getId().equals(user.getBelongThree())).findAny();
+            addUserList(threeBelongUser, list);
+            if (threeBelongUser.isPresent())
+                belongThree = threeBelongUser.get();
             if (null != belongThree)
                 getParentByUser(belongThree, list);
 
@@ -456,23 +458,27 @@ public class UserServiceImpl implements UserService {
             idList.add(user.getBelongOne());
             idList.add(user.getBelongTwo());
             List<User> users = userRepository.findByUserIds(idList);
-            int size = users.size();
-            for (User item : users) {
-                Optional<User> optional = list.stream().filter(baseUser->baseUser.getId().equals(item.getId())).findAny();
-                if(optional.isPresent())
-                    break;
-                if (user.getBelongOne().equals(item.getId())) {
-                    list.add(size, item);
-                }
-                if (user.getBelongTwo().equals(item.getId())) {
-                    list.add(size + 1, item);
-                }
-            }
+//            上级
+            Optional<User> oneBelongUser = users.stream().filter(oneUser -> oneUser.getId().equals(user.getBelongOne())).findAny();
+            addUserList(oneBelongUser, list);
+//            上上级
+            Optional<User> twoBelongUser = users.stream().filter(oneUser -> oneUser.getId().equals(user.getBelongTwo())).findAny();
+            addUserList(twoBelongUser, list);
         } else if (null != user.getBelongOne() && user.getBelongOne().intValue() > 0) {
             User belongOne = userRepository.findOne(user.getBelongOne());
-            Optional<User> optional = list.stream().filter(baseUser->baseUser.getId().equals(belongOne.getId())).findAny();
-            if(!optional.isPresent())
+            Optional<User> optional = list.stream().filter(baseUser -> baseUser.getId().equals(belongOne.getId())).findAny();
+            if (!optional.isPresent())
                 list.add(belongOne);
+        }
+        return list;
+    }
+
+    private List<User> addUserList(Optional<User> optionalUser, List<User> list) {
+        if (optionalUser.isPresent()) {
+            Optional<User> optional = list.stream().filter(baseUser -> baseUser.getId().equals(optionalUser.get().getId())).findAny();
+            if (!optional.isPresent()) {
+                list.add(optionalUser.get());
+            }
         }
         return list;
     }
