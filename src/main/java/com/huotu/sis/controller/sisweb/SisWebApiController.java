@@ -1,10 +1,11 @@
 package com.huotu.sis.controller.sisweb;
 
-import com.huotu.huobanplus.common.UserType;
-import com.huotu.huobanplus.common.entity.*;
+import com.huotu.huobanplus.common.entity.MerchantConfig;
+import com.huotu.huobanplus.common.entity.Order;
+import com.huotu.huobanplus.common.entity.OrderItems;
+import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
-import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
@@ -27,8 +28,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -220,19 +219,30 @@ public class SisWebApiController {
 
 
 
-    /**
-     * 计算直推奖 straight push prize
-     * @param httpServletRequest
-     * @return
-     * @throws Exception
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/calShopRebate", method = {RequestMethod.POST,RequestMethod.GET})
-    @ResponseBody
-    public ResultModel calShopRebate(HttpServletRequest httpServletRequest) throws Exception {
-        ResultModel resultModel=new ResultModel();
-        return resultModel;
-    }
+//    /**
+//     * 计算直推奖 straight push prize
+//     * @param httpServletRequest
+//     * @return
+//     * @throws Exception
+//     */
+//    @ResponseStatus(HttpStatus.OK)
+//    @RequestMapping(value = "/calShopRebate", method = {RequestMethod.POST,RequestMethod.GET})
+//    @ResponseBody
+//    public ResultModel calShopRebate(HttpServletRequest httpServletRequest) throws Exception {
+//        ResultModel resultModel=new ResultModel();
+//        //安全有效性验证
+//        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
+//            //签名验证
+//            String sign=httpServletRequest.getParameter("sign");
+//            if (sign == null || !sign.equals(securityService.getSign(httpServletRequest))) {
+//                resultModel.setCode(401);
+//                resultModel.setMessage("授权失败：签名未通过！");
+//                return resultModel;
+//            }
+//        }
+//        //参数验证
+//        return resultModel;
+//    }
 
 
 
@@ -283,7 +293,7 @@ public class SisWebApiController {
             return resultModel;
         }
         Long shopLevelId=sisService.getSisLevelId(user);//店主店铺等级ID
-        if(Objects.isNull(shopLevelId)){
+        if(shopLevelId==0){
             resultModel.setCode(500);
             resultModel.setMessage("未找到店铺等级");
             return resultModel;
@@ -309,86 +319,90 @@ public class SisWebApiController {
             return resultModel;
         }
 
-        double rate=0;
-        rate = sisLevel.getRebateRate();
-
-
-
         MerchantConfig merchantConfig =merchantConfigRepository.findByMerchant(user.getMerchant());
         if(Objects.isNull(merchantConfig)){
             resultModel.setCode(500);
             resultModel.setMessage("未找到店铺配置信息");
             return resultModel;
         }
-        int exchangeRate=merchantConfig.getExchangeRate();//得到积分转余额的汇率
 
-        /**
-         * 转正时间的计算
-         */
-        Date date=new Date();
-        int positiveDay=merchantConfig.getPositiveDay();
-        Calendar ca=Calendar.getInstance();
-        ca.setTime(date);
-        ca.add(Calendar.DATE,positiveDay+1);
-        Date now=ca.getTime();//转正后的时间
-        Date now2 = DateUtil.makeStartDate(now);
+        sisService.calculatePushAward();
 
-
-        double totalPrize = 0;
-        for (int i = 0; i < orderItems.size(); i++) {
-            double zhituiPrize =  orderItems.get(i).getZhituiPrize();
-            totalPrize += zhituiPrize*orderItems.get(i).getAmount();
-        }
-        totalPrize = (totalPrize * rate)/100;
-        UserTempIntegralHistory utih = new UserTempIntegralHistory();
-        User contriUser=userRepository.findOne((long)order.getUserId());//得到贡献人
-        UserType userType=contriUser.getUserType();
-        String desc="店主直推奖，订单号 :"+orderId;
-        int contributeUserType;
-        if(contriUser.getUserType()==UserType.normal){
-            contributeUserType=0;
-        }else{
-            contributeUserType=1;
-        }
-
-        int jifen=getIntegralRateByRate(totalPrize,exchangeRate);
-
-        utih.setCustomerId(user.getMerchant().getId());
-        utih.setIntegral(jifen);
-        utih.setUnionOrderId(unionOrderId);
-        utih.setUserId(user.getId());//受益人的id
-        utih.setStatus(0);
-        utih.setAddTime(new Date());
-        utih.setContributeBelongOne(contriUser.getBelongOne().intValue());
-        utih.setContributeUserType(contributeUserType);
-        utih.setDesc(desc);
-        utih.setPositiveFlag(1);
-        utih.setUserLevelId((long)user.getLevelId());
-        utih.setEstimatePostime(now2);
-        utih.setUserType(user.getUserType());
-        utih.setPositiveFlag(1);
-        utih.setType(0);
-        utih.setNewType(500);
-        utih.setOrder(order);
-        utih.setContributeDesc(null);
-        utih.setFlowIntegral(jifen);
-        utih.setContributeUserID((long)order.getUserId());
-        utih.setUserGroupId(0L);//进行21个设值.
-
-        utihRepository.save(utih);
-        resultModel.setCode(200);
-        jifen=user.getUserTempIntegral()+jifen;
-        user.setUserTempIntegral(jifen);
-        userRepository.save(user);
         resultModel.setCode(200);
         resultModel.setMessage("OK");
         return resultModel;
+
+//        double rate=sisLevel.getRebateRate();
+//
+//        int exchangeRate=merchantConfig.getExchangeRate();//得到积分转余额的汇率
+//
+//        /**
+//         * 转正时间的计算
+//         */
+//        Date date=new Date();
+//        int positiveDay=merchantConfig.getPositiveDay();
+//        Calendar ca=Calendar.getInstance();
+//        ca.setTime(date);
+//        ca.add(Calendar.DATE,positiveDay+1);
+//        Date now=ca.getTime();//转正后的时间
+//        Date now2 = DateUtil.makeStartDate(now);
+//
+//
+//        double totalPrize = 0;
+//        for (int i = 0; i < orderItems.size(); i++) {
+//            double zhituiPrize =  orderItems.get(i).getZhituiPrize();
+//            totalPrize += zhituiPrize*orderItems.get(i).getAmount();
+//        }
+//        totalPrize = (totalPrize * rate)/100;
+//        UserTempIntegralHistory utih = new UserTempIntegralHistory();
+//        User contriUser=userRepository.findOne((long)order.getUserId());//得到贡献人
+//        UserType userType=contriUser.getUserType();
+//        String desc="店主直推奖，订单号 :"+orderId;
+//        int contributeUserType;
+//        if(contriUser.getUserType()==UserType.normal){
+//            contributeUserType=0;
+//        }else{
+//            contributeUserType=1;
+//        }
+//
+//        int jifen=getIntegralRateByRate(totalPrize,exchangeRate);
+//
+//        utih.setCustomerId(user.getMerchant().getId());
+//        utih.setIntegral(jifen);
+//        utih.setUnionOrderId(unionOrderId);
+//        utih.setUserId(user.getId());//受益人的id
+//        utih.setStatus(0);
+//        utih.setAddTime(new Date());
+//        utih.setContributeBelongOne(contriUser.getBelongOne().intValue());
+//        utih.setContributeUserType(contributeUserType);
+//        utih.setDesc(desc);
+//        utih.setPositiveFlag(1);
+//        utih.setUserLevelId((long)user.getLevelId());
+//        utih.setEstimatePostime(now2);
+//        utih.setUserType(user.getUserType());
+//        utih.setPositiveFlag(1);
+//        utih.setType(0);
+//        utih.setNewType(500);
+//        utih.setOrder(order);
+//        utih.setContributeDesc(null);
+//        utih.setFlowIntegral(jifen);
+//        utih.setContributeUserID((long)order.getUserId());
+//        utih.setUserGroupId(0L);//进行21个设值.
+//
+//        utihRepository.save(utih);
+//        resultModel.setCode(200);
+//        jifen=user.getUserTempIntegral()+jifen;
+//        user.setUserTempIntegral(jifen);
+//        userRepository.save(user);
+//        resultModel.setCode(200);
+//        resultModel.setMessage("OK");
+//        return resultModel;
     }
 
-    private int getIntegralRateByRate(double amount,int exchangeRate){
-        if (exchangeRate == 0) exchangeRate = 100;
-        return  (int)Math.rint(100 * amount / exchangeRate);
-    }
+//    private int getIntegralRateByRate(double amount,int exchangeRate){
+//        if (exchangeRate == 0) exchangeRate = 100;
+//        return  (int)Math.rint(100 * amount / exchangeRate);
+//    }
 
 
 }

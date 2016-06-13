@@ -102,4 +102,19 @@ public class SisServiceImpl implements SisService {
             }
         },new PageRequest(sisSearchModel.getPageNoStr(), 10,new Sort(Sort.Direction.DESC,"id")));
     }
+
+    @Override
+    public void calculatePushAward() throws Exception {
+
+    }
+
+    @Override
+    public void countProprietor() throws Exception {
+
+    }
+
+    @Override
+    public void countDefPush() throws Exception {
+
+    }
 }
