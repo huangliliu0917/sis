@@ -1,6 +1,8 @@
 package com.huotu.sis.service.impl;
 
+import com.huotu.huobanplus.common.entity.Order;
 import com.huotu.huobanplus.common.entity.User;
+import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.model.sis.SisSearchModel;
@@ -104,7 +106,7 @@ public class SisServiceImpl implements SisService {
     }
 
     @Override
-    public void calculatePushAward() throws Exception {
+    public void calculatePushAward(User user, Order order, String unionOrderId) throws Exception {
 
     }
 
@@ -116,5 +118,10 @@ public class SisServiceImpl implements SisService {
     @Override
     public void countDefPush() throws Exception {
 
+    }
+
+    @Override
+    public UserTempIntegralHistory saveUserTempIntegralHistory() throws Exception {
+        return null;
     }
 }

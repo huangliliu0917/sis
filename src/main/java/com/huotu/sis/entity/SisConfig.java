@@ -110,8 +110,12 @@ public class SisConfig {
     private String SharePic;
 
     @Column(name = "Open_AwardMode")
-    @Description("返利模式 0:默认八级返利，1：根据店铺的等级返利")
+    @Description("开店返利模式 0:默认八级返利，1：根据店铺的等级返利")
     private Integer openAwardMode;
+
+    @Column(name = "Push_AwardMode")
+    @Description("直推返利模式 0:默认返给店主，1：经营者返利模式")
+    private Integer pushAwardMode;
 
     @Column(name = "Open_GoodsMode")
     @Description("开店商品模式 0:一种开店商品，1：每个等级都有一种开店商品")

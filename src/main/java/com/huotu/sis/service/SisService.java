@@ -1,5 +1,6 @@
 package com.huotu.sis.service;
 
+import com.huotu.huobanplus.common.entity.Order;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
 import com.huotu.sis.entity.Sis;
@@ -36,12 +37,14 @@ public interface SisService {
      */
     Page<Sis> findSisList(SisSearchModel sisSearchModel) throws Exception;
 
-
     /**
      * 计算直推奖
+     * @param user          返利用户
+     * @param order         产生返利的订单
+     * @param unionOrderId  产生返利的联合订单
      * @throws Exception
      */
-    void calculatePushAward() throws Exception;
+    void calculatePushAward(User user,Order order,String unionOrderId) throws Exception;
 
     /**
      * 经营者模式计算直推奖
