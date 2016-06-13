@@ -25,10 +25,7 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by lgh on 2015/12/30.
@@ -437,6 +434,9 @@ public class UserServiceImpl implements UserService {
             int size = users.size();
             User belongThree = null;
             for (User item : users) {
+                Optional<User> optional = list.stream().filter(baseUser->baseUser.getId().equals(item.getId())).findAny();
+                if(optional.isPresent())
+                    break;
                 if (user.getBelongOne().equals(item.getId())) {
                     list.add(size, item);
                 }
@@ -448,7 +448,8 @@ public class UserServiceImpl implements UserService {
                     list.add(size + 2, item);
                 }
             }
-            getParentByUser(belongThree, list);
+            if (null != belongThree)
+                getParentByUser(belongThree, list);
 
         } else if (null != user.getBelongOne() && user.getBelongOne().intValue() > 0 && null != user.getBelongTwo()
                 && user.getBelongTwo().intValue() > 0) {
@@ -457,6 +458,9 @@ public class UserServiceImpl implements UserService {
             List<User> users = userRepository.findByUserIds(idList);
             int size = users.size();
             for (User item : users) {
+                Optional<User> optional = list.stream().filter(baseUser->baseUser.getId().equals(item.getId())).findAny();
+                if(optional.isPresent())
+                    break;
                 if (user.getBelongOne().equals(item.getId())) {
                     list.add(size, item);
                 }
@@ -466,7 +470,9 @@ public class UserServiceImpl implements UserService {
             }
         } else if (null != user.getBelongOne() && user.getBelongOne().intValue() > 0) {
             User belongOne = userRepository.findOne(user.getBelongOne());
-            list.add(belongOne);
+            Optional<User> optional = list.stream().filter(baseUser->baseUser.getId().equals(belongOne.getId())).findAny();
+            if(!optional.isPresent())
+                list.add(belongOne);
         }
         return list;
     }
