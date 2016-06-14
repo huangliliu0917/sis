@@ -724,7 +724,7 @@ public class SisWebApiController {
 
         double totalPrize = 0;
         for (OrderItems item : orderItems) {
-            double prize = item.getZhituiPrize() * item.getAmount();
+            double prize = item.getZhituiPrize();
             if (null == item.getProfitConfigs()) {
                 totalPrize += prize;
             } else {
