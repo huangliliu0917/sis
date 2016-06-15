@@ -1,37 +1,682 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+<head id="Head2">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
     <title>
-        爱分享文章列表
+    经营者直推返利模式
     </title>
+    <link href="../resource/3rdParty/css/admin.global.css" th:href="@{/resource/3rdParty/css/admin.global.css}" rel="stylesheet" type="text/css"/>
+    <link href="../resource/3rdParty/css/admin.content.css" th:href="@{/resource/3rdParty/css/admin.content.css}" rel="stylesheet" type="text/css"/>
+    <link href="../resource/3rdParty/css/admin.mall.css" th:href="@{/resource/3rdParty/css/admin.mall.css}" rel="stylesheet" type="text/css"/>
+    <script src="../resource/3rdParty/js/jquery-1.4.2.min.js" th:src="@{/resource/3rdParty/js/jquery-1.4.2.min.js}" type="text/javascript"></script>
+    <script src="../resource/3rdParty/js/jquery.utils.js" th:src="@{/resource/3rdParty/js/jquery.utils.js}" ></script>
+    <script src="../resource/3rdParty/js/admin.js" th:src="@{/resource/3rdParty/js/admin.js}" ></script>
+    <link href="../resource/3rdParty/jBox/Skins/Green/jbox.css" th:href="@{/resource/3rdParty/jBox/Skins/Green/jbox.css}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../resource/3rdParty/jBox/jquery.jBox-2.3.min.js" th:src="@{/resource/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.OnlyFloat').OnlyFloat();
+            $('.OnlyNum').OnlyNum();
+        });
+    </script>
+
     <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
           th:href="@{/resource/3rdParty/css/admin.global.css}"/>
-    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
-          th:href="@{/resource/3rdParty/css/admin.content.css}" />
-    <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"
-            th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>
-    <script type="text/javascript" src="../resource/3rdParty/js/jquery.utils.js"
-            th:src="@{/resource/3rdParty/js/jquery.utils.js}"></script>
-    <link href="../resource/3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"
-          th:href="@{/resource/3rdParty/jBox/Skins/Green/jbox.css}"/>
-    <script type="text/javascript" src="../resource/3rdParty/jBox/jquery.jBox-2.3.min.js"
-            th:src="@{/resource/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>
-    <script type="text/javascript" src="../resource/3rdParty/js/admin.js"
-            th:src="@{/resource/3rdParty/js/admin.js}"></script>
-    <link href="../resource/3rdParty/omTabs/themes/default/operamasks-ui.min.css" rel="stylesheet" type="text/css"
-          th:href="@{/resource/3rdParty/omTabs/themes/default/operamasks-ui.min.css}"/>
-    <script src="../resource/3rdParty/jqueryui/jquery-ui-1.8.20.min.js"
-            th:src="@{/resource/3rdParty/jqueryui/jquery-ui-1.8.20.min.js}"></script>
-    <link href="../resource/3rdParty/jqueryui/jquery-ui-1.10.3.custom.min.css" rel="stylesheet"
-          th:href="@{/resource/3rdParty/jqueryui/jquery-ui-1.10.3.custom.min.css}"/>
-    <script src="../resource/3rdParty/Knockout/knockout-2.3.0.js"
-            th:src="@{/resource/3rdParty/Knockout/knockout-2.3.0.js}"></script>
-    <script type="text/javascript" src="../resource/3rdParty/My97DatePicker/WdatePicker.js"
-            th:src="@{/resource/3rdParty/My97DatePicker/WdatePicker.js}"></script>
+    <script type="text/javascript" src="../resource/layer/layer.js"
+            th:src="@{/resource/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
+          th:src="@{/resource/layer/skin/layer.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.ext.css"
+          th:src="@{/resource/layer/skin/layer.ext.css}"/>
+    <style>
+        body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {
+            margin: 0;
+            padding: 0;
+        }
+
+        a, img, button, input, select {
+            -webkit-tap-highlight-color: transparent;
+            outline: 0;
+            /**/
+        }
+
+        img {
+            border: 0 none;
+            /*vertical-align: top/2015102310:05*/
+        }
+
+        i, em {
+            font-style: normal;
+        }
+
+        ol, ul {
+            list-style: none;
+        }
+
+        p {
+            display: block;
+            -webkit-margin-before: 0em;
+            -webkit-margin-after: 0em;
+            -webkit-margin-start: 0px;
+            -webkit-margin-end: 0px;
+        }
+
+        .mrkj {
+            width: 300px;
+            padding: 10px;
+            font-size: 14px;
+            font-family: "微软雅黑";
+        }
+
+        .mrkj table {
+            display: table;
+            border-collapse: separate;
+            border-spacing: 0px;
+            border-color: grey;
+        }
+
+        .mrkj .dz {
+            /*border: 1px solid #ddd;*/
+            border: 1px solid #e8db97;
+            width: 100px;
+            border-radius: 4px;
+            /*color: #555555;*/
+            padding: 15px 0px;
+            text-align: center;
+            background: #ffffdd;
+        }
+
+        .mrkj td {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .mrkj input {
+            border: 0px solid #ddd;
+            /*background-color: #f1f1f1;*/
+            background-color: #ffe8f2;
+            border-radius: 10px;
+            width: 30px;
+            text-align: center;
+            height: 24px;
+            padding: 4px 4px;
+            line-height: 24px;
+            margin-right: 6px;
+        }
+
+        fieldset {
+            padding: 15px;
+        }
+    </style>
 </head>
-<body>
-直推奖励
+<body marginwidth="0" marginheight="0">
+<form method="post" action="RebateConfigTeamManager.aspx?customerid=14941" id="frmConfig">
+    <!--<div class="aspNetHidden">-->
+        <!--<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKMTg5Mjc0NDAxN2RkUzlIoIlYdBgadHb6XnT6kYggvjKi0aYPKFgKj4UVmXM="/>-->
+    <!--</div>-->
+
+    <div class="container">
+        <div class="blank10">
+        </div>
+        <div class="block">
+            <div class="h">
+                <span class="icon-sprite icon-list"></span>
+                <h3>经营者返利设置</h3>
+                <div class="bar">
+                </div>
+            </div>
+            <div class="cnt-wp">
+                <div class="cnt form">
+                    <div class="divisionxx">
+                        <style type="text/css">
+                            .spTitle {
+                                padding-left: 30px;
+                                font-weight: bold;
+                                font-size: 21px;
+                            }
+
+                            .tdTitle {
+                                background-color: #efefef;
+                                padding: 3px;
+                            }
+                        </style>
+                        <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                            <tbody>
+                            <tr>
+                                <td class="tdTitle" style="width: 322px;">
+                                    <span class="spTitle">*返利分配*</span>
+                                </td>
+                                <td class="tdTitle"><span class="spTitle">*模式介绍与测试*</span></td>
+                            </tr>
+                            <tr>
+                                <td style="border-right: 1px dashed #ccc;">
+                                    <!--设置区域BEGIN-->
+                                    <div class="mrkj">
+
+                                        <fieldset>
+                                            <legend><span style="padding-left: 10px;">销售奖金</span></legend>
+                                            <div>
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                    <tbody><tr>
+                                                        <td align="left" style="width: 200px">
+                                                            <input th:value="${saleAward}" class="OnlyFloat" name="txtSaleAward" type="tel" value="60"/>%</td>
+                                                    </tr>
+
+                                                    </tbody></table>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <legend>管理奖金<span style="font-weight: normal; font-size: 12px; padding-left: 3px; display: none;">(20%可分配)</span></legend>
+                                            <div>
+                                                <!--返利配置-->
+                                                <table id="configInfo" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                    <tbody>
+
+                                                    <tr th:each="l:${levelNames}">
+                                                        <td align="left">
+                                                            <p class="dz" th:value="${l}">行装店主</p>
+                                                        </td>
+                                                        <td align="center" width="100px">&nbsp;</td>
+                                                    </tr>
+
+                                                    <!--<tr>-->
+                                                        <!--<td align="right" style="width: 100px">-->
+                                                            <!--<img src="../resource/images/JT.png"/></td>-->
+                                                        <!--<td align="left" style="width: 200px">-->
+                                                            <!--<input class="OnlyFloat" type="tel" name="txtManageAward" value="10"/>%-->
+                                                            <!--<input type="hidden" name="hidRelation" value="1461_1461"/>-->
+                                                        <!--</td>-->
+                                                    <!--</tr>-->
+
+                                                    <!--<tr>-->
+                                                        <!--<td align="left">-->
+                                                            <!--<p class="dz">行装店主</p>-->
+                                                        <!--</td>-->
+                                                        <!--<td align="center" width="100px">&nbsp;</td>-->
+                                                    <!--</tr>-->
+
+                                                    <!--<tr>-->
+                                                        <!--<td align="right" style="width: 100px">-->
+                                                            <!--<img src="../resource/images/JT.png"/></td>-->
+                                                        <!--<td align="left" style="width: 200px">-->
+                                                            <!--<input class="OnlyFloat" type="tel" name="txtManageAward" value="9"/>%-->
+                                                            <!--<input type="hidden" name="hidRelation" value="1461_1462"/>-->
+                                                        <!--</td>-->
+                                                    <!--</tr>-->
+
+                                                    <!--<tr>-->
+                                                        <!--<td align="left">-->
+                                                            <!--<p class="dz">代理商</p>-->
+                                                        <!--</td>-->
+                                                        <!--<td align="center" width="100px">&nbsp;</td>-->
+                                                    <!--</tr>-->
+
+                                                    <!--<tr>-->
+                                                        <!--<td align="right" style="width: 100px">-->
+                                                            <!--<img src="../resource/images/JT.png"/></td>-->
+                                                        <!--<td align="left" style="width: 200px">-->
+                                                            <!--<input class="OnlyFloat" type="tel" name="txtManageAward" value="8"/>%-->
+                                                            <!--<input type="hidden" name="hidRelation" value="1462_1462"/>-->
+                                                        <!--</td>-->
+                                                    <!--</tr>-->
+
+                                                    <!--<tr>-->
+                                                        <!--<td align="left">-->
+                                                            <!--<p class="dz">代理商</p>-->
+                                                        <!--</td>-->
+                                                        <!--<td align="center" width="100px">&nbsp;</td>-->
+                                                    <!--</tr>-->
+
+                                                    <!--<tr>-->
+                                                        <!--<td align="right" style="width: 100px">-->
+                                                            <!--<img src="../resource/images/JT.png"/></td>-->
+                                                        <!--<td align="left" style="width: 200px">-->
+                                                            <!--<input class="OnlyFloat" type="tel" name="txtManageAward" value="7"/>%-->
+                                                            <!--<input type="hidden" name="hidRelation" value="1462_1463"/>-->
+                                                        <!--</td>-->
+                                                    <!--</tr>-->
+
+                                                    <!--<tr>-->
+                                                        <!--<td align="left">-->
+                                                            <!--<p class="dz">合伙人</p>-->
+                                                        <!--</td>-->
+                                                        <!--<td align="center" width="100px">&nbsp;</td>-->
+                                                    <!--</tr>-->
+
+                                                    <!--<tr>-->
+                                                        <!--<td align="right" style="width: 100px">-->
+                                                            <!--<img src="../resource/images/JT.png"/></td>-->
+                                                        <!--<td align="left" style="width: 200px">-->
+                                                            <!--<input class="OnlyFloat" type="tel" name="txtManageAward" value="6"/>%-->
+                                                            <!--<input type="hidden" name="hidRelation" value="1463_1463"/>-->
+                                                        <!--</td>-->
+                                                    <!--</tr>-->
+
+                                                    <!--<tr>-->
+                                                        <!--<td align="left">-->
+                                                            <!--<p class="dz">合伙人</p>-->
+                                                        <!--</td>-->
+                                                        <!--<td align="center" width="100px">&nbsp;</td>-->
+                                                    <!--</tr>-->
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </fieldset>
+
+                                    </div>
+                                    <!--设置区域END-->
+
+                                    <div style="text-align: center;">
+                                        <a class="btn-lit" href="javascript:teamManagerRebateConfig.saveConfig();"><span>保存</span></a>
+                                    </div>
+                                </td>
+                                <td style="vertical-align: top;">
+                                    <div style="height: 100px; padding: 5px; line-height: 20px;">
+                                        <b>经营者模式</b>：基于企业在经营中常见的提成制度，返利由上下两级之间角色(职位)关系决定，区别于3级向上逐层返利，经营者返利可以理解为向上逐角色(职位)返利，保证每个角色(职位)拿到相应的利益，同时当职位有空缺时，上级角色(职位)可以兼任空缺职位，以此最大程度的激励他们纵向发展自己的下线，避免3级或8级因为跨层太多无法拿到返利的问题。<br/>
+                                        <b>销售奖金</b>：用于奖励促成交易的小伙伴。<br/>
+                                        <b>管理奖金</b>：用于小伙伴等级之间的利益分配<br/>
+                                    </div>
+                                    <div style="height: 2px; border: 0px; border-top: dashed 1px #ccc;"></div>
+                                    <div>
+                                        <div style="padding: 5px; padding-left: 10px; text-align: center; font-size: 14px; font-weight: bold;">调整返利分配信息，模拟相应的人物关系，验证返利结果↓</div>
+                                        <!--test begin-->
+                                        <style>
+                                            a, img, button, input, select {
+                                                -webkit-tap-highlight-color: transparent;
+                                                outline: 0;
+                                                /**/
+                                            }
+
+                                            img {
+                                                border: 0 none;
+                                                /*vertical-align: top/2015102310:05*/
+                                            }
+
+                                            i, em {
+                                                font-style: normal;
+                                            }
+
+                                            ol, ul {
+                                                list-style: none;
+                                            }
+
+                                            p {
+                                                display: block;
+                                                -webkit-margin-before: 0em;
+                                                -webkit-margin-after: 0em;
+                                                -webkit-margin-start: 0px;
+                                                -webkit-margin-end: 0px;
+                                            }
+
+                                            .diypjf {
+                                                font-size: 14px;
+                                                font-family: "微软雅黑";
+                                            }
+
+                                            .diypjf li {
+                                                border-left: 1px solid #ddd;
+                                                float: left;
+                                                text-align: center;
+                                            }
+
+                                            .diypjf li:last-child {
+                                                border-right: 1px solid #ddd;
+                                            }
+
+                                            .diypjf li select {
+                                                padding: 5px 10px;
+                                                text-align: center;
+                                                height: 29px;
+                                            }
+
+                                            .diypjf .s {
+                                                width: 50px;
+                                            }
+
+                                            .diypjf .ss {
+                                                width: 150px;
+                                            }
+
+                                            .diypjf .sss {
+                                                width: 50%;
+                                                min-width: 250px;
+                                            }
+
+                                            .diypjf .ssss {
+                                                width: 150px;
+                                            }
+
+                                            .diypjf li .button {
+                                                /*width: 60px;*/
+                                                text-align: center;
+                                                border: 1px solid #999;
+                                                background-color: #fff;
+                                                padding: 5px 10px;
+                                                margin: 0px 3px 0px 10px;
+                                                float: left;
+                                                cursor: pointer;
+                                            }
+
+                                            .clear_vn {
+                                                clear: both;
+                                            }
+
+                                            .diypjf .titl li {
+                                                background-color: #f1f1f1;
+                                                padding: 10px 0px;
+                                            }
+
+                                            .diypjf .h90 li {
+                                                min-height: 90px;
+                                            }
+                                        </style>
+
+                                        <div class="diypjf" style="margin-left: 10px;">
+                                            <div class="clear_vn titl">
+                                                <ul>
+                                                    <li class="s">
+                                                        <p>账号</p>
+                                                    </li>
+                                                    <li class="ss">
+                                                        <p>等级</p>
+                                                    </li>
+                                                    <li class="sss">
+                                                        <p>可拿返利</p>
+                                                    </li>
+                                                    <li class="ssss">
+                                                        <p>操作</p>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="clear_vn">
+                                                <ul>
+                                                    <li class="s">
+                                                        <p>&nbsp;</p>
+                                                    </li>
+                                                    <li class="ss">
+                                                        <p>&nbsp;</p>
+                                                    </li>
+                                                    <li class="sss">
+                                                        <p>&nbsp;</p>
+                                                    </li>
+                                                    <li class="ssss">
+                                                        <p>&nbsp;</p>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+
+
+                                            <div id="conTestRows">
+
+
+
+                                                <div class="clear_vn h90" name="divTestRow">
+                                                    <ul>
+                                                        <li class="s"><p>tester1</p></li>
+                                                        <li class="ss">
+                                                            <p>
+                                                                <select name="ddlRoleLevel">
+                                                                    <!--<option value="0">请选择</option>-->
+                                                                    <option value="1460">会员等级1</option><option value="1461">行装店主</option><option value="1462">代理商</option><option value="1463">合伙人</option>
+                                                                </select>
+                                                            </p>
+                                                            <p class="conArrow" style="display: none;"><img src="../resource/images/JT2.png"/></p>
+                                                        </li>
+                                                        <li class="sss" style="text-align:left;">
+                                                            <p id="pResult0" style="color:blue;font-weight:bold;padding-left:10px;">--</p>
+                                                        </li>
+                                                        <li class="ssss">
+                                                            <p>
+                                                                <input type="button" value="追加上线" name="btnAppend" class="button" onclick="teamManagerRebateConfig.appendLast();" style="display: block;"/>
+                                                                <input type="button" value="删除" name="btnRemove" class="button" onclick="teamManagerRebateConfig.removeLast();" style="display: block;"/>
+                                                            </p>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--test end-->
+
+                                        <div style="clear: both;"></div>
+
+                                        <div class="division" style="text-align: center;">
+                                            <b>返利总金额</b>：<input type="text" name="txtDemoTotalRebateAmount" id="txtDemoTotalRebateAmount" class="input-small OnlyFloat" placeholder="" value="100"/>元
+                                            &nbsp;
+                                            <a class="btn-lit" href="javascript:teamManagerRebateConfig.testRebate();"><span>测试一下</span></a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+
+    $(function () {
+        teamManagerRebateConfig.init();
+        teamManagerRebateConfig.initanageAwards();
+    });
+    var __curLayerIndex = 0;
+    var __tmplTesterRow = '';
+    var teamManagerRebateConfig = {};
+
+    teamManagerRebateConfig.initanageAwards=function () {
+        var manageAwards=/*[[${manageAwards}]]*/ '';
+        var n=0;
+
+        $("#configInfo").find("tr").each(function(){
+
+            if(n>=manageAwards.length){
+                return false;
+            }
+
+            var percent=manageAwards[n].percent;
+
+            var relation=manageAwards[n].relation;
+
+            var infotr='<tr> ' +
+                    '<td align="right" style="width: 100px"> ' +
+                        '<img src="../resource/images/JT.png"/>' +
+                    '</td> ' +
+                    '<td align="left" style="width: 200px"> ' +
+                        '<input class="OnlyFloat" type="tel" name="txtManageAward" value="'+percent+'"/>% ' +
+                        '<input type="hidden" name="hidRelation" value="'+relation+'"/> ' +
+                    '</td> ' +
+                    '</tr>';
+
+            $(infotr).insertAfter($(this));
+            n++;
+
+        });
+
+
+
+
+
+    }
+
+
+
+
+    teamManagerRebateConfig.init = function () {
+        __tmplTesterRow = $('#tmplTesterRow').html();
+        this.appendLast();
+    };
+    teamManagerRebateConfig.appendLast = function () {
+        this._append(__curLayerIndex);
+        __curLayerIndex++;
+    }
+
+    teamManagerRebateConfig._append = function (index) {
+        var html = __tmplTesterRow.replace(/\{No\}/ig, index + 1);
+        html = html.replace(/\{Index\}/ig, index);
+        $('#conTestRows').append(html);
+        this._switchLayerControlButton();
+    };
+    teamManagerRebateConfig.removeLast = function () {
+        $('div[name="divTestRow"]:last').remove();
+        __curLayerIndex--;
+        this._switchLayerControlButton();
+    };
+    teamManagerRebateConfig._switchLayerControlButton = function () {//移除 追加层级按钮控制
+        $('input[name="btnAppend"]').hide().last().show();
+        $('input[name="btnRemove"]').hide().last().show();
+
+        //$('.optNormalLevel').first().show();
+        $('.conArrow').show().last().hide();
+    };
+
+    //比例保存
+    teamManagerRebateConfig.saveConfig = function () {
+        var _data = $('#frmConfig').serialize();
+        var setting=new Object();
+        var Awards=[];
+        var _percent = 0;
+        var flg = true;
+        $('input[name="txtSaleAward"]').each(function () {
+            var n = $(this).val();
+            if (n == '') {
+                jBox.tip('销售奖未填写');
+                $(this).focus();
+                flg = false;
+                return false;
+            }
+            setting.SaleAward=parseFloat(n);
+            _percent += parseFloat(n);
+        });
+        if (!flg) return;
+
+        var i=0;
+        $('input[name="txtManageAward"]').each(function () {
+            var n = $(this).val();
+            var n_n=$(this).next().val();
+            if (n == '') {
+                jBox.tip('管理奖未填写');
+                $(this).focus();
+                flg = false;
+                return false;
+            }
+            var RelationAndPercent=new Object();
+            RelationAndPercent.Relation=n_n;
+            RelationAndPercent.Percent=parseFloat(n);
+            Awards[i]=RelationAndPercent;
+            _percent += parseFloat(n);
+            i++;
+        });
+        if (!flg) return;
+        setting.ManageAwards=Awards;
+        if (_percent > 100) {
+            jBox.tip('分配总分数不能超过100，请检查');
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            url: "savePushAwardConfig",
+            contentType:"application/json",
+            data: JSON.stringify(setting),
+            success: function (result) {
+                var _result = $.parseJSON(result);
+                if (_result.code == 1) {
+                    jBox.tip('保存成功', 'success');
+                    return;
+                }
+                jBox.tip('保存错误:' + _result.msg, 'error');
+            }
+        });
+    }
+
+    teamManagerRebateConfig.testRebate = function () {
+        var amount = $('#txtDemoTotalRebateAmount').val();
+        if (amount == '') {
+            jBox.tip('请输入要测试的返利金额', 'error');
+            $('#txtDemoTotalRebateAmount').focus();
+            return false;
+        }
+        var flgAllSelected = true;
+        $('[name="ddlRoleLevel"]').each(function () {
+            if ($(this).val() == '0') {
+                flgAllSelected = false;
+                return false;
+            }
+        });
+        if (!flgAllSelected) {
+            jBox.tip('存在未选择的等级，请检查', 'error');
+            return;
+        }
+
+        jBox.tip('正在计算', 'loading');
+        var _data = $('#frmConfig').serialize();
+        $.ajax({
+            type: "POST",
+            url: "",
+            data: _data,// 要提交的表单
+            success: function (result) {
+                jBox.closeTip();
+                teamManagerRebateConfig.testRebateCallback(result);
+            }
+        });
+    };
+
+    teamManagerRebateConfig.testRebateCallback = function (result) {
+        //var result = [{"LevelName":"粉丝","FailRemark":"普通会员等级","TotalGainIntegral":0,"Depth":0,"SaleAwardIntegral":0,"SaleAwardPercent":0.0,"SaleContribInfo":{"ContribMemberId":0,"ContribDepth":0,"ContribLevelName":null,"ContribRemark":null,"ContribMemberType":0},"ManageAwardIntegral":0,"ManageAwardPercent":0.0,"ManageContribInfo":{"ContribMemberId":0,"ContribDepth":0,"ContribLevelName":null,"ContribRemark":null,"ContribMemberType":0},"MemberId":100,"LoginName":"tester1","LevelId":1377,"MemberType":0,"RebateEnabled":0}]
+        var _dataList = $.parseJSON(result);
+
+    };
+
+    //teamManagerRebateConfig.
+
+    /*]]>*/
+</script>
+<style type="text/css">
+    .rebateok {
+        color:#f96;
+    }
+    .rebatenone {
+        text-decoration:line-through;
+        color:#999;
+    }
+</style>
+<script type="text/template" id="tmplTesterRow">
+    <div class="clear_vn h90" name="divTestRow">
+        <ul>
+            <li class="s"><p>tester{No}</p></li>
+            <li class="ss">
+                <p>
+                    <select name="ddlRoleLevel">
+                        <!--<option value="0">请选择</option>-->
+                        <option value="1460">会员等级1</option><option value="1461">行装店主</option><option value="1462">代理商</option><option value="1463">合伙人</option>
+                    </select>
+                </p>
+                <p class="conArrow"><img src="../resource/images/JT2.png" /></p>
+            </li>
+            <li class="sss" style="text-align:left;">
+                <p id="pResult{Index}" style="color:blue;font-weight:bold;padding-left:10px;">--</p>
+            </li>
+            <li class="ssss">
+                <p>
+                    <input type="button" value="追加上线" name="btnAppend" class="button" onclick="teamManagerRebateConfig.appendLast();" />
+                    <input type="button" value="删除" name="btnRemove" class="button" onclick="teamManagerRebateConfig.removeLast();" />
+                </p>
+            </li>
+        </ul>
+    </div>
+</script>
 </body>
 </html>

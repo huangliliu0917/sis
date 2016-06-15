@@ -15,6 +15,7 @@ import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.repository.SisRepository;
+import com.huotu.sis.service.SisLevelService;
 import com.huotu.sis.service.SisService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class SisServiceImplTest extends WebTest {
 
     @Autowired
     SisRepository sisRepository;
+
+    @Autowired
+    SisLevelService sisLevelService;
 
     @Test
     public void testCountProprietor() throws Exception {
@@ -190,5 +194,11 @@ public class SisServiceImplTest extends WebTest {
 
         sisService.countProprietor(own,order,ownsl,sisConfig);
 
+    }
+
+    @Test
+    public void testGetSisLevelByOfflineSisNum() throws Exception{
+        User user=userRepository.findOne(1L);
+        sisLevelService.getSisLevelByOfflineSisNum(user);
     }
 }

@@ -18,9 +18,7 @@ import com.huotu.huobanplus.sdk.mall.annotation.CustomerId;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.entity.SisOpenAwardAssign;
-import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
-import com.huotu.sis.entity.support.OpenGoodsIdLevelIdConverter;
-import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
+import com.huotu.sis.entity.support.*;
 import com.huotu.sis.model.sis.*;
 import com.huotu.sis.model.sisweb.SisLevelModel;
 import com.huotu.sis.repository.GoodRepository;
@@ -35,6 +33,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -83,7 +82,6 @@ public class OpenSisShopController {
 
     @Autowired
     CommonConfigService commonConfigService;
-
 
     /**
      * 进入开店设置页面
@@ -284,15 +282,72 @@ public class OpenSisShopController {
 
 
     /**
-     * 直推奖设置
+     * 经营者模式的直推奖设置
      *
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/pushAwardConfig", method = RequestMethod.GET)
-    public String pushAwardConfig() throws Exception {
+    public String pushAwardConfig(@CustomerId Long customerId, Model model) throws Exception {
+        if(environment.acceptsProfiles("develop")){
+            customerId=4471L;
+        }
+        if(customerId==null){
+            throw new Exception("商户ID不存在");
+        }
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
+
+        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoAsc(customerId);
+        if(sisLevels.isEmpty()){
+            throw new Exception(customerId+"商户没有店中店等级");
+        }
+
+        if(sisConfig.getSisRebateTeamManagerSetting()==null){
+            //初始化直推奖配置
+            sisConfig.setSisRebateTeamManagerSetting(sisConfigService.initSisRebateTeamManagerSetting(customerId));
+
+        }
+        double saleAward=sisConfig.getSisRebateTeamManagerSetting().getSaleAward();
+
+        List<RelationAndPercent> manageAwards=sisConfig.getSisRebateTeamManagerSetting().getManageAwards();
+
+        String[] levelNames=new String[sisLevels.size()*2];
+        for(int i=0;i<sisLevels.size();i++){
+            levelNames[i*2]=sisLevels.get(i).getLevelName();
+            levelNames[i*2+1]=sisLevels.get(i).getLevelName();
+
+        }
+
+        model.addAttribute("saleAward",saleAward);
+
+        model.addAttribute("levelNames",levelNames);
+
+        model.addAttribute("manageAwards",manageAwards);
 
         return "/sis/pushAwardConfig";
+    }
+
+
+    @RequestMapping(value = "/savePushAwardConfig", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultModel savePushAwardConfig(@CustomerId Long customerId, @RequestBody SisRebateTeamManagerSetting setting) throws Exception {
+        ResultModel resultModel = new ResultModel();
+        if (environment.acceptsProfiles("develop")) {
+            customerId = 4471L;
+        }
+        if (customerId == null) {
+            throw new Exception("商户ID不存在");
+        }
+
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
+
+        if(sisConfig!=null&&setting.getManageAwards()!=null){
+            sisConfig.setSisRebateTeamManagerSetting(setting);
+            sisConfigRepository.save(sisConfig);
+        }
+        resultModel.setCode(200);
+        resultModel.setMessage("保存成功！");
+        return resultModel;
     }
 
 
@@ -643,7 +698,7 @@ public class OpenSisShopController {
             newSisLevel.setMerchantId(oldSisLevel.getMerchantId());
             newSisLevel.setRrmark(oldSisLevel.getRrmark());
             newSisLevel.setUpTeamShopNum(oldSisLevel.getUpTeamShopNum());
-            newSisLevel.setUpShopNum(oldSisLevel.getUpShopNum());
+//            newSisLevel.setUpShopNum(oldSisLevel.getUpShopNum());
 //            newSisLevel.setRebateRate(oldSisLevel.getRebateRate());
             newSisLevel.setIsSystem(oldSisLevel.getIsSystem());
         }

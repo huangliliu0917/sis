@@ -1,6 +1,7 @@
 package com.huotu.sis.service;
 
 import com.huotu.sis.entity.SisConfig;
+import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.model.sis.CategoryModel;
 import com.huotu.sis.model.sis.MallGoodModel;
 import org.springframework.data.domain.Page;
@@ -63,6 +64,13 @@ public interface SisConfigService {
      * @throws IOException
      */
     Page<MallGoodModel> getMallGood(Long customerId, String title, Integer pageNo) throws IOException;
+
+    /**
+     * 初始化直推奖配置信息
+     * @return
+     * @throws Exception
+     */
+    SisRebateTeamManagerSetting initSisRebateTeamManagerSetting(Long merchantId) throws Exception;
 
 
 }

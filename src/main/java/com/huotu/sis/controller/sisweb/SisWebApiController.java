@@ -200,49 +200,23 @@ public class SisWebApiController {
 
         String orderId=request.getParameter("orderid");
         String unionorderId=request.getParameter("unionorderid");
-        log.info("userId:"+userId+"orderID="+orderId+"into openShop");
+        log.debug("userId:"+userId+"orderID="+orderId+"into openShop");
         //开店
         userService.newOpen(user,orderId,sisConfig);
-        log.info(user.getId()+"openShopOver");
+        log.debug(user.getId()+"openShopOver");
         //开店奖计算
         userService.countOpenShopAward(user, orderId, unionorderId,sisConfig);
-        log.info(user.getId() + "openCountOver");
+        log.debug(user.getId() + "openCountOver");
         //合伙人送股
         userService.givePartnerStock(user, orderId,sisConfig);
-        log.info(user.getId() + "songguOver");
+        log.debug(user.getId() + "songguOver");
+        //上线升级
+        sisLevelService.upgradeSisLevelByUpShopNum(user);
+        log.debug(user.getId()+" belongOne"+user.getBelongOne()+" upgradeOver");
         resultModel.setCode(200);
         resultModel.setMessage("OK");
         return resultModel;
     }
-
-
-
-//    /**
-//     * 计算直推奖 straight push prize
-//     * @param httpServletRequest
-//     * @return
-//     * @throws Exception
-//     */
-//    @ResponseStatus(HttpStatus.OK)
-//    @RequestMapping(value = "/calShopRebate", method = {RequestMethod.POST,RequestMethod.GET})
-//    @ResponseBody
-//    public ResultModel calShopRebate(HttpServletRequest httpServletRequest) throws Exception {
-//        ResultModel resultModel=new ResultModel();
-//        //安全有效性验证
-//        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
-//            //签名验证
-//            String sign=httpServletRequest.getParameter("sign");
-//            if (sign == null || !sign.equals(securityService.getSign(httpServletRequest))) {
-//                resultModel.setCode(401);
-//                resultModel.setMessage("授权失败：签名未通过！");
-//                return resultModel;
-//            }
-//        }
-//        //参数验证
-//        return resultModel;
-//    }
-
-
 
 
     /**
@@ -376,11 +350,5 @@ public class SisWebApiController {
 //        resultModel.setMessage("OK");
 //        return resultModel;
     }
-
-//    private int getIntegralRateByRate(double amount,int exchangeRate){
-//        if (exchangeRate == 0) exchangeRate = 100;
-//        return  (int)Math.rint(100 * amount / exchangeRate);
-//    }
-
 
 }

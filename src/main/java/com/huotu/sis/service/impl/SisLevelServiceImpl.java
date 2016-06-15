@@ -4,6 +4,7 @@ import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
+import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
@@ -20,10 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by jinzj on 2016/4/6.
@@ -43,6 +41,9 @@ public class SisLevelServiceImpl implements SisLevelService {
 
     @Autowired
     private SisLevelRepository sisLevelRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<SisLevel> getListBelongByLevelId(Integer levelNo, Long customerId) {
@@ -88,6 +89,25 @@ public class SisLevelServiceImpl implements SisLevelService {
         return null;
     }
 
+    @Override
+    public SisLevel getSisLevelByOfflineSisNum(User user) throws Exception {
+        SisLevel newSisLevle=new SisLevel();
+        Long sisNumber=sisRepository.countSisNum(user.getId());
+        if(sisNumber==null){
+            return newSisLevle;
+        }
+        List<SisLevel> sisLevels=sisLevelRepository.findAll();
+
+        for(SisLevel l:sisLevels){
+            if(l.getUpShopNum()==null){
+                continue;
+            }
+            if(sisNumber>=l.getUpShopNum()){
+                newSisLevle=l;
+            }
+        }
+        return newSisLevle;
+    }
 
 
     @Override
@@ -99,7 +119,7 @@ public class SisLevelServiceImpl implements SisLevelService {
         if(sisLevel==null){
             return false;
         }
-        log.info("userID"+user.getId()+"can update level to "+sisLevel.getId());
+        log.debug("userID"+user.getId()+"can update level to "+sisLevel.getId());
         //把该等级保存到用户店中店表中
         saveSisLevel(sis,sisLevel);
 
@@ -107,7 +127,31 @@ public class SisLevelServiceImpl implements SisLevelService {
     }
 
     @Override
+    public void upgradeSisLevelByUpShopNum(User user) throws Exception {
+        User beloneOneUser=userRepository.findOne(user.getBelongOne());
+        if(beloneOneUser==null){
+            log.info("user:"+user.getId()+" have no beloneOneUser");
+            return;
+        }
+        Sis sis=sisRepository.findByUser(beloneOneUser);
+        if(sis==null){
+            log.info("user:"+beloneOneUser.getId()+" Sis is null");
+            return;
+        }
+        SisLevel sisLevel= getSisLevelByOfflineSisNum(beloneOneUser);
+        if(sisLevel==null){
+            log.info("user:"+beloneOneUser.getId()+" Unable to get the store level");
+            return;
+        }
+        saveSisLevel(sis,sisLevel);
+
+    }
+
+    @Override
     public void saveSisLevel(Sis sis, SisLevel sisLevel) throws Exception {
+        if(sisLevel.getLevelNo()==null||sis.getSisLevel()==null||sis.getSisLevel().getLevelNo()==null){
+            return;
+        }
         //保证跟新的等级大于当前的等级
         if(sis.getSisLevel().getLevelNo()>=sisLevel.getLevelNo()){
             log.info("user"+sis.getUser().getId()+"Upgrade level is lower than the current level");

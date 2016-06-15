@@ -75,14 +75,14 @@
                                                        <!--id="title222"  class="input-normal" placeholder=""/></td>-->
 
                                         <!--</tr>-->
-                                        <!--<tr>-->
-                                            <!--<th>直推店铺数量:</th>-->
-                                            <!--<td style="border-top: 1px solid #ddd;">-->
-                                                <!--<span id="sharezx2"></span>-->
-                                                <!--<input maxlength="13" style="width:170px" name="amount2" type="text"-->
-                                                       <!--id="title3"  class="input-normal" placeholder=""/></td>-->
+                                        <tr>
+                                            <th>直推店铺数量:</th>
+                                            <td style="border-top: 1px solid #ddd;">
+                                                <span id="sharezx2"></span>
+                                                <input th:value="*{upShopNum}" maxlength="13" style="width:170px" name="upShopNum" type="text"
+                                                       id="title3"  class="input-normal" placeholder=""/></td>
 
-                                        <!--</tr>-->
+                                        </tr>
                                         <tr>
                                             <th>等级别名:</th>
                                             <td style="border-top: 1px solid #ddd;">
@@ -155,7 +155,6 @@
         var level=$("input[name='levelNo']").val();
 
         if (level.length == 0) {
-//            $.jBox.tip("请输入店铺等级");
             layer.msg("请输入店铺等级");
             return;
         }
@@ -167,12 +166,11 @@
 //            return;
 //        }
 //
-//        var amount2=$("input[name='amount2']").val();
-//        if (amount2.length == 0) {
-//            $.jBox.tip("请输入直推店铺数量");
-//
-//            return;
-//        }
+        var upShopNum=$("input[name='upShopNum']").val();
+        if (upShopNum.length == 0) {
+            layer.msg("请输入直推店铺数量");
+            return;
+        }
         var nickname=$("input[name='levelName']").val();
         if (nickname.length == 0) {
 //            $.jBox.tip("请输入等级别名");
@@ -180,8 +178,6 @@
             return;
         }
         var rebate=$("input[name='rebateRate']").val();
-
-
         if (rebate.length == 0) {
             layer.msg("请输入直推比例");
             return;
@@ -191,10 +187,10 @@
 //            $.jBox.tip("团队店铺数量请输入数字！");
 //            return;
 //        }
-//        if(!rex.test(amount2)||!rex.test(amount2)||amount2.length==0){
-//            $.jBox.tip("直推店铺数量请输入数字！");
-//            return;
-//        }
+        if(!rex.test(upShopNum)||!rex.test(upShopNum)||upShopNum.length==0){
+            layer.msg("直推店铺数量请输入数字")
+            return;
+        }
 
 //        if(!rex.test(level)||!rex.test(level)||level.length==0){
 //            $.jBox.tip("店铺等级请输入数字！");

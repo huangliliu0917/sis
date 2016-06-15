@@ -5,10 +5,14 @@ import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.sdk.common.repository.CategoryRestRepository;
 import com.huotu.huobanplus.sdk.common.repository.GoodsRestRepository;
 import com.huotu.sis.entity.SisConfig;
+import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.support.RelationAndPercent;
+import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.model.sis.CategoryModel;
 import com.huotu.sis.model.sis.MallGoodModel;
 import com.huotu.sis.repository.GoodRepository;
 import com.huotu.sis.repository.SisConfigRepository;
+import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.service.SisConfigService;
 import com.huotu.sis.service.StaticResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +52,9 @@ public class SisConfigServiceImpl implements SisConfigService {
 
     @Autowired
     GoodRepository goodRepository;
+
+    @Autowired
+    SisLevelRepository sisLevelRepository;
 
     @Override
     public SisConfig initSisConfig(Long customerId) throws Exception {//todo 初始化
@@ -208,6 +215,32 @@ public class SisConfigServiceImpl implements SisConfigService {
 //            return mallGoodModelPage;
 //        }
 //        return null;
+    }
+
+    @Override
+    public SisRebateTeamManagerSetting initSisRebateTeamManagerSetting(Long merchantId) throws Exception {
+        SisRebateTeamManagerSetting setting=new SisRebateTeamManagerSetting();
+        setting.setSaleAward(0);
+        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoAsc(merchantId);
+        List<RelationAndPercent> relationAndPercents=new ArrayList<>();
+        //数组循环下标
+        int n=0;
+        //循环数组
+        int[] sub={0,0};
+        while (true){
+            SisLevel left=sisLevels.get(sub[0]);
+            SisLevel right=sisLevels.get(sub[1]);
+            RelationAndPercent relationAndPercent=new RelationAndPercent();
+            relationAndPercent.setRelation(left.getLevelNo()+"_"+right.getLevelNo());
+            relationAndPercent.setPercent(0);
+            relationAndPercents.add(relationAndPercent);
+            if(sub[(n+1)%2]+1>=sisLevels.size()){
+                break;
+            }
+            sub[++n%2]++;
+        }
+        setting.setManageAwards(relationAndPercents);
+        return setting;
     }
 
 

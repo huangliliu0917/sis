@@ -26,6 +26,14 @@ public interface SisLevelService {
      */
     SisLevel getUpgradeSisLevel(SisConfig sisConfig,Sis sis,OrderItems orderItems, User user) throws Exception;
 
+    /**
+     * 根据用户下线开店的数量获取可升级的店铺等级
+     * @param user
+     * @return
+     * @throws Exception
+     */
+    SisLevel getSisLevelByOfflineSisNum(User user) throws Exception;
+
 
     /**
      * 升级店中店等级
@@ -36,6 +44,14 @@ public interface SisLevelService {
      * @throws Exception
      */
     boolean upgradeSisLevel(User user, SisConfig sisConfig, OrderItems orderItems) throws Exception;
+
+
+    /**
+     * 根据输入用户的上线的下级开店数量升级
+     * @param user      用户
+     * @throws Exception
+     */
+    void upgradeSisLevelByUpShopNum(User user) throws Exception;
 
     /**
      * 保存店中店等级
