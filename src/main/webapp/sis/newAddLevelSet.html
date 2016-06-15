@@ -91,14 +91,14 @@
                                                        id="title"  class="input-normal" placeholder=""/></td>
 
                                         </tr>
-                                        <!--<tr>-->
-                                            <!--<th>直推比例:</th>-->
-                                            <!--<td style="border-top: 1px solid #ddd;">-->
-                                                <!--<span id="sharezx32"></span>-->
-                                                <!--<input maxlength="13" style="width:170px" name="rebate" type="text"-->
-                                                       <!--id="title2"  class="input-normal" placeholder=""/>%</td>-->
+                                        <tr>
+                                            <th>直推比例:</th>
+                                            <td style="border-top: 1px solid #ddd;">
+                                                <span id="sharezx32"></span>
+                                                <input th:value="*{rebateRate}" maxlength="13" style="width:170px" name="rebateRate" type="text"
+                                                       id="title2"  class="input-normal" placeholder=""/>%</td>
 
-                                        <!--</tr>-->
+                                        </tr>
                                         <tr>
                                             <th>是否允许补差价:</th>
                                             <td style="border-top: 1px solid #ddd;">
@@ -179,16 +179,13 @@
             layer.msg("请输入等级别名");
             return;
         }
-//        var rebate=$("input[name='rebate']").val();
-
-//
-//        if (rebate.length == 0) {
-//            $.jBox.tip("请输入直推比例");
-//            return;
-//        }
+        var rebate=$("input[name='rebateRate']").val();
 
 
-
+        if (rebate.length == 0) {
+            layer.msg("请输入直推比例");
+            return;
+        }
 
 //        if(!rex.test(amount1)||!rex.test(amount1)||amount1.length==0){
 //            $.jBox.tip("团队店铺数量请输入数字！");

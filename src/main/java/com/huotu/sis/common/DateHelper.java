@@ -19,7 +19,7 @@ public class DateHelper {
      * @param positiveDay   转正所需天数
      * @return
      */
-    public Date countPositiveTime(int positiveDay){
+    public static Date countPositiveTime(int positiveDay){
         Date date=new Date();
         Calendar ca=Calendar.getInstance();
         ca.setTime(date);

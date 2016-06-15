@@ -16,13 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 public class SisRebateTeamManagerSetting {
     /**
-     * 层级
+     * 店主获得的比例
      */
     @JsonProperty("SaleAward")
     private double saleAward;
 
     /**
-     * 个性化
+     * 层级比例
      */
     @JsonProperty("ManageAwards")
     private List<RelationAndPercent> manageAwards;

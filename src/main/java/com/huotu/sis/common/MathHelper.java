@@ -166,4 +166,16 @@ public class MathHelper {
         return string;
     }
 
+
+    /**
+     *  将钱按比例转换为积分
+     * @param money         金钱
+     * @param exchangeRate  比例
+     * @return
+     */
+    public static int getIntegralRateByRate(double money,int exchangeRate){
+        if (exchangeRate == 0) exchangeRate = 100;
+        return  (int)Math.rint(100 * money / exchangeRate);
+    }
+
 }

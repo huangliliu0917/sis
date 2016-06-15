@@ -644,7 +644,7 @@ public class OpenSisShopController {
             newSisLevel.setRrmark(oldSisLevel.getRrmark());
             newSisLevel.setUpTeamShopNum(oldSisLevel.getUpTeamShopNum());
             newSisLevel.setUpShopNum(oldSisLevel.getUpShopNum());
-            newSisLevel.setRebateRate(oldSisLevel.getRebateRate());
+//            newSisLevel.setRebateRate(oldSisLevel.getRebateRate());
             newSisLevel.setIsSystem(oldSisLevel.getIsSystem());
         }
         sisLevelRepository.save(newSisLevel);

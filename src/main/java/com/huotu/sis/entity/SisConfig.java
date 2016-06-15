@@ -55,7 +55,7 @@ public class SisConfig {
     private Integer openNeedInvite;
 
     @Column(name = "RebateSetting")
-    @Description("直推奖计算")
+    @Description("直推奖计算(未使用该字段)")
     private String rebateSetting;
 
 

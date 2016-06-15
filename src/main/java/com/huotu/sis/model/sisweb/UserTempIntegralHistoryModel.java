@@ -1,61 +1,51 @@
 package com.huotu.sis.model.sisweb;
 
+import com.huotu.huobanplus.common.entity.User;
 import lombok.Getter;
 import lombok.Setter;
-import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 
 /**
+ * 临时积分表model
  * Created by admin on 2016/1/31.
+ * modify  by slt on 201616/13
  */
 @Setter
 @Getter
-public class UserTempIntegralHistoryModel
-{
-     private int utih_id;
+public class UserTempIntegralHistoryModel {
 
-    private int utih_customerId;
+    /**
+     * 返利用户
+     */
+    private User user;
 
-    private int utih_userId;
+    /**
+     * 贡献用户
+     */
+    private User contributeUser;
 
-    private int utih_type;
+    /**
+     * 返利积分
+     */
+    private int integral;
 
-    private int utih_integral;
+    /**
+     * 直推比例
+     */
+    private double pushRatio;
+//
+//    /**
+//     * 预计转正天数
+//     */
+//    private int positiveDay;
+//
+//    /**
+//     * 订单
+//     */
+//    private Order order;
+//
+//    /**
+//     * 联合订单ID
+//     */
+//    private String unionOrderId;
 
-    private int utih_status;
-
-    private DateTime utih_addTime;
-
-    private DateTime utih_updateTime;
-
-    private String utih_desc;
-
-    private int utih_contribute_userID;
-
-    private String utih_order_id;
-
-    private int utih_flowIntegral;
-
-    private int utih_positiveFlag;
-
-    private DateTime utih_estimate_postime;
-
-    private DateTime utih_positiveTime;
-
-    private int utih_userLevelId;
-
-    private int utih_userGroupId;
-
-    private int utih_userType;
-
-    private int utih_newType;
-
-    private int utih_contribute_userType;
-
-    private  int utih_contriibute_belongone;
-
-    private String utih_contribute_desc;
-
-    private String union_order_id;
-
-    private int product_id;
 }

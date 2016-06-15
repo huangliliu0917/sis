@@ -63,7 +63,7 @@ public class SisLevel {
     private Integer isSystem;
 
     @Column(name = "RebateRate")
-    @Description("直推奖")
+    @Description("直推奖比例")
     private double rebateRate;
 
     @Column(name = "IsExtraUpgrade")
