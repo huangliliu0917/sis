@@ -18,9 +18,9 @@
           th:href="@{/resource/css/settlements.css}"/>
     <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"
             th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>
-    <!--layer弹框插件-->
     <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
           th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <!--layer弹框插件-->
     <script type="text/javascript" src="../resource/layer/layer.js"
             th:src="@{/resource/layer/layer.js}"></script>
     <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
@@ -168,11 +168,27 @@
                                         <tr id="enableLevelUpgrade">
                                         <th>是否开启店铺升级:</th>
                                         <td>
-                                        <input value="1" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="*{enableLevelUpgrade}"/>
-                                        <label style="padding-left: 0" for="openMode0">是</label>
-                                        <input value="0" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="!*{enableLevelUpgrade}"/>
-                                        <label style="padding-left: 0" for="openMode1">否</label>
+                                        <input id="sisLevelUpgradeNo" value="1" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="*{enableLevelUpgrade}"/>
+                                        <label style="padding-left: 0" for="sisLevelUpgradeNo">是</label>
+                                        <input id="sisLevelUpgradeYes" value="0" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="!*{enableLevelUpgrade}"/>
+                                        <label style="padding-left: 0" for="sisLevelUpgradeYes">否</label>
                                         </td>
+                                        </tr>
+
+
+
+                                        <tr id="pushAwardConfig">
+                                            <th>直推奖模式:</th>
+                                            <td>
+                                                <input id="pushModel_0" value="0" onchange="setPushAwardConfig()" type="radio" name="pushAwardMode" th:checked="*{pushAwardMode==0}"/>
+                                                <label style="padding-left: 0" for="pushModel_0">默认模式</label>
+                                                <input id="pushModel_1" value="1" onchange="setPushAwardConfig()" type="radio" name="pushAwardMode" th:checked="*{pushAwardMode==1}"/>
+                                                <label style="padding-left: 0" for="pushModel_1">经营者模式</label>
+
+                                                <a id="pushAwardConfig_a" class="btn-lit" href="javascript:pushAwardConfig();" style="color: #fff">
+                                                    <span>经营者直推奖配置</span>
+                                                </a>
+                                            </td>
                                         </tr>
 
                                         <tr>
@@ -387,7 +403,8 @@
                 "openAwardMode":$("input[name='openAwardMode']").val(),
                 "extraUpGoodsId":$("#extraUpGoodLabel").text(),
                 "homePageColor":$("#homePageColor").val(),
-                "enableLevelUpgrade":$("input[name='enableLevelUpgrade']:checked").val()
+                "enableLevelUpgrade":$("input[name='enableLevelUpgrade']:checked").val(),
+                "pushAwardMode":$("input[name='pushAwardMode']:checked").val()
             },
             success:function(result){
                 if(result.code==200){
@@ -573,6 +590,8 @@
             $("input[name='isShelvesAllGoods']").removeAttr("disabled");
             $("#recommend").show();
             freeSet();
+            changeGoodsType();
+            setPushAwardConfig();
 
         }
     }
@@ -633,6 +652,25 @@
 //            shade: false,
             area: ['1300px', '800px'],
             content:"http://"+testhost+'/MallManage/ShopInShopV2/OpenAward.aspx',
+//            content: 'selectOpenGoodsList.html',
+            end:function(){
+
+            }
+        });
+
+    }
+
+    function pushAwardConfig(){
+        var host=/*[[${mainHost}]]*/ '';
+        var testhost=/*[[${mainhost}]]*/ '';
+        layer.open({
+            type: 2,
+//            offset:'100px',
+            title: '店中店直推奖设置',
+//            shadeClose: true,
+//            shade: false,
+            area: ['1300px', '800px'],
+            content:'pushAwardConfig',
 //            content: 'selectOpenGoodsList.html',
             end:function(){
 
@@ -706,6 +744,16 @@
 
 
 
+    }
+
+    function setPushAwardConfig(){
+        var pushModel=$("input[name='pushAwardMode']:checked").val();
+        if(pushModel==0){
+            $("#pushAwardConfig_a").hide();
+        }
+        if(pushModel==1){
+            $("#pushAwardConfig_a").show();
+        }
     }
 
 

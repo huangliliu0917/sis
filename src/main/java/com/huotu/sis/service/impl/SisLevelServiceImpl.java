@@ -96,7 +96,7 @@ public class SisLevelServiceImpl implements SisLevelService {
         if(sisNumber==null){
             return newSisLevle;
         }
-        List<SisLevel> sisLevels=sisLevelRepository.findAll();
+        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoDesc(user.getMerchant().getId());
 
         for(SisLevel l:sisLevels){
             if(l.getUpShopNum()==null){
@@ -104,6 +104,7 @@ public class SisLevelServiceImpl implements SisLevelService {
             }
             if(sisNumber>=l.getUpShopNum()){
                 newSisLevle=l;
+                break;
             }
         }
         return newSisLevle;
@@ -133,17 +134,18 @@ public class SisLevelServiceImpl implements SisLevelService {
             log.info("user:"+user.getId()+" have no beloneOneUser");
             return;
         }
-        Sis sis=sisRepository.findByUser(beloneOneUser);
-        if(sis==null){
+        Sis beloneOneUserSis=sisRepository.findByUser(beloneOneUser);
+        if(beloneOneUserSis==null){
             log.info("user:"+beloneOneUser.getId()+" Sis is null");
             return;
         }
+        //获取应该升级到的店铺等级
         SisLevel sisLevel= getSisLevelByOfflineSisNum(beloneOneUser);
         if(sisLevel==null){
             log.info("user:"+beloneOneUser.getId()+" Unable to get the store level");
             return;
         }
-        saveSisLevel(sis,sisLevel);
+        saveSisLevel(beloneOneUserSis,sisLevel);
 
     }
 

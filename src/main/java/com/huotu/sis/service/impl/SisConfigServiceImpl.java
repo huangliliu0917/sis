@@ -73,6 +73,7 @@ public class SisConfigServiceImpl implements SisConfigService {
             sisConfig.setOpenNeedInvite(1);
             sisConfig.setMaxMartketableNum(100);
             sisConfig.setMaxBrandNum(5);
+            sisConfig.setPushAwardMode(0);
             sisConfig.setUpdateTime(new Date());
             sisConfig.setShareTitle("[name]邀请您加入[mgt]");
             sisConfig.setShareDesc("点击注册，开启你的创业之路！");
@@ -105,6 +106,7 @@ public class SisConfigServiceImpl implements SisConfigService {
         sisConfig.setCorpStockBelongOne(newSisConfig.getCorpStockBelongOne());
         sisConfig.setOpenNeedInvite(newSisConfig.getOpenNeedInvite());
         sisConfig.setOpenMode(newSisConfig.getOpenMode());
+        sisConfig.setPushAwardMode(newSisConfig.getPushAwardMode());
         sisConfig.setHomePageColor(newSisConfig.getHomePageColor());
         sisConfig.setOpenGoodsId(newSisConfig.getOpenGoodsId());
         sisConfig.setMaxMartketableNum(newSisConfig.getMaxMartketableNum());

@@ -130,7 +130,7 @@ public class SisServiceImplTest extends WebTest {
 
         Sis sis=new Sis();
         sis.setUser(own);
-        sis.setSisLevel(twosl);
+        sis.setSisLevel(ownsl);
         sis=sisRepository.saveAndFlush(sis);
 
          sis=new Sis();
@@ -192,7 +192,7 @@ public class SisServiceImplTest extends WebTest {
 
 
 
-        sisService.countProprietor(own,order,ownsl,sisConfig);
+        sisService.countProprietor(own,order,sisConfig);
 
     }
 

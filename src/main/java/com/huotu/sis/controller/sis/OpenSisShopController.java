@@ -12,9 +12,15 @@ package com.huotu.sis.controller.sis;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.huotu.huobanplus.common.entity.Goods;
+import com.huotu.huobanplus.common.entity.Merchant;
+import com.huotu.huobanplus.common.entity.MerchantConfig;
+import com.huotu.huobanplus.common.entity.User;
+import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.MerchantRepository;
 import com.huotu.huobanplus.sdk.common.repository.GoodsRestRepository;
 import com.huotu.huobanplus.sdk.mall.annotation.CustomerId;
+import com.huotu.sis.common.MathHelper;
+import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.entity.SisOpenAwardAssign;
@@ -27,6 +33,7 @@ import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.repository.SisOpenAwardAssignRepository;
 import com.huotu.sis.service.CommonConfigService;
 import com.huotu.sis.service.SisConfigService;
+import com.huotu.sis.service.SisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
@@ -82,6 +89,12 @@ public class OpenSisShopController {
 
     @Autowired
     CommonConfigService commonConfigService;
+
+    @Autowired
+    SisService sisService;
+
+    @Autowired
+    MerchantConfigRepository merchantConfigRepository;
 
     /**
      * 进入开店设置页面
@@ -311,16 +324,23 @@ public class OpenSisShopController {
 
         List<RelationAndPercent> manageAwards=sisConfig.getSisRebateTeamManagerSetting().getManageAwards();
 
-        String[] levelNames=new String[sisLevels.size()*2];
+        SimpleSisLevelModel[] models=new SimpleSisLevelModel[sisLevels.size()*2];
+//        String[] levelNames=new String[sisLevels.size()*2];
         for(int i=0;i<sisLevels.size();i++){
-            levelNames[i*2]=sisLevels.get(i).getLevelName();
-            levelNames[i*2+1]=sisLevels.get(i).getLevelName();
+            models[i*2]=new SimpleSisLevelModel();
+            models[i*2+1]=new SimpleSisLevelModel();
+            models[i*2].setLevelTitle(sisLevels.get(i).getLevelName());
+            models[i*2+1].setLevelTitle(sisLevels.get(i).getLevelName());
+
+            models[i*2].setLevelNo(sisLevels.get(i).getLevelNo());
+            models[i*2+1].setLevelNo(sisLevels.get(i).getLevelNo());
 
         }
 
+
         model.addAttribute("saleAward",saleAward);
 
-        model.addAttribute("levelNames",levelNames);
+        model.addAttribute("levelNames",models);
 
         model.addAttribute("manageAwards",manageAwards);
 
@@ -348,6 +368,53 @@ public class OpenSisShopController {
         resultModel.setCode(200);
         resultModel.setMessage("保存成功！");
         return resultModel;
+    }
+
+    @RequestMapping(value = "/testPushAwardConfig",method = RequestMethod.POST)
+    @ResponseBody
+    public ResultModel testPushAwardConfig(@CustomerId Long customerId,
+                                           @RequestBody TestPushAwardModel model) throws Exception{
+        ResultModel resultModel = new ResultModel();
+        if (environment.acceptsProfiles("develop")) {
+            customerId = 4471L;
+        }
+        if (customerId == null) {
+            throw new Exception("商户ID不存在");
+        }
+        Merchant merchant=merchantRespository.findOne(customerId);
+        MerchantConfig merchantConfig =merchantConfigRepository.findByMerchant(merchant);
+
+        //积分兑换钱的比例
+        int exchangeRate=merchantConfig.getExchangeRate();
+
+        List<User> users=new ArrayList<>();
+        for(Integer n:model.getLevelNos()){
+            User user=new User();
+            user.setLoginName("test");
+            Sis sis=new Sis();
+            sis.setUser(user);
+
+        }
+
+        List<Double> percents=sisService.testUserTempIntegralHistoryModel(model.getLevelNos(),model.getSetting().getManageAwards());
+
+        percents.set(0,percents.get(0)+model.getSetting().getSaleAward());
+        List<PercentAndIntModel> percentAndIntModels=new ArrayList<>();
+        for(int i=0;i<percents.size();i++){
+            PercentAndIntModel percentAndIntModel=new PercentAndIntModel();
+            double money=model.getAmount()*percents.get(i)/100;
+            Integer award=MathHelper.getIntegralRateByRate(money,exchangeRate);
+            percentAndIntModel.setPercent(percents.get(i));
+            percentAndIntModel.setAward(award);
+            percentAndIntModels.add(percentAndIntModel);
+        }
+
+        resultModel.setCode(200);
+        resultModel.setData(percentAndIntModels);
+        resultModel.setMessage("保存成功！");
+        return resultModel;
+
+
     }
 
 

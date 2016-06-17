@@ -185,7 +185,7 @@ public class SisServiceImpl implements SisService {
                 models.add(model);
                 break;
             case 1://经营者直推奖模式
-                models=countProprietor(user,order,sisLevel,sisConfig);
+                models=countProprietor(user,order,sisConfig);
                 break;
             default:
                 break;
@@ -197,7 +197,7 @@ public class SisServiceImpl implements SisService {
         }
 
         List<UserTempIntegralHistory> userTempIntegralHistories=new ArrayList<>();
-        models.forEach(model -> {
+        models.stream().filter(model->model.getPushRatio()!=0).forEach(model -> {
             UserTempIntegralHistory utih=new UserTempIntegralHistory();
             //返利的积分
             int integral=countTotalIntegral(orderItems,model.getPushRatio(),exchangeRate);
@@ -232,7 +232,8 @@ public class SisServiceImpl implements SisService {
     }
 
     @Override
-    public List<UserTempIntegralHistoryModel> countProprietor(User user, Order order,SisLevel userSisLevel,SisConfig sisConfig) throws Exception {
+    public List<UserTempIntegralHistoryModel> countProprietor(User user, Order order,SisConfig sisConfig) throws Exception {
+
         List<UserTempIntegralHistoryModel> models=new ArrayList<>();
         if(sisConfig.getSisRebateTeamManagerSetting()==null){
             //没有直推奖配置信息
@@ -241,93 +242,18 @@ public class SisServiceImpl implements SisService {
         }
 
         SisRebateTeamManagerSetting setting=sisConfig.getSisRebateTeamManagerSetting();
-
-        List<RelationAndPercent> percents=setting.getManageAwards();
-        //所有可能返利的用户
         List<User> users=userService.getAllRelationByUserId(user.getId());
-        if(users.isEmpty()){
-            //没有可以返利的用户
-            log.info("userId:"+user.getId()+" No user can rebate");
-            return models;
-        }
+        //没有可以返利的用户
+        log.info("userId:"+user.getId()+" No user can rebate");
 
+        models=countUserTempIntegralHistoryModel(order,users,setting);
 
         //店主应该拿的比例
         double userSispushRate=setting.getSaleAward();
 
-        //默认贡献人是订单用户
-        User contributeUser=userRepository.findOne((long)order.getUserId());
-
-        int minSisLevelNo=-1;
-        int userNo=0;
-        int tierNo=0;
-
-        while (true){
-            //只要所有的管理奖金比例列表都遍历完毕，或可返利用户列表遍历完毕则跳出循环
-            if(userNo>=users.size()||tierNo>=percents.size()){
-                break;
-            }
-
-            //可能返利用户
-            User rebateUser=users.get(userNo);
-            //可返利的直推比例
-            double rate=0;
-            //可能返利用户的店铺
-            Sis rebateUserSis=sisRepository.findByUser(rebateUser);
-
-            Integer levelLeftNo=-1;
-            Integer levelRightNo=-1;
-
-            if(rebateUserSis!=null && rebateUserSis.getSisLevel()!=null){
-
-                //可能返利用户的店铺等级序号
-                Integer rebateUserSisLevelNo=rebateUserSis.getSisLevel().getLevelNo();
-                while (true){
-                    if(tierNo>=percents.size()){
-                        break;
-                    }
-
-                    RelationAndPercent relationAndPercent=percents.get(tierNo);
-                    String[] levelNos=relationAndPercent.getRelation().split("_");
-                    //可得比例
-                    double percent=relationAndPercent.getPercent();
-                    if(levelNos.length!=2){
-                        tierNo++;
-                        continue;
-                    }
-                    levelLeftNo=Integer.valueOf(levelNos[0]);
-                    levelRightNo=Integer.valueOf(levelNos[1]);
-                    if(levelLeftNo<rebateUserSisLevelNo||(minSisLevelNo==levelLeftNo&&rebateUserSisLevelNo>=levelRightNo)){
-                        rate+=percent;
-                        tierNo++;
-                    }else {
-                        break;
-                    }
-                }
-                if(rate>0){
-                    UserTempIntegralHistoryModel model=new UserTempIntegralHistoryModel();
-                    model.setUser(rebateUser);
-                    model.setContributeUser(contributeUser);
-                    model.setPushRatio(rate);
-                    models.add(model);
-                }
-            }
-            minSisLevelNo=levelLeftNo;
-            contributeUser=users.get(userNo);
-            userNo++;
-        }
-
-        //如果上线一个管理奖金都没有则新建一个店主的返利配置
-        if(models.isEmpty()||!user.getId().equals(models.get(0).getUser().getId())){
-            UserTempIntegralHistoryModel model=new UserTempIntegralHistoryModel();
-            model.setContributeUser(userRepository.findOne((long)order.getUserId()));
-            model.setUser(user);
-            models.add(0,model);
-        }
         //店主的管理奖金加上销售奖金
         models.get(0).setPushRatio(models.get(0).getPushRatio()+userSispushRate);
         return models;
-
     }
 
     @Override
@@ -381,5 +307,139 @@ public class SisServiceImpl implements SisService {
     public int countTotalIntegral(List<OrderItems> orderItemses,double rebateRate,int exchangeRate) {
         double totalOrderItemsAmount=countOrderItemsTotalAmount(orderItemses)*rebateRate/100;
         return MathHelper.getIntegralRateByRate(totalOrderItemsAmount,exchangeRate);
+    }
+
+    @Override
+    public List<UserTempIntegralHistoryModel> countUserTempIntegralHistoryModel(Order order,List<User> users, SisRebateTeamManagerSetting setting) throws Exception {
+        List<UserTempIntegralHistoryModel> models=new ArrayList<>();
+        List<RelationAndPercent> percents=setting.getManageAwards();
+
+        //默认贡献人是订单用户
+        User contributeUser=new User();
+        if(order!=null){
+            contributeUser=userRepository.findOne((long)order.getUserId());
+        }
+
+
+        int minSisLevelNo=-1;
+        int userNo=0;
+        int tierNo=0;
+        Integer levelLeftNo=-1;
+        Integer levelRightNo=-1;
+
+        while (true){
+            //只要所有的管理奖金比例列表都遍历完毕，或可返利用户列表遍历完毕则跳出循环
+            if(userNo>=users.size()||tierNo>=percents.size()){
+                break;
+            }
+
+            //可能返利用户
+            User rebateUser=users.get(userNo);
+            //可返利的直推比例
+            double rate=0;
+            //可能返利用户的店铺
+            Sis rebateUserSis=sisRepository.findByUser(rebateUser);
+
+            if(rebateUserSis!=null && rebateUserSis.getSisLevel()!=null){
+
+                //可能返利用户的店铺等级序号
+                Integer rebateUserSisLevelNo=rebateUserSis.getSisLevel().getLevelNo();
+                while (true){
+                    if(tierNo>=percents.size()){
+                        break;
+                    }
+                    RelationAndPercent relationAndPercent=percents.get(tierNo);
+                    String[] levelNos=relationAndPercent.getRelation().split("_");
+                    //可得比例
+                    double percent=relationAndPercent.getPercent();
+                    if(levelNos.length!=2){
+                        tierNo++;
+                        continue;
+                    }
+                    levelLeftNo=Integer.valueOf(levelNos[0]);
+                    levelRightNo=Integer.valueOf(levelNos[1]);
+                    if(levelLeftNo<rebateUserSisLevelNo||(minSisLevelNo==levelLeftNo&&rebateUserSisLevelNo>=levelRightNo)){
+                        rate+=percent;
+                        tierNo++;
+                    }else {
+                        break;
+                    }
+                }
+            }
+            UserTempIntegralHistoryModel model=new UserTempIntegralHistoryModel();
+            model.setUser(rebateUser);
+            model.setContributeUser(contributeUser);
+            model.setPushRatio(rate);
+            models.add(model);
+            if(rate>0){
+                contributeUser=rebateUser;
+            }
+            minSisLevelNo=levelLeftNo;
+            userNo++;
+        }
+        return models;
+    }
+
+    @Override
+    public List<Double> testUserTempIntegralHistoryModel(List<Integer>levels,List<RelationAndPercent> manageAwards) throws Exception {
+        List<Double> percents=new ArrayList<>();
+        int minSisLevelNo=-1;
+        int tierNo=0;
+        Integer levelLeftNo=-1;
+        Integer levelRightNo=-1;
+        for(int i=0;i<levels.size();i++){
+            double rate=0;
+            Integer rebateUserSisLevelNo=levels.get(i);
+            while (true){
+                if(tierNo>=manageAwards.size()){
+                    break;
+                }
+                RelationAndPercent relationAndPercent=manageAwards.get(tierNo);
+                String[] levelNos=relationAndPercent.getRelation().split("_");
+                //可得比例
+                double percent=relationAndPercent.getPercent();
+
+                levelLeftNo=Integer.valueOf(levelNos[0]);
+                levelRightNo=Integer.valueOf(levelNos[1]);
+                if(levelLeftNo<rebateUserSisLevelNo||(minSisLevelNo==levelLeftNo&&rebateUserSisLevelNo>=levelRightNo)){
+                    rate+=percent;
+                    tierNo++;
+                }else {
+                    break;
+                }
+            }
+            percents.add(rate);
+            minSisLevelNo=levelLeftNo;
+        }
+        return percents;
+    }
+
+    @Override
+    public double countPushPercent(Integer levelNo, List<RelationAndPercent> manageAwards) {
+        int tierNo=0;
+        //可返利的直推比例
+        double rate=0;
+        Integer levelLeftNo=-1;
+        while (true){
+            if(tierNo>=manageAwards.size()){
+                break;
+            }
+            RelationAndPercent relationAndPercent=manageAwards.get(tierNo);
+            String[] levelNos=relationAndPercent.getRelation().split("_");
+            //可得比例
+            double percent=relationAndPercent.getPercent();
+            if(levelNos.length!=2){
+                tierNo++;
+                continue;
+            }
+            levelLeftNo=Integer.valueOf(levelNos[0]);
+            if(levelLeftNo<levelNo){
+                rate+=percent;
+                tierNo++;
+            }else {
+                break;
+            }
+        }
+        return rate;
     }
 }

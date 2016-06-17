@@ -7,6 +7,8 @@ import com.huotu.huobanplus.common.entity.UserTempIntegralHistory;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.support.RelationAndPercent;
+import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.model.sis.SisSearchModel;
 import com.huotu.sis.model.sisweb.UserTempIntegralHistoryModel;
 import org.springframework.data.domain.Page;
@@ -56,7 +58,7 @@ public interface SisService {
      * 经营者模式计算直推奖
      * @throws Exception
      */
-    List<UserTempIntegralHistoryModel> countProprietor(User user, Order order,SisLevel userSisLevel,SisConfig sisConfig) throws Exception;
+    List<UserTempIntegralHistoryModel> countProprietor(User user, Order order,SisConfig sisConfig) throws Exception;
 
     /**
      * 默认直推奖计算
@@ -108,4 +110,28 @@ public interface SisService {
      */
     int countTotalIntegral(List<OrderItems> orderItemses,double rebateRate,int exchangeRate);
 
+    /**
+     * 计算用户的直推比例
+     * @param order     购买的订单
+     * @param users     用户列表
+     * @param setting   配置信息
+     * @return
+     * @throws Exception
+     */
+    List<UserTempIntegralHistoryModel> countUserTempIntegralHistoryModel(Order order,List<User> users, SisRebateTeamManagerSetting setting) throws Exception;
+
+    /**
+     * 测试直推比例
+     * @return
+     * @throws Exception
+     */
+    List<Double> testUserTempIntegralHistoryModel(List<Integer>levels,List<RelationAndPercent> manageAwards) throws Exception;
+
+    /**
+     * 根据等级序号计算直推比例
+     * @param levelNo       等级序号
+     * @param manageAwards  直推设置
+     * @return
+     */
+    double countPushPercent(Integer levelNo,List<RelationAndPercent> manageAwards);
 }

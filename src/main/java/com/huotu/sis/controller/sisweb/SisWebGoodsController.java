@@ -5,29 +5,25 @@ import com.huotu.huobanplus.common.dataService.AdvanceQuatoRebateService;
 import com.huotu.huobanplus.common.dataService.NormalRebateService;
 import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.*;
-import com.huotu.huobanplus.common.entity.support.LevelPrice;
-import com.huotu.huobanplus.common.entity.support.RebateConfiguration;
-import com.huotu.huobanplus.common.entity.support.RebateTeam;
-import com.huotu.huobanplus.common.entity.support.RebateTeamManagerSetting;
+import com.huotu.huobanplus.common.entity.support.*;
 import com.huotu.huobanplus.common.model.RebateCompatible;
 import com.huotu.huobanplus.common.model.RebateInfo;
 import com.huotu.huobanplus.common.model.RebateMode;
 import com.huotu.huobanplus.common.model.adrebateconfig.ProductDisRebateDesc;
 import com.huotu.huobanplus.common.repository.*;
 import com.huotu.huobanplus.common.utils.DateUtil;
+import com.huotu.sis.common.MathHelper;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisGoods;
 import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.model.sisweb.*;
 import com.huotu.sis.repository.*;
-import com.huotu.sis.service.SisGoodsService;
+import com.huotu.sis.service.*;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.exception.UserNotFoundException;
-import com.huotu.sis.service.CommonConfigsService;
-import com.huotu.sis.service.SisGoodsRecommendService;
-import com.huotu.sis.service.SqlService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +99,9 @@ public class SisWebGoodsController {
     private CommonConfigsService commonConfigsService;
     @Autowired
     private SisGoodsRecommendService sisGoodsRecommendService;
+
+    @Autowired
+    private SisService sisService;
 
     /**
      * 查找品牌对应的商品列表详情
@@ -787,6 +786,10 @@ public class SisWebGoodsController {
         if (userLevel == null) {
             throw new SisException("会员等级未配置");
         }
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
+        if(sisConfig==null||sisConfig.getEnabled()==0){
+            throw new SisException("未找到店中店配置或未启用店中店");
+        }
         MerchantConfig merchantConfig = merchantConfigRepository.findByMerchant(user.getMerchant());
         int exchangeRate = 100; //默认100
         RebateInfo merchantRebateInfo = new RebateInfo();
@@ -819,8 +822,29 @@ public class SisWebGoodsController {
             for (SisGoods sisGoods : sisGoodsList) {
                 Goods goods = sisGoods.getGoods();
                 PcSisGoodsModel appSisGoodsModel = new PcSisGoodsModel();
+
+                Integer directRebate;
+                Integer pushModel=sisConfig.getPushAwardMode();
                 //暂时按照直推奖的最小值来显示
-                Integer directRebate = (int) Math.rint(goods.getShopRebateMin() * level.getRebateRate() / exchangeRate);
+                switch (pushModel){
+                    case 0:
+                        directRebate = (int) Math.rint(goods.getShopRebateMin() * level.getRebateRate() / exchangeRate);
+                        break;
+                    case 1:
+                        List<ProIdAndAmount>proIdAndAmounts=goods.getShopRebates();
+                        double amount=0;
+                        if(proIdAndAmounts!=null&&!proIdAndAmounts.isEmpty()){
+                             amount=proIdAndAmounts.stream().mapToDouble(ProIdAndAmount::getAmount).min().orElse(0);
+                        }
+                        SisRebateTeamManagerSetting setting=sisConfig.getSisRebateTeamManagerSetting();
+                        double rate=sisService.countPushPercent(level.getLevelNo(),setting.getManageAwards());
+                        rate+=setting.getSaleAward();
+                        double totalAmount=amount*rate/100;
+                        directRebate= MathHelper.getIntegralRateByRate(totalAmount,exchangeRate);
+                        break;
+                    default:
+                        directRebate=0;
+                }
                 appSisGoodsModel.setDirectRebate(directRebate);
 
                 List<Double> memberPrices = new ArrayList<>();
