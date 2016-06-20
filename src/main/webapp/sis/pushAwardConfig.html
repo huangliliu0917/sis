@@ -152,7 +152,7 @@
                                     <div class="mrkj">
 
                                         <fieldset>
-                                            <legend><span style="padding-left: 10px;">销售奖金</span></legend>
+                                            <legend><span style="padding-left: 10px;">直推奖金</span></legend>
                                             <div>
                                                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                     <tbody><tr>
@@ -272,9 +272,9 @@
                                 </td>
                                 <td style="vertical-align: top;">
                                     <div style="height: 100px; padding: 5px; line-height: 20px;">
-                                        <b>经营者模式</b>：基于企业在经营中常见的提成制度，返利由上下两级之间角色(职位)关系决定，区别于3级向上逐层返利，经营者返利可以理解为向上逐角色(职位)返利，保证每个角色(职位)拿到相应的利益，同时当职位有空缺时，上级角色(职位)可以兼任空缺职位，以此最大程度的激励他们纵向发展自己的下线，避免3级或8级因为跨层太多无法拿到返利的问题。<br/>
-                                        <b>销售奖金</b>：用于奖励促成交易的小伙伴。<br/>
-                                        <b>管理奖金</b>：用于小伙伴等级之间的利益分配<br/>
+                                        <b>直推经营者模式</b>：基于企业在经营中常见的提成制度，返利由上下两级之间角色(店中店等级)关系决定，区别于3级向上逐层返利，经营者返利可以理解为向上逐店主(职位)返利，保证每个店主(职位)拿到相应的利益，同时当职位有空缺时，上级店主(职位)可以兼任空缺职位，以此最大程度的激励他们纵向发展自己的下线店铺，避免3级或8级因为跨层太多无法拿到返利的问题。<br/>
+                                        <b>直推奖金</b>：用于奖励促成交易的店主。<br/>
+                                        <b>管理奖金</b>：用于店主等级之间的利益分配<br/>
                                     </div>
                                     <div style="height: 2px; border: 0px; border-top: dashed 1px #ccc;"></div>
                                     <div>
@@ -553,6 +553,7 @@
             return;
         }
 
+        var pushSave = layer.load(0, {shade: false});
         $.ajax({
             type: "POST",
             dataType: 'json',
@@ -560,6 +561,7 @@
             contentType:"application/json",
             data: JSON.stringify(setting),
             success: function (result) {
+                layer.close(pushSave);
 //                var _result = $.parseJSON(result);
                 if (result.code == 200) {
 //                    jBox.tip('保存成功', 'success');
@@ -682,12 +684,25 @@
             }
         });
     };
+    function formatNum(s) {
+        //var regu = "^([0-9]*)$";
+        var regu = "^([0-9]*[.0-9])$"; // 小数测试
+        var dot = String(s).indexOf(".");
+        var re = new RegExp(regu);
+        if(dot != -1){
+            return Math.round(s*100)/100;
+        } else{
+            return s;
+        }
+
+    }
     teamManagerRebateConfig.showTestRebateCallBack=function(result){
 //        var amount=teamManagerRebateConfig.getTestAmount();
         $("li[name='testPercent']").each(function(index,val){
             var model=result[index];
+            var percent=model.percent;
             var html='<p style="color:blue;font-weight:bold;padding-left:10px;"> ' +
-                    '<span class="rebateok">'+model.award+'分，'+model.percent+'%</span> <br/><br/> </p>';
+                    '<span class="rebateok">'+model.award+'分，'+formatNum(model.percent)+'%</span> <br/><br/> </p>';
             $(val).html(html);
         });
 

@@ -208,6 +208,7 @@ public class SisServiceImpl implements SisService {
             utih.setUserId(model.getUser().getId());//受益人的id//不同的
             utih.setStatus(0);
             utih.setAddTime(new Date());
+            utih.setContributeUserID(model.getContributeUser().getId());
             utih.setContributeBelongOne(model.getContributeUser().getBelongOne().intValue());//不同的
             utih.setContributeUserType(model.getContributeUser().getUserType().ordinal());//不同的
             utih.setDesc("店主直推奖，订单号 :"+order.getId());
@@ -253,6 +254,8 @@ public class SisServiceImpl implements SisService {
 
         //店主的管理奖金加上销售奖金
         models.get(0).setPushRatio(models.get(0).getPushRatio()+userSispushRate);
+        //店主的贡献人为订单用户
+        models.get(0).setContributeUser(userRepository.findOne((long)order.getUserId()));
         return models;
     }
 
@@ -317,7 +320,7 @@ public class SisServiceImpl implements SisService {
         //默认贡献人是订单用户
         User contributeUser=new User();
         if(order!=null){
-            contributeUser=userRepository.findOne((long)order.getUserId());
+            contributeUser=users.get(0);
         }
 
 

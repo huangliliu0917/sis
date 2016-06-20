@@ -393,7 +393,6 @@ public class OpenSisShopController {
             user.setLoginName("test");
             Sis sis=new Sis();
             sis.setUser(user);
-
         }
 
         List<Double> percents=sisService.testUserTempIntegralHistoryModel(model.getLevelNos(),model.getSetting().getManageAwards());
@@ -760,6 +759,32 @@ public class OpenSisShopController {
 
         if(newSisLevel.getId()==null){
             newSisLevel.setMerchantId(customerId);
+
+            //经营者配置修改
+            SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
+            SisRebateTeamManagerSetting setting=sisConfig.getSisRebateTeamManagerSetting();
+            if(setting!=null){
+                List<RelationAndPercent> relationAndPercents=setting.getManageAwards();
+                Object topLevel=sisLevelRepository.findTopSisLevel(customerId);
+                if(topLevel!=null){
+                    Integer levelNo=Integer.parseInt(String.valueOf(topLevel));
+                    RelationAndPercent relationAndPercent=new RelationAndPercent();
+                    relationAndPercent.setPercent(0);
+                    String relation=levelNo+"_"+newSisLevel.getLevelNo();
+                    relationAndPercent.setRelation(relation);
+                    relationAndPercents.add(relationAndPercent);
+
+                    relationAndPercent=new RelationAndPercent();
+                    relationAndPercent.setPercent(0);
+                    relation=newSisLevel.getLevelNo()+"_"+newSisLevel.getLevelNo();
+                    relationAndPercent.setRelation(relation);
+                    relationAndPercents.add(relationAndPercent);
+
+                    setting.setManageAwards(relationAndPercents);
+                    sisConfig.setSisRebateTeamManagerSetting(setting);
+                    sisConfigRepository.save(sisConfig);
+                }
+            }
         }else {
             SisLevel oldSisLevel=sisLevelRepository.findOne(newSisLevel.getId());
             newSisLevel.setMerchantId(oldSisLevel.getMerchantId());
@@ -768,6 +793,8 @@ public class OpenSisShopController {
 //            newSisLevel.setUpShopNum(oldSisLevel.getUpShopNum());
 //            newSisLevel.setRebateRate(oldSisLevel.getRebateRate());
             newSisLevel.setIsSystem(oldSisLevel.getIsSystem());
+
+
         }
         sisLevelRepository.save(newSisLevel);
         return "redirect:levelSet";
