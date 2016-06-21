@@ -47,7 +47,7 @@ public interface SisLevelService {
 
 
     /**
-     * 根据输入用户的上线的下级开店数量升级
+     * 根据输入用户的开店数量升级
      * @param user      用户
      * @throws Exception
      */

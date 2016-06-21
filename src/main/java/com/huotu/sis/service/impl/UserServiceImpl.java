@@ -78,6 +78,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
 
+    @Autowired
+    private SisLevelService sisLevelService;
+
     @Override
     public Long getUserId(HttpServletRequest request) {
         if (env.acceptsProfiles("develop")) {
@@ -161,6 +164,9 @@ public class UserServiceImpl implements UserService {
         SisInviteLog sisInviteLog = sisInviteRepository.findFirstByAcceptIdOrderByAcceptTimeDesc(user.getId());
         //开店用户等级设置
         SisLevel sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());
+
+
+
         //多个开店商品，有等级
         if (sisConfig.getOpenGoodsMode() == 1 && sisConfig.getOpenMode() == 1) {
             OrderItems orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId).get(0);
@@ -175,6 +181,12 @@ public class UserServiceImpl implements UserService {
                     }
                 }
             }
+        }
+
+        //团队店铺获取等级
+        SisLevel groupSisLevel=sisLevelService.getSisLevelByOfflineSisNum(user);
+        if(groupSisLevel.getLevelNo()>sisLevel.getLevelNo()){
+            sisLevel=groupSisLevel;
         }
         if (sis == null) {
             sis = new Sis();

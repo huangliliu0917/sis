@@ -210,8 +210,14 @@ public class SisWebApiController {
         //合伙人送股
         userService.givePartnerStock(user, orderId,sisConfig);
         log.debug(user.getId() + "songguOver");
+
         //上线升级
-        sisLevelService.upgradeSisLevelByUpShopNum(user);
+        User beloneOne=userRepository.findOne(user.getBelongOne());
+        if(beloneOne!=null){
+            sisLevelService.upgradeSisLevelByUpShopNum(beloneOne);
+        }else {
+            log.info("user:"+userId+"have no beloneOne");
+        }
         log.debug(user.getId()+" belongOne"+user.getBelongOne()+" upgradeOver");
         resultModel.setCode(200);
         resultModel.setMessage("OK");

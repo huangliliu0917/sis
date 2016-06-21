@@ -129,23 +129,18 @@ public class SisLevelServiceImpl implements SisLevelService {
 
     @Override
     public void upgradeSisLevelByUpShopNum(User user) throws Exception {
-        User beloneOneUser=userRepository.findOne(user.getBelongOne());
-        if(beloneOneUser==null){
-            log.info("user:"+user.getId()+" have no beloneOneUser");
-            return;
-        }
-        Sis beloneOneUserSis=sisRepository.findByUser(beloneOneUser);
-        if(beloneOneUserSis==null){
-            log.info("user:"+beloneOneUser.getId()+" Sis is null");
+        Sis userSis=sisRepository.findByUser(user);
+        if(userSis==null){
+            log.info("user:"+user.getId()+" Sis is null");
             return;
         }
         //获取应该升级到的店铺等级
-        SisLevel sisLevel= getSisLevelByOfflineSisNum(beloneOneUser);
+        SisLevel sisLevel= getSisLevelByOfflineSisNum(user);
         if(sisLevel==null){
-            log.info("user:"+beloneOneUser.getId()+" Unable to get the store level");
+            log.info("user:"+user.getId()+" Unable to get the store level");
             return;
         }
-        saveSisLevel(beloneOneUserSis,sisLevel);
+        saveSisLevel(userSis,sisLevel);
 
     }
 
