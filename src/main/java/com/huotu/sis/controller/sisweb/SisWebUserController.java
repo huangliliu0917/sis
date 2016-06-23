@@ -593,46 +593,87 @@ public class SisWebUserController {
         }
         //todo
         SisInviteLog sisInviteLog = new SisInviteLog();
-        if (sisConfig.getOpenMode() == 1) {//购买商品开店
-            if (sisConfig.getOpenNeedInvite() == 1) {//邀请制
+//        if (sisConfig.getOpenMode() == 1) {//购买商品开店
+//            if (sisConfig.getOpenNeedInvite() == 1) {//邀请制
+//                if (gduid == null) {//没有邀请人
+//                    Long members = sisQualifiedMemberRepository.countByMemberId(userId);
+//                    if (members <= 0) {//未被授予开店资格
+//                        throw new UserNotOpenShopQualificationException("未被授予开店资格");
+//                    }
+//
+//                } else {//有邀请人
+//                    User guser = userRepository.findOne(gduid);
+//                    if (Objects.isNull(guser)) {
+//                        throw new UserNotFoundException("无法获取你的上级");
+//                    }
+//                    if (UserType.normal.equals(guser.getUserType())) {//邀请人是会员
+//                        throw new UserNotOpenShopQualificationException("邀请你的上级不是小伙伴，无法注册开店");
+//                    }
+//                    sisInviteLog.setInviterId(gduid);
+//                    model.addAttribute("inviterName", guser.getWxNickName());
+//                }
+//            } else {    //公开制
+////                if (UserType.normal.equals(user.getUserType())) {
+////                    throw new UserNotOpenShopQualificationException("请升级为小伙伴之后开店");
+////                }
+//            }
+////            Long invites = sisInviteRepository.countByAcceptIdAndInviterId(userId, gduid);
+////            if (invites > 0) {//已经填写过邀请信息
+////                model.addAttribute("customerId",customerId);
+////                return "redirect:showOpenShopGoodsDetail";
+////            }
+//
+//        } else {//免费开店
+//            if (UserType.normal.equals(user.getUserType())) {
+//                throw new UserNotOpenShopQualificationException("请升级为小伙伴之后开店");
+//            }
+//            Long invites = sisInviteRepository.countByAcceptIdAndInviterId(userId, gduid);
+//            if (invites > 0) {//已经填写过邀请信息
+//                model.addAttribute("customerId", customerId);
+//                return "redirect:getSisCenter";//表示已经开店了
+//            }
+//        }
+
+        Integer openNeedInvite=sisConfig.getOpenNeedInvite()==null?-1:sisConfig.getOpenNeedInvite();
+        switch (openNeedInvite){
+            case 1://邀请制
                 if (gduid == null) {//没有邀请人
                     Long members = sisQualifiedMemberRepository.countByMemberId(userId);
                     if (members <= 0) {//未被授予开店资格
                         throw new UserNotOpenShopQualificationException("未被授予开店资格");
                     }
-
                 } else {//有邀请人
                     User guser = userRepository.findOne(gduid);
                     if (Objects.isNull(guser)) {
-                        throw new UserNotFoundException("无法获取你的上级");
+                        throw new UserNotFoundException("无法获取邀请人的信息");
                     }
                     if (UserType.normal.equals(guser.getUserType())) {//邀请人是会员
-                        throw new UserNotOpenShopQualificationException("邀请你的上级不是小伙伴，无法注册开店");
+                        throw new UserNotOpenShopQualificationException("邀请你的人不是小伙伴，无法注册开店");
                     }
                     sisInviteLog.setInviterId(gduid);
-                    model.addAttribute("inviterName", guser.getWxNickName());
+                    String name=guser.getWxNickName()==null?guser.getLoginName():guser.getWxNickName();
+                    model.addAttribute("inviterName",name);
                 }
-            } else {    //公开制
-//                if (UserType.normal.equals(user.getUserType())) {
-//                    throw new UserNotOpenShopQualificationException("请升级为小伙伴之后开店");
-//                }
-            }
-//            Long invites = sisInviteRepository.countByAcceptIdAndInviterId(userId, gduid);
-//            if (invites > 0) {//已经填写过邀请信息
-//                model.addAttribute("customerId",customerId);
-//                return "redirect:showOpenShopGoodsDetail";
-//            }
-
-        } else {//免费开店
-            if (UserType.normal.equals(user.getUserType())) {
-                throw new UserNotOpenShopQualificationException("请升级为小伙伴之后开店");
-            }
-            Long invites = sisInviteRepository.countByAcceptIdAndInviterId(userId, gduid);
-            if (invites > 0) {//已经填写过邀请信息
-                model.addAttribute("customerId", customerId);
-                return "redirect:getSisCenter";//表示已经开店了
-            }
+                break;
+            case 0://公开制
+                break;
+            default:
+                throw new SisException("未知的开店模式");
         }
+
+        Integer openMode=sisConfig.getOpenMode()==null?-1:sisConfig.getOpenMode();
+        switch (openMode){
+            case 1:
+                break;
+            case 0:
+                if (UserType.normal.equals(user.getUserType())) {
+                    throw new UserNotOpenShopQualificationException("请升级为小伙伴之后开店");
+                }
+                break;
+            default:
+                throw new SisException("未知的开店门槛");
+        }
+
         model.addAttribute("sisInviteLog", sisInviteLog);
         model.addAttribute("customerId", customerId);
         model.addAttribute("free", sisConfig.getOpenMode());
@@ -656,7 +697,6 @@ public class SisWebUserController {
                                 sisLevelModel.setGoodsTitle(goods.getTitle());
                                 sisLevelModel.setGoodsPrice(goods.getPrice());
                                 sisLevelModels.add(sisLevelModel);
-
                             }
                             break;
                         }
