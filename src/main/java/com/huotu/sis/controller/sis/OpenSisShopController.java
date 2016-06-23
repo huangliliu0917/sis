@@ -373,7 +373,7 @@ public class OpenSisShopController {
     @RequestMapping(value = "/testPushAwardConfig",method = RequestMethod.POST)
     @ResponseBody
     public ResultModel testPushAwardConfig(@CustomerId Long customerId,
-                                           @RequestBody TestPushAwardModel model) throws Exception{
+                                           @RequestBody testPushAwardModel model) throws Exception{
         ResultModel resultModel = new ResultModel();
         if (environment.acceptsProfiles("develop")) {
             customerId = 4471L;
