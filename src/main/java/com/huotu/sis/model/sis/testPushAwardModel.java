@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class TestPushAwardModel {
+public class testPushAwardModel {
     /**
      * 返利的金额
      */
