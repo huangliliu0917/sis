@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Objects;
 
@@ -78,6 +79,27 @@ public class SisWebApiController {
     private Environment environment;
 
     /**
+     * 检查签名是否正确
+     * @param request   请求
+     * @return
+     */
+    private boolean checkSign(HttpServletRequest request){
+        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
+            String sign=request.getParameter("sign");
+            try {
+                if (sign == null || !sign.equals(securityService.getSign(request))) {
+                    return false;
+                }
+            } catch (UnsupportedEncodingException e) {
+                log.info("签名解析异常");
+                return false;
+            }
+        }
+        return true;
+
+    }
+
+    /**
      * 升级用户店中店
      *
      * <b>负责人：史利挺</b>
@@ -87,17 +109,14 @@ public class SisWebApiController {
     @RequestMapping(value = "/upgradeSisShop",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public ResultModel upgradeSisShop(HttpServletRequest request) throws Exception {
-        log.info("upgradeSisShop");
+        log.debug("upgradeSisShop");
         ResultModel resultModel=new ResultModel();
         //第一步:参数有效性判断
-        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
-            String sign=request.getParameter("sign");
-            if (sign == null || !sign.equals(securityService.getSign(request))) {
-                resultModel.setCode(401);
-                resultModel.setMessage("授权失败：签名未通过！");
-                return resultModel;
-            }
-
+        boolean isNotTrueSign=checkSign(request);
+        if(!isNotTrueSign){
+            resultModel.setCode(401);
+            resultModel.setMessage("授权失败：签名未通过！");
+            return resultModel;
         }
         String userId=request.getParameter("userid");
         if(StringUtils.isEmpty(userId)){
@@ -127,7 +146,7 @@ public class SisWebApiController {
 
         }
 
-        log.info("user:"+userId+",upgradeSisShopOverOrderid:"+orderId);
+        log.debug("user:"+userId+",upgradeSisShopOverOrderid:"+orderId);
         //第二步:升级
         boolean isUpgrade=sisLevelService.upgradeSisLevel(user,sisConfig,orderItems.get(0));
 
@@ -158,18 +177,15 @@ public class SisWebApiController {
     @RequestMapping(value = "/openSisShop",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public ResultModel open(HttpServletRequest request) throws Exception {
-        log.info("into openShop");
+        log.debug("into openShop");
         ResultModel resultModel=new ResultModel();
 
-        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
-            //签名验证
-            String sign=request.getParameter("sign");
-            if (sign == null || !sign.equals(securityService.getSign(request))) {
-                resultModel.setCode(401);
-                resultModel.setMessage("授权失败：签名未通过！");
-                return resultModel;
-            }
-
+        //第一步:参数有效性判断
+        boolean isNotTrueSign=checkSign(request);
+        if(!isNotTrueSign){
+            resultModel.setCode(401);
+            resultModel.setMessage("授权失败：签名未通过！");
+            return resultModel;
         }
 
         //参数验证
@@ -179,18 +195,21 @@ public class SisWebApiController {
             resultModel.setMessage("参数错误：没有用户ID！");
             return resultModel;
         }
+
         User user = userRepository.findOne(Long.parseLong(userId));
         if(Objects.isNull(user)){
             resultModel.setCode(403);
             resultModel.setMessage("参数错误：找不到用户！");
             return resultModel;
         }
+
         Sis sis = sisRepository.findByUser(user);
         if(sis!=null){
             resultModel.setCode(500);
             resultModel.setMessage(userId+"店中店已经开启");
             return resultModel;
         }
+
         SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
         if(sisConfig==null){
             resultModel.setCode(500);
@@ -210,7 +229,6 @@ public class SisWebApiController {
         //合伙人送股
         userService.givePartnerStock(user, orderId,sisConfig);
         log.debug(user.getId() + "songguOver");
-
         //上线升级
         User beloneOne=userRepository.findOne(user.getBelongOne());
         if(beloneOne!=null){
@@ -237,12 +255,14 @@ public class SisWebApiController {
     public ResultModel calculateShopRebate(HttpServletRequest httpServletRequest) throws Exception {
 
         ResultModel resultModel = new ResultModel();
-        String sign=httpServletRequest.getParameter("sign");
-        if (sign == null || !sign.equals(securityService.getSign(httpServletRequest))) {
+        //第一步:参数有效性判断
+        boolean isNotTrueSign=checkSign(httpServletRequest);
+        if(!isNotTrueSign){
             resultModel.setCode(401);
             resultModel.setMessage("授权失败：签名未通过！");
             return resultModel;
         }
+
         String shopIdString=httpServletRequest.getParameter("shopid");
         if(StringUtils.isEmpty(shopIdString)){
             resultModel.setCode(402);
@@ -257,6 +277,7 @@ public class SisWebApiController {
             resultModel.setMessage("参数错误：没有orderId！");
             return resultModel;
         }
+
         String unionOrderId=httpServletRequest.getParameter("unionorderid");
         if(StringUtils.isEmpty(unionOrderId)){
             resultModel.setCode(404);
@@ -285,76 +306,11 @@ public class SisWebApiController {
             return resultModel;
         }
 
-
-
         sisService.calculatePushAward(user,order,unionOrderId,sisConfig);
-
-//        double rate=sisLevel.getRebateRate();
-//
-//        int exchangeRate=merchantConfig.getExchangeRate();//得到积分转余额的汇率
-
-//        /**
-//         * 转正时间的计算
-//         */
-//        Date date=new Date();
-//        int positiveDay=merchantConfig.getPositiveDay();
-//        Calendar ca=Calendar.getInstance();
-//        ca.setTime(date);
-//        ca.add(Calendar.DATE,positiveDay+1);
-//        Date now=ca.getTime();//转正后的时间
-//        Date now2 = DateUtil.makeStartDate(now);
-
-
-
-
-//        User contriUser=userRepository.findOne((long)order.getUserId());//得到贡献人
-//        UserTempIntegralHistory utih = new UserTempIntegralHistory();
-//        UserType userType=contriUser.getUserType();
-//        String desc="店主直推奖，订单号 :"+orderId;
-//        int contributeUserType;
-//        if(contriUser.getUserType()==UserType.normal){
-//            contributeUserType=0;
-//        }else{
-//            contributeUserType=1;
-//        }
-
-//        int jifen=getIntegralRateByRate(totalPrize,exchangeRate);
-//
-//        utih.setCustomerId(user.getMerchant().getId());
-//        utih.setIntegral(jifen);
-//        utih.setUnionOrderId(unionOrderId);
-//        utih.setUserId(user.getId());//受益人的id
-//        utih.setStatus(0);
-//        utih.setAddTime(new Date());
-//        utih.setContributeBelongOne(contriUser.getBelongOne().intValue());
-//        utih.setContributeUserType(contributeUserType);
-//        utih.setDesc(desc);
-//        utih.setPositiveFlag(1);
-//        utih.setUserLevelId((long)user.getLevelId());
-//        utih.setEstimatePostime(now2);
-//        utih.setUserType(user.getUserType());
-//        utih.setType(0);
-//        utih.setNewType(500);
-//        utih.setOrder(order);
-//        utih.setContributeDesc(null);
-//        utih.setFlowIntegral(jifen);
-//        utih.setContributeUserID((long)order.getUserId());
-//        utih.setUserGroupId(0L);//进行21个设值.
-//        utihRepository.save(utih);
-//
-//        resultModel.setCode(200);
-//        jifen=user.getUserTempIntegral()+jifen;
-//        user.setUserTempIntegral(jifen);
-//        userRepository.save(user);
-
 
         resultModel.setCode(200);
         resultModel.setMessage("OK");
         return resultModel;
-
-//        resultModel.setCode(200);
-//        resultModel.setMessage("OK");
-//        return resultModel;
     }
 
 }

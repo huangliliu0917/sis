@@ -21,8 +21,9 @@ $(function () {
 function getSisGoodsList(){
     //$("#loading").show();
     //$("#loading").show();
-    $("#resultMsg").text("加载中...");
-    $("#resultDescription").show();
+    var loadGoods=layer.load(0, {shade: false});
+    //$("#resultMsg").text("加载中...");
+    //$("#resultDescription").show();
     $("#goodsList").hide();
     $("#goodsList").Jload({
             url: "getSisGoodsList",
@@ -35,7 +36,8 @@ function getSisGoodsList(){
             Templete: $("#goodsTemplate").html()
         }
         ,function(){
-            $("#resultDescription").hide();
+            layer.close(loadGoods);
+            //$("#resultDescription").hide();
             //$("#loading").hide();
             $("#goodsList").show();
             //if(operTypeInTop==2){
@@ -49,8 +51,9 @@ function operationOne(goodsId,operType){
     //operTypeInTop = operType;
     //jBox.tip("正在操作...", "loading");
     if(operType!=2){
-        $("#resultMsg").text("操作中...");
-        $("#resultDescription").show();
+        var modify=layer.load(0, {shade: false});
+        //$("#resultMsg").text("操作中...");
+        //$("#resultDescription").show();
     }
     $.ajax({
         url: 'operGoods',
@@ -58,7 +61,8 @@ function operationOne(goodsId,operType){
         data: {"operType": operType, "goodsId": goodsId,customerId:customerId},
         dataType: "json",
         success: function (result) {
-            $("#resultDescription").hide();
+            layer.close(modify);
+            //$("#resultDescription").hide();
             if (result.success) {
                 if (operType == 0){
                     $("#sisGoods_"+goodsId).hide();
@@ -69,13 +73,15 @@ function operationOne(goodsId,operType){
                     //jBox.alert("下架成功!");
                 }
                 else if (operType == 1)
-                    jBox.alert("上架成功!");
+                    //jBox.alert("上架成功!");
+                    layer.msg("上架成功！");
                 else if (operType == 2){
                     $(window).unbind("scroll");
                     getSisGoodsList();
                 }
                 else if (operType == 3)
-                    jBox.alert("删除成功!");
+                    layer.msg("删除成功！");
+                    //jBox.alert("删除成功!");
             } else {
                 $("#goodsMsg").text(result.msg);
                 $("#goodsOperDescprition").show();
@@ -83,7 +89,8 @@ function operationOne(goodsId,operType){
                 //jBox.alert(result.msg);
             }
         },error:function(){
-            $("#resultDescription").hide();
+            //$("#resultDescription").hide();
+            layer.close(modify);
             $("#goodsMsg").text("服务器繁忙");
             $("#goodsOperDescprition").show();
             setTimeout('$("#goodsOperDescprition").hide()',1000);
@@ -93,28 +100,28 @@ function operationOne(goodsId,operType){
 
 }
 
-function operationBrand(brandId,type){
-    jBox.tip("正在操作...", "loading");
-    $.ajax({
-        url: 'operBrand',
-        type: 'POST',
-        data: {"operType": type, "brandId": brandId,customerId:customerId},
-        dataType: "json",
-        success: function (result) {
-            if (result.success) {
-                if (type == 1)
-                    jBox.tip("上架成功!");
-                else if (type == 0){
-                    $("#sisBrand_"+brandId).hide();
-                    jBox.tip("下架成功!");
-                }
-                else if (type == 2){
-                    jBox.tip("置顶成功!");
-                    getSisBrandList();
-                }
-            } else {
-                jBox.tip(result.msg);
-            }
-        }
-    });
-}
+//function operationBrand(brandId,type){
+//    jBox.tip("正在操作...", "loading");
+//    $.ajax({
+//        url: 'operBrand',
+//        type: 'POST',
+//        data: {"operType": type, "brandId": brandId,customerId:customerId},
+//        dataType: "json",
+//        success: function (result) {
+//            if (result.success) {
+//                if (type == 1)
+//                    jBox.tip("上架成功!");
+//                else if (type == 0){
+//                    $("#sisBrand_"+brandId).hide();
+//                    jBox.tip("下架成功!");
+//                }
+//                else if (type == 2){
+//                    jBox.tip("置顶成功!");
+//                    getSisBrandList();
+//                }
+//            } else {
+//                jBox.tip(result.msg);
+//            }
+//        }
+//    });
+//}

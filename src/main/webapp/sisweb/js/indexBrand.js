@@ -22,8 +22,9 @@ $(function () {
 
 function getSisBrandList() {
     //$("#loading").show();
-    $("#resultMsg").text("加载中...");
-    $("#resultDescription").show();
+    //$("#resultMsg").text("加载中...");
+    //$("#resultDescription").show();
+    var loadGoods=layer.load(0, {shade: false});
     $("#brandList").hide();
     $("#brandList").Jload({
             url: "getSisBrandList",
@@ -36,7 +37,8 @@ function getSisBrandList() {
             isArtTemplete: true,
             Templete: $("#brandTemplate").html()
         },function(){
-            $("#resultDescription").hide();
+            layer.close(loadGoods);
+            //$("#resultDescription").hide();
             //$("#loading").hide();
             $("#brandList").show();
         }
@@ -61,8 +63,9 @@ function changeGoodsOrBrand(status){
 function operationBrand(brandId,type){
     //jBox.tip("正在操作...", "loading");
     if(type!=2){
-        $("#resultMsg").text("操作中...");
-        $("#resultDescription").show();
+        var modify=layer.load(0, {shade: false});
+        //$("#resultMsg").text("操作中...");
+        //$("#resultDescription").show();
     }
 
     $.ajax({
@@ -71,10 +74,12 @@ function operationBrand(brandId,type){
         data: {"operType": type, "brandId": brandId,customerId:customerId},
         dataType: "json",
         success: function (result) {
-            $("#resultDescription").hide();
+            layer.close(modify);
+            //$("#resultDescription").hide();
             if (result.success) {
                 if (type == 1)
-                    jBox.alert("上架成功!");
+                    //jBox.alert("上架成功!");
+                    layer.msg("上架成功！");
                 else if (type == 0){
                     $("#sisBrand_"+brandId).hide();
                     $("#goodsMsg").text("下架成功");
@@ -86,7 +91,8 @@ function operationBrand(brandId,type){
                     //jBox.tip("置顶成功!");
                 }
             } else {
-                jBox.alert(result.msg);
+                //jBox.alert(result.msg);
+                layer.msg(result.msg);
             }
         }
     });

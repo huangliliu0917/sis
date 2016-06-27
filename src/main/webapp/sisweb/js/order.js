@@ -18,6 +18,7 @@ $(function () {
 })
 
 function getSisOrderList() {
+    //var order=layer.load(0, {shade: false});
     $("#orderList").Jload({
         url: "getSisOrderList",
         method: "POST",
