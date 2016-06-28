@@ -4,6 +4,7 @@ import com.huotu.common.base.CookieHelper;
 import com.huotu.common.base.RSAHelper;
 import com.huotu.huobanplus.common.entity.*;
 import com.huotu.huobanplus.common.repository.*;
+import com.huotu.huobanplus.sdk.mall.service.MallInfoService;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
@@ -83,6 +84,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SisOpenAwardLogService sisOpenAwardLogService;
+
+    @Autowired
+    private MallInfoService mallInfoService;
+
+    @Autowired
+    private MerchantConfigRepository merchantConfigRepository;
 
 
     @Override
@@ -288,6 +295,17 @@ public class UserServiceImpl implements UserService {
 
         //用户冗余字段修改积分
         addUserIntegral(belongOne,addIntegral);
+
+        //推送
+        MerchantConfig merchantConfig=merchantConfigRepository.findByMerchant(user.getMerchant());
+        int rate=merchantConfig.getExchangeRate();
+        if (rate == 0) rate = 100;
+        int integral=(int) Math.rint(100 * addIntegral / rate);
+        User purchaser=userRepository.findOne((long)order.getUserId());
+        String purchaserName=purchaser.getWxNickName()==null?purchaser.getLoginName():purchaser.getWxNickName();
+        String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
+                , "", purchaserName, integral, user.getMerchant().getId(), user.getId());
+
 
     }
 
