@@ -1063,7 +1063,11 @@ public class SisWebGoodsController {
             throw new SisException("该用户不存在或者已经过期");
 
         List<SisSumAmountModel> list = sqlService.getListGroupBySrcType(userId);
-        model.addAttribute("list", list);
+        if(customerId==4471){
+            model.addAttribute("list", list.get(0));
+        }else {
+            model.addAttribute("list",list);
+        }
         model.addAttribute("customerId", customerId);
         return "/sisweb/ownerJuniorList";
     }
