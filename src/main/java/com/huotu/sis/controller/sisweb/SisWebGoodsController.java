@@ -825,6 +825,9 @@ public class SisWebGoodsController {
 
                 Integer directRebate;
                 Integer pushModel=sisConfig.getPushAwardMode();
+                if(pushModel==null){
+                    pushModel=0;
+                }
                 //暂时按照直推奖的最小值来显示
                 switch (pushModel){
                     case 0:

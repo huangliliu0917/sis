@@ -330,24 +330,25 @@ public class SisWebUserController {
 //        });
 //        smartui 图片地址，现在不对
         templatePage.stream().forEach(r -> {
-            try {
-                TemplatePageModel templatePageModel = new TemplatePageModel();
-                if (!Objects.isNull(r.getThumbnailResource())) {
+            TemplatePageModel templatePageModel = new TemplatePageModel();
+            if (!Objects.isNull(r.getThumbnailResource())) {
 //                    log.debug("smartui old img:" + r.getThumbnailResource().getValue());
-                    String path = resourceRepository.getPathById(r.getId());
-//                    String path = resourceService.getResource(r.getThumbnailResource().getValue()).getURL().toString();
-
-                    templatePageModel.setImgPath(path);
-                    if (null == path)
-                        templatePageModel.setImgPath(tempImg);
-                    log.debug("smartui img:" + path);
+                String path="";
+                try {
+                    path = resourceRepository.getPathById(r.getId());
+                } catch (Exception e) {
+                    log.debug("smartui resource error" + e);
                 }
-                templatePageModel.setTemplateId(r.getId());
-                templatePageModel.setTitle(r.getTitle());
-                list.add(templatePageModel);
-            } catch (IOException e) {
-                log.debug("smartui resource error" + e);
+//                    String path = resourceService.getResource(r.getThumbnailResource().getValue()).getURL().toString();
+                templatePageModel.setImgPath(path);
+                if (StringUtils.isEmpty(path))
+                    templatePageModel.setImgPath(tempImg);
+                log.debug("smartui img:" + path);
             }
+            templatePageModel.setTemplateId(r.getId());
+            templatePageModel.setTitle(r.getTitle());
+            list.add(templatePageModel);
+
         });
         model.addAttribute("templatePage", list);
         model.addAttribute("templateId", sis.getTemplateId());
