@@ -155,7 +155,7 @@
                                                 单品数量:&nbsp;<input type="text" name="maxMartketableNum" th:value="*{maxMartketableNum}!=null? *{maxMartketableNum}"/>&nbsp;&nbsp;&nbsp;&nbsp;
                                                 品牌数量:&nbsp;<input type="text" name="maxBrandNum" th:value="*{maxBrandNum}!=null? *{maxBrandNum}"/>
                                             </td>
-                                            <span>(提示:当单品数量或品牌数量设置为0时，上架商品或品牌无限制，并开启一键铺货功能)</span>
+                                            <!--<span>(提示:当单品数量或品牌数量设置为0时，上架商品或品牌无限制，并开启一键铺货功能)</span>-->
                                         </tr>
                                         <tr>
                                             <th>合伙人送股</th>
@@ -176,6 +176,16 @@
                                         </tr>
 
 
+                                        <!--<tr id="enableAllGoods">-->
+                                            <!--<th>是否开启一键铺货:</th>-->
+                                            <!--<td>-->
+                                                <!--<input id="enableAllGoodsNo" value="1" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="*{enableLevelUpgrade}"/>-->
+                                                <!--<label style="padding-left: 0" for="sisLevelUpgradeNo">是</label>-->
+                                                <!--<input id="enableAllGoodsYes" value="0" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="!*{enableLevelUpgrade}"/>-->
+                                                <!--<label style="padding-left: 0" for="sisLevelUpgradeYes">否</label>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+
 
                                         <tr id="pushAwardConfig">
                                             <th>直推奖模式:</th>
@@ -192,7 +202,7 @@
                                         </tr>
 
                                         <tr>
-                                            <th>店中店首页颜色</th>
+                                            <th>店中店后台首页颜色</th>
                                             <td>
                                                 <input type='text' id="full"/>
                                                 <input type="hidden" id="homePageColor" th:value="*{homePageColor}"/>
