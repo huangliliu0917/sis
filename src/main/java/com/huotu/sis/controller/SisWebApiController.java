@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
@@ -723,7 +724,7 @@ public class SisWebApiController {
 
         double totalPrize = 0;
         for (OrderItems item : orderItems) {
-            double prize = item.getZhituiPrize() * item.getAmount();
+            double prize = item.getZhituiPrize();
             if (null == item.getProfitConfigs()) {
                 totalPrize += prize;
             } else {
@@ -929,30 +930,58 @@ public class SisWebApiController {
             }
         }
         String nickname = contriUser.getLoginName() + "(" + contriUser.getWxNickName() + ")";
-        log.info("dianzhujifen:"+ownerIntegralAll+" shangjijifen:"+belongOneIntegralAll+" shangshangjijifen:"+belongTwoIntegralAll);
+        log.info("dianzhujifen:" + ownerIntegralAll + " shangjijifen:" + belongOneIntegralAll + " shangshangjijifen:" + belongTwoIntegralAll);
+        //先把积分全部加上
         if (ownerIntegralAll > 0) {
-            String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
-                    , "", nickname, ownerIntegralAll, customerId, user.getId());
-            if(!"OK".equals(ownerStatus)){
-                log.info("integral for owner error:"+ownerStatus);
-            }
+            user.setUserTempIntegral(user.getUserTempIntegral()+ownerIntegralAll);
+            userRepository.save(user);
         }
         if (belongOneIntegralAll > 0) {
-            String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
-                    , "", nickname, belongOneIntegralAll, customerId, belongOneUser.getId());
-            if(!"OK".equals(ownerStatus)){
-                log.info("integral for belongOne error:"+ownerStatus);
+            belongOneUser.setUserTempIntegral(belongOneIntegralAll+belongOneUser.getUserTempIntegral());
+            userRepository.save(belongOneUser);
+        }
+        if(belongTwoIntegralAll>0){
+            belongTwoUser.setUserTempIntegral(belongTwoIntegralAll+belongTwoUser.getUserTempIntegral());
+            userRepository.save(belongTwoUser);
+        }
+        if (ownerIntegralAll > 0) {
+            try{
+                String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
+                        , "", nickname, ownerIntegralAll, customerId, user.getId());
+                if (!"OK".equals(ownerStatus)) {
+                    log.info("integral for owner error:" + ownerStatus);
+                }
+            }catch (IOException e){
+                log.info(user.getId()+" tuisong error");
             }
+
+        }
+        if (belongOneIntegralAll > 0) {
+            try{
+                String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
+                        , "", nickname, belongOneIntegralAll, customerId, belongOneUser.getId());
+                if (!"OK".equals(ownerStatus)) {
+                    log.info("integral for belongOne error:" + ownerStatus);
+                }
+            }catch (IOException e){
+                log.info(belongOneUser.getId()+" tuisong error");
+            }
+
         }
         if (belongTwoIntegralAll > 0) {
-            String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
-                    , "", nickname, belongTwoIntegralAll, customerId, belongTwoUser.getId());
-            if(!"OK".equals(ownerStatus)){
-                log.info("integral for belongTwo error:"+ownerStatus);
+            try{
+                String ownerStatus = mallInfoService.pushMessage(order.getId(), order.getTitle(), order.getPrice(), order.getTime(), order.getPayTime()
+                        , "", nickname, belongTwoIntegralAll, customerId, belongTwoUser.getId());
+                if (!"OK".equals(ownerStatus)) {
+                    log.info("integral for belongTwo error:" + ownerStatus);
+                }
+            }
+            catch (IOException e){
+                log.info(belongTwoUser.getId()+" tuisong error");
             }
         }
         resultModel.setCode(200);
-        resultModel.setMessage("该订单商品的直推返利全部个性化");
+        resultModel.setMessage("直推积分成功");
         return resultModel;
     }
 
@@ -994,9 +1023,9 @@ public class SisWebApiController {
         utih.setUserGroupId(0L);//进行21个设值.
         utihRepository.save(utih);
 
-        integral = user.getUserTempIntegral() + integral;
-        user.setUserTempIntegral(integral);
-        userRepository.save(user);
-        log.info("zhituijaing success");
+//        integral = user.getUserTempIntegral() + integral;
+//        user.setUserTempIntegral(integral);
+//        userRepository.save(user);
+        log.info("zhituijiang success");
     }
 }
