@@ -43,7 +43,7 @@
                         </span>
                     </p>
                     </td>
-                    <td class="boxtd"><p style="text-align: center;">
+                    <td th:if="${customerId!=4471}" class="boxtd"><p style="text-align: center;">
                         <img src="images/fx03.png" style=" width:50px;"/>
                         <br/>
                 <span>
@@ -67,7 +67,7 @@
                     <td class="boxtd fffx"><p style="text-align: center" th:text="${junior.srcType}+'级'">
                         1级
                     </p></td>
-                    <td class="boxtd" style="text-align: center">
+                    <td th:if="${customerId!=4471}" class="boxtd" style="text-align: center">
                         <p style="text-align: center" th:text="${#numbers.formatDecimal(junior.amount,1,0)}">
                             0
                         </p>
@@ -76,11 +76,12 @@
                     <td class="boxtd" style="text-align: center">
                         <a href="javascript:void(0);" th:href="@{/sisweb/juniorDetailList(srcType=${junior.srcType},customerId=${customerId})}">
                             <p style="text-align: center;" th:text="${junior.userNum}">
-                            0
+                                0
                             </p>
-                    <span style="color: #BDBDBD">
-                        查看成员
-                    </span></a>
+                            <span style="color: #BDBDBD">
+                                查看成员
+                            </span>
+                        </a>
                     </td>
                 </tr>
                 </tbody>
