@@ -259,7 +259,7 @@ public class UserServiceImpl implements UserService {
                 break;
             case 2:
                 sisOpenAwardAssign=sisOpenAwardAssignRepository.findByLevel_IdAndGuideLevel_IdAndMerchant(
-                        (long)belongOne.getLevelId(), belongOneSis.getSisLevel(),user.getMerchant()
+                        (long)belongOne.getLevelId(), ownSis.getSisLevel(),user.getMerchant()
                 );
                 break;
             default:

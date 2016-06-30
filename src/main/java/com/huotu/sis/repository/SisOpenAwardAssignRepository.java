@@ -18,9 +18,9 @@ public interface SisOpenAwardAssignRepository extends JpaRepository<SisOpenAward
     SisOpenAwardAssign findByLevel_IdAndGuideLevel_IdAndUserLevelAndMerchant(
             Long userLevel, SisLevel level, SisLevel guideLevel, Merchant merchant);
 
-    @Query("select s from SisOpenAwardAssign as s where s.userLevel=?1 and s.level=?2 and s.merchant=?3")
+    @Query("select s from SisOpenAwardAssign as s where s.userLevel=?1 and s.guideLevel=?2 and s.merchant=?3")
     SisOpenAwardAssign findByLevel_IdAndGuideLevel_IdAndMerchant(
-            Long userLevel,SisLevel level,Merchant merchant);
+            Long userLevel,SisLevel guideLevel,Merchant merchant);
 
     List<SisOpenAwardAssign> findByMerchant_Id(Long customerId);
 
