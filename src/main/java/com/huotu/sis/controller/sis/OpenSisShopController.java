@@ -133,7 +133,10 @@ public class OpenSisShopController {
                 if(openGoodsIdLevelIds!=null){
                     for(OpenGoodsIdLevelId ogid:openGoodsIdLevelIds.values()){
                         if(sl.getId().equals(ogid.getLevelid())){
-                            Goods goods=goodRepository.findOne(ogid.getGoodsid());
+                            Goods goods=null;
+                            if(ogid.getGoodsid()!=null){
+                                goods=goodRepository.findOne(ogid.getGoodsid());
+                            }
                             if(goods!=null){
                                 sisLevelModel.setGoodsId(goods.getId());
                                 sisLevelModel.setGoodsTitle(goods.getTitle());

@@ -291,6 +291,7 @@
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
     var levelGoods=1;//店铺等级的开店商品(如果开店设置为个性化有效)
+    var choseGoods;
                 //提交设置
     function submitForm1() {
 
@@ -568,8 +569,7 @@
             }
 
         }
-
-
+        layer.close(choseGoods);
     }
 
     function shopSet(){
@@ -631,7 +631,7 @@
     function loadGoodsList(obj){
         levelGoods = $(obj).attr("levelno");
 
-        layer.open({
+        choseGoods=layer.open({
             type: 1,
 //            offset:'100px',
             title: '挑选商品',
