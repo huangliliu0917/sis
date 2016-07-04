@@ -91,23 +91,21 @@ public class SisLevelServiceImpl implements SisLevelService {
 
     @Override
     public SisLevel getSisLevelByOfflineSisNum(User user) throws Exception {
-        SisLevel newSisLevle=new SisLevel();
         Long sisNumber=sisRepository.countSisNum(user.getId());
-        if(sisNumber==null){
-            return newSisLevle;
-        }
         List<SisLevel> sisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoDesc(user.getMerchant().getId());
+        if(sisLevels==null||sisLevels.isEmpty()){
+            return null;
+        }
 
         for(SisLevel l:sisLevels){
             if(l.getUpShopNum()==null){
                 continue;
             }
             if(sisNumber>=l.getUpShopNum()){
-                newSisLevle=l;
-                break;
+                return l;
             }
         }
-        return newSisLevle;
+        return null;
     }
 
 
@@ -136,7 +134,7 @@ public class SisLevelServiceImpl implements SisLevelService {
         }
         //获取应该升级到的店铺等级
         SisLevel sisLevel= getSisLevelByOfflineSisNum(user);
-        if(sisLevel==null){
+        if(sisLevel==null||sisLevel.getLevelNo()==null){
             log.info("user:"+user.getId()+" Unable to get the store level");
             return;
         }

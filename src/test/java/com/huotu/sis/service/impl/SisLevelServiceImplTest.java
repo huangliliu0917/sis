@@ -144,4 +144,12 @@ public class SisLevelServiceImplTest  extends WebTest {
 
 
     }
+
+    @Test
+    public void testGetSisLevelByOfflineSisNum() throws Exception{
+        User user=userRepository.findOne(120034L);
+
+        SisLevel sisLevel=sisLevelService.getSisLevelByOfflineSisNum(user);
+
+    }
 }

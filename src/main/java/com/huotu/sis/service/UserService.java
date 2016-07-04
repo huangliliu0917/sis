@@ -83,7 +83,7 @@ public interface UserService {
 
 
     /**
-     * 等级初始化,查找商家是否配置了店中店等级，如果没有配置则默认插入一条一级的等级
+     * 等级初始化,查找商家是否配置了店中店等级，如果没有配置则默认插入一条一级的等级(弃用)
      * @param customerId 商家ID
      * @return
      * @throws Exception

@@ -13,6 +13,7 @@ import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
 import com.huotu.sis.entity.*;
 import com.huotu.sis.entity.support.*;
+import com.huotu.sis.exception.SisException;
 import com.huotu.sis.repository.*;
 import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
@@ -165,6 +166,12 @@ public class UserServiceImpl implements UserService {
         //开店用户等级设置
         SisLevel sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());
 
+        if(sisLevel==null){
+            sisLevel=sisLevelRepository.findFirstByMerchantIdOrderByLevelNoAsc(user.getMerchant().getId());
+        }
+        if(sisLevel==null){
+            throw new SisException("customerId:"+user.getMerchant().getId()+"have no sisLevel");
+        }
 
 
         //多个开店商品，有等级
@@ -185,7 +192,7 @@ public class UserServiceImpl implements UserService {
 
         //团队店铺获取等级
         SisLevel groupSisLevel=sisLevelService.getSisLevelByOfflineSisNum(user);
-        if(groupSisLevel.getLevelNo()>sisLevel.getLevelNo()){
+        if(groupSisLevel!=null&&groupSisLevel.getLevelNo()!=null&&groupSisLevel.getLevelNo()>sisLevel.getLevelNo()){
             sisLevel=groupSisLevel;
         }
         if (sis == null) {
@@ -358,7 +365,8 @@ public class UserServiceImpl implements UserService {
         SisLevel level = sisLevelRepository.findByMerchantIdSys(customerId);
         if (Objects.isNull(level)) {
             SisLevel sisLevel = new SisLevel();
-            sisLevel.setLevelNo(1);
+            sisLevel.setLevelNo(0);
+            sisLevel.setIsSystem(1);
             sisLevel.setLevelName("一级店铺");
             sisLevel.setMerchantId(customerId);
             sisLevel.setRrmark("");
