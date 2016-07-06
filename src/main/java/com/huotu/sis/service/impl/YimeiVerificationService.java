@@ -10,7 +10,6 @@
 package com.huotu.sis.service.impl;
 
 import com.huotu.sis.entity.VerificationCode;
-import com.huotu.sis.common.SMSHelper;
 import com.huotu.sis.exception.InterrelatedException;
 import com.huotu.sis.model.sisweb.ResultModel;
 import com.huotu.sis.service.VerificationService;
@@ -33,17 +32,20 @@ public class YimeiVerificationService extends AbstractVerificationService implem
     @Autowired
     private Environment env;
 
+    @Autowired
+    private SMSHelper sms;
+
     public YimeiVerificationService() {
         log.info("伊美短信平台使用中……");
     }
 
     @Override
     protected void doSend(VerificationCode code) throws InterrelatedException {
-        if (env.acceptsProfiles("test") || env.acceptsProfiles("develop"))
-            return;
+//        if (env.acceptsProfiles("test") || env.acceptsProfiles("develop"))
+//            return;
         VerificationProject project=VerificationProject.fanmore;
         String smsContent = new Formatter(Locale.CHINA).format(project.getFormat(), code.getCode()).toString();
-        SMSHelper sms = new SMSHelper();
+//        SMSHelperServiceImpl sms = new SMSHelperServiceImpl();
         ResultModel resultSMS = sms.send(code.getMobile(), smsContent);
         if (resultSMS.getCode() != 0)
             throw new InterrelatedException();

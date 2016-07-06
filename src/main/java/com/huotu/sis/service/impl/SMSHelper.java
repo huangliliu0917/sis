@@ -7,18 +7,54 @@
  * 2013-2015. All rights reserved.
  */
 
-package com.huotu.sis.common;
+package com.huotu.sis.service.impl;
 
 
+import com.huotu.sis.common.HttpSender;
 import com.huotu.sis.model.sisweb.ResultModel;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SMSHelper {
-    private static String serverUrl = "http://222.73.117.156/msg/HttpBatchSendSM";
-    private static String account = "huotukeji";
-    private static String pswd = "Txb123456";
+    /**
+     * url
+     */
+    @Value("${serverUrl}")
+    private String serverUrl;
 
-    public SMSHelper() {
-    }
+    /**
+     * 账户
+     */
+    @Value("${account}")
+    private String account;
+
+    /**
+     * 密码
+     */
+    @Value("${pswd}")
+    private String pswd;
+
+
+
+//    private static String serverUrl = "http://222.73.117.156/msg/HttpBatchSendSM";
+//    private static String account = "huotukeji";
+//    private static String pswd = "Txb123456";
+
+//    public SMSHelperServiceImpl() {
+//        serverUrl=evn.getProperty("serverUrl");
+//        account=evn.getProperty("account");
+//        pswd=evn.getProperty("pswd");
+//    }
+//    public SMSHelper(String serverUrl,String account,String pswd) {
+//        this.serverUrl=serverUrl;
+//        this.account=account;
+//        this.pswd=pswd;
+//    }
+//    @Autowired
+//    public SMSHelper(Environment env){
+//        this(env.getProperty("serverUrl"),env.getProperty("account"),env.getProperty("pswd"));
+//    }
 
     public ResultModel send(String mobile, String msg) {
         ResultModel resultModel = new ResultModel();
@@ -28,7 +64,7 @@ public class SMSHelper {
         try {
             String errMsg = "";
             int code = 10000;
-            String text = HttpSender.batchSend(serverUrl, account, pswd, mobile, msg, true, null, null);
+            String text = HttpSender.batchSend(serverUrl,account,pswd, mobile, msg, true, null, null);
             code = Integer.parseInt(text.split("\n")[0].split(",")[1]);
             switch (code) {
                 case 0:

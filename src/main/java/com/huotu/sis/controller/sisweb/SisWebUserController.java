@@ -690,7 +690,11 @@ public class SisWebUserController {
                     SisLevelModel sisLevelModel = new SisLevelModel();
                     for (OpenGoodsIdLevelId o : openGoodsIdLevelIds.values()) {
                         if (l.getId().equals(o.getLevelid())) {
-                            Goods goods = goodsRepository.findOne(o.getGoodsid());
+                            Goods goods=null;
+                            if(o.getGoodsid()!=null){
+                                goods = goodsRepository.findOne(o.getGoodsid());
+                            }
+
                             if(goods!=null){
                                 sisLevelModel.setLevelId(l.getId());
                                 sisLevelModel.setLevelTitle(l.getLevelName());
