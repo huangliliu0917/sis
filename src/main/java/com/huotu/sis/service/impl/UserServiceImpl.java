@@ -282,6 +282,9 @@ public class UserServiceImpl implements UserService {
                         double rebateMonery = 0;
                         //遍历每一个层级的开店返利信息
                         for (int i = 0; i < tiers; i++) {
+                            if(rebateUser==null){
+                                break;
+                            }
                             Sis sis = sisRepository.findByUser(rebateUser);
                             if (Objects.isNull(sis)) {
                                 //用户未开启店中店，无法返利
