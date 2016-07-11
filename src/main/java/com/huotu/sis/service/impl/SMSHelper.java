@@ -36,6 +36,9 @@ public class SMSHelper {
     private String pswd;
 
 
+    public SMSHelper(){
+
+    }
 
 //    private static String serverUrl = "http://222.73.117.156/msg/HttpBatchSendSM";
 //    private static String account = "huotukeji";

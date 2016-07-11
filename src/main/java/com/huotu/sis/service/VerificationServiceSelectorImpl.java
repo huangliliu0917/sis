@@ -21,9 +21,9 @@ public class VerificationServiceSelectorImpl implements VerificationServiceSelec
 
     @Override
     public VerificationService forMerchant(Long merchantId) {
-        if(merchantId==4471L){
-            return verificationServiceTTDS;
-        }
+//        if(merchantId==4471L){
+//            return verificationServiceTTDS;
+//        }
         return verificationServiceYIMEI;
     }
 }
