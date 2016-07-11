@@ -9,11 +9,13 @@
 
 package com.huotu.sis.entity;
 
+import com.huotu.sis.entity.support.SisLevelCondition;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.rest.core.annotation.Description;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  *
@@ -38,6 +40,10 @@ public class SisLevel {
     @Description("商户ID")
     private Long merchantId;
 
+//    @Column(name = "Enabled")
+//    @Description("是否可用")
+//    private Boolean enabled;
+
     @Column(name = "LevelName",length = 80)
     @Description("等级名称")
     private String levelName;
@@ -55,7 +61,7 @@ public class SisLevel {
     private Integer upShopNum;
 
     @Column(name = "Up_TeamShopNum")
-    @Description("等级升级子店数")
+    @Description("等级升级团队店数")
     private Integer upTeamShopNum;
 
     @Column(name = "IsSystem")
@@ -69,6 +75,11 @@ public class SisLevel {
     @Column(name = "IsExtraUpgrade")
     @Description("是否启用补差价 0：不启用，1：启用")
     private Integer extraUpgrade;
+
+    @Column(name = "UpgradeConditions",columnDefinition = "longtext")
+    @Description("升级条件")
+    @Lob
+    private List<SisLevelCondition> upgradeConditions;
 
 
 }

@@ -678,10 +678,10 @@ public class SisWebUserController {
         model.addAttribute("sisInviteLog", sisInviteLog);
         model.addAttribute("customerId", customerId);
         model.addAttribute("free", sisConfig.getOpenMode());
-        model.addAttribute("openGoodsMode", sisConfig.getOpenGoodsMode());
+        model.addAttribute("openGoodsMode", sisConfig.getOpenGoodsMode());//todo 开店商品模式修改
 
 
-        if (sisConfig.getOpenGoodsMode() == 1 && sisConfig.getOpenGoodsIdlist() != null) {
+        if (sisConfig.getOpenGoodsMode() == 1 && sisConfig.getOpenGoodsIdlist() != null) {//todo 开店商品模式修改
             OpenGoodsIdLevelIds openGoodsIdLevelIds = sisConfig.getOpenGoodsIdlist();
             List<SisLevelModel> sisLevelModels = new ArrayList<>();
             List<SisLevel> sisLevels = sisLevelRepository.findByMerchantId(customerId);
@@ -837,7 +837,7 @@ public class SisWebUserController {
             throw new CustomerNotUseSisException("商家未启用店中店");
         }
         Long openGoodsId;
-        if (sisConfig.getOpenGoodsMode() == 1) {
+        if (sisConfig.getOpenGoodsMode() == 1) {//todo 开店商品模式修改
             openGoodsId = goodsId;
         } else {
             openGoodsId = sisConfig.getOpenGoodsId();
@@ -1034,7 +1034,7 @@ public class SisWebUserController {
 //        });
         SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
 
-        if(Objects.isNull(sisConfig)||sisConfig.getOpenGoodsMode()==null||sisConfig.getOpenGoodsMode()==0){
+        if(Objects.isNull(sisConfig)||sisConfig.getOpenGoodsMode()==null||sisConfig.getOpenGoodsMode()==0){//todo 开店商品模式修改
             throw new SisException("店铺配置尚未初始化");
         }
 

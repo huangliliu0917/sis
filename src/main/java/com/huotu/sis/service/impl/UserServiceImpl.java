@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
         if (env.acceptsProfiles("develop")) {
 //            userRepository.findAll();
 //            return 97278L;//146 4471商户 王明
-            return 120034L;
+            return 96116L;
         } else {
             String encrypt = CookieHelper.get(request, userKey);
             try {
@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService {
 
 
         //多个开店商品，有等级
-        if (sisConfig.getOpenGoodsMode() == 1 && sisConfig.getOpenMode() == 1) {
+        if (sisConfig.getOpenGoodsMode() == 1 && sisConfig.getOpenMode() == 1) {//todo 开店商品模式修改
             OrderItems orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId).get(0);
             OpenGoodsIdLevelIds openGoodsIdLevelIds = sisConfig.getOpenGoodsIdlist();
             //根据订单号找到该用户购买的开店等级

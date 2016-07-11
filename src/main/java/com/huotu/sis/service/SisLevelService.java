@@ -5,6 +5,8 @@ import com.huotu.huobanplus.common.entity.User;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.model.sis.SimpleSisLevelModel;
+import com.huotu.sis.model.sis.SisLevelConditionsModel;
 import com.huotu.sis.model.sisweb.OpenLevelGoodsModel;
 
 import java.util.List;
@@ -54,6 +56,12 @@ public interface SisLevelService {
     void upgradeSisLevelByUpShopNum(User user) throws Exception;
 
     /**
+     * 根据等级的升级条件来升级输入用户的店铺等级
+     * @throws Exception
+     */
+    void upgradeSisLevelByConditions(User user) throws Exception;
+
+    /**
      * 保存店中店等级
      * @param sisLevel      用户保存的等级
      * @param sis           用户店中店
@@ -78,4 +86,24 @@ public interface SisLevelService {
      * @return
      */
     List<SisLevel> getListBelongByLevelId(Integer levelNo, Long customerId);
+
+    /**
+     * 返回等级model列表
+     * @param customerId    商户ID
+     * @return
+     */
+    List<SimpleSisLevelModel> getSimpleSisLevelModel(Long customerId);
+
+    /**
+     * 返回等级model列表
+     * @param customerId    商户ID
+     * @return
+     */
+    List<SimpleSisLevelModel> getSimpleSisLevelModel(Long customerId,Integer LTlevelNo);
+
+    /**
+     *  根据店铺等级获取该等级升级的条件model
+     * @return
+     */
+    List<SisLevelConditionsModel> getSisLevelConditionsModels(SisLevel sisLevel);
 }

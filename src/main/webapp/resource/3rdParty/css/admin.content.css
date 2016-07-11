@@ -106,6 +106,47 @@
 
 .division { border-top: 1px solid #ccc; border-left: 1px solid #ccc; border-right: 2px solid #bec6ce; border-bottom: 2px solid #bec6ce; background: #fff; margin: 10px; padding: 5px; line-height: 150%; white-space: normal; }
 
+.closeopensis { border-top: 1px solid #ccc; border-left: 1px solid #ccc; border-right: 2px solid #bec6ce; border-bottom: 2px solid #bec6ce; background: #fff; margin: 10px; padding: 5px; line-height: 150%; white-space: normal; }
+
+.fa-bigbox{ padding:14px 14px;}
+
+.f-bigbox {
+    margin-left: 10px;
+    float: left;;
+    width: 30%;
+    background-color: #ff5ba0;
+}
+
+.tit {
+    background-color: #ffeb41;
+    border-radius: 5px;
+    color: #ff3c00;
+
+    padding: 2px 3px;
+    line-height: 15px;
+    text-align: center;
+}
+
+.f-moren {  float: left; }
+
+.f-number {
+    float: left;
+    margin-left: 6px;
+    line-height: 26px;
+
+}
+
+.phone {
+    color: #fff;
+
+}
+
+.commfont .tit_rem{ font-size:1.2rem}
+
+.ylyl{
+    float:right; margin-right:10px; text-align:center; color:#fff;margin-top: 8px;
+}
+
 .division .shopping_setting th { width: 190px; }
 
 .division table { margin: 0; padding: 0; }

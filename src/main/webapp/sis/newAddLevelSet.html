@@ -3,21 +3,21 @@
 <head id="Head1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>店铺新增等级</title>
-    <link href="../../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
           th:href="@{/resource/3rdParty/css/admin.global.css}"/>
-    <link href="../../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
           th:href="@{/resource/3rdParty/css/admin.content.css}"/>
-    <link href="../../resource/css/settlements.css" rel="stylesheet" type="text/css"
+    <link href="../resource/css/settlements.css" rel="stylesheet" type="text/css"
           th:href="@{/resource/css/settlements.css}"/>
-    <script type="text/javascript" src="../../resource/3rdParty/js/jquery-1.4.2.min.js"
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.4.2.min.js"
             th:src="@{/resource/3rdParty/js/jquery-1.7.2.min.js}"></script>
-    <script type="text/javascript" src="../../resource/3rdParty/js/jquery.utils.js"
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery.utils.js"
             th:src="@{/resource/3rdParty/js/jquery.utils.js}"></script>
     <!--<link href="../../resource/3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"-->
           <!--th:href="@{/resource/3rdParty/jBox/Skins/Green/jbox.css}"/>-->
     <!--<script type="text/javascript" src="../../resource/3rdParty/jBox/jquery.jBox-2.3.min.js"-->
             <!--th:src="@{/resource/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>-->
-    <link rel="stylesheet" type="text/css" href="../../resource/css/settlements.css"
+    <link rel="stylesheet" type="text/css" href="../resource/css/settlements.css"
           th:href="@{/resource/css/settlements.css}"/>
     <script type="text/javascript" src="../resource/layer/layer.js"
             th:src="@{/resource/layer/layer.js}"></script>
@@ -34,9 +34,10 @@
 
 </head>
 
-<body >
+<body onload="levelLoad()">
 <form method="post" action="saveSisLevel" id="form1" th:object="${sisLevel}">
     <input type="hidden" name="id" th:value="*{id}" />
+    <!--<input type="hidden" name="upgradeConditions" th:value="*{upgradeConditions}"/>-->
     <div class="container">
         <div class="blank10">
         </div>
@@ -75,14 +76,48 @@
                                                        <!--id="title222"  class="input-normal" placeholder=""/></td>-->
 
                                         <!--</tr>-->
+                                        <!--<tr>-->
+                                            <!--<th>直推店铺数量:</th>-->
+                                            <!--<td style="border-top: 1px solid #ddd;">-->
+                                                <!--<span id="sharezx2"></span>-->
+                                                <!--<input th:value="*{upShopNum}" maxlength="13" style="width:170px" name="upShopNum" type="text"-->
+                                                       <!--id="title3"  class="input-normal" placeholder=""/></td>-->
+
+                                        <!--</tr>-->
+
                                         <tr>
-                                            <th>直推店铺数量:</th>
+                                            <th>升级条件:</th>
+
                                             <td style="border-top: 1px solid #ddd;">
-                                                <span id="sharezx2"></span>
-                                                <input th:value="*{upShopNum}" maxlength="13" style="width:170px" name="upShopNum" type="text"
-                                                       id="title3"  class="input-normal" placeholder=""/></td>
+                                                <div id="conditions">
+                                                    <div th:each="c:${conditions}">
+                                                        <select th:if="${c.relation!=-1}" name="relation_symbol" width="30" style="width:50px">
+                                                            <option value="0" th:selected="${c.relation==0}">或</option>
+                                                            <option value="1" th:selected="${c.relation==1}">且</option>
+                                                        </select>
+                                                        <br th:if="${c.relation!=-1}"/>
+
+                                                        <select name="level_id" th:width="30" style="width:170px">
+                                                            <option  th:each="l:${sisLvs}" th:value="${l.levelId}" th:text="${l.levelTitle}" th:selected="${c.levelId==l.levelId}">一级店铺</option>
+                                                            <!--<option value="1" th:selected="">二级店铺</option>-->
+                                                        </select>
+                                                        <input th:value="${c.num}" maxlength="13" style="width:170px" name="num" type="text"
+                                                               id=""  class="input-normal" placeholder=""/><label>人</label>
+                                                    </div>
+
+                                                </div>
+                                                <a href="javascript:delCondition()">删除条件</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <a href="javascript:addCondition()">添加条件</a>
+                                            </td>
+
+
+
+
+
 
                                         </tr>
+
+
                                         <tr>
                                             <th>等级别名:</th>
                                             <td style="border-top: 1px solid #ddd;">
@@ -123,14 +158,6 @@
 
                 </div>
 
-                <!--<div style="text-align: center; margin-top:12px" th:value="${sisLevelSetModel.zhituidianpuAmount}">-->
-                <!--<a class="btn-lit"   href="javascript:submitForm1();">-->
-
-                <!--<span>-->
-                <!--保存-->
-                <!--</span>-->
-                <!--</a>-->
-                <!--</div>-->
                 <div style="text-align: center; margin-top:12px" >
                     <a class="btn-lit"   href="javascript:submitForm1();">
         <span>
@@ -146,6 +173,36 @@
 
 <div class="blank10"></div>
 <script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var levels=/*[[${sisLvs}]]*/ '';
+
+    function levelLoad(){
+        var divs=$("#conditions").find("div");
+        if(divs.length==0){
+            addCondition();
+        }
+    }
+
+    function getLevelsOption(){
+        var levelsOption;
+        var levelNo=parseInt($("input[name='levelNo']").val());
+        for(var i= 0,size=levels.length;i<size;i++){
+            var lv=levels[i];
+            var option='<option value="'+lv.levelId+'">'+lv.levelTitle+'</option>';
+            levelsOption+=option;
+
+        }
+        return levelsOption;
+    }
+
+    function getRelationOption(){
+        var select='<select  name="relation_symbol" width="30" style="width:50px"> ' +
+        '<option value="0">或</option> ' +
+        '<option value="1">且</option> ' +
+        '</select> <br/> ';
+        return select;
+    }
+
     function submitForm1() {
 
 
@@ -166,11 +223,37 @@
 //            return;
 //        }
 //
-        var upShopNum=$("input[name='upShopNum']").val();
-        if (upShopNum.length == 0) {
-            layer.msg("请输入直推店铺数量");
+//        var upShopNum=$("input[name='upShopNum']").val();
+//        if (upShopNum.length == 0) {
+//            layer.msg("请输入直推店铺数量");
+//            return;
+//        }
+        var flag=true;
+        var conditions=[];
+        $("#conditions div").each(function (k,v) {
+            var n=$(v).find("input").val();
+            if(!rex.test(n)||!rex.test(n)||n.length==0){
+                flag= false;
+            }
+            var relation_symbol=$(v).find("select[name='relation_symbol']").find("option:selected").val();
+            if(relation_symbol==undefined){
+                relation_symbol=-1;
+            }
+            var sislvid=$(v).find("select[name='level_id']").find("option:selected").val();
+            var condition=new Object();
+            condition.sislvid=parseInt(sislvid);
+            condition.num=parseInt(n);
+            condition.relation=parseInt(relation_symbol);
+            conditions[k]=condition;
+        });
+
+
+        if(!flag){
+            layer.msg("人数请输入数字");
             return;
         }
+
+
         var nickname=$("input[name='levelName']").val();
         if (nickname.length == 0) {
 //            $.jBox.tip("请输入等级别名");
@@ -187,10 +270,7 @@
 //            $.jBox.tip("团队店铺数量请输入数字！");
 //            return;
 //        }
-        if(!rex.test(upShopNum)||!rex.test(upShopNum)||upShopNum.length==0){
-            layer.msg("直推店铺数量请输入数字")
-            return;
-        }
+
 
 //        if(!rex.test(level)||!rex.test(level)||level.length==0){
 //            $.jBox.tip("店铺等级请输入数字！");
@@ -198,56 +278,88 @@
 //        }
 
 
+//        $("input[name='upgradeConditions']").val(JSON.stringify(conditions));
 
-//        $.jBox.confirm("友情提示", "确定保存新增店铺等级吗",function(v,h,f){
-//            if (v == 'ok')
-//                $("#form1").submit();
-//            else if (v == 'cancel')
-//                return;
-//        });
-
+        var newSisLevel=new Object();
+        newSisLevel.upgradeConditions=conditions;
+        newSisLevel.id=$("input[name='id']").val();
+        newSisLevel.levelName=nickname;
+        newSisLevel.levelNo=level;
+        newSisLevel.rebateRate=rebate;
+        newSisLevel.extraUpgrade=$("select[name='extraUpgrade']").find("option:selected").val();
 
         layer.confirm('即将保存内容，确定继续吗？', {
             btn: ['确定','取消'] //按钮
         }, function(){
 
-            $("#form1").submit();
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: "saveSisLevel",
+                contentType:"application/json",
+                data: JSON.stringify(newSisLevel),
+                success: function (result) {
+                    if(result!=undefined){
+                        layer.msg(result.message);
+                    }
+
+
+//                    layer.close(pushSave);
+//                var _result = $.parseJSON(result);
+//                    if (result.code == 200) {
+//                    jBox.tip('保存成功', 'success');
+//                        layer.msg("保存成功", {icon: 1});
+//                        return;
+//                    }
+//                    layer.msg("保存错误", {icon: 2});
+//                jBox.tip('保存错误:' + _result.msg, 'error');
+                }
+            });
+
+
+//            $("#form1").submit();
 
         }, function(){
         });
     }
 
+    function addCondition(){
+        var divs=$("#conditions").find("div");
+        if(divs.length>=levels.length){
+            return;
+        }
+        var relationOption="";
+        if(divs.length>0){
+            relationOption=getRelationOption();
+        }
 
-//    function useLinkchange(obj){
-//        var link=$("input[name='useLink']:checked").val();
-//        if(link==0){
-//            window.editor.readonly(false);
-//            $("#linkUrl").attr("disabled",true);
-//        }
-//        if(link==1){
-//            window.editor.readonly(true);
-//
-//            $("#linkUrl").attr("disabled",false);
-//        }
-//    }
+        var levelsOption=getLevelsOption();
 
+        var div='<div> ' +
+                        relationOption
+                     +
+                    '<select name="level_id" width="30" style="width:170px"> ' +
+                        levelsOption +
+                    '</select> ' +
+                    '<input  maxlength="13" style="width:170px" name="num" type="text"id="" ' +
+                '        class="input-normal" placeholder=""/><label>人</label> ' +
+                '</div>';
+        $("#conditions").append(div);
 
-//    function changeType() {
-//        $("#useLink").fadeIn();
-//        $("#linkUrlTr").fadeIn();
-////            $("#enabledRecommendProduct").fadeIn();
-////            $("#recommend").fadeIn();
-//        var urlFlag=$("input[name='useLink']:checked").val();
-//        if(urlFlag==0){
-//            $("input[name='linkUrl']").attr("disabled",true);
-//            window.editor.readonly(false);
-//        }else{
-//            window.editor.readonly(true);
-//        }
-//    }
+    }
+
+    function delCondition(){
+        var divs=$("#conditions").find("div");
+        if(divs.length<=1){
+            return;
+        }
+        divs.last().remove();
+
+    }
+    /*]]>*/
 </script>
-<script charset="utf-8" src="richText/kindeditor-min.js" th:src="@{/richText/kindeditor-min.js}"></script>
-<script charset="utf-8" src="richText/lang/zh_CN.js" th:src="@{/richText/lang/zh_CN.js}"></script>
-<script charset="utf-8" src="richText/init.js" th:src="@{/richText/init.js}"></script>
+<!--<script charset="utf-8" src="richText/kindeditor-min.js" th:src="@{/richText/kindeditor-min.js}"></script>-->
+<!--<script charset="utf-8" src="richText/lang/zh_CN.js" th:src="@{/richText/lang/zh_CN.js}"></script>-->
+<!--<script charset="utf-8" src="richText/init.js" th:src="@{/richText/init.js}"></script>-->
 </body>
 </html>

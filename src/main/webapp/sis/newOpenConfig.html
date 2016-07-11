@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>
+        开店设置
+    </title>
+    <link rel="stylesheet" href="../resource/css/fmwebbb.css"
+          th:href="@{/resource/css/fmwebbb.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/css/search.css"
+          th:href="@{/resource/css/search.css}" />
+    <link rel="stylesheet" type="text/css" href="../resource/css/newonedow.css"
+          th:href="@{/resource/css/newonedow.css}" />
+    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.content.css}" />
+    <link href="../resource/css/settlements.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/css/settlements.css}"/>
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"
+            th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <!--layer弹框插件-->
+    <script type="text/javascript" src="../resource/layer/layer.js"
+            th:src="@{/resource/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
+          th:src="@{/resource/layer/skin/layer.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.ext.css"
+          th:src="@{/resource/layer/skin/layer.ext.css}"/>
+    <!--颜色选择器插件-->
+    <script type="text/javascript" src="../resource/js/spectrum.js"
+            th:src="@{/resource/js/spectrum.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/css/spectrum.css"
+          th:src="@{/resource/css/spectrum.css}"/>
+</head>
+<body onload="shopSet()">
+<form method="post" action="saveNewOpenConfig" id="form1" th:object="${newSisConfig}">
+    <input type="hidden" name="openGoodsId" th:value="*{openGoodsId}"/>
+    <input type="hidden" name="openAwardMode" th:value="*{openAwardMode}"/>
+    <div class="container">
+        <div class="blank10">
+        </div>
+        <div class="search block" style="display: block;">
+            <div class="h">
+      <span class="icon-sprite icon-magnifier">
+      </span>
+                <h3>开店设置后台</h3>
+            </div>
+            <div class="cnt-wp" style="padding: 35px 10px 10px;">
+                <div id="makeTab" class="cnt om-tabs om-widget om-widget-content om-corner-all" style="width: auto; height: auto;">
+
+                    <!-- 以下设置表单-->
+                    <div class="om-tabs-panels om-widget-content om-corner-bottom">
+                        <div class="om-widget om-panel">
+                            <div id="tab0001" class="om-panel-body om-widget-content om-panel-noheader om-state-nobd">
+                                <div class="closeopensis">
+                                    是否开启店中店:
+                                    <input id="enabled0" value="0" onchange="shopSet()" type="radio" name="enabled"
+                                           th:checked="*{enabled==0}"/>
+                                    <label style="padding-left: 0" for="enabled0">关闭</label>
+                                    <input id="enabled1" value="1" onchange="shopSet()" type="radio" name="enabled"
+                                           th:checked="*{enabled==1}"/>
+                                    <label style="padding-left: 0" for="enabled1">开启</label>
+                                </div>
+                                <div id="sisConfig" class="division">
+
+                                    <table id="submitTable" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+                                        <!--<tr id="isOpenSisShop">-->
+                                            <!--<th>是否开启店中店:</th>-->
+                                            <!--<td>-->
+                                                <!--<input id="enabled0" value="0" onchange="shopSet()" type="radio" name="enabled" th:checked="*{enabled==0}"/>-->
+                                                <!--<label style="padding-left: 0" for="enabled0">关闭</label>-->
+                                                <!--<input id="enabled1" value="1" onchange="shopSet()" type="radio" name="enabled" th:checked="*{enabled==1}"/>-->
+                                                <!--<label style="padding-left: 0" for="enabled1">开启</label>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+
+                                        <tr id="sisPattern">
+                                            <th>开店模式:</th>
+                                            <td>
+                                                <input id="openNeedInvite0" value="0" onchange="" type="radio" name="openNeedInvite" th:checked="*{openNeedInvite==0}"/>
+                                                <label style="padding-left: 0" for="openNeedInvite0">开放制</label>
+                                                <input id="openNeedInvite1" value="1" onchange="" type="radio" name="openNeedInvite" th:checked="*{openNeedInvite==1}"/>
+                                                <label style="padding-left: 0" for="openNeedInvite1">邀请制</label>
+                                            </td>
+                                        </tr>
+
+
+
+                                        <tr>
+                                            <th>允许上架商品数:</th>
+                                            <td>
+                                                <input id="limitGoodsNum0" value="0" onchange="limitGoods()" type="radio" name="limitGoodsNum" th:checked="*{openMode==1}"/>
+                                                <label style="padding-left: 0" for="limitGoodsNum0">不限制</label>
+                                                <input id="limitGoodsNum1" value="1" onchange="limitGoods()" type="radio" name="limitGoodsNum" th:checked="*{openMode==0}"/>
+                                                <label style="padding-left: 0" for="limitGoodsNum1">限制</label>
+                                                <label id="limitGoodsLabel">
+                                                    单品数量:&nbsp;
+                                                    <input type="text" name="maxMartketableNum"
+                                                           th:value="*{maxMartketableNum}!=null? *{maxMartketableNum}"/>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    品牌数量:&nbsp;
+                                                    <input type="text" name="maxBrandNum"
+                                                           th:value="*{maxBrandNum}!=null? *{maxBrandNum}"/>
+                                                </label>
+                                            </td>
+                                        </tr>
+
+                                        <tr id="isFreeOpenSisShop">
+                                            <th>是否免费开店:</th>
+                                            <td>
+                                                <input id="openMode0" value="1" onchange="freeSet()" type="radio" name="openMode" th:checked="*{openMode==1}"/>
+                                                <label style="padding-left: 0" for="openMode0">收费</label>
+                                                <input id="openMode1" value="0" onchange="freeSet()" type="radio" name="openMode" th:checked="*{openMode==0}"/>
+                                                <label style="padding-left: 0" for="openMode1">免费</label>
+                                                <table id="levelGoodsConfig">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="text-align: center">是否开启</th>
+                                                        <th style="text-align: center">店铺等级</th>
+                                                        <th style="text-align: center">开店商品</th>
+                                                        <th style="text-align: center">开店奖</th>
+                                                        <th style="text-align: center">梦想合伙人送股</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td><input type="checkbox"/></td>
+                                                        <td>默认等级</td>
+                                                        <td>化妆品</td>
+                                                        <td>设置开店奖</td>
+                                                        <td>设置送股</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+
+
+
+                                        <!--<tr>-->
+                                            <!--<th>商品数量</th>-->
+                                            <!--<td>-->
+                                                <!--单品数量:&nbsp;<input type="text" name="maxMartketableNum" th:value="*{maxMartketableNum}!=null? *{maxMartketableNum}"/>&nbsp;&nbsp;&nbsp;&nbsp;-->
+                                                <!--品牌数量:&nbsp;<input type="text" name="maxBrandNum" th:value="*{maxBrandNum}!=null? *{maxBrandNum}"/>-->
+                                            <!--</td>-->
+                                            <!--&lt;!&ndash;<span>(提示:当单品数量或品牌数量设置为0时，上架商品或品牌无限制，并开启一键铺货功能)</span>&ndash;&gt;-->
+                                        <!--</tr>-->
+
+                                        <!--<tr id="recommend">-->
+                                            <!--<th>选择开店商品</th>-->
+                                            <!--<td>-->
+                                                <!--<input id="goodsType0" value="0" onchange="changeGoodsType()" type="radio" name="goodsType" th:checked="*{openGoodsMode!=1}"/>-->
+                                                <!--<label style="padding-left: 0" for="goodsType0">单一商品</label>-->
+                                                <!--<input id="goodsType1" value="1" onchange="changeGoodsType()" type="radio" name="goodsType" th:checked="*{openGoodsMode==1}"/>-->
+                                                <!--<label style="padding-left: 0" for="goodsType1">等级商品</label>-->
+                                                <!--<br/>-->
+
+                                                <!--<div id="selectGoodsType">-->
+                                                    <!--<div id="goodsTypedefult" th:style="*{openGoodsMode}==1?'display: none':'display: block'">-->
+                                                        <!--<a id="searchGoods" class="btn-lit" href="javascript:loadGoodsList();" style="color: #fff">-->
+                                                            <!--<span>添加产品</span>-->
+                                                        <!--</a>-->
+                                                        <!--<input placeholder="读取商品名称及价格，不可修改" size="100" readonly="readonly"-->
+                                                               <!--type="text" name="goodsid" th:value="${goodsTitle}!=null? ${goodsTitle}"/>-->
+
+                                                        <!--<a class="btn-lit" href="javascript:openAwardConfig();" style="color: #fff">-->
+                                                            <!--<span>开店返利配置</span>-->
+                                                        <!--</a>-->
+                                                    <!--</div>-->
+
+                                                    <!--<div id="goodsTypeIndividuation" th:style="*{openGoodsMode}==1?'display: block':'display: none'">-->
+                                                        <!--<div  th:each="gl:${sisLevelModels}" style="padding-bottom:1em">-->
+
+                                                            <!--<label style="display:none"-->
+                                                                   <!--th:text="-->
+                                                                   <!--'{&quot;levelid&quot;:'+'&quot;'+${gl.levelId}+'&quot;'+-->
+                                                                   <!--',&quot;goodsid&quot;:'+'&quot;'+${gl.goodsId}+'&quot;'+-->
+                                                                   <!--'}'"></label>-->
+
+                                                            <!--<label th:text="'店铺等级:'+${gl.levelTitle}">店铺等级</label>-->
+                                                            <!--<a href="#" th:attr="levelno=''+${glStat.count}" class="btn-lit" onclick="loadGoodsList(this);" style="color: #fff">-->
+                                                                <!--<span>添加产品</span>-->
+                                                            <!--</a>-->
+                                                            <!--<input placeholder="读取商品名称及价格，不可修改" size="130"-->
+                                                                   <!--readonly="readonly" type="text" name="goodsid"-->
+                                                                   <!--th:value="${gl.goodsId}!=null?'商品名称:'+${gl.goodsTitle}+'   商品价格:'+${gl.goodsPrice}+'元'"/>-->
+                                                        <!--</div>-->
+
+                                                        <!--<p id="extraUpGood">-->
+                                                            <!--<label id="extraUpGoodLabel"  style="display: none;" th:text="${extraUpGoods}!=null?${extraUpGoods.goodsId}"></label>-->
+                                                            <!--<a class="btn-lit" href="javascript:loadGoodsList();" style="color: #fff">-->
+                                                                <!--<span>选择补差价商品</span>-->
+                                                            <!--</a>-->
+
+                                                            <!--<input id="extraUpGoods" placeholder="读取商品名称及价格，不可修改" size="130"-->
+                                                                   <!--readonly="readonly" type="text" name="extraUpGoods"-->
+                                                                   <!--th:value="${extraUpGoods}!=null?'商品名称：'+${extraUpGoods.goodsTitle}+'  价格：'+${extraUpGoods.goodsPrice}+'元'"/>-->
+                                                        <!--</p><br/>-->
+
+                                                        <!--<p>-->
+                                                            <!--<a class="btn-lit" href="javascript:openAwardLevelConfig();" style="color: #fff">-->
+                                                                <!--<span>开店返利配置</span>-->
+                                                            <!--</a>-->
+                                                        <!--</p>-->
+                                                    <!--</div>-->
+                                                <!--</div>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                        <!--<tr>-->
+                                            <!--<th>合伙人送股</th>-->
+                                            <!--<td>-->
+                                                <!--开店人获得梦想股:&nbsp;<input type="text" name="corpStockSelf" th:value="*{corpStockSelf}!=null? *{corpStockSelf}"/>&nbsp;&nbsp;&nbsp;&nbsp;-->
+                                                <!--开店人上级获得梦想股:&nbsp;<input type="text" name="corpStockBelongOne" th:value="*{corpStockBelongOne}!=null? *{corpStockBelongOne}"/>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+
+                                        <!--<tr id="enableLevelUpgrade">-->
+                                        <!--<th>是否开启店铺升级:</th>-->
+                                        <!--<td>-->
+                                        <!--<input id="sisLevelUpgradeNo" value="1" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="*{enableLevelUpgrade}"/>-->
+                                        <!--<label style="padding-left: 0" for="sisLevelUpgradeNo">是</label>-->
+                                        <!--<input id="sisLevelUpgradeYes" value="0" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="!*{enableLevelUpgrade}"/>-->
+                                        <!--<label style="padding-left: 0" for="sisLevelUpgradeYes">否</label>-->
+                                        <!--</td>-->
+                                        <!--</tr>-->
+
+
+                                        <!--<tr id="enableAllGoods">-->
+                                            <!--<th>是否开启一键铺货:</th>-->
+                                            <!--<td>-->
+                                                <!--<input id="enableAllGoodsNo" value="1" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="*{enableLevelUpgrade}"/>-->
+                                                <!--<label style="padding-left: 0" for="sisLevelUpgradeNo">是</label>-->
+                                                <!--<input id="enableAllGoodsYes" value="0" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="!*{enableLevelUpgrade}"/>-->
+                                                <!--<label style="padding-left: 0" for="sisLevelUpgradeYes">否</label>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+
+
+                                        <!--<tr id="pushAwardConfig">-->
+                                            <!--<th>直推奖模式:</th>-->
+                                            <!--<td>-->
+                                                <!--<input id="pushModel_0" value="0" onchange="setPushAwardConfig()" type="radio" name="pushAwardMode" th:checked="*{pushAwardMode==0}"/>-->
+                                                <!--<label style="padding-left: 0" for="pushModel_0">默认模式</label>-->
+                                                <!--<input id="pushModel_1" value="1" onchange="setPushAwardConfig()" type="radio" name="pushAwardMode" th:checked="*{pushAwardMode==1}"/>-->
+                                                <!--<label style="padding-left: 0" for="pushModel_1">经营者模式</label>-->
+
+                                                <!--<a id="pushAwardConfig_a" class="btn-lit" href="javascript:pushAwardConfig();" style="color: #fff">-->
+                                                    <!--<span>经营者直推奖配置</span>-->
+                                                <!--</a>-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+
+                                        <tr>
+                                            <th>店中店后台首页颜色</th>
+                                            <td>
+                                                <div style="float: left"><input type='text' id="full"/></div>
+                                                <input type="hidden" id="homePageColor" th:value="*{homePageColor}"/>
+                                                <div class="f-bigbox">
+                                                    <div class="fa-bigbox">
+                                                        <p class="f-moren"><img style="width:54px; height:54px;" src="../sisweb/images/moren.png"/></p>
+
+                                                        <div class="f-number">
+                                                            <p class="phone">我的小店</p>
+
+                                                            <p class="tit_rem tit"><i id="sisLevelName">一级店铺</i></p>
+                                                        </div>
+                                                        <!--<div class="ylyl"><p style="color: #fff;">店铺预览</p></div>-->
+                                                        <p style="clear:both"></p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 添加商品弹窗 -->
+                    <div id="asaimsg" class="" style="display: none">
+                        <input type="hidden" id="eventLogger" />
+
+                        <!--<P align="right" style="margin: 0px; padding: 0px;">-->
+                            <!--<a href="javascript:void(0)"-->
+                               <!--onclick="document.getElementById('asaimsg').style.display='none';document.getElementById('asaimsgbg').style.display='none'"><FONT-->
+                                    <!--style="color: #111; font-size: 20px;">×</FONT></a>-->
+                        <!--</P>-->
+
+                        <!--分类筛选:<select onchange="javascript:changePage();" id="categoryList" style="width: 200px;">-->
+                        <!--<option th:remove="all" value="999">女装</option>-->
+                    <!--</select>-->
+                        <p align="center">关键字：
+                            <input type="text" id="searchName"/>
+                            <a class="btn-lit btn-middle" id="search" href="javascript:getGoodsList(0)" style="margin-bottom: 3px;">
+                                <span style="color: #fff">搜索</span></a>
+                        </p>
+                        <div id="goodsListByNameAndCategory"></div>
+                        <table class="data-table even1" width="80%" border="0" cellspacing="0"
+                               cellpadding="0">
+                            <thead>
+                            <tr class="even">
+                                <th style="display: none"></th>
+                                <th scope="col">商品名称</th>
+                                <th scope="col">商品价格（元）</th>
+                                <th scope="col">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="goodListByNameAndCategory">
+                            <tr th:remove="all">
+                                <td class="txt55 c">瓜子</td>
+                                <td class="txt21 c">120</td>
+                                <td class="txt21 c"><a href="javascript:void(0)" onclick="choiceGoods(this)">选择</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="pager-bar">
+                            <input type="hidden" id="noNumber" value="0"/>
+                            <input type="hidden" id="maxNumber" value="0"/>
+                            <a class="button-white" href="javascript:queryForst()"><span>首页</span></a>
+                            <a class="button-white" href="javascript:queryUp(-1)">
+                                <span>上一页</span>
+                            </a>
+                            <a class="button-white" href="javascript:queryVoid(1)">
+                                <span>下一页</span>
+                            </a>
+                            <a class="button-white" href="javascript:queryLast()">
+                                <span>未页</span>
+                            </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第
+                            <input id="current-index" onkeydown="J.EnterSubmit(event, Pager.Jump);" class="input-small" style="text-align:center;" type="text" value="1"/>页&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a class="button-white" href="javascript:goToNo();"><span>跳转</span></a>
+                        </div>
+                    </div>
+                    <!-- 弹窗结束 -->
+                </div>
+                <!--是否在资讯栏目发一篇介绍范围结束-->
+
+                <!--以下是按钮-->
+                <div style="text-align: center; margin-top:12px" >
+                    <a id="save" class="btn-lit" href="javascript:;" style=" margin-right:10px;color:#fff">
+        <span>
+        确定设置
+        </span>
+                    </a>
+                </div>
+                <!--按钮结束-->
+
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var levelGoods=1;//店铺等级的开店商品(如果开店设置为个性化有效)
+    var choseGoods;
+                //提交设置
+    function submitForm1() {
+
+        var enabled=$("input[name='enabled']:checked").val();
+        if(enabled==1){
+            var maxMartketableNum=$("input[name='maxMartketableNum']").val();
+            var maxBrandNum=$("input[name='maxBrandNum']").val();
+            var openGoodsId=$("input[name='openGoodsId']").val();
+            var corpStockSelf=$("input[name='corpStockSelf']").val();
+            var corpStockBelongOne=$("input[name='corpStockBelongOne']").val();
+            var goodsType=$("input[name='goodsType']:checked").val();
+            var openMode=$("input[name='openMode']:checked").val();
+            if(openMode==1){
+                var rex=/^[0-9]*$/;
+                if(goodsType==0){
+                    if (openGoodsId.length == 0) {
+                        if(openMode==1){
+                            layer.msg("请选择商品");
+                            return;
+                        }
+                    }
+                }
+                if(goodsType==1){
+                    var flag=true;
+                    var goodsTypeIndividuations=$("#goodsTypeIndividuation").children("div");
+                    goodsTypeIndividuations.each(function(){
+                        var goodsId=$(this).children("label").first().text();
+                        var obj=jQuery.parseJSON(goodsId);
+                        if(obj.goodsid==null){
+                            flag=false;
+                        }
+                    })
+                    if(!flag){
+                        layer.msg("请选择商品");
+                        return;
+                    }
+
+                    var extraUpGoodLabel=$("#extraUpGoodLabel").text();
+                    if(extraUpGoodLabel.length==0){
+                        layer.msg("请选择补差价商品");
+                        return;
+                    }
+                }
+
+
+                if(!rex.test(corpStockSelf)||!rex.test(corpStockSelf)||corpStockSelf.length==0){
+                    layer.msg("合伙人送股请输入数字！");
+                    return;
+                }
+
+                if(!rex.test(corpStockBelongOne)||!rex.test(corpStockBelongOne)||corpStockBelongOne.length==0){
+                    layer.msg("上级合伙人送股请输入数字！");
+                    return;
+                }
+
+            }
+
+            var rex=/^[0-9]*$/;
+            if(!rex.test(maxBrandNum)||!rex.test(maxBrandNum)||maxBrandNum.length==0){
+                layer.msg("品牌数量请输入数字！");
+                return;
+            }
+            if(!rex.test(maxMartketableNum)||!rex.test(maxMartketableNum)||maxBrandNum.length==0){
+                layer.msg("单品数量请输入数字！");
+                return;
+            }
+        }
+
+
+        layer.confirm('即将保存内容，确定继续吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+
+            ajax();
+
+        }, function(){
+        });
+
+    }
+
+    function ajax(){
+        var sub=layer.load(0, {shade: false});
+        var openGoodsLevels="[";
+        var n=1;
+        var goodsTypeIndividuations=$("#goodsTypeIndividuation").children("div");
+        goodsTypeIndividuations.each(function(){
+            var levelIdgoodsId=$(this).children("label").first().text();
+            openGoodsLevels=openGoodsLevels+levelIdgoodsId;
+            if(n<goodsTypeIndividuations.size()){
+                openGoodsLevels=openGoodsLevels+',';
+            }else {
+                openGoodsLevels=openGoodsLevels+']';
+            }
+            n++;
+        });
+
+
+        $.ajax({
+            type:'POST',
+            url: 'saveOpenConfig',
+            dataType: 'json',
+            data: {
+                "enabled":$("input[name='enabled']:checked").val(),
+                "openMode":$("input[name='openMode']:checked").val(),
+                "openNeedInvite":$("input[name='openNeedInvite']:checked").val(),
+                "openGoodsId":$("input[name='openGoodsId']").val(),
+                "maxMartketableNum":$("input[name='maxMartketableNum']").val(),
+                "maxBrandNum":$("input[name='maxBrandNum']").val(),
+                "corpStockSelf":$("input[name='corpStockSelf']").val(),
+                "corpStockBelongOne":$("input[name='corpStockBelongOne']").val(),
+                "openGoodsMode":$("input[name='goodsType']:checked").val(),
+                "openGoodsLevels":openGoodsLevels,
+                "openAwardMode":$("input[name='openAwardMode']").val(),
+                "extraUpGoodsId":$("#extraUpGoodLabel").text(),
+                "homePageColor":$("#homePageColor").val(),
+                "enableLevelUpgrade":$("input[name='enableLevelUpgrade']:checked").val(),
+                "pushAwardMode":$("input[name='pushAwardMode']:checked").val()
+            },
+            success:function(result){
+                if(result.code==200){
+                    layer.close(sub);
+                    layer.msg("保存成功");
+                }else {
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.close(sub);
+                layer.msg("保存失败");
+            }
+        });
+    }
+
+    function queryVoid(no) {//下页
+        var size = 0;
+        var numberBug = Number($("#maxNumber").val());//最大页数
+        size = Number($("#noNumber").val())+no;//前往的页数
+        if(size>numberBug){
+            layer.msg("已经在最后一页了");
+            return;
+//            size=numberBug;
+        }
+        $("#noNumber").attr("value", size);
+        getGoodsList(size);
+    }
+
+    function queryUp(no) {//上页
+        var size = 0;
+        size = Number($("#noNumber").val())+no;//前往的页数
+        if (0 > size) {
+            layer.msg("已经在首页了");
+            return;
+//            size = 0;
+        }
+        $("#noNumber").attr("value", size);
+        getGoodsList(size);
+    }
+
+    function queryForst() {//首页
+        $("#pageNoStr").attr("value", 0);
+        getGoodsList(0);
+    }
+
+    function queryLast() {//尾页
+        var numberBug = Number($("#maxNumber").val())-1;//最大页数
+        if(0>numberBug){
+            numberBug=0;
+        }
+        $("#noNumber").attr("value", numberBug);
+        getGoodsList(numberBug);
+    }
+
+    function goToNo() {
+        var size = Number($("#current-index").val())-1;
+        var numberBug = Number($("#maxNumber").val());//最大页数
+        if (size > numberBug) {
+            size = numberBug;
+        }
+        if(0>size){
+            size=0;
+        }
+        $("#pageNoStr").attr("value", size);
+        getGoodsList(size);
+    }
+
+    function changePage(){
+        $("#noNumber").attr("value", 0);
+    }
+
+    function getGoodsList(pageNo){
+//        var index=layer.load(0, {shade: false});
+        var index=layer.load(0, {shade: false});
+        $("#goodListByNameAndCategory").empty();
+        var path=$("#categoryList option:selected").val();
+        var name=$("#searchName").val();
+        //ajax请求商品列表
+        $.ajax({
+            type:'GET',
+            url: 'goodsList',
+            dataType: 'json',
+            data: {title:name,path:path,pageNo:pageNo},
+            success:function(result){
+                if(result.code==1){
+                    layer.close(index);
+                    goods=result.data;
+                    $.each(goods,function(){
+                        var goodsTitle=this.title;
+                        var goodsPrice=this.price;
+                        var goodsId=this.id;
+                        $("#goodListByNameAndCategory").append('' +
+                                '<tr> ' +
+                                '<td style="display: none">'+goodsId+'</td> ' +
+                                '<td class="txt55 c">'+goodsTitle+'</td> ' +
+                                '<td class="txt21 c">'+goodsPrice+'</td>' +
+                                '<td class="txt21 c">' +
+                                '<a href="javascript:void(0)" onclick="choiceGoods(this)">选择</a>' +
+                                '</td> ' +
+                                '</tr>');
+                    })
+                    //最大页数
+                    $("#maxNumber").attr("value", result.message);
+                    $("#noNumber").attr("value",pageNo);
+                    $("#current-index").attr("value",pageNo+1);
+
+
+                }else {
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.msg("获取商品出错，请检查网络");
+                layer.close(index);
+            }
+        });
+    }
+
+    function choiceGoods(obj){
+        var goodsType=$("input[name='goodsType']:checked").val();
+        var goodsId;
+        var goodsTitle;
+        if(goodsType==0){
+            var goods=$("input[name='openGoodsId']");
+            var inputId=$("input[name='goodsid']");
+            goodsId=$(obj).parent().parent().children('td').eq(0).html();
+            goodsTitle=$(obj).parent().parent().children('td').eq(1).html();
+            goods.attr("value",goodsId);
+            inputId.attr("value",goodsTitle);
+        }
+        if(goodsType==1){
+            goodsId=$(obj).parent().parent().children('td').eq(0).html();
+            goodsTitle=$(obj).parent().parent().children('td').eq(1).html();
+            var goodsPrice=$(obj).parent().parent().children('td').eq(2).html();
+            var goodsTypeIndividuation;
+            if(levelGoods==undefined){
+                goodsTypeIndividuation=$("#extraUpGood");
+                goodsTypeIndividuation.children("label").first().text(goodsId);
+                goodsTypeIndividuation.children("input").first().val('商品名称:'+goodsTitle+'   商品价格:'+goodsPrice);
+            }else {
+
+                goodsTypeIndividuation=$("#goodsTypeIndividuation").children("div").eq(levelGoods-1);
+                var jsonlabel=goodsTypeIndividuation.children("label").first();
+                var input=goodsTypeIndividuation.children("input").first();
+                var json=$.parseJSON(jsonlabel.text());
+                json.goodsid=goodsId;
+                jsonlabel.text(JSON.stringify(json));
+                input.val('商品名称:'+goodsTitle+'   商品价格:'+goodsPrice);
+
+            }
+
+        }
+        layer.close(choseGoods);
+    }
+
+    function shopSet(){
+//        sisLevelModels = /*[[${sisLevelModels}]]*/ '';
+//        $.each(sisLevelModels,function(){
+//            alert(this.levelId);
+//        })
+
+        var enabled=$("input[name='enabled']:checked").val();
+        if(enabled==0){//关闭店中店配置
+            $("#sisConfig").hide();
+
+//            $("input[name='openNeedInvite']").attr("disabled","disabled");
+//            $("input[name='openMode']").attr("disabled","disabled");
+//            $("input[name='goodsid']").attr("disabled","disabled");
+//            $("input[name='maxMartketableNum']").attr("disabled","disabled");
+//            $("input[name='maxBrandNum']").attr("disabled","disabled");
+//            $("input[name='corpStockSelf']").attr("disabled","disabled");
+//            $("input[name='corpStockBelongOne']").attr("disabled","disabled");
+//            $("input[name='isShelvesAllGoods']").attr("disabled","disabled");
+//            $("#recommend").hide();
+        }else{  //开启店中店配置
+            $("#sisConfig").show();
+//            $("input[name='openNeedInvite']").removeAttr("disabled");
+//            $("input[name='openMode']").removeAttr("disabled");
+//            $("input[name='goodsid']").removeAttr("disabled");
+//            $("input[name='maxMartketableNum']").removeAttr("disabled");
+//            $("input[name='maxBrandNum']").removeAttr("disabled");
+//            $("input[name='corpStockSelf']").removeAttr("disabled");
+//            $("input[name='corpStockBelongOne']").removeAttr("disabled");
+//            $("input[name='isShelvesAllGoods']").removeAttr("disabled");
+//            $("#recommend").show();
+//            freeSet();
+//            changeGoodsType();
+//            setPushAwardConfig();
+
+        }
+    }
+
+    function freeSet(){
+        var openMode=$("input[name='openMode']:checked").val();
+        if(openMode==0){//免费
+            $("#levelGoodsConfig").hide();
+
+//            $("input[name='goodsid']").attr("disabled","disabled");
+//            $("input[name='corpStockSelf']").attr("disabled","disabled");
+//            $("input[name='corpStockBelongOne']").attr("disabled","disabled");
+//            $("#recommend").hide();
+        }else{  //收费
+            $("#levelGoodsConfig").show();
+//            $("input[name='goodsid']").removeAttr("disabled");
+//            $("input[name='corpStockSelf']").removeAttr("disabled");
+//            $("input[name='corpStockBelongOne']").removeAttr("disabled");
+//            $("#recommend").show();
+        }
+
+    }
+
+    function limitGoods(){
+        var mode=$("input[name='limitGoodsNum']:checked").val();
+        if(mode==0){//不限制
+            $("#limitGoodsLabel").hide();
+
+        }else{  //限制
+            $("#limitGoodsLabel").show();
+        }
+
+    }
+
+
+    function recommendGoods(){
+        getGoodsList(0);
+        $("#asaimsg").show();
+    }
+
+    function loadGoodsList(obj){
+        levelGoods = $(obj).attr("levelno");
+
+        choseGoods=layer.open({
+            type: 1,
+//            offset:'100px',
+            title: '挑选商品',
+//            shadeClose: true,
+//            shade: false,
+            area: ['893px', '400px'],
+            content:$("#asaimsg"),
+//            content: 'selectOpenGoodsList.html',
+            end:function(){
+
+            }
+        });
+        getGoodsList(0);
+
+    }
+
+
+    function openAwardConfig(){
+        var host=/*[[${mainHost}]]*/ '';
+        var testhost=/*[[${mainhost}]]*/ '';
+        console.log(host);
+        console.log("test"+testhost);
+        layer.open({
+            type: 2,
+//            offset:'100px',
+            title: '店中店开店奖设置',
+//            shadeClose: true,
+//            shade: false,
+            area: ['1300px', '800px'],
+            content:"http://"+testhost+'/MallManage/ShopInShopV2/OpenAward.aspx',
+//            content: 'selectOpenGoodsList.html',
+            end:function(){
+
+            }
+        });
+
+    }
+
+    function pushAwardConfig(){
+        var host=/*[[${mainHost}]]*/ '';
+        var testhost=/*[[${mainhost}]]*/ '';
+        layer.open({
+            type: 2,
+//            offset:'100px',
+            title: '店中店直推奖设置',
+//            shadeClose: true,
+//            shade: false,
+            area: ['1300px', '800px'],
+            content:'pushAwardConfig',
+//            content: 'selectOpenGoodsList.html',
+            end:function(){
+
+            }
+        });
+
+    }
+
+    function openAwardLevelConfig(){
+//        var host=/*[[${mainHost}]]*/ '';
+//        var testhost=/*[[${mainhost}]]*/ '';
+//        console.log(host);
+//        console.log("test"+testhost);
+        layer.open({
+            type: 2,
+//            offset:'100px',
+            title: '店中店开店奖设置',
+//            shadeClose: true,
+//            shade: false,
+            area: ['1300px', '800px'],
+            content:'openAwardConfig',
+//            content: 'selectOpenGoodsList.html',
+            end:function(){
+
+            }
+        });
+
+    }
+
+
+    function changeGoodsType(){
+        var goodsType=$("input[name='goodsType']:checked").val();
+        if(goodsType==0){
+            $("#goodsTypedefult").show();
+            $("#goodsTypeIndividuation").hide();
+        }
+        if(goodsType==1){
+            $("#goodsTypedefult").hide();
+            $("#goodsTypeIndividuation").show();
+
+        }
+    }
+
+    function getlevelList(){
+        $.ajax({
+            type:'GET',
+            url: 'showLevelList',
+            dataType: 'json',
+            success:function(result){
+                if(result.code==200){
+                    levels=result.data;
+                    $.each(levels,function(){
+                        var levelId=this.levelId;
+                        var levelTitle=this.levelTitle;
+                        $("#selectGoodsType").append('<div>' +
+                                '<label>'+levelTitle+'</label>' +
+                                '<a class="btn-lit" href="javascript:loadGoodsList();" style="color: #fff">'+
+                                '<span>添加产品</span>'+
+                                '</a>'+
+                                '<input placeholder="读取商品名称及价格，不可修改" size="100" readonly="readonly" type="text" name="goodsid"/>'+
+                                '</div>');
+                    })
+                }else {
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.msg("获取等级信息出错！");
+            }
+        });
+
+
+
+    }
+
+    function setPushAwardConfig(){
+        var pushModel=$("input[name='pushAwardMode']:checked").val();
+        if(pushModel==0){
+            $("#pushAwardConfig_a").hide();
+        }
+        if(pushModel==1){
+            $("#pushAwardConfig_a").show();
+        }
+    }
+
+
+    var homePageColor=/*[[${newSisConfig.homePageColor}]]*/ '#ECC';
+    if (homePageColor == null || homePageColor == undefined || homePageColor == '') {
+        homePageColor='#FF5BA0';
+    }
+    $("#full").spectrum({
+        color: homePageColor,
+        flat: false,
+        showInput: false,
+        className: "full-spectrum",
+        showInitial: true,
+        showPalette: true,
+        showSelectionPalette: true,
+        maxPaletteSize: 10,
+        preferredFormat: "hex",
+        localStorageKey: "spectrum.demo",
+        move: function (color) {
+
+        },
+        show: function () {
+
+        },
+        beforeShow: function () {
+
+        },
+        hide: function (color) {
+            $("#homePageColor").val(color);
+            $(".f-bigbox").css('background-color',color);
+
+
+
+        },
+        change: function(color) {
+            $(".f-bigbox").css('background-color',color);
+
+        },
+        palette: [
+            ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
+                "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
+            ["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
+                "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"],
+            ["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)",
+                "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)",
+                "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)",
+                "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)",
+                "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)",
+                "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
+                "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
+                "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
+                "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)",
+                "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
+        ]
+    });
+
+    /*]]>*/
+
+</script>
+
+</body>
+</html>

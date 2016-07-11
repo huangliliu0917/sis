@@ -132,7 +132,7 @@ public class SisWebApiController {
         }
 
         SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
-        if(sisConfig==null||sisConfig.getEnabled()==0||sisConfig.getOpenGoodsMode()==null||sisConfig.getOpenGoodsMode()==0){
+        if(sisConfig==null||sisConfig.getEnabled()==0||sisConfig.getOpenGoodsMode()==null||sisConfig.getOpenGoodsMode()==0){//todo 开店商品模式修改
             resultModel.setCode(403);
             resultModel.setMessage(userId+"商户无店中店配置不是升级的条件");
             return resultModel;

@@ -33,6 +33,7 @@ import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.repository.SisOpenAwardAssignRepository;
 import com.huotu.sis.service.CommonConfigService;
 import com.huotu.sis.service.SisConfigService;
+import com.huotu.sis.service.SisLevelService;
 import com.huotu.sis.service.SisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -46,10 +47,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,6 +93,9 @@ public class OpenSisShopController {
 
     @Autowired
     MerchantConfigRepository merchantConfigRepository;
+
+    @Autowired
+    SisLevelService sisLevelService;
 
     /**
      * 进入开店设置页面
@@ -213,7 +214,7 @@ public class OpenSisShopController {
         }
         if (!Objects.isNull(newSisConfig)) {
             newSisConfig.setMerchantId(customerId);
-            if(newSisConfig.getOpenGoodsMode()!=null&&newSisConfig.getOpenGoodsMode()==1){
+            if(newSisConfig.getOpenGoodsMode()!=null&&newSisConfig.getOpenGoodsMode()==1){//todo 开店商品模式修改
                 OpenGoodsIdLevelIdConverter converter=new OpenGoodsIdLevelIdConverter();
                 OpenGoodsIdLevelIds openGoodsIdLevelIds=converter.convertToEntityAttribute(openGoodsLevels);
                 newSisConfig.setOpenGoodsIdlist(openGoodsIdLevelIds);
@@ -595,15 +596,18 @@ public class OpenSisShopController {
 
         for (int i = 0; i < sisLevels.size(); i++) {
             SisLevelSetModel sisLevelSetModel = new SisLevelSetModel();
-            sisLevelSetModel.setId(sisLevels.get(i).getId().intValue());
-            sisLevelSetModel.setLevel(sisLevels.get(i).getLevelNo());
-            sisLevelSetModel.setCustomerId(sisLevels.get(i).getMerchantId());
-            sisLevelSetModel.setTuanduidianpuAmount(sisLevels.get(i).getUpTeamShopNum());
-            sisLevelSetModel.setZhituidianpuAmount(sisLevels.get(i).getUpShopNum());
-            sisLevelSetModel.setNickname(sisLevels.get(i).getLevelName());
-            sisLevelSetModel.setRebate(sisLevels.get(i).getRebateRate());
-            sisLevelSetModel.setIsSystem(sisLevels.get(i).getIsSystem());
-            sisLevelSetModel.setExtraUpgrade(sisLevels.get(i).getExtraUpgrade());
+            SisLevel sisLevel=sisLevels.get(i);
+            sisLevelSetModel.setId(sisLevel.getId().intValue());
+            sisLevelSetModel.setLevel(sisLevel.getLevelNo());
+            sisLevelSetModel.setCustomerId(sisLevel.getMerchantId());
+            sisLevelSetModel.setTuanduidianpuAmount(sisLevel.getUpTeamShopNum());
+            sisLevelSetModel.setZhituidianpuAmount(sisLevel.getUpShopNum());
+            List<SisLevelConditionsModel> sisLevelConditionsModels=sisLevelService.getSisLevelConditionsModels(sisLevel);
+            sisLevelSetModel.setUpgradeConditions(sisLevelConditionsModels.toString());
+            sisLevelSetModel.setNickname(sisLevel.getLevelName());
+            sisLevelSetModel.setRebate(sisLevel.getRebateRate());
+            sisLevelSetModel.setIsSystem(sisLevel.getIsSystem());
+            sisLevelSetModel.setExtraUpgrade(sisLevel.getExtraUpgrade());
             sisLevelSetModels.add(sisLevelSetModel);
         }
 
@@ -642,6 +646,7 @@ public class OpenSisShopController {
         }
         sisLevel.setLevelNo(levelNo);
         model.addAttribute("sisLevel", sisLevel);
+//        model.addAttribute("sisLevels",)
         return "/sis/newAddLevelSet";
     }
 
@@ -749,16 +754,25 @@ public class OpenSisShopController {
      * @throws Exception
      */
     @RequestMapping(value = "/saveSisLevel",method = RequestMethod.POST)
-    public String saveSisLevel(@CustomerId Long customerId,SisLevel newSisLevel) throws Exception{
+    @ResponseBody
+    public ResultModel saveSisLevel(@CustomerId Long customerId,@RequestBody SisLevel newSisLevel) throws Exception{
+        ResultModel resultModel=new ResultModel();
         if (environment.acceptsProfiles("develop")) {
             customerId = 4471L;
         }
         if (customerId == null) {
-            throw new Exception("商户ID不存在");
+            resultModel.setCode(500);
+            resultModel.setMessage("商户ID不存在");
+            return resultModel;
+
         }
         if(newSisLevel==null){
-            throw new Exception("没有店铺信息");
+            resultModel.setCode(500);
+            resultModel.setMessage("没有店铺信息");
+            return resultModel;
         }
+
+        //条件有效性判断
 
         if(newSisLevel.getId()==null){
             newSisLevel.setMerchantId(customerId);
@@ -800,10 +814,13 @@ public class OpenSisShopController {
 
         }
         sisLevelRepository.save(newSisLevel);
-        return "redirect:levelSet";
+
+        resultModel.setCode(200);
+        resultModel.setMessage("保存成功！");
+        return resultModel;
     }
 
-    //修改店铺信息
+    //修改店铺信息(弃用)
     @RequestMapping(value = "/saveLevelSetConfig1", method = RequestMethod.POST)
     public String saveLevelSetConfig1(@CustomerId Long customerId, HttpServletRequest httpServletRequest, String
             level,
@@ -926,16 +943,40 @@ public class OpenSisShopController {
 
     /**
      * 调整到编辑页面
-     *
-     * @param id
-     * @param model
+     *  负责人：史利挺
+     * @param id            店铺等级ID
+     * @param model         返回的model
+     * @param customerId    商户ID
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/jumpToChangeLevelSet", method = RequestMethod.GET)
-    public String jumpToChangeLevelSet(Long id, Model model) throws Exception {
+    public String jumpToChangeLevelSet(@CustomerId Long customerId,Long id, Model model) throws Exception {
         SisLevel sisLevel = sisLevelRepository.findOne(id);
+        //如果升级条件为null，处理数据
+//        List<SisLevelCondition> sisLevelConditions= sisLevel.getUpgradeConditions();
+//        List<SisLevelConditionsModel> models=new ArrayList<>();
+//
+//        if(sisLevelConditions!=null){
+//            for(int i=0,size=sisLevelConditions.size();i<size;i++){
+//                SisLevelCondition sisLevelCondition=sisLevelConditions.get(i);
+//                if(sisLevelCondition==null){
+//                    continue;
+//                }
+//                SisLevelConditionsModel sisLevelConditionsModel=new SisLevelConditionsModel();
+//                sisLevelConditionsModel.setLevelId(sisLevelCondition.getSisLvId());
+//                SisLevel conditionSisLv=sisLevelRepository.findOne(sisLevelCondition.getSisLvId());
+//                sisLevelConditionsModel.setLevelTitle(conditionSisLv==null?"无等级限制店铺":conditionSisLv.getLevelName());
+//                sisLevelConditionsModel.setRelation(sisLevelCondition.getRelation());
+//                sisLevelConditionsModel.setNum(sisLevelCondition.getNumber());
+//                models.add(sisLevelConditionsModel);
+//            }
+//        }else {
+//
+//        }
+        model.addAttribute("sisLvs",sisLevelService.getSimpleSisLevelModel(customerId,sisLevel.getLevelNo()));
         model.addAttribute("sisLevel", sisLevel);
+        model.addAttribute("conditions",sisLevelService.getSisLevelConditionsModels(sisLevel));
         return "/sis/newAddLevelSet";
     }
 }

@@ -53,4 +53,9 @@ public class SisLevelSetModel {
      * 是否启用补差价 0：不启用，1：启用
      */
     private Integer extraUpgrade;
+
+    /**
+     * 升级条件
+     */
+    private String upgradeConditions;
 }

@@ -10,10 +10,13 @@ import lombok.Setter;
 @Setter
 public class SimpleSisLevelModel {
     /**
+     * 等级ID
+     */
+    private Long levelId;
+    /**
      * 等级序号
      */
     private Integer levelNo;
-
     /**
      * 等级名称
      */

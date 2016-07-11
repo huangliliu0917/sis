@@ -112,7 +112,7 @@ public class SisConfigServiceImpl implements SisConfigService {
         sisConfig.setMaxMartketableNum(newSisConfig.getMaxMartketableNum());
         sisConfig.setMaxBrandNum(newSisConfig.getMaxBrandNum());
         sisConfig.setOpenGoodsIdlist(newSisConfig.getOpenGoodsIdlist());
-        sisConfig.setOpenGoodsMode(newSisConfig.getOpenGoodsMode());
+        sisConfig.setOpenGoodsMode(newSisConfig.getOpenGoodsMode());//todo 开店商品模式修改
         sisConfig.setUpdateTime(new Date());
         sisConfig.setExtraUpGoodsId(newSisConfig.getExtraUpGoodsId());
         sisConfig.setEnableLevelUpgrade(newSisConfig.getEnableLevelUpgrade());

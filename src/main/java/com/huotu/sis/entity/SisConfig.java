@@ -68,6 +68,12 @@ public class SisConfig {
     @Lob
     private OpenSisAwards OpenSisAwards;
 
+
+//    @Column(name = "SisLevel_Open_Awards",columnDefinition = "longtext")
+//    @Description("等级开店奖个性化")
+//    @Lob
+//    private SisLevelOpenAwards sisLevelOpenAwards;
+
     @SuppressWarnings("JpaAttributeTypeInspection")
     @Column(name = "RebateTeamManagerSetting",columnDefinition = "longtext")
     @Description("直推奖")

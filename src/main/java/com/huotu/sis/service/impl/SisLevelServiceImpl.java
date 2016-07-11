@@ -9,6 +9,9 @@ import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
+import com.huotu.sis.entity.support.SisLevelCondition;
+import com.huotu.sis.model.sis.SimpleSisLevelModel;
+import com.huotu.sis.model.sis.SisLevelConditionsModel;
 import com.huotu.sis.model.sisweb.OpenLevelGoodsModel;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
@@ -56,6 +59,75 @@ public class SisLevelServiceImpl implements SisLevelService {
             );
             return predicate;
         }), sort);
+    }
+
+    @Override
+    public List<SimpleSisLevelModel> getSimpleSisLevelModel(Long customerId) {
+        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoAsc(customerId);
+        List<SimpleSisLevelModel> models=new ArrayList<>();
+        sisLevels.forEach(level -> {
+            SimpleSisLevelModel sisLevelModel=new SimpleSisLevelModel();
+            sisLevelModel.setLevelId(level.getId());
+            sisLevelModel.setLevelNo(level.getLevelNo());
+            sisLevelModel.setLevelTitle(level.getLevelName());
+            models.add(sisLevelModel);
+        });
+        SimpleSisLevelModel sisLevelModel=new SimpleSisLevelModel();
+        sisLevelModel.setLevelId(0L);
+        sisLevelModel.setLevelNo(0);
+        sisLevelModel.setLevelTitle("无等级限制店铺");
+        models.add(sisLevelModel);
+        return models;
+    }
+
+    @Override
+    public List<SimpleSisLevelModel> getSimpleSisLevelModel(Long customerId, Integer LTlevelNo) {
+        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoAsc(customerId);
+        List<SimpleSisLevelModel> models=new ArrayList<>();
+        sisLevels.forEach(level -> {
+            if(LTlevelNo==null||level.getLevelNo()<LTlevelNo){
+                SimpleSisLevelModel sisLevelModel=new SimpleSisLevelModel();
+                sisLevelModel.setLevelId(level.getId());
+                sisLevelModel.setLevelNo(level.getLevelNo());
+                sisLevelModel.setLevelTitle(level.getLevelName());
+                models.add(sisLevelModel);
+            }
+        });
+        SimpleSisLevelModel sisLevelModel=new SimpleSisLevelModel();
+        sisLevelModel.setLevelId(0L);
+        sisLevelModel.setLevelNo(0);
+        sisLevelModel.setLevelTitle("无等级限制店铺");
+        models.add(sisLevelModel);
+        return models;
+    }
+
+    @Override
+    public List<SisLevelConditionsModel> getSisLevelConditionsModels(SisLevel sisLevel) {
+        List<SisLevelCondition> sisLevelConditions=sisLevel.getUpgradeConditions();
+        List<SisLevelConditionsModel> models=new ArrayList<>();
+        if(sisLevelConditions!=null && !sisLevelConditions.isEmpty()){
+            for(int i=0,size=sisLevelConditions.size();i<size;i++){
+                SisLevelCondition sisLevelCondition=sisLevelConditions.get(i);
+                if(sisLevelCondition==null){
+                    continue;
+                }
+                SisLevelConditionsModel sisLevelConditionsModel=new SisLevelConditionsModel();
+                sisLevelConditionsModel.setLevelId(sisLevelCondition.getSisLvId());
+                SisLevel conditionSisLv=sisLevelRepository.findOne(sisLevelCondition.getSisLvId());
+                sisLevelConditionsModel.setLevelTitle(conditionSisLv==null?"无等级限制店铺":conditionSisLv.getLevelName());
+                sisLevelConditionsModel.setRelation(sisLevelCondition.getRelation());
+                sisLevelConditionsModel.setNum(sisLevelCondition.getNumber());
+                models.add(sisLevelConditionsModel);
+            }
+        }else {
+            SisLevelConditionsModel sisLevelConditionsModel=new SisLevelConditionsModel();
+            sisLevelConditionsModel.setLevelId(0L);
+            sisLevelConditionsModel.setLevelTitle("无等级限制店铺");
+            sisLevelConditionsModel.setNum(sisLevel.getUpShopNum());
+            sisLevelConditionsModel.setRelation(-1);
+            models.add(sisLevelConditionsModel);
+        }
+        return models;
     }
 
 
@@ -139,6 +211,29 @@ public class SisLevelServiceImpl implements SisLevelService {
             return;
         }
         saveSisLevel(userSis,sisLevel);
+
+    }
+
+    @Override
+    public void upgradeSisLevelByConditions(User user) throws Exception {
+        Sis userSis=sisRepository.findByUser(user);
+        if(userSis==null){
+            log.info("user:"+user.getId()+" Sis is null");
+            return;
+        }
+        SisLevel userSislevel=userSis.getSisLevel();
+        if(userSislevel==null){
+            log.info("user:"+user.getId()+" SisLevel is null");
+            return;
+        }
+        //获取应该升级到的店铺等级
+        SisLevel canUpgradeSisLevel=sisLevelRepository.findFirstByMerchantIdAndLevelNoGreaterThanOrderByLevelNoAsc(
+                user.getMerchant().getId(),userSislevel.getLevelNo());
+        if(canUpgradeSisLevel==null){
+            log.info("user:"+user.getId()+" hava no SisLevel to up");
+            return;
+        }
+
 
     }
 

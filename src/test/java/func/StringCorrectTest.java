@@ -10,9 +10,7 @@
 package func;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huotu.sis.entity.support.RelationAndPercent;
-import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
-import com.huotu.sis.entity.support.SisRebateTeamManagerSettingConverter;
+import com.huotu.sis.entity.support.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -52,6 +50,38 @@ public class StringCorrectTest {
         SisRebateTeamManagerSetting another = rebateTeamManagerSettingConverter.convertToEntityAttribute(output);
         assertEquals("",rebateTeamManagerSetting,another);
 
+    }
+
+
+    private SisLevelOpenAwardsConverter converter=new SisLevelOpenAwardsConverter();
+    @Test
+    public void sisLevelOpenAwardsConverter(){
+        String origin="[{\"buysislvid\":247,\"cfg\":[{\"idx\":0,\"unified\":1.0,\"custom\":[]},{\"idx\":1,\"unified\":2.0,\"custom\":[]},{\"idx\":2,\"unified\":-1.0,\"custom\":[{\"lvid\":206,\"val\":3.0},{\"lvid\":218,\"val\":4.0},{\"lvid\":328,\"val\":5.0},{\"lvid\":374,\"val\":6.0},{\"lvid\":380,\"val\":7.0},{\"lvid\":1444,\"val\":8.0},{\"lvid\":1446,\"val\":9.0},{\"lvid\":1466,\"val\":10.0},{\"lvid\":1468,\"val\":11.0}]},{\"idx\":3,\"unified\":12.0,\"custom\":[]},{\"idx\":4,\"unified\":13.0,\"custom\":[]},{\"idx\":5,\"unified\":14.0,\"custom\":[]},{\"idx\":6,\"unified\":15.0,\"custom\":[]},{\"idx\":7,\"unified\":16.0,\"custom\":[]},{\"idx\":8,\"unified\":17.0,\"custom\":[]}]},{\"buysislvid\":205,\"cfg\":[{\"idx\":0,\"unified\":0.0,\"custom\":[]},{\"idx\":1,\"unified\":0.0,\"custom\":[]},{\"idx\":2,\"unified\":0.0,\"custom\":[]},{\"idx\":3,\"unified\":0.0,\"custom\":[]}]},{\"buysislvid\":336,\"cfg\":[{\"idx\":0,\"unified\":3.0,\"custom\":[]},{\"idx\":1,\"unified\":2.0,\"custom\":[]},{\"idx\":2,\"unified\":1.0,\"custom\":[]},{\"idx\":3,\"unified\":0.0,\"custom\":[]}]},{\"buysislvid\":383,\"cfg\":[{\"idx\":0,\"unified\":0.0,\"custom\":[]},{\"idx\":1,\"unified\":0.0,\"custom\":[]},{\"idx\":2,\"unified\":0.0,\"custom\":[]},{\"idx\":3,\"unified\":0.0,\"custom\":[]}]},{\"buysislvid\":328,\"cfg\":[{\"idx\":0,\"unified\":3.0,\"custom\":[]},{\"idx\":1,\"unified\":4.0,\"custom\":[]},{\"idx\":2,\"unified\":5.0,\"custom\":[]},{\"idx\":3,\"unified\":6.0,\"custom\":[]},{\"idx\":4,\"unified\":7.0,\"custom\":[]},{\"idx\":5,\"unified\":8.0,\"custom\":[]},{\"idx\":6,\"unified\":9.0,\"custom\":[]},{\"idx\":7,\"unified\":1.0,\"custom\":[]},{\"idx\":8,\"unified\":2.0,\"custom\":[]}]}]";
+        SisLevelOpenAwards sisLevelOpenAwards =converter.convertToEntityAttribute(origin);
+        String output = converter.convertToDatabaseColumn(sisLevelOpenAwards);
+        SisLevelOpenAwards another = converter.convertToEntityAttribute(output);
+        assertEquals("",sisLevelOpenAwards,another);
+    }
+
+    private SisLevelConditionsConverter conditionsConverter=new SisLevelConditionsConverter();
+    @Test
+    public void sisLevelConditionsConverter(){
+        String origin="[\n" +
+                "    {\n" +
+                "        \"sislvid\": 20,\n" +
+                "        \"num\": 40,\n" +
+                "        \"relation\": 0\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"sislvid\": 20,\n" +
+                "        \"num\": 40,\n" +
+                "        \"relation\": 0\n" +
+                "    }\n" +
+                "]";
+        List<SisLevelCondition> sisLevelConditions =conditionsConverter.convertToEntityAttribute(origin);
+        String output = conditionsConverter.convertToDatabaseColumn(sisLevelConditions);
+        List<SisLevelCondition> another = conditionsConverter.convertToEntityAttribute(output);
+        assertEquals("",sisLevelConditions,another);
     }
 
 
