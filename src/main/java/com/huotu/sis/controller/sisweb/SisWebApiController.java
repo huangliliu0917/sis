@@ -147,7 +147,7 @@ public class SisWebApiController {
         }
 
         log.debug("user:"+userId+",upgradeSisShopOverOrderid:"+orderId);
-        //第二步:升级
+        //第二步:补差价升级
         boolean isUpgrade=sisLevelService.upgradeSisLevel(user,sisConfig,orderItems.get(0));
 
         //第三步:返回结果
@@ -230,9 +230,10 @@ public class SisWebApiController {
         userService.givePartnerStock(user, orderId,sisConfig);
         log.debug(user.getId() + "songguOver");
         //上线升级
+
         User beloneOne=userRepository.findOne(user.getBelongOne());
         if(beloneOne!=null){
-            sisLevelService.upgradeSisLevelByUpShopNum(beloneOne);
+            sisLevelService.upgradeSisLevel(beloneOne);
         }else {
             log.info("user:"+userId+"have no beloneOne");
         }

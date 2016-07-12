@@ -133,8 +133,12 @@ public class StringHelper {
                 return false;
             }
         }
-        String s=data[1]+data[2]+SECRET;
-        String sign= DigestUtils.md5DigestAsHex(s.getBytes("UTF-8")).toLowerCase();
+        StringBuilder s=new StringBuilder();
+        for(int i=1;i<data.length;i++){
+            s.append(data[i]);
+        }
+        s.append(SECRET);
+        String sign= DigestUtils.md5DigestAsHex(s.toString().getBytes("UTF-8")).toLowerCase();
         return sign.equals(data[0]);
     }
 }

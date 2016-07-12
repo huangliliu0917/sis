@@ -646,6 +646,8 @@ public class OpenSisShopController {
         }
         sisLevel.setLevelNo(levelNo);
         model.addAttribute("sisLevel", sisLevel);
+        model.addAttribute("sisLvs",sisLevelService.getSimpleSisLevelModel(customerId,sisLevel.getLevelNo()));
+        model.addAttribute("conditions",sisLevelService.getSisLevelConditionsModels(sisLevel));
 //        model.addAttribute("sisLevels",)
         return "/sis/newAddLevelSet";
     }

@@ -3,6 +3,7 @@ package cm.huotu.sis.controller;
 import cm.huotu.sis.common.WebTest;
 import cm.huotu.sis.pages.Template;
 import com.huotu.huobanplus.common.entity.Goods;
+import com.huotu.huobanplus.common.entity.Merchant;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.support.ProductSpecifications;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
@@ -11,29 +12,33 @@ import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
+import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.support.SisLevelCondition;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
+import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.service.CommonConfigsService;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 /**
  * Created by jinzj on 2016/3/28.
  */
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Transactional(value = "transactionManager")
-@Ignore
 public class SisWebUserControllerTest extends WebTest {
 
     @Autowired
@@ -56,6 +61,9 @@ public class SisWebUserControllerTest extends WebTest {
 
     @Autowired
     private SisLevelRepository sisLevelRepository;
+
+    @Autowired
+    private SisRepository sisRepository;
 
     /**
      * 模板页面
@@ -150,6 +158,89 @@ public class SisWebUserControllerTest extends WebTest {
         }
 //        SisLevel sisLevel1=sisLevelRepository.findTopByLevelNoOrderByLevelNoDesc();
 //        Assert.assertEquals("yes",5,sisLevel1.getLevelNo().intValue());
+    }
+
+    @Test
+    public void openTest() throws Exception{
+        //升级模块测试
+        Merchant merchant=new Merchant();
+        merchant.setLoginName("shiliting");
+        merchant=merchantRepository.saveAndFlush(merchant);
+
+        SisConfig sisConfig=new SisConfig();
+        sisConfig.setMerchantId(merchant.getId());
+        sisConfig.setEnabled(1);
+        sisConfig.setOpenGoodsMode(0);
+        sisConfig.setOpenMode(0);
+        sisConfigRepository.saveAndFlush(sisConfig);
+
+        SisLevel sisLevelone=new SisLevel();
+        sisLevelone.setLevelNo(0);
+        sisLevelone.setIsSystem(1);
+        sisLevelone.setMerchantId(merchant.getId());
+        sisLevelone.setUpShopNum(10);
+        sisLevelone=sisLevelRepository.saveAndFlush(sisLevelone);
+
+        SisLevel sisLeveltwo=new SisLevel();
+        sisLeveltwo.setLevelNo(1);
+        sisLeveltwo.setMerchantId(merchant.getId());
+        List<SisLevelCondition> sisLevelConditions=new ArrayList<>();
+        SisLevelCondition sisLevelCondition=new SisLevelCondition();
+        sisLevelCondition.setNumber(3);
+        sisLevelCondition.setSisLvId(sisLevelone.getId());
+        sisLevelCondition.setRelation(-1);
+        sisLevelConditions.add(sisLevelCondition);
+
+        sisLevelCondition=new SisLevelCondition();
+        sisLevelCondition.setNumber(2);
+        sisLevelCondition.setSisLvId(sisLevelone.getId());
+        sisLevelCondition.setRelation(0);
+        sisLevelConditions.add(sisLevelCondition);
+
+        sisLeveltwo.setUpgradeConditions(sisLevelConditions);
+        sisLevelRepository.saveAndFlush(sisLeveltwo);
+
+
+        User belongOne=new User();
+        belongOne.setLoginName("belongOne");
+        belongOne.setMerchant(merchant);
+        belongOne=userRepository.saveAndFlush(belongOne);
+
+        Sis sisbelongOne=new Sis();
+        sisbelongOne.setCustomerId(merchant.getId());
+        sisbelongOne.setUser(belongOne);
+        sisbelongOne.setSisLevel(sisLevelone);
+        sisbelongOne=sisRepository.saveAndFlush(sisbelongOne);
+
+        User userone=new User();
+        userone.setLoginName("one");
+        userone.setMerchant(merchant);
+        userone.setBelongOne(belongOne.getId());
+        userone=userRepository.saveAndFlush(userone);
+
+        Sis sisone=new Sis();
+        sisone.setCustomerId(merchant.getId());
+        sisone.setUser(userone);
+        sisone.setSisLevel(sisLevelone);
+        sisone=sisRepository.saveAndFlush(sisone);
+
+        User usertwo=new User();
+        usertwo.setLoginName("usertwo");
+        usertwo.setMerchant(merchant);
+        usertwo.setBelongOne(belongOne.getId());
+        usertwo=userRepository.saveAndFlush(usertwo);
+
+
+        mockMvc.perform(
+                post("/sisapi/openSisShop")
+                        .param("userid",usertwo.getId()+"")
+                        .param("orderid","1054603581")
+                        .param("unionorderid","11111111")
+
+        ).andDo(print());
+
+        Sis newBeloneSis=sisRepository.findByUser(belongOne);
+        org.junit.Assert.assertEquals("",newBeloneSis.getSisLevel().getLevelNo().intValue(),1);
     }
 
 

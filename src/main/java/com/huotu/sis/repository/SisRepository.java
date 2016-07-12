@@ -16,12 +16,17 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.util.List;
+
 /**
  * @author CJ
  */
 @RepositoryRestResource
 public interface SisRepository extends JpaRepository<Sis, Long>,JpaSpecificationExecutor<Sis> {
     Sis findByUser(User user);
+
+    @Query("select s from Sis as s where s.user in (select u from User as u where u.belongOne=?1)")
+    List<Sis> findByUserWhereUserBeloneis(Long belongOneId);
 
 //    @Query("select count(s) from Sis as s where s.user.id in(select u.id from User as u where u.belongOne=?1)")
 //    Object countSisNumber(Long belongOneUserId);

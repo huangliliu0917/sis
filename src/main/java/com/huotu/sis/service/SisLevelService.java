@@ -10,6 +10,7 @@ import com.huotu.sis.model.sis.SisLevelConditionsModel;
 import com.huotu.sis.model.sisweb.OpenLevelGoodsModel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by slt on 2016/4/6.
@@ -57,9 +58,10 @@ public interface SisLevelService {
 
     /**
      * 根据等级的升级条件来升级输入用户的店铺等级
+     * @return 是否升级成功
      * @throws Exception
      */
-    void upgradeSisLevelByConditions(User user) throws Exception;
+    boolean upgradeSisLevelByConditions(User user) throws Exception;
 
     /**
      * 保存店中店等级
@@ -106,4 +108,26 @@ public interface SisLevelService {
      * @return
      */
     List<SisLevelConditionsModel> getSisLevelConditionsModels(SisLevel sisLevel);
+
+    /**
+     * 获取用户下线各个等级的开店数量
+     * @param user  用户
+     * @return map的key为店铺等级ID，val为该等级的开店人数，(key为0，表示所有的开店人数)
+     */
+    Map<Long,Integer> getEachSisLevelNum(User user);
+
+    /**
+     * 判断该用户是否能够达到升级标准
+     * @param user          升级的店铺用户
+     * @param upSisLevel    是否能达到的店铺等级
+     * @return
+     */
+    boolean canToUpgradeSisLevel(User user,SisLevel upSisLevel);
+
+
+    /**
+     * 店铺升级
+     * @param user
+     */
+    void upgradeSisLevel(User user) throws Exception;
 }

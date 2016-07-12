@@ -130,6 +130,89 @@ public class SisLevelServiceImpl implements SisLevelService {
         return models;
     }
 
+    @Override
+    public Map<Long, Integer> getEachSisLevelNum(User user) {
+        Map<Long,Integer> longIntegerMap=new HashMap<>();
+        List<Sis> sises=sisRepository.findByUserWhereUserBeloneis(user.getId());
+        if(sises!=null&&!sises.isEmpty()){
+            for(int i=0,size=sises.size();i<size;i++){
+                Sis sis=sises.get(i);
+                if(sis.getSisLevel()==null){
+                    continue;
+                }
+                SisLevel sisLevel=sis.getSisLevel();
+                Integer number=longIntegerMap.get(sisLevel.getId())==null?0:longIntegerMap.get(sisLevel.getId());
+                longIntegerMap.put(sisLevel.getId(),number+1);
+
+                Integer sumNumber=longIntegerMap.get(0L)==null?0:longIntegerMap.get(0L);
+                longIntegerMap.put(0L,sumNumber+1);
+            }
+        }
+        return longIntegerMap;
+    }
+
+    @Override
+    public boolean canToUpgradeSisLevel(User user, SisLevel upSisLevel) {
+        //是否达到要求(默认为否)
+        boolean canUp=false;
+        List<SisLevelCondition> sisLevelConditions=upSisLevel.getUpgradeConditions();
+
+
+        //兼容老模式的升级
+        if(sisLevelConditions==null&&upSisLevel.getUpShopNum()!=null&&upSisLevel.getUpShopNum()>0){
+            //获取用户下线的开店数
+            Long sisNumber=sisRepository.countSisNum(user.getId());
+            if(sisNumber>=upSisLevel.getUpShopNum()){
+                canUp=true;
+            }
+        }else if(sisLevelConditions!=null&&!sisLevelConditions.isEmpty()) {
+
+            //获取用户下线各个等级的开店数量
+            Map<Long,Integer> map=getEachSisLevelNum(user);
+            if(map.isEmpty()){
+                return false;
+            }
+
+            for(int i=0,size=sisLevelConditions.size();i<size;i++){
+                SisLevelCondition condition=sisLevelConditions.get(i);
+                if(condition.getRelation()!=1){
+                    if(canUp){
+                        break;
+                    }
+                }
+                //根据等级获取人数
+                Integer number=map.get(condition.getSisLvId())==null?0:map.get(condition.getSisLvId());
+                if(condition.getRelation()!=1){
+                    canUp=number>=condition.getNumber();
+                }else {
+                    canUp=canUp && number>condition.getNumber();
+                }
+
+            }
+
+        }
+        return canUp;
+    }
+
+    @Override
+    public void upgradeSisLevel(User user) throws Exception {
+        User upUser=user;
+        while (true){
+            boolean isUp=upgradeSisLevelByConditions(upUser);
+            if(!isUp){
+                break;
+            }
+            Long belongOneId=upUser.getBelongOne();
+            if(belongOneId==null||belongOneId<=0){
+                break;
+            }
+            upUser=userRepository.findOne(belongOneId);
+            if(upUser==null){
+                break;
+            }
+        }
+    }
+
 
     @Override
     public SisLevel getUpgradeSisLevel(SisConfig sisConfig,Sis sis,OrderItems orderItems,User user) throws Exception {
@@ -215,26 +298,33 @@ public class SisLevelServiceImpl implements SisLevelService {
     }
 
     @Override
-    public void upgradeSisLevelByConditions(User user) throws Exception {
+    public boolean upgradeSisLevelByConditions(User user) throws Exception {
         Sis userSis=sisRepository.findByUser(user);
         if(userSis==null){
             log.info("user:"+user.getId()+" Sis is null");
-            return;
+            return false;
         }
         SisLevel userSislevel=userSis.getSisLevel();
         if(userSislevel==null){
             log.info("user:"+user.getId()+" SisLevel is null");
-            return;
+            return false;
         }
-        //获取应该升级到的店铺等级
+        //获取可以升到下一个店铺等级
         SisLevel canUpgradeSisLevel=sisLevelRepository.findFirstByMerchantIdAndLevelNoGreaterThanOrderByLevelNoAsc(
                 user.getMerchant().getId(),userSislevel.getLevelNo());
         if(canUpgradeSisLevel==null){
             log.info("user:"+user.getId()+" hava no SisLevel to up");
-            return;
+            return false;
         }
+        //判断是否能够升级
+        boolean canUp=canToUpgradeSisLevel(user,canUpgradeSisLevel);
 
-
+        if(canUp){
+            //达到要求
+            saveSisLevel(userSis,canUpgradeSisLevel);
+            return true;
+        }
+        return false;
     }
 
     @Override
