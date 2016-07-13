@@ -16,10 +16,7 @@ import com.huotu.sis.model.sis.SisSearchCodeModel;
 import com.huotu.sis.model.sis.SisSearchModel;
 import com.huotu.sis.model.sisweb.SisLevelModel;
 import com.huotu.sis.model.sisweb.VerificationType;
-import com.huotu.sis.repository.GoodRepository;
-import com.huotu.sis.repository.SisGoodsRecommendRepository;
-import com.huotu.sis.repository.SisLevelRepository;
-import com.huotu.sis.repository.VerificationCodeRepository;
+import com.huotu.sis.repository.*;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SisService;
 import com.huotu.sis.service.VerificationCodeService;
@@ -76,10 +73,8 @@ public class SisController {
     @Autowired
     SisLevelRepository sisLevelRepository;
 
-
-
-
-
+    @Autowired
+    SisRepository sisRepository;
 
 
 
@@ -363,5 +358,66 @@ public class SisController {
 //
 //
 //    }
+
+
+    /**
+     * 修改店铺等级
+     * @param customerId    商户ID
+     * @param sisId         店铺ID
+     * @param sisLevelId    店铺等级ID
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/modifySisLevel", method = RequestMethod.POST)
+    @ResponseBody
+    public com.huotu.sis.model.sisweb.ResultModel modifySisLevel(@CustomerId Long customerId, Long sisLevelId, Long sisId) throws Exception {
+        com.huotu.sis.model.sisweb.ResultModel resultModel=new com.huotu.sis.model.sisweb.ResultModel();
+
+        if(customerId==null){
+            resultModel.setCode(500);
+            resultModel.setMessage("未找到商户ID");
+            return resultModel;
+        }
+        if(sisLevelId==null||sisId==null){
+            resultModel.setCode(500);
+            resultModel.setMessage("参数错误");
+            return resultModel;
+        }
+        Sis sis=sisRepository.findOne(sisId);
+        SisLevel sisLevel=sisLevelRepository.findOne(sisLevelId);
+        sis.setSisLevel(sisLevel);
+        sisRepository.save(sis);
+        resultModel.setCode(200);
+        resultModel.setMessage("OK");
+        return resultModel;
+    }
+
+    /**
+     * 删除店铺等级
+     * @param customerId    商户ID
+     * @param sisId         店铺ID
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/delSis", method = RequestMethod.POST)
+    @ResponseBody
+    public com.huotu.sis.model.sisweb.ResultModel delSis(@CustomerId Long customerId, Long sisId) throws Exception {
+        com.huotu.sis.model.sisweb.ResultModel resultModel=new com.huotu.sis.model.sisweb.ResultModel();
+
+        if(customerId==null){
+            resultModel.setCode(500);
+            resultModel.setMessage("未找到商户ID");
+            return resultModel;
+        }
+        if(sisId==null){
+            resultModel.setCode(500);
+            resultModel.setMessage("参数错误");
+            return resultModel;
+        }
+        sisRepository.delete(sisId);
+        resultModel.setCode(200);
+        resultModel.setMessage("OK");
+        return resultModel;
+    }
 
 }

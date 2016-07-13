@@ -187,12 +187,12 @@ public class SisWebUserControllerTest extends WebTest {
         List<SisLevelCondition> sisLevelConditions=new ArrayList<>();
         SisLevelCondition sisLevelCondition=new SisLevelCondition();
         sisLevelCondition.setNumber(3);
-        sisLevelCondition.setSisLvId(sisLevelone.getId());
+        sisLevelCondition.setSisLvId(0);
         sisLevelCondition.setRelation(-1);
         sisLevelConditions.add(sisLevelCondition);
 
         sisLevelCondition=new SisLevelCondition();
-        sisLevelCondition.setNumber(2);
+        sisLevelCondition.setNumber(1);
         sisLevelCondition.setSisLvId(sisLevelone.getId());
         sisLevelCondition.setRelation(0);
         sisLevelConditions.add(sisLevelCondition);

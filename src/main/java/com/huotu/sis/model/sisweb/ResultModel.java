@@ -22,4 +22,9 @@ public class ResultModel {
      */
     private String message;
 
+    /**
+     * 数据
+     */
+    private Object data;
+
 }

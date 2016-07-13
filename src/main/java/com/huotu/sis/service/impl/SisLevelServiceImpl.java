@@ -185,7 +185,7 @@ public class SisLevelServiceImpl implements SisLevelService {
                 if(condition.getRelation()!=1){
                     canUp=number>=condition.getNumber();
                 }else {
-                    canUp=canUp && number>condition.getNumber();
+                    canUp=canUp && number>=condition.getNumber();
                 }
 
             }
