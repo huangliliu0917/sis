@@ -177,7 +177,7 @@ public class SisWebApiController {
     @RequestMapping(value = "/openSisShop",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public ResultModel open(HttpServletRequest request) throws Exception {
-        log.debug("into openShop");
+        log.info("into openShop");
         ResultModel resultModel=new ResultModel();
 
         //第一步:参数有效性判断
@@ -219,7 +219,7 @@ public class SisWebApiController {
 
         String orderId=request.getParameter("orderid");
         String unionorderId=request.getParameter("unionorderid");
-        log.debug("userId:"+userId+"orderID="+orderId+"into openShop");
+        log.info("userId:"+userId+"orderID="+orderId+"into openShop");
         //开店
         userService.newOpen(user,orderId,sisConfig);
         log.debug(user.getId()+"openShopOver");

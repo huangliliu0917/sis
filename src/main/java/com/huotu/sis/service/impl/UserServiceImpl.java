@@ -288,14 +288,14 @@ public class UserServiceImpl implements UserService {
                             Sis sis = sisRepository.findByUser(rebateUser);
                             if (Objects.isNull(sis)) {
                                 //用户未开启店中店，无法返利
-                                log.info("merchant=" + user.getMerchant().getId() + "Not to open the inn in inn to rebate！");
+                                log.info("user=" + user.getId() + "Not to open the inn in inn to rebate！");
                                 //获取他的上级用户
                                 rebateUser = userRepository.findOne(rebateUser.getBelongOne());
                                 continue;
                             }
                             if (!sis.isStatus()) {
                                 //用户店中店被关闭,无法返利
-                                log.info("merchant=" + user.getMerchant().getId() + "Users to the inn in inn is closed to rebate！");
+                                log.info("user=" + user.getId() + "Users to the inn in inn is closed to rebate！");
                                 //获取他的上级用户
                                 rebateUser = userRepository.findOne(rebateUser.getBelongOne());
                                 continue;

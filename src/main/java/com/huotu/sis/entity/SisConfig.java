@@ -76,7 +76,7 @@ public class SisConfig {
 
     @SuppressWarnings("JpaAttributeTypeInspection")
     @Column(name = "RebateTeamManagerSetting",columnDefinition = "longtext")
-    @Description("直推奖")
+    @Description("经营者直推奖")
     @Lob
     private SisRebateTeamManagerSetting sisRebateTeamManagerSetting;
 

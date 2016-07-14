@@ -288,38 +288,34 @@
         newSisLevel.rebateRate=rebate;
         newSisLevel.extraUpgrade=$("select[name='extraUpgrade']").find("option:selected").val();
 
-        layer.confirm('即将保存内容，确定继续吗？', {
+        var check=layer.confirm('即将保存内容，确定继续吗？', {
             btn: ['确定','取消'] //按钮
         }, function(){
-
-            $.ajax({
-                type: "POST",
-                dataType: 'json',
-                url: "saveSisLevel",
-                contentType:"application/json",
-                data: JSON.stringify(newSisLevel),
-                success: function (result) {
-                    if(result!=undefined){
-                        layer.msg(result.message);
-                    }
-
-
-//                    layer.close(pushSave);
-//                var _result = $.parseJSON(result);
-//                    if (result.code == 200) {
-//                    jBox.tip('保存成功', 'success');
-//                        layer.msg("保存成功", {icon: 1});
-//                        return;
-//                    }
-//                    layer.msg("保存错误", {icon: 2});
-//                jBox.tip('保存错误:' + _result.msg, 'error');
-                }
-            });
-
-
-//            $("#form1").submit();
+            layer.close(check);
+            saveSisLevel(newSisLevel);
 
         }, function(){
+        });
+    }
+
+    function saveSisLevel(newSisLevel){
+        var sub=layer.load(0, {shade: false});
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            url: "saveSisLevel",
+            contentType:"application/json",
+            data: JSON.stringify(newSisLevel),
+            success: function (result) {
+                layer.close(sub);
+                if(result!=undefined){
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.close(sub);
+                layer.msg("保存失败");
+            }
         });
     }
 

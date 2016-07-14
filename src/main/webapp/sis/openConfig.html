@@ -166,7 +166,7 @@
                                         </tr>
 
                                         <tr id="enableLevelUpgrade">
-                                        <th>是否开启店铺升级:</th>
+                                        <th>是否开启补差价店铺升级:</th>
                                         <td>
                                         <input id="sisLevelUpgradeNo" value="1" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="*{enableLevelUpgrade}"/>
                                         <label style="padding-left: 0" for="sisLevelUpgradeNo">是</label>
@@ -637,7 +637,7 @@
             title: '挑选商品',
 //            shadeClose: true,
 //            shade: false,
-            area: ['893px', '400px'],
+            area: ['60%', '50%'],
             content:$("#asaimsg"),
 //            content: 'selectOpenGoodsList.html',
             end:function(){
@@ -660,7 +660,7 @@
             title: '店中店开店奖设置',
 //            shadeClose: true,
 //            shade: false,
-            area: ['1300px', '800px'],
+            area: ['85%', '85%'],
             content:"http://"+testhost+'/MallManage/ShopInShopV2/OpenAward.aspx',
 //            content: 'selectOpenGoodsList.html',
             end:function(){
@@ -679,7 +679,7 @@
             title: '店中店直推奖设置',
 //            shadeClose: true,
 //            shade: false,
-            area: ['1300px', '800px'],
+            area: ['85%', '85%'],
             content:'pushAwardConfig',
 //            content: 'selectOpenGoodsList.html',
             end:function(){
@@ -700,7 +700,7 @@
             title: '店中店开店奖设置',
 //            shadeClose: true,
 //            shade: false,
-            area: ['1300px', '800px'],
+            area: ['85%', '85%'],
             content:'openAwardConfig',
 //            content: 'selectOpenGoodsList.html',
             end:function(){

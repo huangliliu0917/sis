@@ -31,7 +31,7 @@ public class ImageUploadController {
 
 
     /**
-     * 图片上传
+     * 图片上传(如：后台上传分享图片)
      * @return
      * @throws Exception
      */

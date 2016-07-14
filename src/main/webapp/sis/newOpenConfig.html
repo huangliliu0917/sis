@@ -66,15 +66,6 @@
 
                                     <table id="submitTable" cellpadding="0" cellspacing="0" width="100%">
                                         <tbody>
-                                        <!--<tr id="isOpenSisShop">-->
-                                            <!--<th>是否开启店中店:</th>-->
-                                            <!--<td>-->
-                                                <!--<input id="enabled0" value="0" onchange="shopSet()" type="radio" name="enabled" th:checked="*{enabled==0}"/>-->
-                                                <!--<label style="padding-left: 0" for="enabled0">关闭</label>-->
-                                                <!--<input id="enabled1" value="1" onchange="shopSet()" type="radio" name="enabled" th:checked="*{enabled==1}"/>-->
-                                                <!--<label style="padding-left: 0" for="enabled1">开启</label>-->
-                                            <!--</td>-->
-                                        <!--</tr>-->
 
                                         <tr id="sisPattern">
                                             <th>开店模式:</th>
@@ -85,8 +76,6 @@
                                                 <label style="padding-left: 0" for="openNeedInvite1">邀请制</label>
                                             </td>
                                         </tr>
-
-
 
                                         <tr>
                                             <th>允许上架商品数:</th>
@@ -128,6 +117,20 @@
                                                     <tr>
                                                         <td><input type="checkbox"/></td>
                                                         <td>默认等级</td>
+                                                        <td>选择商品</td>
+                                                        <td>设置开店奖</td>
+                                                        <td>设置送股</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox"/></td>
+                                                        <td>默认等级</td>
+                                                        <td>化妆品</td>
+                                                        <td>设置开店奖</td>
+                                                        <td>设置送股</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox"/></td>
+                                                        <td>默认等级</td>
                                                         <td>化妆品</td>
                                                         <td>设置开店奖</td>
                                                         <td>设置送股</td>
@@ -136,121 +139,6 @@
                                                 </table>
                                             </td>
                                         </tr>
-
-
-
-                                        <!--<tr>-->
-                                            <!--<th>商品数量</th>-->
-                                            <!--<td>-->
-                                                <!--单品数量:&nbsp;<input type="text" name="maxMartketableNum" th:value="*{maxMartketableNum}!=null? *{maxMartketableNum}"/>&nbsp;&nbsp;&nbsp;&nbsp;-->
-                                                <!--品牌数量:&nbsp;<input type="text" name="maxBrandNum" th:value="*{maxBrandNum}!=null? *{maxBrandNum}"/>-->
-                                            <!--</td>-->
-                                            <!--&lt;!&ndash;<span>(提示:当单品数量或品牌数量设置为0时，上架商品或品牌无限制，并开启一键铺货功能)</span>&ndash;&gt;-->
-                                        <!--</tr>-->
-
-                                        <!--<tr id="recommend">-->
-                                            <!--<th>选择开店商品</th>-->
-                                            <!--<td>-->
-                                                <!--<input id="goodsType0" value="0" onchange="changeGoodsType()" type="radio" name="goodsType" th:checked="*{openGoodsMode!=1}"/>-->
-                                                <!--<label style="padding-left: 0" for="goodsType0">单一商品</label>-->
-                                                <!--<input id="goodsType1" value="1" onchange="changeGoodsType()" type="radio" name="goodsType" th:checked="*{openGoodsMode==1}"/>-->
-                                                <!--<label style="padding-left: 0" for="goodsType1">等级商品</label>-->
-                                                <!--<br/>-->
-
-                                                <!--<div id="selectGoodsType">-->
-                                                    <!--<div id="goodsTypedefult" th:style="*{openGoodsMode}==1?'display: none':'display: block'">-->
-                                                        <!--<a id="searchGoods" class="btn-lit" href="javascript:loadGoodsList();" style="color: #fff">-->
-                                                            <!--<span>添加产品</span>-->
-                                                        <!--</a>-->
-                                                        <!--<input placeholder="读取商品名称及价格，不可修改" size="100" readonly="readonly"-->
-                                                               <!--type="text" name="goodsid" th:value="${goodsTitle}!=null? ${goodsTitle}"/>-->
-
-                                                        <!--<a class="btn-lit" href="javascript:openAwardConfig();" style="color: #fff">-->
-                                                            <!--<span>开店返利配置</span>-->
-                                                        <!--</a>-->
-                                                    <!--</div>-->
-
-                                                    <!--<div id="goodsTypeIndividuation" th:style="*{openGoodsMode}==1?'display: block':'display: none'">-->
-                                                        <!--<div  th:each="gl:${sisLevelModels}" style="padding-bottom:1em">-->
-
-                                                            <!--<label style="display:none"-->
-                                                                   <!--th:text="-->
-                                                                   <!--'{&quot;levelid&quot;:'+'&quot;'+${gl.levelId}+'&quot;'+-->
-                                                                   <!--',&quot;goodsid&quot;:'+'&quot;'+${gl.goodsId}+'&quot;'+-->
-                                                                   <!--'}'"></label>-->
-
-                                                            <!--<label th:text="'店铺等级:'+${gl.levelTitle}">店铺等级</label>-->
-                                                            <!--<a href="#" th:attr="levelno=''+${glStat.count}" class="btn-lit" onclick="loadGoodsList(this);" style="color: #fff">-->
-                                                                <!--<span>添加产品</span>-->
-                                                            <!--</a>-->
-                                                            <!--<input placeholder="读取商品名称及价格，不可修改" size="130"-->
-                                                                   <!--readonly="readonly" type="text" name="goodsid"-->
-                                                                   <!--th:value="${gl.goodsId}!=null?'商品名称:'+${gl.goodsTitle}+'   商品价格:'+${gl.goodsPrice}+'元'"/>-->
-                                                        <!--</div>-->
-
-                                                        <!--<p id="extraUpGood">-->
-                                                            <!--<label id="extraUpGoodLabel"  style="display: none;" th:text="${extraUpGoods}!=null?${extraUpGoods.goodsId}"></label>-->
-                                                            <!--<a class="btn-lit" href="javascript:loadGoodsList();" style="color: #fff">-->
-                                                                <!--<span>选择补差价商品</span>-->
-                                                            <!--</a>-->
-
-                                                            <!--<input id="extraUpGoods" placeholder="读取商品名称及价格，不可修改" size="130"-->
-                                                                   <!--readonly="readonly" type="text" name="extraUpGoods"-->
-                                                                   <!--th:value="${extraUpGoods}!=null?'商品名称：'+${extraUpGoods.goodsTitle}+'  价格：'+${extraUpGoods.goodsPrice}+'元'"/>-->
-                                                        <!--</p><br/>-->
-
-                                                        <!--<p>-->
-                                                            <!--<a class="btn-lit" href="javascript:openAwardLevelConfig();" style="color: #fff">-->
-                                                                <!--<span>开店返利配置</span>-->
-                                                            <!--</a>-->
-                                                        <!--</p>-->
-                                                    <!--</div>-->
-                                                <!--</div>-->
-                                            <!--</td>-->
-                                        <!--</tr>-->
-                                        <!--<tr>-->
-                                            <!--<th>合伙人送股</th>-->
-                                            <!--<td>-->
-                                                <!--开店人获得梦想股:&nbsp;<input type="text" name="corpStockSelf" th:value="*{corpStockSelf}!=null? *{corpStockSelf}"/>&nbsp;&nbsp;&nbsp;&nbsp;-->
-                                                <!--开店人上级获得梦想股:&nbsp;<input type="text" name="corpStockBelongOne" th:value="*{corpStockBelongOne}!=null? *{corpStockBelongOne}"/>-->
-                                            <!--</td>-->
-                                        <!--</tr>-->
-
-                                        <!--<tr id="enableLevelUpgrade">-->
-                                        <!--<th>是否开启店铺升级:</th>-->
-                                        <!--<td>-->
-                                        <!--<input id="sisLevelUpgradeNo" value="1" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="*{enableLevelUpgrade}"/>-->
-                                        <!--<label style="padding-left: 0" for="sisLevelUpgradeNo">是</label>-->
-                                        <!--<input id="sisLevelUpgradeYes" value="0" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="!*{enableLevelUpgrade}"/>-->
-                                        <!--<label style="padding-left: 0" for="sisLevelUpgradeYes">否</label>-->
-                                        <!--</td>-->
-                                        <!--</tr>-->
-
-
-                                        <!--<tr id="enableAllGoods">-->
-                                            <!--<th>是否开启一键铺货:</th>-->
-                                            <!--<td>-->
-                                                <!--<input id="enableAllGoodsNo" value="1" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="*{enableLevelUpgrade}"/>-->
-                                                <!--<label style="padding-left: 0" for="sisLevelUpgradeNo">是</label>-->
-                                                <!--<input id="enableAllGoodsYes" value="0" onchange="shelveSet()" type="radio" name="enableLevelUpgrade" th:checked="!*{enableLevelUpgrade}"/>-->
-                                                <!--<label style="padding-left: 0" for="sisLevelUpgradeYes">否</label>-->
-                                            <!--</td>-->
-                                        <!--</tr>-->
-
-
-                                        <!--<tr id="pushAwardConfig">-->
-                                            <!--<th>直推奖模式:</th>-->
-                                            <!--<td>-->
-                                                <!--<input id="pushModel_0" value="0" onchange="setPushAwardConfig()" type="radio" name="pushAwardMode" th:checked="*{pushAwardMode==0}"/>-->
-                                                <!--<label style="padding-left: 0" for="pushModel_0">默认模式</label>-->
-                                                <!--<input id="pushModel_1" value="1" onchange="setPushAwardConfig()" type="radio" name="pushAwardMode" th:checked="*{pushAwardMode==1}"/>-->
-                                                <!--<label style="padding-left: 0" for="pushModel_1">经营者模式</label>-->
-
-                                                <!--<a id="pushAwardConfig_a" class="btn-lit" href="javascript:pushAwardConfig();" style="color: #fff">-->
-                                                    <!--<span>经营者直推奖配置</span>-->
-                                                <!--</a>-->
-                                            <!--</td>-->
-                                        <!--</tr>-->
 
                                         <tr>
                                             <th>店中店后台首页颜色</th>
@@ -284,15 +172,6 @@
                     <div id="asaimsg" class="" style="display: none">
                         <input type="hidden" id="eventLogger" />
 
-                        <!--<P align="right" style="margin: 0px; padding: 0px;">-->
-                            <!--<a href="javascript:void(0)"-->
-                               <!--onclick="document.getElementById('asaimsg').style.display='none';document.getElementById('asaimsgbg').style.display='none'"><FONT-->
-                                    <!--style="color: #111; font-size: 20px;">×</FONT></a>-->
-                        <!--</P>-->
-
-                        <!--分类筛选:<select onchange="javascript:changePage();" id="categoryList" style="width: 200px;">-->
-                        <!--<option th:remove="all" value="999">女装</option>-->
-                    <!--</select>-->
                         <p align="center">关键字：
                             <input type="text" id="searchName"/>
                             <a class="btn-lit btn-middle" id="search" href="javascript:getGoodsList(0)" style="margin-bottom: 3px;">
@@ -664,6 +543,8 @@
 //            setPushAwardConfig();
 
         }
+
+        getlevelList();
     }
 
     function freeSet(){
@@ -711,7 +592,7 @@
             title: '挑选商品',
 //            shadeClose: true,
 //            shade: false,
-            area: ['893px', '400px'],
+            area: ['60%', '50%'],
             content:$("#asaimsg"),
 //            content: 'selectOpenGoodsList.html',
             end:function(){
@@ -734,7 +615,7 @@
             title: '店中店开店奖设置',
 //            shadeClose: true,
 //            shade: false,
-            area: ['1300px', '800px'],
+            area: ['85%', '85%'],
             content:"http://"+testhost+'/MallManage/ShopInShopV2/OpenAward.aspx',
 //            content: 'selectOpenGoodsList.html',
             end:function(){
@@ -753,7 +634,7 @@
             title: '店中店直推奖设置',
 //            shadeClose: true,
 //            shade: false,
-            area: ['1300px', '800px'],
+            area: ['85%', '85%'],
             content:'pushAwardConfig',
 //            content: 'selectOpenGoodsList.html',
             end:function(){
@@ -774,7 +655,7 @@
             title: '店中店开店奖设置',
 //            shadeClose: true,
 //            shade: false,
-            area: ['1300px', '800px'],
+            area: ['85%', '85%'],
             content:'openAwardConfig',
 //            content: 'selectOpenGoodsList.html',
             end:function(){
@@ -809,13 +690,14 @@
                     $.each(levels,function(){
                         var levelId=this.levelId;
                         var levelTitle=this.levelTitle;
-                        $("#selectGoodsType").append('<div>' +
-                                '<label>'+levelTitle+'</label>' +
-                                '<a class="btn-lit" href="javascript:loadGoodsList();" style="color: #fff">'+
-                                '<span>添加产品</span>'+
-                                '</a>'+
-                                '<input placeholder="读取商品名称及价格，不可修改" size="100" readonly="readonly" type="text" name="goodsid"/>'+
-                                '</div>');
+                        $("#levelGoodsConfig").append('' +
+                                '<tr>' +
+                                '<td><input type="checkbox"/></td>' +
+                                '<td>默认等级</td>' +
+                                '<td>化妆品</td>' +
+                                '<td>设置开店奖</td>' +
+                                '<td>设置送股</td>' +
+                                '</tr>');
                     })
                 }else {
                     layer.msg(result.message);

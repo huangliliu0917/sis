@@ -98,7 +98,7 @@ public class OpenSisShopController {
     SisLevelService sisLevelService;
 
     /**
-     * 进入开店设置页面
+     * 进入开店设置页面(需要优化)
      *
      * @param customerId 商家ID
      * @param model
@@ -232,7 +232,7 @@ public class OpenSisShopController {
 
 
     /**
-     * 第一批用户资格获取
+     * 第一批用户资格获取(未使用)
      *
      * @return
      * @throws Exception
@@ -243,7 +243,7 @@ public class OpenSisShopController {
     }
 
     /**
-     * 进入邀请开店设置
+     * 进入邀请开店设置(2016/7 新版本启用)
      *
      * @return
      * @throws Exception
@@ -269,7 +269,7 @@ public class OpenSisShopController {
     }
 
     /**
-     * 保存店中店邀请设置信息
+     * 保存店中店邀请设置信息(2016/7 新版本启用)
      *
      * @param customerId   商家ID
      * @param newSisConfig 店中店设置表
@@ -352,6 +352,13 @@ public class OpenSisShopController {
     }
 
 
+    /**
+     * 保存经营者模式的直推奖
+     * @param customerId
+     * @param setting
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/savePushAwardConfig", method = RequestMethod.POST)
     @ResponseBody
     public ResultModel savePushAwardConfig(@CustomerId Long customerId, @RequestBody SisRebateTeamManagerSetting setting) throws Exception {
@@ -374,6 +381,13 @@ public class OpenSisShopController {
         return resultModel;
     }
 
+    /**
+     * 测试经营者模式的直推奖
+     * @param customerId
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/testPushAwardConfig",method = RequestMethod.POST)
     @ResponseBody
     public ResultModel testPushAwardConfig(@CustomerId Long customerId,
@@ -422,7 +436,7 @@ public class OpenSisShopController {
 
 
     /**
-     * 开店奖设置
+     * 等级开店的开店奖设置(2016/7新版本弃用)
      *
      * @return
      * @throws Exception
@@ -471,7 +485,7 @@ public class OpenSisShopController {
     }
 
     /**
-     * 保存店中店开店设置
+     * 等级开店的保存店中店开店设置(2016/7新版本弃用)
      *
      * @return
      * @throws Exception
@@ -524,7 +538,7 @@ public class OpenSisShopController {
 
 
     /**
-     * 获取商品分类列表
+     * 获取商品分类列表(未使用)
      *
      * @return
      * @throws Exception
