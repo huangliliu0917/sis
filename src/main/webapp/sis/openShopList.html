@@ -228,7 +228,7 @@
                                                    onclick="showShopLevelDiv(this)"
                                                    href="javascript:;">修改店铺等级</a>|
 
-                                                <a th:attr="sisId=${sis.id},levelId=${sis.sisLevel}!=null?${sis.sisLevel.id}"
+                                                <a th:if="${dev}" th:attr="sisId=${sis.id},levelId=${sis.sisLevel}!=null?${sis.sisLevel.id}"
                                                    onclick="delSis(this)"
                                                    href="javascript:;">删除店铺</a>
                                             </td>

@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
+ * 错误页面处理
  * Created by lgh on 2015/12/29.
  */
 @Controller

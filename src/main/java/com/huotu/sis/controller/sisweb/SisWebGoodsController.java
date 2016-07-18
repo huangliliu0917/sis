@@ -168,7 +168,7 @@ public class SisWebGoodsController {
     }
 
     /**
-     * 返回到店铺首页
+     * 返回到店铺管理页面
      *
      * @param model 返回的model
      * @param model
@@ -231,7 +231,7 @@ public class SisWebGoodsController {
     }
 
     /**
-     * 查找店中店商品详情
+     * 进入店中店商品详情页面
      *
      * @param goodId  物品id
      * @param request 前台请求
@@ -300,7 +300,7 @@ public class SisWebGoodsController {
     }
 
     /**
-     * 返回到选取商品页面
+     * 进入选品上架的筛选页面
      *
      * @param model
      * @throws IOException
@@ -705,7 +705,7 @@ public class SisWebGoodsController {
 
 
     /**
-     * 计算直推奖
+     * 计算直推奖(弃用)
      * <p>
      * -(1)、插入流水表Hot_UserTempIntegral_History
      * -(2)、用户表Hot_UserBaseInfo-》UB_UserTempIntegral更新
@@ -840,6 +840,10 @@ public class SisWebGoodsController {
                              amount=proIdAndAmounts.stream().mapToDouble(ProIdAndAmount::getAmount).min().orElse(0);
                         }
                         SisRebateTeamManagerSetting setting=sisConfig.getSisRebateTeamManagerSetting();
+                        if(setting==null||setting.getManageAwards()==null){
+                            directRebate=0;
+                            break;
+                        }
                         double rate=sisService.countPushPercent(level.getLevelNo(),setting.getManageAwards());
                         rate+=setting.getSaleAward();
                         double totalAmount=amount*rate/100;
@@ -1044,7 +1048,7 @@ public class SisWebGoodsController {
     }
 
     /**
-     * 获取我的下级会员开店的贡献奖，和每个级别的人数
+     * 获取我的下级会员开店的贡献奖，和每个级别的人数页面
      *
      * @param model
      * @return
@@ -1074,7 +1078,7 @@ public class SisWebGoodsController {
 
 
     /**
-     * 店铺订单页面
+     * 查看团队成员页面
      *
      * @param srcType
      * @param customerId
@@ -1101,7 +1105,7 @@ public class SisWebGoodsController {
     }
 
     /**
-     * 店铺订单list
+     * 获取团队成员list
      *
      * @param srcType    层级
      * @param customerId 商户ID
@@ -1136,7 +1140,7 @@ public class SisWebGoodsController {
     }
 
     /**
-     * 返回到选取商品页面
+     * 进入店主专项页面
      *
      * @param model
      * @throws IOException

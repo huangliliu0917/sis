@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--<head>-->
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>-->
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>-->
+    <!--<title>-->
+        <!--开店设置-->
+    <!--</title>-->
+    <!--<link rel="stylesheet" href="../resource/css/fmwebbb.css"-->
+          <!--th:href="@{/resource/css/fmwebbb.css}"/>-->
+    <!--<link rel="stylesheet" type="text/css" href="../resource/css/search.css"-->
+          <!--th:href="@{/resource/css/search.css}" />-->
+    <!--<link rel="stylesheet" type="text/css" href="../resource/css/newonedow.css"-->
+          <!--th:href="@{/resource/css/newonedow.css}" />-->
+    <!--<link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"-->
+          <!--th:href="@{/resource/3rdParty/css/admin.content.css}" />-->
+    <!--<link href="../resource/css/settlements.css" rel="stylesheet" type="text/css"-->
+          <!--th:href="@{/resource/css/settlements.css}"/>-->
+    <!--<script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"-->
+            <!--th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>-->
+
+
+
+<!--</head>-->
+<head id="Head2">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+    返利编辑
+</title>
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+    th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+    th:href="@{/resource/3rdParty/css/admin.content.css}" />
+    <link href="../resource/3rdParty/css/admin.mall.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.mall.css}"/>
+    <script src="../resource/3rdParty/js/jquery-1.4.2.min.js"
+            th:src="@{/resource/3rdParty/js/jquery-1.4.2.min.js}" type="text/javascript"></script>
+    <script src="../resource/3rdParty/js/jquery.utils.js"
+            th:src="@{/resource/3rdParty/js/jquery.utils.js}"></script>
+    <script src="../resource/3rdParty/js/admin.js"
+        th:src="@{/resource/3rdParty/js/admin.js}"></script>
+
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <script type="text/javascript" src="../resource/layer/layer.js"
+            th:src="@{/resource/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
+          th:href="@{/resource/layer/skin/layer.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.ext.css"
+          th:href="@{/resource/layer/skin/layer.ext.css}"/>
+
+
+    <script type="text/javascript">
+        function saveConfig() {
+            jBox.tip('正在保存', 'loading');
+            setTimeout(function () {
+                layerRebateConfigControl.getConfigResult(function (cfgstr) {
+                    $.ajax({
+                        type: "POST",
+                        url: "OpenAward.aspx?action=save&customerid=3447",
+                        data: { data: cfgstr },
+                        success: function (_result) {
+                            var result = $.parseJSON(_result);
+                            jBox.closeTip();
+                            if (result.code == 0) {
+                                jBox.tip('出错：' + result.msg, 'error');
+                                return;
+                            }
+                            jBox.tip('保存成功!', 'success');
+                            setTimeout(function () {
+                                jBox.closeTip();
+                            }, 200);
+                            //
+                        }
+                    });
+                });
+            }, 350);
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="blank10">
+    </div>
+    <div class="block">
+        <div class="h">
+            <span class="icon-sprite icon-list"></span>
+            <h3>店中店开店奖设置</h3>
+            <div class="bar">
+            </div>
+        </div>
+        <div class="cnt-wp">
+            <div class="cnt form">
+                <div class="division">
+
+                    <script type="text/javascript">
+                        $(function () {
+                            $('.OnlyFloat').OnlyFloat();
+                        });
+
+                        //------数据格式--------
+                        var __layerConfigData = [{"idx":0,"unified":5000.0,"custom":[]},{"idx":1,"unified":-1.0,"custom":[{"lvid":137,"val":100.0},{"lvid":372,"val":0.0},{"lvid":374,"val":0.0},{"lvid":376,"val":0.0},{"lvid":378,"val":0.0},{"lvid":379,"val":0.0},{"lvid":380,"val":100.0}]},{"idx":2,"unified":500.0,"custom":[]},{"idx":3,"unified":600.0,"custom":[]},{"idx":4,"unified":700.0,"custom":[]},{"idx":5,"unified":800.0,"custom":[]},{"idx":6,"unified":90.0,"custom":[]},{"idx":7,"unified":10.0,"custom":[]},{"idx":8,"unified":11.0,"custom":[]}];
+                        var __curLayerIndex = 0;
+                        var layerRebateConfigControl = {};//层级返利配置控件
+                        layerRebateConfigControl._data = [];
+                        layerRebateConfigControl.init = function () {//初始化
+                            this.initCustomConfigResult();
+                            this.render();
+                            $('input[name="raTest0"]').removeAttr('checked').first().attr('checked','checked');
+                        };
+                        layerRebateConfigControl.testRebate=function(totalRebate,callback){
+                            this.getConfigResult(function(cfgResult){
+                                var arrLevelIds = [];
+                                $('.raTest').each(function(){
+                                    if(this.checked){
+                                        arrLevelIds.push(this.value);
+                                    }
+                                });
+
+                                $.ajax({
+                                    type: "POST",
+                                    url:"/MallManage/MallConfig/ucRebateConfigEightHandler.aspx?action=test&customerid=3447",
+                                    data:{cfg:cfgResult,levels:arrLevelIds.join(','),amtrebate:totalRebate},// 要提交的表单
+                                    success: function(result) {
+                                        callback(result);
+                                    }
+                                });
+                            });
+                        };
+                        layerRebateConfigControl.getConfigResult = function (callback) {//设置的信息交由服务器生成json
+                            var _data = $('#frmRebateConfig').serialize();
+                            $.ajax({
+                                type: "POST",
+                                url:"/MallManage/MallConfig/ucRebateConfigEightHandler.aspx",
+                                data:_data,// 要提交的表单
+                                success: function(result) {
+                                    callback(result);
+                                }
+                            });
+                        };
+                        layerRebateConfigControl.initCustomConfigResult = function(){
+                            //从url上获取key
+                            var key = J.getQueryString('key','');
+                            if(key!=''){
+                                var cfg = parent.customRebateConfigControl.getConfig(key);
+                                if(typeof(cfg)=='object'){
+                                    __layerConfigData = cfg;
+                                }
+                            }
+                        };
+                        layerRebateConfigControl.render = function () {//渲染输出界面
+                            this._data = __layerConfigData;
+                            $('#divLoading').show();
+                            $('#tblLayer').hide();
+                            for (var i = 0; i < this._data.length; i++) {
+                                this.append(this._data[i]);
+                            }
+                            for (var i = 0; i < 4-this._data.length; i++) {//至少显示3层
+                                this.append(null);
+                            }
+                            setTimeout(function(){
+                                $('#divLoading').hide();
+                                $('#tblLayer').show();
+                            },300);
+                            __curLayerIndex = $('tr[name="trLayer"]').length;
+                        };
+                        layerRebateConfigControl.append = function (objRowConfig) {//追加层级
+                            var tmplRowLayer = $('#tmplRowLayer').html();
+                            var temp = tmplRowLayer.replace(/\{LayerIndex\}/ig, __curLayerIndex);
+
+                            temp = temp.replace(/\{LayerName\}/ig, __curLayerIndex == 0 ? '开店人' : __curLayerIndex + '级上线店主');
+                            $(temp).appendTo($('#tblLayer'));
+                            this._setValue(objRowConfig);
+                            __curLayerIndex++;
+                            this._switchLayerControlButton();
+                            //$("html,body").animate({scrollTop:$("#qy_name").offset().top},1000);
+                        };
+                        layerRebateConfigControl._setValue = function (objRowConfig) {//设置过的赋值
+                            if (objRowConfig == null || typeof (objRowConfig) == 'undefined') {
+                                return;
+                            }
+                            //dataformat->{"idx":1,"unified":-1.0,"custom":[{"lvid":79,"val":10.0},{"lvid":251,"val":10.0},{"lvid":253,"val":10.0},{"lvid":254,"val":10.0}]}
+                            var _idx = objRowConfig.idx;
+                            if (objRowConfig.unified >= 0) {//统一设置赋值
+                                $('#raUnified' + _idx).attr('checked', 'checked');
+                                this._switchConfigType(_idx, 0);
+                                $('#txtUnified' + _idx).val(objRowConfig.unified);
+                            } else {
+                                $('#raCustom' + objRowConfig.idx).attr('checked', 'checked');
+                                this._switchConfigType(_idx, 1);
+                                for (var i = 0; i < objRowConfig.custom.length; i++) {//等级个性赋值
+                                    $('#txtCustom_' + _idx + '_' + objRowConfig.custom[i].lvid).val(objRowConfig.custom[i].val);
+                                }
+                            }
+                        };
+                        layerRebateConfigControl.removeLast = function () {//移除最后层级
+                            if (!confirm('确定移除？')) {
+                                return false;
+                            }
+                            $('tr[name="trLayer"]:last').remove();
+                            __curLayerIndex--;
+                            this._switchLayerControlButton();
+                        };
+                        layerRebateConfigControl._switchConfigType = function (idx, val) {//统一/个性设置切换
+                            if (val == '0') {//统一
+                                $('#divUnified' + idx).show();
+                                $('#divCustom' + idx).hide();
+                            } else {
+                                $('#divUnified' + idx).hide();
+                                $('#divCustom' + idx).show();
+                            }
+
+                            if (idx == 0) {//自己购买需要显示普通会员等级
+                                $('#tbNormalLevel' + idx).show();
+                            } else {
+                                $('#tbNormalLevel' + idx).hide();
+                            }
+                        };
+                        layerRebateConfigControl._switchLayerControlButton = function () {//移除&追加层级按钮控制
+                            $('div[name="divLayerAdd"]').hide().last().show();
+                            if (__curLayerIndex < 5) {
+                                $('span[name="btnLayerRemove"]').hide();
+                            } else {
+                                $('span[name="btnLayerRemove"]').show();
+                            }
+
+                            if (__curLayerIndex > 8) {
+                                $('span[name="btnLayerAdd"]').hide();
+                            } else {
+                                $('span[name="btnLayerAdd"]').show();
+                            }
+                        }
+                        $(function () {
+                            layerRebateConfigControl.init();
+                        });
+
+                    </script>
+                    <form id="frmRebateConfig">
+                        <div class="division" style="padding: 0px; border: 0px; margin: 4px 1px;">
+                            <div style="text-align: center; margin-top: 160px;" id="divLoading">
+                                <img src="../../3rdParty/loading/css/loading.gif" />
+                            </div>
+                            <table id="tblLayer" width="100%" border="0" cellpadding="0" cellspacing="0" style="display: none;">
+                            </table>
+                        </div>
+                    </form>
+
+                    <script type="text/tmpl" id="tmplRowLayer">
+        <tr name="trLayer">
+            <th style="vertical-align: middle;"><b>{LayerName}：</b>
+            <input type="hidden" name="hidRowLayer" value="{LayerIndex}" />
+            </th>
+            <td style="vertical-align: middle; width: 200px;">
+                <input type="radio" name="ra{LayerIndex}" onclick="layerRebateConfigControl._switchConfigType({LayerIndex},this.value);" id="raUnified{LayerIndex}" value="0" checked="checked" />
+                <label for="raUnified{LayerIndex}" style="color:blue;">统一值</label>
+                <input type="radio" name="ra{LayerIndex}" onclick="layerRebateConfigControl._switchConfigType({LayerIndex},this.value);" id="raCustom{LayerIndex}" value="1" />
+                <label for="raCustom{LayerIndex}" style="color:#f96;">等级个性化</label>
+            </td>
+            <td style="border-right:0px;">
+                <div id="divUnified{LayerIndex}" style="float: left;">
+                    <input type="text" name="txtUnified{LayerIndex}" id="txtUnified{LayerIndex}"  class="input-code OnlyFloat" placeholder="统一值" value="0" />元
+                </div>
+                <div id="divCustom{LayerIndex}" style="display: none;float:left;">
+                    <table>
+                        <tbody id="tbNormalLevel{LayerIndex}" style="display:none;">
+
+                       </tbody>
+                        <tbody id="tbBuddyLevel{LayerIndex}">
+
+                             <tr>
+                                <td>1</td>
+                                 <td>新晋店主</td>
+                                 <td>
+                                     <input id="txtCustom_{LayerIndex}_137" type="text" name="txtCustomBuddy{LayerIndex}" class="input-code OnlyFloat" placeholder="" value="0" />元
+                                     <input type="hidden" name="hidCustom_Buddy_{LayerIndex}" value="137" />
+                                 </td>
+                                <td style="display:none;">
+                                    <input checked='checked' type="radio" class="raTest" name="raTest{LayerIndex}" value="137" id="raTest{LayerIndex}137" /><label title="选择该等级做测试" for="raTest{LayerIndex}137">选择做测试</label></td>
+                             </tr>
+
+                             <tr>
+                                <td>2</td>
+                                 <td>银牌店主</td>
+                                 <td>
+                                     <input id="txtCustom_{LayerIndex}_372" type="text" name="txtCustomBuddy{LayerIndex}" class="input-code OnlyFloat" placeholder="" value="0" />元
+                                     <input type="hidden" name="hidCustom_Buddy_{LayerIndex}" value="372" />
+                                 </td>
+                                <td style="display:none;">
+                                    <input  type="radio" class="raTest" name="raTest{LayerIndex}" value="372" id="raTest{LayerIndex}372" /><label title="选择该等级做测试" for="raTest{LayerIndex}372">选择做测试</label></td>
+                             </tr>
+
+                             <tr>
+                                <td>3</td>
+                                 <td>金牌店主</td>
+                                 <td>
+                                     <input id="txtCustom_{LayerIndex}_374" type="text" name="txtCustomBuddy{LayerIndex}" class="input-code OnlyFloat" placeholder="" value="0" />元
+                                     <input type="hidden" name="hidCustom_Buddy_{LayerIndex}" value="374" />
+                                 </td>
+                                <td style="display:none;">
+                                    <input  type="radio" class="raTest" name="raTest{LayerIndex}" value="374" id="raTest{LayerIndex}374" /><label title="选择该等级做测试" for="raTest{LayerIndex}374">选择做测试</label></td>
+                             </tr>
+
+                             <tr>
+                                <td>4</td>
+                                 <td>超级店主</td>
+                                 <td>
+                                     <input id="txtCustom_{LayerIndex}_376" type="text" name="txtCustomBuddy{LayerIndex}" class="input-code OnlyFloat" placeholder="" value="0" />元
+                                     <input type="hidden" name="hidCustom_Buddy_{LayerIndex}" value="376" />
+                                 </td>
+                                <td style="display:none;">
+                                    <input  type="radio" class="raTest" name="raTest{LayerIndex}" value="376" id="raTest{LayerIndex}376" /><label title="选择该等级做测试" for="raTest{LayerIndex}376">选择做测试</label></td>
+                             </tr>
+
+                             <tr>
+                                <td>5</td>
+                                 <td>神级</td>
+                                 <td>
+                                     <input id="txtCustom_{LayerIndex}_378" type="text" name="txtCustomBuddy{LayerIndex}" class="input-code OnlyFloat" placeholder="" value="0" />元
+                                     <input type="hidden" name="hidCustom_Buddy_{LayerIndex}" value="378" />
+                                 </td>
+                                <td style="display:none;">
+                                    <input  type="radio" class="raTest" name="raTest{LayerIndex}" value="378" id="raTest{LayerIndex}378" /><label title="选择该等级做测试" for="raTest{LayerIndex}378">选择做测试</label></td>
+                             </tr>
+
+                             <tr>
+                                <td>6</td>
+                                 <td>宇宙级店铺</td>
+                                 <td>
+                                     <input id="txtCustom_{LayerIndex}_379" type="text" name="txtCustomBuddy{LayerIndex}" class="input-code OnlyFloat" placeholder="" value="0" />元
+                                     <input type="hidden" name="hidCustom_Buddy_{LayerIndex}" value="379" />
+                                 </td>
+                                <td style="display:none;">
+                                    <input  type="radio" class="raTest" name="raTest{LayerIndex}" value="379" id="raTest{LayerIndex}379" /><label title="选择该等级做测试" for="raTest{LayerIndex}379">选择做测试</label></td>
+                             </tr>
+
+                             <tr>
+                                <td>7</td>
+                                 <td>8级</td>
+                                 <td>
+                                     <input id="txtCustom_{LayerIndex}_380" type="text" name="txtCustomBuddy{LayerIndex}" class="input-code OnlyFloat" placeholder="" value="0" />元
+                                     <input type="hidden" name="hidCustom_Buddy_{LayerIndex}" value="380" />
+                                 </td>
+                                <td style="display:none;">
+                                    <input  type="radio" class="raTest" name="raTest{LayerIndex}" value="380" id="raTest{LayerIndex}380" /><label title="选择该等级做测试" for="raTest{LayerIndex}380">选择做测试</label></td>
+                             </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </td>
+
+            <td style="vertical-align:bottom;align:right;width:160px;">
+                <div name="divLayerAdd" style="display:none;">
+                    <span name="btnLayerAdd" class="lnk sysiconBtn addorder" onclick="layerRebateConfigControl.append();">追加层级</span>
+                    <span name="btnLayerRemove" class="lnk sysiconBtn addorder" style=" background: #E2E8EB url(/images/sysicon.gif) no-repeat 2px -83px;" onclick="layerRebateConfigControl.removeLast();">移除层级</span>
+                </div>
+            </td>
+        </tr>
+</script>
+
+                </div>
+                <div style="text-align: center;">
+                    <a class="btn-lit" href="javascript:saveConfig();"><span>保存</span></a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

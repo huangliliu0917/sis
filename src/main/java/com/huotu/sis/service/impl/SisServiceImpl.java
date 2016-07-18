@@ -96,7 +96,7 @@ public class SisServiceImpl implements SisService {
 
     @Override
     public Page<Sis> findSisList(SisSearchModel sisSearchModel) throws Exception {
-        log.info(sisSearchModel.getCustomerId()+"into findSisList");
+        log.debug(sisSearchModel.getCustomerId()+"into findSisList");
         return  sisRepository.findAll(new Specification<Sis>() {
             @Override
             public Predicate toPredicate(Root<Sis> root, CriteriaQuery<?> query, CriteriaBuilder cb){

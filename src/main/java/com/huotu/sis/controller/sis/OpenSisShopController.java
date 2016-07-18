@@ -195,9 +195,10 @@ public class OpenSisShopController {
     }
 
     /**
-     * 保存店中店开店设置
+     * 保存店中店开店设置(需要优化)
      *
-     * @param newSisConfig 店中店开店设置实体
+     * @param newSisConfig      店中店开店设置实体
+     * @param openGoodsLevels   等级开店，等级对应的商品
      * @return
      * @throws Exception
      */
@@ -333,6 +334,7 @@ public class OpenSisShopController {
         for(int i=0;i<sisLevels.size();i++){
             models[i*2]=new SimpleSisLevelModel();
             models[i*2+1]=new SimpleSisLevelModel();
+
             models[i*2].setLevelTitle(sisLevels.get(i).getLevelName());
             models[i*2+1].setLevelTitle(sisLevels.get(i).getLevelName());
 
@@ -563,7 +565,7 @@ public class OpenSisShopController {
 
 
     /**
-     * 获取商品列表
+     * 获取商品列表(开店配置里面获取商品)
      *
      * @return
      * @throws Exception
@@ -591,7 +593,7 @@ public class OpenSisShopController {
 
     /**
      * by zyw 店铺等级设置列表
-     *
+     * modify slt
      * @param model
      * @return
      * @throws Exception
@@ -632,8 +634,9 @@ public class OpenSisShopController {
 
     /**
      * 添加等级页面初始化
-     *
-     * @param customerId
+     * modify by slt
+     * @param customerId    商户ID
+     * @param sisLevel      店铺等级
      * @param model
      * @return
      * @throws Exception
@@ -668,7 +671,7 @@ public class OpenSisShopController {
 
 
     /**
-     * 店铺等级添加保存
+     * 店铺等级添加保存(弃用)
      * 条件：必须唯一，不存在
      * 在上下级之间数据
      *
@@ -836,7 +839,20 @@ public class OpenSisShopController {
         return resultModel;
     }
 
-    //修改店铺信息(弃用)
+    /**
+     *  修改店铺信息(弃用)
+     * @param customerId
+     * @param httpServletRequest
+     * @param level
+     * @param amount1
+     * @param amount2
+     * @param nickname
+     * @param rebate
+     * @param model
+     * @param extraUpgrade
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/saveLevelSetConfig1", method = RequestMethod.POST)
     public String saveLevelSetConfig1(@CustomerId Long customerId, HttpServletRequest httpServletRequest, String
             level,
@@ -943,7 +959,7 @@ public class OpenSisShopController {
 
 
     /**
-     * 删除需要条件
+     * 删除需要条件(弃用)
      * 有对应商铺的情况下不能删除
      *
      * @param id

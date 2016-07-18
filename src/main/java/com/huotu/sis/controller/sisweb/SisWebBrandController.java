@@ -275,9 +275,11 @@ public class SisWebBrandController {
     }
 
     /**
+     *  操作品牌
      * @param brandId  品牌id
      * @param operType 上架：1
      *                 下架：0
+     *                 置顶；2
      * @return
      * @throws Exception
      */
@@ -351,6 +353,15 @@ public class SisWebBrandController {
         return modelMap;
     }
 
+
+    /**
+     * 进入品牌管理页面
+     * @param customerId
+     * @param model
+     * @return
+     * @throws IOException
+     * @throws SisException
+     */
     @RequestMapping(value = "/sisIndexBrand", method = RequestMethod.GET)
     public String sisIndexBrand(Long customerId, Model model) throws IOException, SisException {
         Long userId = getCurrentUserId();

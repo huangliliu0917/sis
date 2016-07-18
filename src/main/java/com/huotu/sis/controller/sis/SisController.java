@@ -86,10 +86,11 @@ public class SisController {
      * @throws Exception
      */
     @RequestMapping(value = "/showSisList",method = RequestMethod.GET)
-    public String getYmrShareList(@CustomerId Long customerId, SisSearchModel sisSearchModel, Model model) throws Exception {
+    public String getYmrShareList(@CustomerId Long customerId, SisSearchModel sisSearchModel, Model model) throws Exception     {
         log.info(customerId+"into showSisList");
         if(environment.acceptsProfiles("develop")){
             customerId=4471L;
+            model.addAttribute("dev",true);
         }
 
         if(customerId==null){
@@ -109,6 +110,10 @@ public class SisController {
 
         }
 
+        if(environment.acceptsProfiles("development")||environment.acceptsProfiles("test")||environment.acceptsProfiles("staging")){
+            model.addAttribute("dev",true);
+        }
+
         model.addAttribute("allSisList", sises);//文章列表model
         model.addAttribute("pageNo",sisSearchModel.getPageNoStr());//当前页数
         model.addAttribute("totalPages",sises.getTotalPages());//总页数
@@ -118,7 +123,7 @@ public class SisController {
     }
 
     /**
-     * 查找验证码
+     * 查找验证码(7月14日，新版本弃用)
      * @param customerId            商户ID
      * @param sisSearchCodeModel    查询model
      * @param model
@@ -145,7 +150,7 @@ public class SisController {
     }
 
     /**
-     * 更新验证码
+     * 更新验证码(7月14日，新版本弃用)
      * @param customerId    商户ID
      * @param mobile        手机号
      * @return
@@ -184,7 +189,7 @@ public class SisController {
 
 
     /**
-     * 获取商家精选商品列表
+     * 获取商家精选商品列表(需要优化)
      * @param customerId        商家ID
      * @param pageNoStr            分页
      * @param model
@@ -215,7 +220,7 @@ public class SisController {
      * 修改店主精选商品
      * @param customerId    商家ID
      * @param goodsId       商品ID
-     * @param type          类型：0，删除店主精选商品，1添加店主精选商品,2.置顶
+     * @param type          类型：0，删除店主精选商品，1添加店主精选商品,2.置顶(该功能需要优化)
      * @return
      * @throws Exception
      */
@@ -272,7 +277,7 @@ public class SisController {
 
 
     /**
-     * 获取商品列表
+     * 获取商品列表(需要优化,有多个获取商品)
      * @param customerId
      * @param title
      * @param pageNo
@@ -316,6 +321,12 @@ public class SisController {
     }
 
 
+    /**
+     *  获取商家的店铺等级列表
+     * @param customerId    商家ID
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/showLevelList",method = RequestMethod.GET)
     @ResponseBody
     public ResultModel showLevelList(@CustomerId Long customerId) throws Exception{
@@ -344,20 +355,6 @@ public class SisController {
         return resultModel;
     }
 
-
-//    /**
-//     * 进入根据店铺等级的返利配置
-//     * @param customerId
-//     * @return
-//     * @throws Exception
-//     */
-//    @RequestMapping(value = "/showSisLevelAwardConfig",method = RequestMethod.GET)
-//    public String showSisLevelAwardConfig() throws Exception{
-//
-//        return "sis/openAwardConfig";
-//
-//
-//    }
 
 
     /**
@@ -393,7 +390,7 @@ public class SisController {
     }
 
     /**
-     * 删除店铺等级
+     * 删除店铺等级(正式版本不显示此功能)
      * @param customerId    商户ID
      * @param sisId         店铺ID
      * @return

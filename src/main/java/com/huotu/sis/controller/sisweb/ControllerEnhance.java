@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 错误处理
  * Created by jinzj on 2016/1/12.
  */
 @Controller

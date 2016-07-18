@@ -175,7 +175,7 @@ public class SisWebUserController {
 
 
     /**
-     * 修改店铺信息
+     * 保存修改店铺信息
      * <b>负责人：徐和康</b>
      *
      * @param sisModel 前台传过来的参数
@@ -302,7 +302,7 @@ public class SisWebUserController {
 //    }
 
     /**
-     * 获取模板列表
+     * 进入模板列表页面
      *
      * @param request 前台请求
      *                <b>负责人：徐和康</b>
@@ -383,7 +383,7 @@ public class SisWebUserController {
 
 
     /**
-     * 获取
+     * 进入修改店铺信息页面
      *
      * @param request 前台请求
      *                <b>负责人：徐和康</b>
@@ -413,7 +413,7 @@ public class SisWebUserController {
     }
 
     /**
-     * 跳转到用户后台首页页面
+     * 进入店铺设置页面
      *
      * @param request 前台请求
      *                <b>负责人：徐和康</b>
@@ -885,7 +885,7 @@ public class SisWebUserController {
     }
 
     /**
-     * 分享开店邀请
+     * 进入分享开店邀请页面
      * 负责人：史利挺
      *
      * @param customerId 商家ID
@@ -979,7 +979,7 @@ public class SisWebUserController {
 
 
     /**
-     * app登录
+     * app登录(弃用)
      *
      * @param request request请求
      * @return
@@ -1009,6 +1009,14 @@ public class SisWebUserController {
 
     }
 
+    /**
+     * 进入店铺升级页面
+     * @param customerId
+     * @param model
+     * @return
+     * @throws CustomerNotFoundException
+     * @throws SisException
+     */
     @RequestMapping(value = "/sisLevelUpgrade", method = RequestMethod.GET)
     public String sisLevelUpdate(Long customerId, Model model) throws CustomerNotFoundException, SisException {
         if (Objects.isNull(customerId)) {
