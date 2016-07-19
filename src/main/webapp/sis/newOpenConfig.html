@@ -114,25 +114,11 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr>
+                                                    <tr th:remove="all">
                                                         <td><input type="checkbox"/></td>
-                                                        <td>默认等级</td>
+                                                        <td>默认等级测试</td>
                                                         <td>选择商品</td>
-                                                        <td>设置开店奖</td>
-                                                        <td>设置送股</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><input type="checkbox"/></td>
-                                                        <td>默认等级</td>
-                                                        <td>化妆品</td>
-                                                        <td>设置开店奖</td>
-                                                        <td>设置送股</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><input type="checkbox"/></td>
-                                                        <td>默认等级</td>
-                                                        <td>化妆品</td>
-                                                        <td>设置开店奖</td>
+                                                        <td><a th:attr="">设置开店奖</a></td>
                                                         <td>设置送股</td>
                                                     </tr>
                                                     </tbody>
@@ -693,9 +679,9 @@
                         $("#levelGoodsConfig").append('' +
                                 '<tr>' +
                                 '<td><input type="checkbox"/></td>' +
-                                '<td>默认等级</td>' +
+                                '<td>'+levelTitle+'</td>' +
                                 '<td>化妆品</td>' +
-                                '<td>设置开店奖</td>' +
+                                '<td><a attr="lvId">设置开店奖</a></td>' +
                                 '<td>设置送股</td>' +
                                 '</tr>');
                     })
@@ -720,6 +706,10 @@
         if(pushModel==1){
             $("#pushAwardConfig_a").show();
         }
+    }
+
+    function setSevelOpenAwardConfig(){
+
     }
 
 
