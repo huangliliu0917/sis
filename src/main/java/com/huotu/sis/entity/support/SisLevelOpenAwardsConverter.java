@@ -13,10 +13,10 @@ import java.io.IOException;
  * Created by Administrator on 2016/1/25.
  */
 @Converter(autoApply = true)
-public class SisLevelOpenAwardsConverter implements AttributeConverter<SisLevelOpenAwards,String> {
+public class SisLevelOpenAwardsConverter implements AttributeConverter<SisLevelAwards,String> {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Override
-    public String convertToDatabaseColumn(SisLevelOpenAwards sisLevelOpenAwards) {
+    public String convertToDatabaseColumn(SisLevelAwards sisLevelOpenAwards) {
         if (sisLevelOpenAwards == null)
             return null;
         try {
@@ -28,13 +28,13 @@ public class SisLevelOpenAwardsConverter implements AttributeConverter<SisLevelO
     }
 
     @Override
-    public SisLevelOpenAwards convertToEntityAttribute(String s) {
+    public SisLevelAwards convertToEntityAttribute(String s) {
         if (StringUtils.isEmpty(s))
             return null;
         if (s.equalsIgnoreCase("null"))
             return null;
         try {
-            SisLevelOpenAwards sisLevelOpenAwards = new SisLevelOpenAwards();
+            SisLevelAwards sisLevelOpenAwards = new SisLevelAwards();
             JsonNode node = objectMapper.readTree(s);
             for (JsonNode n:node){
                 SisLevelOpenAward sisLevelOpenAward  = objectMapper.treeToValue(n,SisLevelOpenAward.class);

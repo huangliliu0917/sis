@@ -57,9 +57,9 @@ public class StringCorrectTest {
     @Test
     public void sisLevelOpenAwardsConverter(){
         String origin="[{\"buysislvid\":247,\"cfg\":[{\"idx\":0,\"unified\":1.0,\"custom\":[]},{\"idx\":1,\"unified\":2.0,\"custom\":[]},{\"idx\":2,\"unified\":-1.0,\"custom\":[{\"lvid\":206,\"val\":3.0},{\"lvid\":218,\"val\":4.0},{\"lvid\":328,\"val\":5.0},{\"lvid\":374,\"val\":6.0},{\"lvid\":380,\"val\":7.0},{\"lvid\":1444,\"val\":8.0},{\"lvid\":1446,\"val\":9.0},{\"lvid\":1466,\"val\":10.0},{\"lvid\":1468,\"val\":11.0}]},{\"idx\":3,\"unified\":12.0,\"custom\":[]},{\"idx\":4,\"unified\":13.0,\"custom\":[]},{\"idx\":5,\"unified\":14.0,\"custom\":[]},{\"idx\":6,\"unified\":15.0,\"custom\":[]},{\"idx\":7,\"unified\":16.0,\"custom\":[]},{\"idx\":8,\"unified\":17.0,\"custom\":[]}]},{\"buysislvid\":205,\"cfg\":[{\"idx\":0,\"unified\":0.0,\"custom\":[]},{\"idx\":1,\"unified\":0.0,\"custom\":[]},{\"idx\":2,\"unified\":0.0,\"custom\":[]},{\"idx\":3,\"unified\":0.0,\"custom\":[]}]},{\"buysislvid\":336,\"cfg\":[{\"idx\":0,\"unified\":3.0,\"custom\":[]},{\"idx\":1,\"unified\":2.0,\"custom\":[]},{\"idx\":2,\"unified\":1.0,\"custom\":[]},{\"idx\":3,\"unified\":0.0,\"custom\":[]}]},{\"buysislvid\":383,\"cfg\":[{\"idx\":0,\"unified\":0.0,\"custom\":[]},{\"idx\":1,\"unified\":0.0,\"custom\":[]},{\"idx\":2,\"unified\":0.0,\"custom\":[]},{\"idx\":3,\"unified\":0.0,\"custom\":[]}]},{\"buysislvid\":328,\"cfg\":[{\"idx\":0,\"unified\":3.0,\"custom\":[]},{\"idx\":1,\"unified\":4.0,\"custom\":[]},{\"idx\":2,\"unified\":5.0,\"custom\":[]},{\"idx\":3,\"unified\":6.0,\"custom\":[]},{\"idx\":4,\"unified\":7.0,\"custom\":[]},{\"idx\":5,\"unified\":8.0,\"custom\":[]},{\"idx\":6,\"unified\":9.0,\"custom\":[]},{\"idx\":7,\"unified\":1.0,\"custom\":[]},{\"idx\":8,\"unified\":2.0,\"custom\":[]}]}]";
-        SisLevelOpenAwards sisLevelOpenAwards =converter.convertToEntityAttribute(origin);
+        SisLevelAwards sisLevelOpenAwards =converter.convertToEntityAttribute(origin);
         String output = converter.convertToDatabaseColumn(sisLevelOpenAwards);
-        SisLevelOpenAwards another = converter.convertToEntityAttribute(output);
+        SisLevelAwards another = converter.convertToEntityAttribute(output);
         assertEquals("",sisLevelOpenAwards,another);
     }
 

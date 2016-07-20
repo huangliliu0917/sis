@@ -125,7 +125,7 @@ public class OpenSisShopController {
             }
             List<SisLevelModel> sisLevelModels=new ArrayList<>();
 
-            List<SisLevel> sisLevels=sisLevelRepository.findByMerchantId(customerId);
+            List<SisLevel> sisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoAsc(customerId);
             OpenGoodsIdLevelIds openGoodsIdLevelIds=sisConfig.getOpenGoodsIdlist();
             for(SisLevel sl:sisLevels){
                 SisLevelModel sisLevelModel=new SisLevelModel();
@@ -168,7 +168,7 @@ public class OpenSisShopController {
             }
         }
         model.addAttribute("extraUpGoods",goodsModel);
-        return "/sis/openConfig";
+        return "/sis/newOpenConfig";
     }
 
     private String replaceServerName(String serverName){

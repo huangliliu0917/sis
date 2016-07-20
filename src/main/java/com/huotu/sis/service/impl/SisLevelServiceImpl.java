@@ -9,10 +9,13 @@ import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
+import com.huotu.sis.entity.support.OpenSisAward;
 import com.huotu.sis.entity.support.SisLevelCondition;
+import com.huotu.sis.entity.support.SisLevelOpenAward;
 import com.huotu.sis.model.sis.SimpleSisLevelModel;
 import com.huotu.sis.model.sis.SisLevelConditionsModel;
 import com.huotu.sis.model.sisweb.OpenLevelGoodsModel;
+import com.huotu.sis.model.sisweb.SisLevelModel;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.repository.SisRepository;
@@ -211,6 +214,38 @@ public class SisLevelServiceImpl implements SisLevelService {
                 break;
             }
         }
+    }
+
+    @Override
+    public List<SisLevelModel> getSisLevelModels(Long customerId) throws Exception {
+        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantId(customerId);
+        List<SisLevelModel> sisLevelModels=new ArrayList<>();
+        if(sisLevels!=null){
+            for(int i=0;i<sisLevels.size();i++){
+                SisLevelModel sisLevelModel=new SisLevelModel();
+                sisLevelModel.setLevelId(sisLevels.get(i).getId());
+                sisLevelModel.setLevelTitle(sisLevels.get(i).getLevelName());
+                sisLevelModels.add(sisLevelModel);
+            }
+        }
+        return sisLevelModels;
+    }
+
+    @Override
+    public SisLevelOpenAward initSisLevelOpenAward(Long customerId,Long levelId) throws Exception {
+        SisLevelOpenAward sisLevelOpenAward=new SisLevelOpenAward();
+        sisLevelOpenAward.setBuySisLvId(levelId);
+
+        List<OpenSisAward> openSisAwards=new ArrayList<>();
+//        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantId(customerId);
+        for(int i=0;i<4;i++){
+            OpenSisAward openSisAward=new OpenSisAward();
+            openSisAward.setIdx(i);
+            openSisAward.setUnified(0);
+            openSisAwards.add(openSisAward);
+        }
+        sisLevelOpenAward.setCfg(openSisAwards);
+        return sisLevelOpenAward;
     }
 
 

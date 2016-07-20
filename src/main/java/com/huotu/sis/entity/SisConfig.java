@@ -11,6 +11,7 @@ package com.huotu.sis.entity;
 
 import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
 import com.huotu.sis.entity.support.OpenSisAwards;
+import com.huotu.sis.entity.support.SisLevelAwards;
 import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,10 +70,20 @@ public class SisConfig {
     private OpenSisAwards OpenSisAwards;
 
 
-//    @Column(name = "SisLevel_Open_Awards",columnDefinition = "longtext")
-//    @Description("等级开店奖个性化")
-//    @Lob
-//    private SisLevelOpenAwards sisLevelOpenAwards;
+    @Column(name = "SisLevel_Open_Awards",columnDefinition = "longtext")
+    @Description("等级开店奖个性化")
+    @Lob
+    private SisLevelAwards sisLevelOpenAwards;
+
+    @Column(name = "SisLevel_Push_Awards",columnDefinition = "longtext")
+    @Description("等级直推个性化")
+    @Lob
+    private SisLevelAwards sisLevelPushAwards;
+
+    @Column(name = "SisLevel_Stock_Awards",columnDefinition = "longtext")
+    @Description("等级送股个性化")
+    @Lob
+    private SisLevelAwards sisLevelStockAwards;
 
     @SuppressWarnings("JpaAttributeTypeInspection")
     @Column(name = "RebateTeamManagerSetting",columnDefinition = "longtext")
@@ -143,4 +154,10 @@ public class SisConfig {
     @Column(name = "HomePageColor",length = 200)
     @Description("分享图片")
     private String homePageColor;
+
+    @Description("是否限制商品和品牌上架个数")
+    @Column(name = "Limit_Shelves_Num")
+    private Boolean limitShelvesNum;
+
+
 }

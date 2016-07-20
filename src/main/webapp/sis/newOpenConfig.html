@@ -80,9 +80,9 @@
                                         <tr>
                                             <th>允许上架商品数:</th>
                                             <td>
-                                                <input id="limitGoodsNum0" value="0" onchange="limitGoods()" type="radio" name="limitGoodsNum" th:checked="*{openMode==1}"/>
+                                                <input id="limitGoodsNum0" value="0" onchange="limitGoods()" type="radio" name="limitGoodsNum" th:checked="!*{limitShelvesNum}"/>
                                                 <label style="padding-left: 0" for="limitGoodsNum0">不限制</label>
-                                                <input id="limitGoodsNum1" value="1" onchange="limitGoods()" type="radio" name="limitGoodsNum" th:checked="*{openMode==0}"/>
+                                                <input id="limitGoodsNum1" value="1" onchange="limitGoods()" type="radio" name="limitGoodsNum" th:checked="*{limitShelvesNum}"/>
                                                 <label style="padding-left: 0" for="limitGoodsNum1">限制</label>
                                                 <label id="limitGoodsLabel">
                                                     单品数量:&nbsp;
@@ -114,12 +114,12 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr th:remove="all">
+                                                    <tr th:each="l:${sisLevelModels}">
                                                         <td><input type="checkbox"/></td>
-                                                        <td>默认等级测试</td>
-                                                        <td>选择商品</td>
-                                                        <td><a th:attr="">设置开店奖</a></td>
-                                                        <td>设置送股</td>
+                                                        <td th:text="${l.levelTitle}">默认等级测试</td>
+                                                        <td><a onclick="loadGoodsList(this)" href="#" th:attr="levelId=''+${l.levelId}"  th:text="${l.goodsTitle}==null?'选择商品':${l.goodsTitle}">选择商品</a></td>
+                                                        <td><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId}">设置开店奖</a></td>
+                                                        <td><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId}">设置送股</a></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -205,7 +205,7 @@
 
                 <!--以下是按钮-->
                 <div style="text-align: center; margin-top:12px" >
-                    <a id="save" class="btn-lit" href="javascript:;" style=" margin-right:10px;color:#fff">
+                    <a id="save" class="btn-lit" href="javascript:submitForm1();" style=" margin-right:10px;color:#fff">
         <span>
         确定设置
         </span>
@@ -219,7 +219,7 @@
 </form>
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
-    var levelGoods=1;//店铺等级的开店商品(如果开店设置为个性化有效)
+    var levelGoods;//店铺等级的开店商品(如果开店设置为个性化有效)
     var choseGoods;
                 //提交设置
     function submitForm1() {
@@ -458,79 +458,42 @@
     }
 
     function choiceGoods(obj){
-        var goodsType=$("input[name='goodsType']:checked").val();
-        var goodsId;
-        var goodsTitle;
-        if(goodsType==0){
-            var goods=$("input[name='openGoodsId']");
-            var inputId=$("input[name='goodsid']");
-            goodsId=$(obj).parent().parent().children('td').eq(0).html();
-            goodsTitle=$(obj).parent().parent().children('td').eq(1).html();
-            goods.attr("value",goodsId);
-            inputId.attr("value",goodsTitle);
-        }
-        if(goodsType==1){
-            goodsId=$(obj).parent().parent().children('td').eq(0).html();
-            goodsTitle=$(obj).parent().parent().children('td').eq(1).html();
-            var goodsPrice=$(obj).parent().parent().children('td').eq(2).html();
-            var goodsTypeIndividuation;
-            if(levelGoods==undefined){
-                goodsTypeIndividuation=$("#extraUpGood");
-                goodsTypeIndividuation.children("label").first().text(goodsId);
-                goodsTypeIndividuation.children("input").first().val('商品名称:'+goodsTitle+'   商品价格:'+goodsPrice);
-            }else {
+//        var goodsType=$("input[name='goodsType']:checked").val();
+        var goodsId=$(obj).parent().parent().children('td').eq(0).html();
+        var goodsTitle=$(obj).parent().parent().children('td').eq(1).html();
+        $(levelGoods).html(goodsTitle);
+        var levelId=$(levelGoods).attr("levelid");
 
-                goodsTypeIndividuation=$("#goodsTypeIndividuation").children("div").eq(levelGoods-1);
-                var jsonlabel=goodsTypeIndividuation.children("label").first();
-                var input=goodsTypeIndividuation.children("input").first();
-                var json=$.parseJSON(jsonlabel.text());
-                json.goodsid=goodsId;
-                jsonlabel.text(JSON.stringify(json));
-                input.val('商品名称:'+goodsTitle+'   商品价格:'+goodsPrice);
+        var openGoodsIdLevelId=new Object();
+        openGoodsIdLevelId.levelid=levelId;
+        openGoodsIdLevelId.goodsid=goodsId;
 
+        $.ajax({
+            dataType: 'json',
+            contentType:"application/json",
+            data: JSON.stringify(openGoodsIdLevelId),
+            type: "POST",
+            url: "saveLevelOpenGoodsConfig",
+            success: function (result) {
+                layer.close(load);
+                layer.msg(result.message);
             }
-
-        }
+        });
+//
         layer.close(choseGoods);
     }
 
     function shopSet(){
-//        sisLevelModels = /*[[${sisLevelModels}]]*/ '';
-//        $.each(sisLevelModels,function(){
-//            alert(this.levelId);
-//        })
-
         var enabled=$("input[name='enabled']:checked").val();
         if(enabled==0){//关闭店中店配置
             $("#sisConfig").hide();
 
-//            $("input[name='openNeedInvite']").attr("disabled","disabled");
-//            $("input[name='openMode']").attr("disabled","disabled");
-//            $("input[name='goodsid']").attr("disabled","disabled");
-//            $("input[name='maxMartketableNum']").attr("disabled","disabled");
-//            $("input[name='maxBrandNum']").attr("disabled","disabled");
-//            $("input[name='corpStockSelf']").attr("disabled","disabled");
-//            $("input[name='corpStockBelongOne']").attr("disabled","disabled");
-//            $("input[name='isShelvesAllGoods']").attr("disabled","disabled");
-//            $("#recommend").hide();
         }else{  //开启店中店配置
             $("#sisConfig").show();
-//            $("input[name='openNeedInvite']").removeAttr("disabled");
-//            $("input[name='openMode']").removeAttr("disabled");
-//            $("input[name='goodsid']").removeAttr("disabled");
-//            $("input[name='maxMartketableNum']").removeAttr("disabled");
-//            $("input[name='maxBrandNum']").removeAttr("disabled");
-//            $("input[name='corpStockSelf']").removeAttr("disabled");
-//            $("input[name='corpStockBelongOne']").removeAttr("disabled");
-//            $("input[name='isShelvesAllGoods']").removeAttr("disabled");
-//            $("#recommend").show();
-//            freeSet();
-//            changeGoodsType();
-//            setPushAwardConfig();
-
         }
+        freeSet();
+//        getlevelList();
 
-        getlevelList();
     }
 
     function freeSet(){
@@ -570,7 +533,7 @@
     }
 
     function loadGoodsList(obj){
-        levelGoods = $(obj).attr("levelno");
+        levelGoods =obj;
 
         choseGoods=layer.open({
             type: 1,
@@ -708,7 +671,31 @@
         }
     }
 
-    function setSevelOpenAwardConfig(){
+    function setSevelOpenAwardConfig(obj){
+        var levelId=$(obj).attr("levelid");
+        choseGoods=layer.open({
+            type: 2,
+            title: '设置开店奖',
+//            shadeClose: true,
+//            shade: false,
+            area: ['80%', '80%'],
+            content:['showLevelOpenAwardConfig?levelId='+levelId],
+            end:function(){
+
+            }
+        });
+    }
+    function setStockConfig(obj){
+        var levelId=$(obj).attr("levelid");
+        choseGoods=layer.open({
+            type: 2,
+            title: '设置开店奖',
+            area: ['80%', '80%'],
+            content:['showLevelOpenAwardConfig?levelId='+levelId],
+            end:function(){
+
+            }
+        });
 
     }
 

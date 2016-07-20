@@ -18,6 +18,7 @@ import com.huotu.sis.model.sisweb.SisLevelModel;
 import com.huotu.sis.model.sisweb.VerificationType;
 import com.huotu.sis.repository.*;
 import com.huotu.sis.service.CommonConfigsService;
+import com.huotu.sis.service.SisLevelService;
 import com.huotu.sis.service.SisService;
 import com.huotu.sis.service.VerificationCodeService;
 import org.apache.commons.logging.Log;
@@ -75,6 +76,9 @@ public class SisController {
 
     @Autowired
     SisRepository sisRepository;
+
+    @Autowired
+    SisLevelService sisLevelService;
 
 
 
@@ -339,16 +343,17 @@ public class SisController {
             resultModel.setMessage("商户ID不存在");
             return resultModel;
         }
-        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantId(customerId);
-        List<SisLevelModel> sisLevelModels=new ArrayList<>();
-        if(sisLevels!=null){
-            for(int i=0;i<sisLevels.size();i++){
-                SisLevelModel sisLevelModel=new SisLevelModel();
-                sisLevelModel.setLevelId(sisLevels.get(i).getId());
-                sisLevelModel.setLevelTitle(sisLevels.get(i).getLevelName());
-                sisLevelModels.add(sisLevelModel);
-            }
-        }
+        List<SisLevelModel> sisLevelModels=sisLevelService.getSisLevelModels(customerId);
+//        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantId(customerId);
+//        List<SisLevelModel> sisLevelModels=new ArrayList<>();
+//        if(sisLevels!=null){
+//            for(int i=0;i<sisLevels.size();i++){
+//                SisLevelModel sisLevelModel=new SisLevelModel();
+//                sisLevelModel.setLevelId(sisLevels.get(i).getId());
+//                sisLevelModel.setLevelTitle(sisLevels.get(i).getLevelName());
+//                sisLevelModels.add(sisLevelModel);
+//            }
+//        }
         resultModel.setCode(200);
         resultModel.setMessage("OK");
         resultModel.setData(sisLevelModels);
