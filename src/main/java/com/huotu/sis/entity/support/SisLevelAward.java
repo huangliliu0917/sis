@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SisLevelOpenAward {
+public class SisLevelAward {
     /**
      * 购买人开店等级
      */

@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../resource/css/spectrum.css"
           th:src="@{/resource/css/spectrum.css}"/>
 </head>
-<body onload="shopSet()">
+<body onload="initConfig()">
 <form method="post" action="saveNewOpenConfig" id="form1" th:object="${newSisConfig}">
     <input type="hidden" name="openGoodsId" th:value="*{openGoodsId}"/>
     <input type="hidden" name="openAwardMode" th:value="*{openAwardMode}"/>
@@ -44,7 +44,7 @@
             <div class="h">
       <span class="icon-sprite icon-magnifier">
       </span>
-                <h3>开店设置后台</h3>
+                <h3>店铺基本设置</h3>
             </div>
             <div class="cnt-wp" style="padding: 35px 10px 10px;">
                 <div id="makeTab" class="cnt om-tabs om-widget om-widget-content om-corner-all" style="width: auto; height: auto;">
@@ -106,7 +106,7 @@
                                                 <table id="levelGoodsConfig">
                                                     <thead>
                                                     <tr>
-                                                        <th style="text-align: center">是否开启</th>
+                                                        <th style="text-align: center">允许购买</th>
                                                         <th style="text-align: center">店铺等级</th>
                                                         <th style="text-align: center">开店商品</th>
                                                         <th style="text-align: center">开店奖</th>
@@ -115,11 +115,11 @@
                                                     </thead>
                                                     <tbody>
                                                     <tr th:each="l:${sisLevelModels}">
-                                                        <td><input type="checkbox"/></td>
+                                                        <td><input th:attr="levelId=''+${l.levelId}" onclick="changeExtraUpgrade(this)" th:checked="${l.extraUpgrade}"  type="checkbox"/></td>
                                                         <td th:text="${l.levelTitle}">默认等级测试</td>
                                                         <td><a onclick="loadGoodsList(this)" href="#" th:attr="levelId=''+${l.levelId}"  th:text="${l.goodsTitle}==null?'选择商品':${l.goodsTitle}">选择商品</a></td>
-                                                        <td><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId}">设置开店奖</a></td>
-                                                        <td><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId}">设置送股</a></td>
+                                                        <td><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId},type='0'">设置开店奖</a></td>
+                                                        <td><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId},type='2'">设置送股</a></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -127,7 +127,20 @@
                                         </tr>
 
                                         <tr>
-                                            <th>店中店后台首页颜色</th>
+                                            <th>直推模式:</th>
+                                            <td>
+                                                <input id="pushAwardMode0" value="0" onchange="" type="radio" name="pushAwardMode" th:checked="*{pushAwardMode==0}"/>
+                                                <label style="padding-left: 0" for="pushAwardMode0">默认模式</label>
+                                                <input id="pushAwardMode1" value="1" onchange="" type="radio" name="pushAwardMode" th:checked="*{pushAwardMode==1}"/>
+                                                <label style="padding-left: 0" for="pushAwardMode1">经营者模式</label>
+                                                <a id="pushAwardConfig_a" class="btn-lit" href="javascript:pushAwardConfig();" style="color: #fff">
+                                                    <span>直推奖配置</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>前台店铺首页颜色</th>
                                             <td>
                                                 <div style="float: left"><input type='text' id="full"/></div>
                                                 <input type="hidden" id="homePageColor" th:value="*{homePageColor}"/>
@@ -223,122 +236,69 @@
     var choseGoods;
                 //提交设置
     function submitForm1() {
+        var newSisConfig=new Object();
 
         var enabled=$("input[name='enabled']:checked").val();
+        newSisConfig.enabled=enabled;
         if(enabled==1){
-            var maxMartketableNum=$("input[name='maxMartketableNum']").val();
-            var maxBrandNum=$("input[name='maxBrandNum']").val();
-            var openGoodsId=$("input[name='openGoodsId']").val();
-            var corpStockSelf=$("input[name='corpStockSelf']").val();
-            var corpStockBelongOne=$("input[name='corpStockBelongOne']").val();
-            var goodsType=$("input[name='goodsType']:checked").val();
-            var openMode=$("input[name='openMode']:checked").val();
-            if(openMode==1){
+            newSisConfig.openNeedInvite=$("input[name='openNeedInvite']:checked").val();
+            var limitShelvesNum=$("input[name='limitGoodsNum']:checked").val();
+            newSisConfig.limitShelvesNum=limitShelvesNum==1?true:false;
+            if(limitShelvesNum==1){
                 var rex=/^[0-9]*$/;
-                if(goodsType==0){
-                    if (openGoodsId.length == 0) {
-                        if(openMode==1){
-                            layer.msg("请选择商品");
-                            return;
-                        }
-                    }
-                }
-                if(goodsType==1){
-                    var flag=true;
-                    var goodsTypeIndividuations=$("#goodsTypeIndividuation").children("div");
-                    goodsTypeIndividuations.each(function(){
-                        var goodsId=$(this).children("label").first().text();
-                        var obj=jQuery.parseJSON(goodsId);
-                        if(obj.goodsid==null){
-                            flag=false;
-                        }
-                    })
-                    if(!flag){
-                        layer.msg("请选择商品");
-                        return;
-                    }
-
-                    var extraUpGoodLabel=$("#extraUpGoodLabel").text();
-                    if(extraUpGoodLabel.length==0){
-                        layer.msg("请选择补差价商品");
-                        return;
-                    }
-                }
-
-
-                if(!rex.test(corpStockSelf)||!rex.test(corpStockSelf)||corpStockSelf.length==0){
-                    layer.msg("合伙人送股请输入数字！");
+                var maxMartketableNum=$("input[name='maxMartketableNum']").val();
+                var maxBrandNum=$("input[name='maxBrandNum']").val();
+                if(!rex.test(maxBrandNum)||!rex.test(maxBrandNum)||maxBrandNum.length==0){
+                    layer.msg("品牌数量请输入数字！");
                     return;
                 }
-
-                if(!rex.test(corpStockBelongOne)||!rex.test(corpStockBelongOne)||corpStockBelongOne.length==0){
-                    layer.msg("上级合伙人送股请输入数字！");
+                if(!rex.test(maxMartketableNum)||!rex.test(maxMartketableNum)||maxBrandNum.length==0){
+                    layer.msg("单品数量请输入数字！");
                     return;
                 }
+                newSisConfig.maxMartketableNum=maxMartketableNum;
+                newSisConfig.maxBrandNum=maxBrandNum;
 
             }
-
-            var rex=/^[0-9]*$/;
-            if(!rex.test(maxBrandNum)||!rex.test(maxBrandNum)||maxBrandNum.length==0){
-                layer.msg("品牌数量请输入数字！");
-                return;
-            }
-            if(!rex.test(maxMartketableNum)||!rex.test(maxMartketableNum)||maxBrandNum.length==0){
-                layer.msg("单品数量请输入数字！");
-                return;
-            }
-        }
-
-
+        newSisConfig.openMode=$("input[name='openMode']:checked").val();
+        newSisConfig.pushAwardMode=$("input[name='pushAwardMode']:checked").val();
+        newSisConfig.homePageColor=$("#homePageColor").val();
         layer.confirm('即将保存内容，确定继续吗？', {
             btn: ['确定','取消'] //按钮
         }, function(){
 
-            ajax();
+            submitAjax(newSisConfig);
 
         }, function(){
         });
 
     }
+    }
 
-    function ajax(){
+    function submitAjax(newSisConfig){
         var sub=layer.load(0, {shade: false});
-        var openGoodsLevels="[";
-        var n=1;
-        var goodsTypeIndividuations=$("#goodsTypeIndividuation").children("div");
-        goodsTypeIndividuations.each(function(){
-            var levelIdgoodsId=$(this).children("label").first().text();
-            openGoodsLevels=openGoodsLevels+levelIdgoodsId;
-            if(n<goodsTypeIndividuations.size()){
-                openGoodsLevels=openGoodsLevels+',';
-            }else {
-                openGoodsLevels=openGoodsLevels+']';
-            }
-            n++;
-        });
+//        var openGoodsLevels="[";
+//        var n=1;
+//        var goodsTypeIndividuations=$("#goodsTypeIndividuation").children("div");
+//        goodsTypeIndividuations.each(function(){
+//            var levelIdgoodsId=$(this).children("label").first().text();
+//            openGoodsLevels=openGoodsLevels+levelIdgoodsId;
+//            if(n<goodsTypeIndividuations.size()){
+//                openGoodsLevels=openGoodsLevels+',';
+//            }else {
+//                openGoodsLevels=openGoodsLevels+']';
+//            }
+//            n++;
+//        });
 
 
         $.ajax({
             type:'POST',
             url: 'saveOpenConfig',
             dataType: 'json',
-            data: {
-                "enabled":$("input[name='enabled']:checked").val(),
-                "openMode":$("input[name='openMode']:checked").val(),
-                "openNeedInvite":$("input[name='openNeedInvite']:checked").val(),
-                "openGoodsId":$("input[name='openGoodsId']").val(),
-                "maxMartketableNum":$("input[name='maxMartketableNum']").val(),
-                "maxBrandNum":$("input[name='maxBrandNum']").val(),
-                "corpStockSelf":$("input[name='corpStockSelf']").val(),
-                "corpStockBelongOne":$("input[name='corpStockBelongOne']").val(),
-                "openGoodsMode":$("input[name='goodsType']:checked").val(),
-                "openGoodsLevels":openGoodsLevels,
-                "openAwardMode":$("input[name='openAwardMode']").val(),
-                "extraUpGoodsId":$("#extraUpGoodLabel").text(),
-                "homePageColor":$("#homePageColor").val(),
-                "enableLevelUpgrade":$("input[name='enableLevelUpgrade']:checked").val(),
-                "pushAwardMode":$("input[name='pushAwardMode']:checked").val()
-            },
+            contentType:"application/json",
+            data:JSON.stringify(newSisConfig),
+
             success:function(result){
                 if(result.code==200){
                     layer.close(sub);
@@ -483,6 +443,14 @@
         layer.close(choseGoods);
     }
 
+    function initConfig(){
+        shopSet();
+        limitGoods();
+        var color=$("#homePageColor").val();
+        $(".f-bigbox").css('background-color',color);
+
+    }
+
     function shopSet(){
         var enabled=$("input[name='enabled']:checked").val();
         if(enabled==0){//关闭店中店配置
@@ -577,6 +545,13 @@
     function pushAwardConfig(){
         var host=/*[[${mainHost}]]*/ '';
         var testhost=/*[[${mainhost}]]*/ '';
+        var pushType=$("input[name='pushAwardMode']:checked").val();
+        var pushConfigUrl;
+        if(pushType==0){
+            pushConfigUrl='showLevelAwardConfig?type=1&levelId=0';
+        }else {
+            pushConfigUrl='pushAwardConfig';
+        }
         layer.open({
             type: 2,
 //            offset:'100px',
@@ -584,10 +559,9 @@
 //            shadeClose: true,
 //            shade: false,
             area: ['85%', '85%'],
-            content:'pushAwardConfig',
+            content:pushConfigUrl,
 //            content: 'selectOpenGoodsList.html',
             end:function(){
-
             }
         });
 
@@ -673,13 +647,14 @@
 
     function setSevelOpenAwardConfig(obj){
         var levelId=$(obj).attr("levelid");
+        var type=$(obj).attr("type");
         choseGoods=layer.open({
             type: 2,
-            title: '设置开店奖',
+            title: '设置返利',
 //            shadeClose: true,
 //            shade: false,
             area: ['80%', '80%'],
-            content:['showLevelOpenAwardConfig?levelId='+levelId],
+            content:['showLevelAwardConfig?type='+type+'&levelId='+levelId],
             end:function(){
 
             }
@@ -691,11 +666,47 @@
             type: 2,
             title: '设置开店奖',
             area: ['80%', '80%'],
-            content:['showLevelOpenAwardConfig?levelId='+levelId],
+            content:['showLevelAwardConfig?levelId='+levelId],
             end:function(){
 
             }
         });
+
+    }
+
+    function changeExtraUpgrade(obj){
+        var levelId=$(obj).attr("levelid");
+        var isCheck=$(obj).attr("checked");
+        layer.confirm('确定修改状态吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            var flag=0;
+            if(isCheck=="checked"){
+                flag=1;
+            }
+            changeExtraUpgradeAjax(levelId,flag);
+
+        }, function(){
+
+            $(obj).attr("checked",!isCheck);
+        });
+    }
+
+    function changeExtraUpgradeAjax(levelId,isCheck){
+        var sub=layer.load(0, {shade: false});
+        $.ajax({
+            type:"POST",
+            url:"saveLevelExtraUpgrade",
+            data:{levelId:levelId,extraUpgrade:isCheck},
+            success:function(result){
+                layer.close(sub);
+                layer.msg(result.message);
+            },
+            error:function(e){
+                layer.close(sub);
+                layer.msg("修改失败");
+            }
+        })
 
     }
 
@@ -752,6 +763,7 @@
                 "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
         ]
     });
+
 
     /*]]>*/
 

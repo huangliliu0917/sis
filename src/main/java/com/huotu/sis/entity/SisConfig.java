@@ -131,7 +131,7 @@ public class SisConfig {
     private Integer openAwardMode;
 
     @Column(name = "Push_AwardMode")
-    @Description("直推返利模式 0:默认返给店主，1：经营者返利模式")
+    @Description("直推返利模式 0:默认八级返利，1：经营者返利模式")
     private Integer pushAwardMode;
 
     @Column(name = "Open_GoodsMode")
@@ -152,7 +152,7 @@ public class SisConfig {
     private Boolean enableLevelUpgrade;
 
     @Column(name = "HomePageColor",length = 200)
-    @Description("分享图片")
+    @Description("首页后台颜色")
     private String homePageColor;
 
     @Description("是否限制商品和品牌上架个数")

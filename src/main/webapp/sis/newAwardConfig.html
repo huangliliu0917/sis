@@ -30,18 +30,21 @@
           th:href="@{/resource/layer/skin/layer.ext.css}"/>
 
 
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var tp=/*[[${type}]]*/0;
         function saveConfig() {
             var load=layer.load(0, {shade: false});
             setTimeout(function () {
                 layerRebateConfigControl.getConfigResult(function (cfgstr) {
                     $.ajax({
-
-                        dataType: 'json',
-                        contentType:"application/json",
-                        data: JSON.stringify(cfgstr),
                         type: "POST",
-                        url: "saveLevelOpenAwardConfig",
+//                        dataType: 'json',
+//                        contentType:"application/json",
+//                        data: JSON.stringify(cfgstr),
+                        data:{sisLevelAwardStr:JSON.stringify(cfgstr),type:tp},
+
+                        url: "saveLevelAwardConfig",
                         success: function (result) {
                             layer.close(load);
                             layer.msg(result.message);
@@ -50,6 +53,7 @@
                 });
             }, 350);
         }
+        /*]]>*/
     </script>
 </head>
 <body>
@@ -59,7 +63,7 @@
     <div class="block">
         <div class="h">
             <span class="icon-sprite icon-list"></span>
-            <h3>店中店开店奖设置</h3>
+            <h3>店中店返利设置</h3>
             <div class="bar">
             </div>
         </div>
@@ -123,12 +127,13 @@
                         };
                         layerRebateConfigControl.render = function () {//渲染输出界面
                             this._data = __layerConfigData;
+                            var layerNum=/*[[${layerNum}]]*/4;
                             $('#divLoading').show();
                             $('#tblLayer').hide();
                             for (var i = 0; this._data.length > i; i++) {
                                 this.append(this._data[i]);
                             }
-                            for (var i = 0; 4-this._data.length > i; i++) {//至少显示3层
+                            for (var i = 0; layerNum-this._data.length > i; i++) {//至少显示给定的层数
                                 this.append(null);
                             }
                             setTimeout(function(){
@@ -266,12 +271,12 @@
             <td style="vertical-align: middle; width: 200px;">
                 <input type="radio" name="ra{LayerIndex}" onclick="layerRebateConfigControl._switchConfigType({LayerIndex},this.value);" id="raUnified{LayerIndex}" value="0" checked="checked" />
                 <label for="raUnified{LayerIndex}" style="color:blue;">统一值</label>
-                <input type="radio" name="ra{LayerIndex}" onclick="layerRebateConfigControl._switchConfigType({LayerIndex},this.value);" id="raCustom{LayerIndex}" value="1" />
-                <label for="raCustom{LayerIndex}" style="color:#f96;">等级个性化</label>
+                <input th:if="${individuality}" type="radio" name="ra{LayerIndex}" onclick="layerRebateConfigControl._switchConfigType({LayerIndex},this.value);" id="raCustom{LayerIndex}" value="1" />
+                <label th:if="${individuality}" for="raCustom{LayerIndex}" style="color:#f96;">等级个性化</label>
             </td>
             <td style="border-right:0px;">
                 <div id="divUnified{LayerIndex}" style="float: left;">
-                    <input type="text" name="txtUnified{LayerIndex}" id="txtUnified{LayerIndex}"  class="input-code OnlyFloat" placeholder="统一值" value="0" />元
+                    <input type="text" name="txtUnified{LayerIndex}" id="txtUnified{LayerIndex}"  class="input-code OnlyFloat" placeholder="统一值" value="0" th:text="${unit}" />
                 </div>
                 <div id="divCustom{LayerIndex}" style="display: none;float:left;">
                     <table>
@@ -285,7 +290,7 @@
                                  <td th:text="${l.levelTitle}">新晋店主</td>
                                  <td>
                                      <input th:id="'txtCustom_{LayerIndex}_'+${l.levelId}" type="text"
-                                      name="txtCustomBuddy{LayerIndex}" class="input-code OnlyFloat" placeholder="" value="0" />元
+                                      name="txtCustomBuddy{LayerIndex}" class="input-code OnlyFloat" placeholder="" value="0" th:text="${unit}" />
                                      <input th:value="${l.levelId}" type="hidden" name="hidCustom_Buddy_{LayerIndex}" value="137" />
                                  </td>
                              </tr>
@@ -300,8 +305,8 @@
 
             <td style="vertical-align:bottom;align:right;width:160px;">
                 <div name="divLayerAdd" style="display:none;">
-                    <span name="btnLayerAdd" class="lnk sysiconBtn addorder" onclick="layerRebateConfigControl.append();">追加层级</span>
-                    <span name="btnLayerRemove" class="lnk sysiconBtn addorder" style=" background: #E2E8EB url(../resource/images/sysicon.gif) no-repeat 2px -83px;" onclick="layerRebateConfigControl.removeLast();">移除层级</span>
+                    <span th:if="${individuality}" name="btnLayerAdd" class="lnk sysiconBtn addorder" onclick="layerRebateConfigControl.append();">追加层级</span>
+                    <span th:if="${individuality}" name="btnLayerRemove" class="lnk sysiconBtn addorder" style=" background: #E2E8EB url(../resource/images/sysicon.gif) no-repeat 2px -83px;" onclick="layerRebateConfigControl.removeLast();">移除层级</span>
                 </div>
             </td>
         </tr>

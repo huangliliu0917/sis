@@ -33,4 +33,9 @@ public class SisLevelModel {
      * 商品价格
      */
     private Double goodsPrice;
+
+    /**
+     * 该等级是否允许购买
+     */
+    private Integer extraUpgrade;
 }

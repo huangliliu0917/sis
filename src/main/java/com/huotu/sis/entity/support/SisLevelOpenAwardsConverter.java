@@ -20,7 +20,7 @@ public class SisLevelOpenAwardsConverter implements AttributeConverter<SisLevelA
         if (sisLevelOpenAwards == null)
             return null;
         try {
-            SisLevelOpenAward[] award = sisLevelOpenAwards.values().toArray(new SisLevelOpenAward[sisLevelOpenAwards.size()]);
+            SisLevelAward[] award = sisLevelOpenAwards.values().toArray(new SisLevelAward[sisLevelOpenAwards.size()]);
             return objectMapper.writeValueAsString(award);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Broken JSON", e);
@@ -37,7 +37,7 @@ public class SisLevelOpenAwardsConverter implements AttributeConverter<SisLevelA
             SisLevelAwards sisLevelOpenAwards = new SisLevelAwards();
             JsonNode node = objectMapper.readTree(s);
             for (JsonNode n:node){
-                SisLevelOpenAward sisLevelOpenAward  = objectMapper.treeToValue(n,SisLevelOpenAward.class);
+                SisLevelAward sisLevelOpenAward  = objectMapper.treeToValue(n,SisLevelAward.class);
                 sisLevelOpenAwards.put(sisLevelOpenAward.getBuySisLvId(),sisLevelOpenAward);
             }
 //            JsonParser jsonParser = objectMapper.treeAsTokens(objectMapper.readTree(dbData));

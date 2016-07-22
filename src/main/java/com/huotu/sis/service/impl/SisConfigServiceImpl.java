@@ -102,20 +102,21 @@ public class SisConfigServiceImpl implements SisConfigService {
             sisConfig=initSisConfig(newSisConfig.getMerchantId());
         }
         sisConfig.setEnabled(newSisConfig.getEnabled());
-        sisConfig.setCorpStockSelf(newSisConfig.getCorpStockSelf());
-        sisConfig.setCorpStockBelongOne(newSisConfig.getCorpStockBelongOne());
+//        sisConfig.setCorpStockSelf(newSisConfig.getCorpStockSelf());
+//        sisConfig.setCorpStockBelongOne(newSisConfig.getCorpStockBelongOne());
         sisConfig.setOpenNeedInvite(newSisConfig.getOpenNeedInvite());
         sisConfig.setOpenMode(newSisConfig.getOpenMode());
         sisConfig.setPushAwardMode(newSisConfig.getPushAwardMode());
         sisConfig.setHomePageColor(newSisConfig.getHomePageColor());
-        sisConfig.setOpenGoodsId(newSisConfig.getOpenGoodsId());
+//        sisConfig.setOpenGoodsId(newSisConfig.getOpenGoodsId());
         sisConfig.setMaxMartketableNum(newSisConfig.getMaxMartketableNum());
         sisConfig.setMaxBrandNum(newSisConfig.getMaxBrandNum());
-        sisConfig.setOpenGoodsIdlist(newSisConfig.getOpenGoodsIdlist());
-        sisConfig.setOpenGoodsMode(newSisConfig.getOpenGoodsMode());//todo 开店商品模式修改
+        sisConfig.setLimitShelvesNum(newSisConfig.getLimitShelvesNum());
+//        sisConfig.setOpenGoodsIdlist(newSisConfig.getOpenGoodsIdlist());
+//        sisConfig.setOpenGoodsMode(newSisConfig.getOpenGoodsMode());//todo 开店商品模式修改
         sisConfig.setUpdateTime(new Date());
-        sisConfig.setExtraUpGoodsId(newSisConfig.getExtraUpGoodsId());
-        sisConfig.setEnableLevelUpgrade(newSisConfig.getEnableLevelUpgrade());
+//        sisConfig.setExtraUpGoodsId(newSisConfig.getExtraUpGoodsId());
+//        sisConfig.setEnableLevelUpgrade(newSisConfig.getEnableLevelUpgrade());
         sisConfigRepository.save(sisConfig);
 
     }

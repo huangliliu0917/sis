@@ -5,7 +5,7 @@ import com.huotu.huobanplus.common.entity.User;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
-import com.huotu.sis.entity.support.SisLevelOpenAward;
+import com.huotu.sis.entity.support.SisLevelAward;
 import com.huotu.sis.model.sis.SimpleSisLevelModel;
 import com.huotu.sis.model.sis.SisLevelConditionsModel;
 import com.huotu.sis.model.sisweb.OpenLevelGoodsModel;
@@ -142,5 +142,12 @@ public interface SisLevelService {
     List<SisLevelModel> getSisLevelModels(Long customerId) throws Exception;
 
 
-    SisLevelOpenAward initSisLevelOpenAward(Long customerId,Long levelId)throws Exception;
+    /**
+     * 初始化等级返利配置信息
+     * @param customerId
+     * @param levelId
+     * @return
+     * @throws Exception
+     */
+    SisLevelAward initSisLevelAward(long customerId, long levelId,int layerNum)throws Exception;
 }

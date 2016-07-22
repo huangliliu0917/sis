@@ -131,6 +131,7 @@ public class OpenSisShopController {
                 SisLevelModel sisLevelModel=new SisLevelModel();
                 sisLevelModel.setLevelId(sl.getId());
                 sisLevelModel.setLevelTitle(sl.getLevelName());
+                sisLevelModel.setExtraUpgrade(sl.getExtraUpgrade());
                 if(openGoodsIdLevelIds!=null){
                     for(OpenGoodsIdLevelId ogid:openGoodsIdLevelIds.values()){
                         if(sl.getId().equals(ogid.getLevelid())){
@@ -198,28 +199,24 @@ public class OpenSisShopController {
      * 保存店中店开店设置(需要优化)
      *
      * @param newSisConfig      店中店开店设置实体
-     * @param openGoodsLevels   等级开店，等级对应的商品
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/saveOpenConfig", method = RequestMethod.POST)
     @ResponseBody
-    public ResultModel saveOpenConfig(@CustomerId Long customerId, String openGoodsLevels, SisConfig newSisConfig) throws Exception {
+    public ResultModel saveOpenConfig(@CustomerId Long customerId,@RequestBody SisConfig newSisConfig) throws Exception {
         ResultModel resultModel=new ResultModel();
-        if (environment.acceptsProfiles("develop")) {
-            customerId = 4471L;
-        }
 
         if (customerId == null) {
             throw new Exception("商户ID不存在");
         }
         if (!Objects.isNull(newSisConfig)) {
             newSisConfig.setMerchantId(customerId);
-            if(newSisConfig.getOpenGoodsMode()!=null&&newSisConfig.getOpenGoodsMode()==1){//todo 开店商品模式修改
-                OpenGoodsIdLevelIdConverter converter=new OpenGoodsIdLevelIdConverter();
-                OpenGoodsIdLevelIds openGoodsIdLevelIds=converter.convertToEntityAttribute(openGoodsLevels);
-                newSisConfig.setOpenGoodsIdlist(openGoodsIdLevelIds);
-            }
+//            if(newSisConfig.getOpenGoodsMode()!=null&&newSisConfig.getOpenGoodsMode()==1){//todo 开店商品模式修改
+//                OpenGoodsIdLevelIdConverter converter=new OpenGoodsIdLevelIdConverter();
+//                OpenGoodsIdLevelIds openGoodsIdLevelIds=converter.convertToEntityAttribute(openGoodsLevels);
+//                newSisConfig.setOpenGoodsIdlist(openGoodsIdLevelIds);
+//            }
             sisConfigService.saveOpenConfig(newSisConfig);
         } else {
             resultModel.setCode(500);
@@ -606,6 +603,10 @@ public class OpenSisShopController {
         if (customerId == null) {
             throw new Exception("商户ID不存在");
         }
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
+        if(sisConfig==null){
+            throw new Exception("商户配置信息不存在");
+        }
         List<SisLevel> sisLevels = sisLevelRepository.findByMerchantId(customerId);
         List<SisLevelSetModel> sisLevelSetModels = new ArrayList<SisLevelSetModel>();
         Collections.sort(sisLevels, (SisLevel object1, SisLevel object2) -> object1.getLevelNo().compareTo(object2.getLevelNo()));
@@ -628,6 +629,7 @@ public class OpenSisShopController {
         }
 
         model.addAttribute("sisLevelSetModels", sisLevelSetModels);
+        model.addAttribute("enableLevelUpgrade",sisConfig.getEnableLevelUpgrade());
         return "/sis/newLevelSet";
     }
 

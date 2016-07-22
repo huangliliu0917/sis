@@ -30,7 +30,7 @@
           th:href="@{/resource/layer/skin/layer.ext.css}"/>
 
 
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="">
         function saveConfig() {
             var load=layer.load(0, {shade: false});
             setTimeout(function () {
@@ -41,7 +41,7 @@
                         contentType:"application/json",
                         data: JSON.stringify(cfgstr),
                         type: "POST",
-                        url: "saveLevelOpenAwardConfig",
+                        url: "saveLevelAwardConfig",
                         success: function (result) {
                             layer.close(load);
                             layer.msg(result.message);

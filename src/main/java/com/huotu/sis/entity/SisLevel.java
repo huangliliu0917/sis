@@ -73,13 +73,11 @@ public class SisLevel {
     private double rebateRate;
 
     @Column(name = "IsExtraUpgrade")
-    @Description("是否启用补差价 0：不启用，1：启用")
+    @Description("是否允许购买 0：不能，1：可以")
     private Integer extraUpgrade;
 
     @Column(name = "UpgradeConditions",columnDefinition = "longtext")
     @Description("升级条件")
     @Lob
     private List<SisLevelCondition> upgradeConditions;
-
-
 }

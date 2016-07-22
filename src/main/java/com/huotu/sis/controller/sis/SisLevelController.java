@@ -9,15 +9,18 @@ package com.huotu.sis.controller.sis;
  * 2013-2015. All rights reserved.
  */
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huotu.huobanplus.sdk.mall.annotation.CustomerId;
 import com.huotu.sis.entity.SisConfig;
+import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
 import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
-import com.huotu.sis.entity.support.SisLevelOpenAward;
+import com.huotu.sis.entity.support.SisLevelAward;
 import com.huotu.sis.entity.support.SisLevelAwards;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.model.sis.ResultModel;
 import com.huotu.sis.repository.SisConfigRepository;
+import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.service.SisLevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +44,9 @@ public class SisLevelController {
     @Autowired
     private SisLevelService sisLevelService;
 
+    @Autowired
+    private SisLevelRepository sisLevelRepository;
+
     /**
      * 显示返利配置页面
      * @param customerId
@@ -50,60 +56,70 @@ public class SisLevelController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/showLevelOpenAwardConfig")
-    public String showLevelOpenAwardConfig(@CustomerId Long customerId,
+    @RequestMapping("/showLevelAwardConfig")
+    public String showLevelAwardConfig(@CustomerId Long customerId,
                                            @RequestParam(required = true) Long levelId,
-                                           @RequestParam(required = true) Integer type,Model model) throws Exception{
+                                           @RequestParam(required = true) Integer type,
+                                           Model model) throws Exception{
         SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
         if(sisConfig==null){
             throw new SisException("customer "+customerId+" have no SisConfig");
         }
+        int layerNum=4;
+        String unit="";
+        boolean individuality=false;
+        SisLevelAwards sisLevelAwards=new SisLevelAwards();
         //获取开店配置
-        SisLevelAwards sisLevelAwards=sisConfig.getSisLevelOpenAwards();
-        SisLevelOpenAward sisLevelAward=new SisLevelOpenAward();
+        switch (type){
+            case 0:
+                sisLevelAwards=sisConfig.getSisLevelOpenAwards();
+                unit="元";
+                individuality=true;
+                break;
+            case 1:
+                sisLevelAwards=sisConfig.getSisLevelPushAwards();
+                unit="%";
+                break;
+            case 2:
+                sisLevelAwards=sisConfig.getSisLevelStockAwards();
+                unit="股";
+                layerNum=2;
+                break;
+            default:
+        }
+
+        SisLevelAward sisLevelAward=new SisLevelAward();
         if(sisLevelAwards!=null){
             sisLevelAward=sisLevelAwards.get(levelId);
         }
         //初始化sisLevelAward
         if(sisLevelAward==null||sisLevelAward.getCfg()==null){
-            sisLevelAward=sisLevelService.initSisLevelOpenAward(customerId,levelId);
+            sisLevelAward=sisLevelService.initSisLevelAward(customerId,levelId,layerNum);
         }
+        model.addAttribute("unit",unit);
+        model.addAttribute("individuality",individuality);
+        model.addAttribute("layerNum",layerNum);
         model.addAttribute("sislevels",sisLevelService.getSimpleSisLevelModel(customerId));
         model.addAttribute("cfgs",sisLevelAward.getCfg());
         model.addAttribute("levelId",sisLevelAward.getBuySisLvId());
-        return "sis/newOpenAwardConfig";
+        model.addAttribute("type",type);
+        return "sis/newAwardConfig";
 
 
     }
 
-//    @RequestMapping("/showStockConfig")
-//    public String showStockConfig(@CustomerId Long customerId,
-//                                           @RequestParam(required = true) Long levelId, Model model) throws Exception{
-//        SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
-//        if(sisConfig==null){
-//            throw new SisException("customer "+customerId+" have no SisConfig");
-//        }
-//        SisLevelAwards sisLevelAwards=sisConfig.getSisLevelOpenAwards();
-//        SisLevelOpenAward sisLevelAward=new SisLevelOpenAward();
-//        if(sisLevelAwards!=null){
-//            sisLevelAward=sisLevelAwards.get(levelId);
-//        }
-//        //初始化sisLevelAward
-//        if(sisLevelAward==null||sisLevelAward.getCfg()==null){
-//            sisLevelAward=sisLevelService.initSisLevelOpenAward(customerId,levelId);
-//        }
-//        model.addAttribute("sislevels",sisLevelService.getSimpleSisLevelModel(customerId));
-//        model.addAttribute("cfgs",sisLevelAward.getCfg());
-//        model.addAttribute("levelId",sisLevelAward.getBuySisLvId());
-//        return "sis/newOpenAwardConfig";
-//
-//
-//    }
-
-    @RequestMapping(value = "/saveLevelOpenAwardConfig",method = RequestMethod.POST)
+    /**
+     * 保存返利
+     * @param customerId        商户ID
+     * @param sisLevelAwardStr  返利的json字符串
+     * @param type              保存返利的类型
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveLevelAwardConfig",method = RequestMethod.POST)
     @ResponseBody
-    public ResultModel saveLevelOpenAwardConfig(@CustomerId Long customerId,
-                                                @RequestBody SisLevelOpenAward sisLevelAward) throws Exception{
+    public ResultModel saveLevelAwardConfig(@CustomerId Long customerId,
+                                                 String sisLevelAwardStr,Integer type) throws Exception{
         ResultModel resultModel=new ResultModel();
         SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
         if(sisConfig==null){
@@ -111,12 +127,41 @@ public class SisLevelController {
             resultModel.setMessage("customer "+customerId+" have no SisConfig");
             return resultModel;
         }
-        SisLevelAwards sisLevelAwards=sisConfig.getSisLevelOpenAwards();
+        SisLevelAwards sisLevelAwards=new SisLevelAwards();
+        switch (type){
+            case 0:
+                sisLevelAwards=sisConfig.getSisLevelOpenAwards();
+                break;
+            case 1:
+                sisLevelAwards=sisConfig.getSisLevelPushAwards();
+                break;
+            case 2:
+                sisLevelAwards=sisConfig.getSisLevelStockAwards();
+                break;
+            default:
+        }
+
         if(sisLevelAwards==null){
             sisLevelAwards=new SisLevelAwards();
         }
+        ObjectMapper objectMapper = new ObjectMapper();
+        SisLevelAward sisLevelAward=objectMapper.treeToValue(objectMapper.readTree(sisLevelAwardStr),SisLevelAward.class);
         sisLevelAwards.put(sisLevelAward.getBuySisLvId(),sisLevelAward);
-        sisConfig.setSisLevelOpenAwards(sisLevelAwards);
+
+        switch (type){
+            case 0:
+                sisConfig.setSisLevelOpenAwards(sisLevelAwards);
+                break;
+            case 1:
+                sisConfig.setSisLevelPushAwards(sisLevelAwards);
+                break;
+            case 2:
+                sisConfig.setSisLevelStockAwards(sisLevelAwards);
+                break;
+            default:
+        }
+
+
         sisConfigRepository.save(sisConfig);
 
         resultModel.setCode(200);
@@ -124,6 +169,13 @@ public class SisLevelController {
         return resultModel;
     }
 
+    /**
+     * 保存等级开店商品
+     * @param customerId            商户ID
+     * @param openGoodsIdLevelId    等级对应商品的对象
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/saveLevelOpenGoodsConfig",method = RequestMethod.POST)
     @ResponseBody
     public ResultModel saveLevelOpenGoodsConfig(@CustomerId Long customerId,
@@ -141,6 +193,61 @@ public class SisLevelController {
         }
         openGoodsIdLevelIds.put(openGoodsIdLevelId.getLevelid(),openGoodsIdLevelId);
         sisConfig.setOpenGoodsIdlist(openGoodsIdLevelIds);
+        sisConfigRepository.save(sisConfig);
+
+        resultModel.setCode(200);
+        resultModel.setMessage("保存成功！");
+        return resultModel;
+    }
+
+    /**
+     * 修改是否允许购买对应等级
+     * @param customerId    商户ID
+     * @param levelId       店铺等级ID
+     * @param extraUpgrade  0：不能购买，1：可以购买
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveLevelExtraUpgrade",method = RequestMethod.POST)
+    @ResponseBody
+    public ResultModel saveLevelExtraUpgrade(@CustomerId Long customerId,
+                                             @RequestParam(required = true) Long levelId,
+                                             @RequestParam(required = true) Integer extraUpgrade) throws Exception{
+        ResultModel resultModel=new ResultModel();
+        SisLevel sisLevel=sisLevelRepository.findOne(levelId);
+        if(sisLevel==null){
+            resultModel.setCode(500);
+            resultModel.setMessage("无法找到该等级");
+            return resultModel;
+        }
+        sisLevel.setExtraUpgrade(extraUpgrade);
+        sisLevelRepository.save(sisLevel);
+        resultModel.setCode(200);
+        resultModel.setMessage("保存成功！");
+        return resultModel;
+    }
+
+
+    /**
+     * 修改某商家是否能够升级店中店等级
+     * @param customerId            商家ID
+     * @param enableLevelUpgrade    是否能够升级
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveEnableLevelUpgrade",method = RequestMethod.POST)
+    @ResponseBody
+    public ResultModel saveEnableLevelUpgrade(@CustomerId Long customerId,
+                                             @RequestParam(required = true) Boolean enableLevelUpgrade) throws Exception{
+        ResultModel resultModel=new ResultModel();
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
+        if(sisConfig==null){
+            resultModel.setCode(500);
+            resultModel.setMessage("customer "+customerId+" have no SisConfig");
+            return resultModel;
+        }
+        sisConfig.setEnableLevelUpgrade(enableLevelUpgrade);
+
         sisConfigRepository.save(sisConfig);
 
         resultModel.setCode(200);

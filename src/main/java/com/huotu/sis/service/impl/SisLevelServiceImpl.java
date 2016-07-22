@@ -11,7 +11,7 @@ import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
 import com.huotu.sis.entity.support.OpenSisAward;
 import com.huotu.sis.entity.support.SisLevelCondition;
-import com.huotu.sis.entity.support.SisLevelOpenAward;
+import com.huotu.sis.entity.support.SisLevelAward;
 import com.huotu.sis.model.sis.SimpleSisLevelModel;
 import com.huotu.sis.model.sis.SisLevelConditionsModel;
 import com.huotu.sis.model.sisweb.OpenLevelGoodsModel;
@@ -232,13 +232,13 @@ public class SisLevelServiceImpl implements SisLevelService {
     }
 
     @Override
-    public SisLevelOpenAward initSisLevelOpenAward(Long customerId,Long levelId) throws Exception {
-        SisLevelOpenAward sisLevelOpenAward=new SisLevelOpenAward();
+    public SisLevelAward initSisLevelAward(long customerId, long levelId,int layerNum) throws Exception {
+        SisLevelAward sisLevelOpenAward=new SisLevelAward();
         sisLevelOpenAward.setBuySisLvId(levelId);
 
         List<OpenSisAward> openSisAwards=new ArrayList<>();
 //        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantId(customerId);
-        for(int i=0;i<4;i++){
+        for(int i=0;i<layerNum;i++){
             OpenSisAward openSisAward=new OpenSisAward();
             openSisAward.setIdx(i);
             openSisAward.setUnified(0);

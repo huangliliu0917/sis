@@ -82,12 +82,12 @@
                     <div class="om-tabs-headers om-helper-reset om-helper-clearfix om-widget-header om-corner-all header-no-border"
                          style="height: 28px;">
                         <ul style="height: 28px; line-height: 28px;">
-                            <span class="left-placeholder"></span>
+                            <span class="left-placeholder">是否开启店铺升级</span>
 
-                            <!--<input id="isLevelSet_0" type="radio" name="isLevelSet" value="0" checked="checked"/>-->
-                            <!--<label for="isLevelSet_0">自动</label>-->
-                            <!--<input id="isLevelSet_1" type="radio" name="isLevelSet" value="1" />-->
-                            <!--<label for="isLevelSet_1">不升级</label>-->
+                            <input onclick="changeCustomerExtraUpgrade(this)" th:checked="${enableLevelUpgrade}"  id="isLevelSet_0" type="radio" name="enableLevelUpgrade" value="1" checked="checked"/>
+                            <label for="isLevelSet_0">是</label>
+                            <input onclick="changeCustomerExtraUpgrade(this)" th:checked="${!enableLevelUpgrade}"  id="isLevelSet_1" type="radio" name="enableLevelUpgrade" value="0" />
+                            <label for="isLevelSet_1">否</label>
 
                             <span class="right-placeholder"></span>
                         </ul>
@@ -112,9 +112,9 @@
 
                                             <th scope="col">等级别名</th>
 
-                                            <th scope="col">直推奖比例</th>
+                                            <!--<th scope="col">直推奖比例</th>-->
 
-                                            <th scope="col">是否允许补差价</th>
+                                            <!--<th scope="col">是否允许补差价</th>-->
 
                                             <th scope="col">修改</th>
 
@@ -140,17 +140,17 @@
                                                 th:text="${levelSets.nickname}"  style="border-top: 1px solid #ddd;"></td>
 
 
-                                            <td name="nickname" class="ddn" align="center"
-                                                th:text="${levelSets.rebate}+'%'"  style="border-top: 1px solid
-                                            #ddd;"></td>
+                                            <!--<td name="nickname" class="ddn" align="center"-->
+                                                <!--th:text="${levelSets.rebate}+'%'"  style="border-top: 1px solid-->
+                                            <!--#ddd;"></td>-->
 
 
 
                                             <!--th:text="${levelSets.extraUpgrade}"-->
-                                            <td align="center" height="30px" style="border-top: 1px solid #ddd;" name="extraUpgrade"
+                                            <!--<td align="center" height="30px" style="border-top: 1px solid #ddd;" name="extraUpgrade"-->
 
-                                                th:text="${levelSets.extraUpgrade==1?'是':'否'}">
-                                            </td>
+                                                <!--th:text="${levelSets.extraUpgrade==1?'是':'否'}">-->
+                                            <!--</td>-->
                                             <!--<td align="center" height="30px" style="border-top: 1px solid #ddd;" name="extraUpgrade"-->
 
                                                 <!--th:if="${levelSets.extraUpgrade eq 0||levelSets.extraUpgrade==null}" th:text="否">-->
@@ -191,6 +191,36 @@
         if(confirm('确定删除？')){
             window.location.href=url;
         }
+    }
+
+    function changeCustomerExtraUpgrade(obj){
+        var upgradeMode=$(obj).val();
+        layer.confirm('确定修改状态吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            changeCustomerExtraUpgradeAjax(upgradeMode);
+
+        }, function(){
+            $("input[name='enableLevelUpgrade']").not("input:checked").attr("checked",true);
+        });
+    }
+
+    function changeCustomerExtraUpgradeAjax(upgradeMode){
+        var sub=layer.load(0, {shade: false});
+        $.ajax({
+            type:"POST",
+            url:"saveEnableLevelUpgrade",
+            data:{enableLevelUpgrade:upgradeMode},
+            success:function(result){
+                layer.close(sub);
+                layer.msg(result.message);
+            },
+            error:function(e){
+                layer.close(sub);
+                layer.msg("修改失败");
+            }
+        })
+
     }
     /*]]>*/
 </script>
