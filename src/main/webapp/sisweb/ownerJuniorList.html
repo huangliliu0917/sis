@@ -39,7 +39,7 @@
                         <img src="images/fx02.png" style=" width:50px;"/>
                         <br/>
                         <span>
-                        级数
+
                         </span>
                     </p>
                     </td>
@@ -54,7 +54,7 @@
                         <img src="images/fx04.png" style=" width:50px;"/>
                         <br/>
                 <span>
-                开店人数
+                店铺数
                 </span>
                     </p></td>
                 </tr>
@@ -65,7 +65,7 @@
 
                 <tr th:each="junior:${list}">
                     <td class="boxtd fffx"><p style="text-align: center" th:text="${junior.srcType}+'级'">
-                        1级
+                        I
                     </p></td>
                     <td th:if="${customerId!=4471}" class="boxtd" style="text-align: center">
                         <p style="text-align: center" th:text="${#numbers.formatDecimal(junior.amount,1,0)}">
@@ -79,7 +79,7 @@
                                 0
                             </p>
                             <span style="color: #BDBDBD">
-                                查看成员
+                                查看店铺
                             </span>
                         </a>
                     </td>
