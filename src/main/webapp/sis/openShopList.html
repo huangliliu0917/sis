@@ -96,6 +96,12 @@
                         <input th:value="*{userLoginName}" name="userLoginName" type="text" id="shareTitle" class="input-small" style="width: 120px;"/>
                         <br/>
                         <br/>
+                        <!--<label>店铺等级：</label>-->
+                        <!--<select id="levels">-->
+                            <!--<option value ="0">全部</option>-->
+                        <!--</select>-->
+                        <!--<br/>-->
+                        <!--<br/>-->
                         &nbsp;&nbsp;
                         <label class="first ">开店时间：</label>
 
@@ -291,6 +297,7 @@
                     $.each(result.data,function(){
                         var levelId=this.levelId;
                         var levelTitle=this.levelTitle;
+//                        $("#levels").append('<option value ="'+levelId+'">'+levelTitle+'</option>');
                         $("#SisLevelList").append('<input id="lid'+levelId+'" type="radio" name="level" value="'+levelId+'"/><label for="lid'+levelId+'">'+levelTitle+'</label><br/>');
                     })
                 }else {

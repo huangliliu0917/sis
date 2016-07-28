@@ -1,5 +1,6 @@
 package com.huotu.sis.service.impl;
 
+import com.huotu.huobanplus.common.entity.User;
 import com.huotu.sis.entity.SisOpenAwardLog;
 import com.huotu.sis.repository.SisOpenAwardLogRepository;
 import com.huotu.sis.service.SisOpenAwardLogService;
@@ -20,17 +21,18 @@ public class SisOpenAwardLogServiceImpl implements SisOpenAwardLogService {
     SisOpenAwardLogRepository sisOpenAwardLogRepository;
 
     @Override
-    public SisOpenAwardLog saveSisOpenAwardLog(Long customerId, Long shopId, Long contribShopId, Double amount,
-                                               String remark, Integer srcType, String orderId) throws Exception {
+    public SisOpenAwardLog saveSisOpenAwardLog(Long customerId, User shop, User contribShop, Double amount,
+                                               Integer srcType, String orderId) throws Exception {
         if(amount==null||amount<=0){
-            log.info("user"+shopId+"rebate is 0");
+            log.info("user"+shop.getId()+"rebate is 0");
             return null;
         }
         SisOpenAwardLog sisOpenAwardLog=new SisOpenAwardLog();
         sisOpenAwardLog.setCustomerId(customerId);
-        sisOpenAwardLog.setShopId(shopId);
-        sisOpenAwardLog.setContribShopId(contribShopId);
+        sisOpenAwardLog.setShopId(shop.getId());
+        sisOpenAwardLog.setContribShopId(contribShop.getId());
         sisOpenAwardLog.setAmount(amount);
+        String remark = srcType + "级会员(" + contribShop.getWxNickName() + ")贡献了开店奖";
         sisOpenAwardLog.setRemark(remark);
         sisOpenAwardLog.setAddTime(new Date());
         sisOpenAwardLog.setSrcType(srcType);

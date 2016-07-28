@@ -35,6 +35,8 @@ import com.huotu.sis.service.CommonConfigService;
 import com.huotu.sis.service.SisConfigService;
 import com.huotu.sis.service.SisLevelService;
 import com.huotu.sis.service.SisService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
@@ -60,6 +62,7 @@ import java.util.regex.Pattern;
 @Controller
 @RequestMapping("/sis")
 public class OpenSisShopController {
+    private static Log log = LogFactory.getLog(OpenSisShopController.class);
 
     @Autowired
     Environment environment;
@@ -241,7 +244,7 @@ public class OpenSisShopController {
     }
 
     /**
-     * 进入邀请开店设置(2016/7 新版本启用)
+     * 进入邀请开店设置
      *
      * @return
      * @throws Exception
@@ -257,17 +260,20 @@ public class OpenSisShopController {
         }
         SisConfig sisConfig = sisConfigService.initSisConfig(customerId);
 
+        model.addAttribute("sharePicPath",sisConfig.getSharePic());
+
         if(StringUtils.isEmpty(sisConfig.getSharePic())){
             sisConfig.setSharePic("");
         }else {
             sisConfig.setSharePic(commonConfigService.getResourcesUri()+sisConfig.getSharePic());
         }
+
         model.addAttribute("sisConfig", sisConfig);
         return "/sis/inviteConfig";
     }
 
     /**
-     * 保存店中店邀请设置信息(2016/7 新版本启用)
+     * 保存店中店邀请设置信息
      *
      * @param customerId   商家ID
      * @param newSisConfig 店中店设置表
@@ -288,12 +294,19 @@ public class OpenSisShopController {
         if (!Objects.isNull(newSisConfig)) {
             //            String contextPath=request.getContextPath();
             newSisConfig.setMerchantId(customerId);
+            String content=newSisConfig.getContent();
+//            newSisConfig.setContent();
+
             sisConfigService.saveShareConfig(newSisConfig);
         }
         resultModel.setCode(200);
         resultModel.setMessage("保存成功！");
         return resultModel;
     }
+
+//    private String richTextImageHandle(String richText){
+//
+//    }
 
 
     /**

@@ -678,15 +678,19 @@ public class SisWebUserController {
         model.addAttribute("sisInviteLog", sisInviteLog);
         model.addAttribute("customerId", customerId);
         model.addAttribute("free", sisConfig.getOpenMode());
+        model.addAttribute("content",sisConfig.getContent());
         model.addAttribute("openGoodsMode", sisConfig.getOpenGoodsMode());//todo 开店商品模式修改
 
 
-        if (sisConfig.getOpenGoodsMode() == 1 && sisConfig.getOpenGoodsIdlist() != null) {//todo 开店商品模式修改
+        if (sisConfig.getOpenGoodsIdlist() != null) {//todo 开店商品模式修改
             OpenGoodsIdLevelIds openGoodsIdLevelIds = sisConfig.getOpenGoodsIdlist();
             List<SisLevelModel> sisLevelModels = new ArrayList<>();
-            List<SisLevel> sisLevels = sisLevelRepository.findByMerchantId(customerId);
+            List<SisLevel> sisLevels = sisLevelRepository.findByMerchantIdOrderByLevelNoAsc(customerId);
             if (sisLevels != null) {
                 for (SisLevel l : sisLevels) {
+                    if(l.getExtraUpgrade()==0){//前提是该等级允许购买
+                        continue;
+                    }
                     SisLevelModel sisLevelModel = new SisLevelModel();
                     for (OpenGoodsIdLevelId o : openGoodsIdLevelIds.values()) {
                         if (l.getId().equals(o.getLevelid())) {
@@ -716,7 +720,7 @@ public class SisWebUserController {
             String invitePic=sisConfig.getSharePic();
             model.addAttribute("invitePic",commonConfigService.getResourcesUri()+invitePic);
         }
-        return "sisweb/openShop";
+        return "sisweb/newOpenShop";
 
 
     }
@@ -836,12 +840,12 @@ public class SisWebUserController {
         if (Objects.isNull(sisConfig) || sisConfig.getEnabled() == 0) {
             throw new CustomerNotUseSisException("商家未启用店中店");
         }
-        Long openGoodsId;
-        if (sisConfig.getOpenGoodsMode() == 1) {//todo 开店商品模式修改
-            openGoodsId = goodsId;
-        } else {
-            openGoodsId = sisConfig.getOpenGoodsId();
-        }
+        Long openGoodsId=goodsId;
+//        if (sisConfig.getOpenGoodsMode() == 1) {//todo 开店商品模式修改
+//            openGoodsId = goodsId;
+//        } else {
+//            openGoodsId = sisConfig.getOpenGoodsId();
+//        }
         Goods goods = goodsRepository.findOne(openGoodsId);
         if (Objects.isNull(goods)) {
             throw new GoodsNotFoundException("开店商品不存在");

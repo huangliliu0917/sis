@@ -48,7 +48,7 @@ public class SisConfig {
     private Integer enabled;
 
     @Column(name = "Open_Mode")
-    @Description("开店门槛，0:小伙伴直接开启，1:购买指定商品")
+    @Description("开店门槛，0:小伙伴直接开启(免费)，1:购买指定商品(收费)")
     private Integer openMode;
 
     @Column(name = "Open_NeedInvite")
@@ -135,7 +135,7 @@ public class SisConfig {
     private Integer pushAwardMode;
 
     @Column(name = "Open_GoodsMode")
-    @Description("开店商品模式 0:一种开店商品，1：每个等级都有一种开店商品")
+    @Description("开店商品模式 0:一种开店商品，1：每个等级都有一种开店商品(新版本弃用)")
     private Integer openGoodsMode;
 
     @Column(name = "Open_GoodsIdlist",columnDefinition = "longtext")
@@ -155,9 +155,17 @@ public class SisConfig {
     @Description("首页后台颜色")
     private String homePageColor;
 
+
+    @Column(name = "Open_Content",columnDefinition = "longtext")
+    @Description("邀请页面的富文本")
+    @Lob
+    private String content;
+
     @Description("是否限制商品和品牌上架个数")
     @Column(name = "Limit_Shelves_Num")
     private Boolean limitShelvesNum;
 
-
+    @Column(name = "Good_Select_Mode")
+    @Description("上架商品模式 0:所有店铺商品可挑选，1：有直推返利的可挑选")
+    private Integer goodSelectMode;
 }

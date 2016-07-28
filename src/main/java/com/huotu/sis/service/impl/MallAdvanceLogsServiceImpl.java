@@ -29,7 +29,11 @@ public class MallAdvanceLogsServiceImpl implements MallAdvanceLogsService {
     public MallAdvanceLogs saveMallAdvanceLogs(User earningsUser,User contributeUser, Double money, String orderId,
                                                String unionOrderId,Integer srcType) throws Exception {
 
+
         MallAdvanceLogs mallAdvanceLogs=new MallAdvanceLogs();
+        if(money==0){
+            return mallAdvanceLogs;
+        }
         mallAdvanceLogs.setMemberId(earningsUser.getId());
         mallAdvanceLogs.setMoney(money);
         mallAdvanceLogs.setMessage("");

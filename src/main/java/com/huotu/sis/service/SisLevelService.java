@@ -126,10 +126,17 @@ public interface SisLevelService {
      */
     boolean canToUpgradeSisLevel(User user,SisLevel upSisLevel);
 
+    /**
+     * 对所有指定用户的上线，可升级的店铺升级
+     * @param user      指定用户
+     * @param sisConfig 店中店配置信息
+     * @throws Exception
+     */
+    void upgradeAllSisLevel(User user,SisConfig sisConfig) throws Exception;
 
     /**
      * 店铺升级
-     * @param user
+     * @param user      升级的用户
      */
     void upgradeSisLevel(User user) throws Exception;
 

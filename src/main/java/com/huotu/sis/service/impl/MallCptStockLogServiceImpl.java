@@ -1,6 +1,7 @@
 package com.huotu.sis.service.impl;
 
 import com.huotu.huobanplus.common.entity.MallCptStockLog;
+import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.MallCptCfgRepository;
 import com.huotu.huobanplus.common.repository.MallCptStockLogRepository;
 import com.huotu.sis.repository.SisConfigRepository;
@@ -28,10 +29,10 @@ public class MallCptStockLogServiceImpl implements MallCptStockLogService {
     private Log log = LogFactory.getLog(MallCptStockLogServiceImpl.class);
 
     @Override
-    public MallCptStockLog saveCptStockLogs(Long customerId,Double cumulativeAmount,Integer stockNum,
-                                               Long memberId, Long contribMemberId, String orderId) throws Exception {
+    public MallCptStockLog saveCptStockLogs(Long customerId, Double cumulativeAmount, Integer stockNum,
+                                            User member, User contribMember, String orderId) throws Exception {
         if(stockNum<=0){
-            log.info("user"+memberId+"stockNum is 0");
+            log.info("user"+member.getId()+"stockNum is 0");
             return null;
         }
         SimpleDateFormat sFormat = new SimpleDateFormat("yyyyMM");
@@ -44,8 +45,8 @@ public class MallCptStockLogServiceImpl implements MallCptStockLogService {
         mallCptStockLog.setAddTime(new Date());
         mallCptStockLog.setConsumeDeduct(0.0);
         mallCptStockLog.setConsumeOddChange(0.0);
-        mallCptStockLog.setMemberId(memberId);
-        mallCptStockLog.setContribMemberId(contribMemberId);
+        mallCptStockLog.setMemberId(member.getId());
+        mallCptStockLog.setContribMemberId(contribMember.getId());
         mallCptStockLog.setMonthTag(monthTag);
         mallCptStockLog.setSettleMonthTag(settleMonthTag);
         mallCptStockLog.setRate(cumulativeAmount);

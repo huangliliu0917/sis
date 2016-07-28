@@ -321,21 +321,28 @@ public class SisWebBrandController {
             }
             Long count = sisBrandService.countByCustomerId(userId);
             SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
-            if (null != sisConfig && null != sisConfig.getMaxBrandNum()
-                    && (Integer.parseInt(count.toString()) < sisConfig.getMaxBrandNum()||sisConfig.getMaxBrandNum()==0)) {
-                sisBrand = new SisBrand();
-                sisBrand.setSelected(Boolean.TRUE);
-                sisBrand.setBrand(brand);
-                sisBrand.setUser(user);
-                sisBrand.setOrderWeight(sisBrandService.getMaxWeight(userId) + 1);
-                sisBrandService.save(sisBrand);
-                modelMap.addAttribute("success", Boolean.TRUE);
-                return modelMap;
-            } else {
-                modelMap.addAttribute("msg", "您上架的品牌数量已达上限,请删除已上架品牌后再添加");
-                modelMap.addAttribute("success", Boolean.FALSE);
-                return modelMap;
+
+
+
+            Boolean limitShelvesNum=sisConfig.getLimitShelvesNum()==null?false:sisConfig.getLimitShelvesNum();
+            if(limitShelvesNum){
+                Integer maxBrandNum=sisConfig.getMaxBrandNum()==null?0:sisConfig.getMaxBrandNum();
+                if(Integer.parseInt(count.toString()) >=maxBrandNum){
+                    modelMap.addAttribute("msg", "您上架的品牌数量已达上限,请删除已上架品牌后再添加");
+                    modelMap.addAttribute("success", Boolean.FALSE);
+                    return modelMap;
+                }
             }
+            sisBrand = new SisBrand();
+            sisBrand.setSelected(Boolean.TRUE);
+            sisBrand.setBrand(brand);
+            sisBrand.setUser(user);
+            sisBrand.setOrderWeight(sisBrandService.getMaxWeight(userId) + 1);
+            sisBrandService.save(sisBrand);
+            modelMap.addAttribute("success", Boolean.TRUE);
+            return modelMap;
+
+
         } else if (operType == 0) { //下架
 //            SisBrand sisBrand = sisBrandService.getOne(brandId, userId);
             List<SisBrand> sisBrandList = sisBrandService.getAllSisBrandList(userId,brandId);

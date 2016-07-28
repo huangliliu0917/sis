@@ -1,0 +1,106 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css"/>
+    <link rel="stylesheet" type="text/css" href="weui/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="weui/css/jquery-weui.css"/>
+    <title>我要开店(邀请)</title>
+</head>
+<style>
+    .fk .weui_btn_primary {
+        background-color: #FF6B00;
+        color:#fff
+    }
+</style>
+<body>
+<div class="commfont fk">
+    <p style=" width:45%; text-align:center; margin:0 auto; margin-top:8%"><img th:src="${invitePic}==null?'images/gm-open.png':@{${invitePic}}" src="images/gm-open.png" width="100%"/></p>
+    <p th:utext="${content}" class="tit_rem_small" style="color: #A7A7A7;margin: 20px 10px 10px 10px;">文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容</p>
+    <div class='demos-content-padded' style="margin:10px;">
+        <a href="javascript:;" id='show-actions' class="weui_btn weui_btn_primary">立即开启</a>
+    </div>
+
+</div>
+
+<script src="weui/js/jquery-2.1.4.js"></script>
+<script src="weui/js/jquery-weui.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var isFree=/*[[${free}]]*/1;//0免费开店，1购买商品开店
+    var openGoodsMode=/*[[${openGoodsMode}]]*/ '';
+    var customerId=/*[[${customerId}]]*/'';
+    var openGoods=/*[[${openGoods}]]*/'';
+    $(document).on("click", "#show-actions", function() {
+        if(isFree==0){
+            submitform(customerId);
+        }else {
+            var objs=[];
+            $.each(openGoods,function(i,val){
+                var obj={
+                    text:val.levelTitle,
+                    onClick:function(){
+                        $.alert("您选择了购买："+val.levelTitle);
+                        submitform(customerId,val.goodsId);
+//
+                    }
+                };
+                objs[i]=obj;
+            })
+            $.actions({
+                actions: objs
+            });
+        }
+
+    });
+
+    //提交设置
+    function submitform(customerId,openGoodsId){
+        var url="";
+        if(isFree==1){
+            if(openGoodsId==undefined||openGoodsId.length==0){
+                $.alert("无商品，不开店！");
+                return;
+            }
+
+            url="showOpenShopGoodsDetail?customerId="+customerId+"&goodsId="+openGoodsId;
+
+        }
+        if(isFree==0){
+            openFreeShop(customerId);
+            url="getSisCenter?customerId="+customerId;
+
+        }
+        window.location.href=url;
+    }
+
+    function openFreeShop(customerId) {
+        $.showLoading("正在开店中...");
+        $.ajax({
+            type:'POST',
+            url: 'openFreeShop',
+            dataType: 'json',
+            async:false,
+            data: {customerId:customerId},
+            success:function(result){
+                $.hideLoading();
+                if(result.code!=200){
+                    $.alert(result.message);
+                }
+            },
+            error:function(e){
+                $.hideLoading();
+                $.alert("免费开店出错，请检查网络");
+            }
+        });
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -78,7 +78,7 @@
                                                     <span th:style="'display:none'">未上传</span>
                                                     <img th:src="*{SharePic}==''?'../resource/images/gm-open.png':@{*{SharePic}}" id="share_img"  width="80px" height="80px"/>
                                                     <!--<img th:src="@{/_resource/image/sharePic.jpg}"  id="share_img"  width="80px" height="80px"/>-->
-                                                    <input th:value="*{SharePic}" type="hidden" name="SharePic"/>
+                                                    <!--<input th:value="*{SharePic}" type="hidden" name="SharePic"/>-->
                                                 </div>
 
                                                 <div style="margin-left: 10px; float: left; line-height: 80px;padding-top: 30px;">
@@ -86,12 +86,21 @@
                                                         <span style="color: #c1b3a9">
                                                                 上传
                                                         </span>
-                                                        <input type="file" onchange="uploadImage()"  name="shareImage" id="shareImage" style="position: absolute; right: 0px; top: 0px; margin: 0px; opacity: 0; padding: 0px; font-family: Arial; font-size: 118px; vertical-align: baseline; cursor: pointer;"/>
+                                                        <input type="file" onchange="uploadImage()"  name="imgFile" id="imgFile" style="position: absolute; right: 0px; top: 0px; margin: 0px; opacity: 0; padding: 0px; font-family: Arial; font-size: 118px; vertical-align: baseline; cursor: pointer;"/>
                                                     </a>
                                                 </div>
                                                 <input name="txtReplyUrl1" type="hidden" id="txtReplyUrl1" value="/resource/images/wechat/mall_cat_def.png"/>
                                             </td>
                                         </tr>
+
+
+                                        <tr>
+                                            <th>邀请页面内容:</th>
+                                            <td>
+                                                <textarea th:text="*{content}" id="editor_id" name="content" class="input-normal" style=" width: 393px; height: 76px;"></textarea>
+                                            </td>
+                                        </tr>
+
 
 
                                         </tbody>
@@ -124,7 +133,23 @@
         </div>
     </div>
 </form>
+<script charset="utf-8" src="../richText/kindeditor-all.js"></script>
+<script charset="utf-8" src="../richText/lang/zh-CN.js"></script>
+<script>
+    KindEditor.ready(function(K) {
+        window.editor = K.create('#editor_id',{
+            width: '700px',
+            height: '200px',
+            uploadJson: 'UploadImg',
+
+            afterBlur: function () { this.sync(); }
+
+        });
+    });
+</script>
 <script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var sharePicPath=/*[[${sharePicPath}]]*/ '';
     var goods;
     //图片上传
     function uploadImage() {
@@ -132,17 +157,18 @@
         $.ajaxFileUpload({
             url: 'UploadImg',
             secureuri: false,
-            fileElementId: 'shareImage',
+            fileElementId: 'imgFile',
             dataType: 'json',
             data: null,
             success: function(resultModel) {
                 if(resultModel.code==1){
                     layer.close(loadPic);
                     layer.msg("上传成功");
-                    $("#share_img").attr("src",resultModel.message);
+                    $("#share_img").attr("src",resultModel.url);
                     $("#share_img").show();
                     $("#uploadpicCover").children("span").hide();
-                    $("input[name='SharePic']").val(resultModel.url);
+//                    $("input[name='SharePic']").val(resultModel.message);
+                    sharePicPath=resultModel.message;
                 }
             },
             error: function(data, status, e) {
@@ -151,6 +177,7 @@
             }
         });
     }
+
 
 
     //提交帖子
@@ -195,7 +222,8 @@
             data: {
                 "shareTitle":$("input[name='shareTitle']").val(),
                 "ShareDesc":$("#ShareDesc").val(),
-                "SharePic":$("input[name='SharePic']").val(),
+                "SharePic":sharePicPath,
+                "content":$("#editor_id").val()
             },
             success:function(result){
                 layer.close(submit);
@@ -213,7 +241,6 @@
     }
     //初始化进页面
     function firstLoad() {
-        /*<![CDATA[*/
         if(share!=null){
             //将类型选择禁用(修改模式)
             $("input[name='share_img']").attr("disabled",true);
@@ -232,11 +259,9 @@
             $("input[name='shareType']").eq(0).attr("checked","checked");
         }
 
-        /*]]>*/
-
 
     }
-
+    /*]]>*/
 
 </script>
 </body>

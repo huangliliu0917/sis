@@ -37,7 +37,7 @@ public class ImageUploadController {
      */
     @RequestMapping(value = "/UploadImg",method = RequestMethod.POST)
     @ResponseBody
-    public ResultModel UploadImg(@RequestParam(value = "shareImage")MultipartFile shareImage, HttpServletResponse response) throws Exception{
+    public ResultModel UploadImg(@RequestParam(value = "imgFile")MultipartFile shareImage, HttpServletResponse response) throws Exception{
         ResultModel resultModel=new ResultModel();
         //文件格式判断
         if (ImageIO.read(shareImage.getInputStream()) == null) {
@@ -57,8 +57,9 @@ public class ImageUploadController {
         String path=uri.getPath();
 //        response.setHeader("X-frame-Options", "SAMEORIGIN");
         resultModel.setCode(1);
-        resultModel.setMessage(uri.toString());
-        resultModel.setUrl("/"+fileName);
+        resultModel.setError(0);
+        resultModel.setMessage("/"+fileName);
+        resultModel.setUrl(uri.toString());
         return resultModel;
 
     }

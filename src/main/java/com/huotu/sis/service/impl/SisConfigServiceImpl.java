@@ -68,6 +68,7 @@ public class SisConfigServiceImpl implements SisConfigService {
             sisConfig.setEnableLevelUpgrade(false);
             sisConfig.setOpenGoodsMode(0);
             sisConfig.setCorpStockSelf(0);
+            sisConfig.setGoodSelectMode(0);
             sisConfig.setHomePageColor("#FF5BA0");
             sisConfig.setCorpStockBelongOne(0);
             sisConfig.setOpenNeedInvite(1);
@@ -91,6 +92,7 @@ public class SisConfigServiceImpl implements SisConfigService {
         sisConfig.setShareTitle(newSisConfig.getShareTitle());
         sisConfig.setShareDesc(newSisConfig.getShareDesc());
         sisConfig.setSharePic(newSisConfig.getSharePic());
+        sisConfig.setContent(newSisConfig.getContent());
         sisConfig.setUpdateTime(new Date());
         sisConfigRepository.save(sisConfig);
     }
@@ -102,21 +104,15 @@ public class SisConfigServiceImpl implements SisConfigService {
             sisConfig=initSisConfig(newSisConfig.getMerchantId());
         }
         sisConfig.setEnabled(newSisConfig.getEnabled());
-//        sisConfig.setCorpStockSelf(newSisConfig.getCorpStockSelf());
-//        sisConfig.setCorpStockBelongOne(newSisConfig.getCorpStockBelongOne());
         sisConfig.setOpenNeedInvite(newSisConfig.getOpenNeedInvite());
         sisConfig.setOpenMode(newSisConfig.getOpenMode());
         sisConfig.setPushAwardMode(newSisConfig.getPushAwardMode());
         sisConfig.setHomePageColor(newSisConfig.getHomePageColor());
-//        sisConfig.setOpenGoodsId(newSisConfig.getOpenGoodsId());
         sisConfig.setMaxMartketableNum(newSisConfig.getMaxMartketableNum());
         sisConfig.setMaxBrandNum(newSisConfig.getMaxBrandNum());
+        sisConfig.setGoodSelectMode(newSisConfig.getGoodSelectMode());
         sisConfig.setLimitShelvesNum(newSisConfig.getLimitShelvesNum());
-//        sisConfig.setOpenGoodsIdlist(newSisConfig.getOpenGoodsIdlist());
-//        sisConfig.setOpenGoodsMode(newSisConfig.getOpenGoodsMode());//todo 开店商品模式修改
         sisConfig.setUpdateTime(new Date());
-//        sisConfig.setExtraUpGoodsId(newSisConfig.getExtraUpGoodsId());
-//        sisConfig.setEnableLevelUpgrade(newSisConfig.getEnableLevelUpgrade());
         sisConfigRepository.save(sisConfig);
 
     }

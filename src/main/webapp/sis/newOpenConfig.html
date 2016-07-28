@@ -140,6 +140,16 @@
                                         </tr>
 
                                         <tr>
+                                            <th>上架商品过滤:</th>
+                                            <td>
+                                                <input id="goodSelectMode0" value="0" onchange="" type="radio" name="goodSelectMode" th:checked="*{goodSelectMode==0}"/>
+                                                <label style="padding-left: 0" for="goodSelectMode0">所有商品</label>
+                                                <input id="goodSelectMode1" value="1" onchange="" type="radio" name="goodSelectMode" th:checked="*{goodSelectMode==1}"/>
+                                                <label style="padding-left: 0" for="goodSelectMode1">有直推奖的商品</label>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
                                             <th>前台店铺首页颜色</th>
                                             <td>
                                                 <div style="float: left"><input type='text' id="full"/></div>
@@ -260,19 +270,20 @@
                 newSisConfig.maxBrandNum=maxBrandNum;
 
             }
-        newSisConfig.openMode=$("input[name='openMode']:checked").val();
-        newSisConfig.pushAwardMode=$("input[name='pushAwardMode']:checked").val();
-        newSisConfig.homePageColor=$("#homePageColor").val();
-        layer.confirm('即将保存内容，确定继续吗？', {
-            btn: ['确定','取消'] //按钮
-        }, function(){
+            newSisConfig.openMode=$("input[name='openMode']:checked").val();
+            newSisConfig.pushAwardMode=$("input[name='pushAwardMode']:checked").val();
+            newSisConfig.goodSelectMode=$("input[name='goodSelectMode']:checked").val();
+            newSisConfig.homePageColor=$("#homePageColor").val();
+            layer.confirm('即将保存内容，确定继续吗？', {
+                btn: ['确定','取消'] //按钮
+            }, function(){
 
-            submitAjax(newSisConfig);
+                submitAjax(newSisConfig);
 
-        }, function(){
-        });
+            }, function(){
+            });
 
-    }
+        }
     }
 
     function submitAjax(newSisConfig){

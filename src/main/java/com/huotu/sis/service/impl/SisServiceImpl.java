@@ -9,9 +9,9 @@ import com.huotu.sis.common.MathHelper;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
-import com.huotu.sis.entity.support.RelationAndPercent;
-import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
+import com.huotu.sis.entity.support.*;
 import com.huotu.sis.model.sis.SisSearchModel;
+import com.huotu.sis.model.sisweb.SisRebateModel;
 import com.huotu.sis.model.sisweb.UserTempIntegralHistoryModel;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
@@ -181,8 +181,10 @@ public class SisServiceImpl implements SisService {
 
         switch (pushAwardMode){
             case 0://默认直推奖模式
-                UserTempIntegralHistoryModel model=countDefPush(user,order,sisLevel);
-                models.add(model);
+//                UserTempIntegralHistoryModel model=countDefPush(user,order,sisLevel);
+                //贡献人
+                User contriUser=userRepository.findOne((long)order.getUserId());
+                models=newCountDefPush(user,contriUser,sisConfig,shopLevelId);
                 break;
             case 1://经营者直推奖模式
                 models=countProprietor(user,order,sisConfig);
@@ -195,6 +197,7 @@ public class SisServiceImpl implements SisService {
             log.info("userId:"+user.getId()+" Straight award calculation is empty");
             return;
         }
+        log.info("zhitui:"+models.toString());
 
         List<UserTempIntegralHistory> userTempIntegralHistories=new ArrayList<>();
         models.stream().filter(model->model.getPushRatio()!=0).forEach(model -> {
@@ -272,6 +275,27 @@ public class SisServiceImpl implements SisService {
     }
 
     @Override
+    public List<UserTempIntegralHistoryModel> newCountDefPush(User user, User contriUser,SisConfig sisConfig,Long sislevelId) throws Exception {
+        List<UserTempIntegralHistoryModel> models=new ArrayList<>();
+
+        SisLevelAwards sisLevelPushAwards=sisConfig.getSisLevelPushAwards();
+        if(sisLevelPushAwards==null){
+            sisLevelPushAwards=userService.oldPushAwardCompatibility(sislevelId);
+        }
+
+        List<SisRebateModel> sisRebateModels=userService.getSisRebateModelList(user,sisLevelPushAwards.get(0L));
+
+        for(SisRebateModel s:sisRebateModels){
+            UserTempIntegralHistoryModel model=new UserTempIntegralHistoryModel();
+            model.setUser(s.getUser());
+            model.setContributeUser(contriUser);
+            model.setPushRatio(s.getRebate());
+            models.add(model);
+        }
+        return models;
+    }
+
+    @Override
     public List<UserTempIntegralHistory> convertModelToUserTempIntegralHistory(List<UserTempIntegralHistoryModel> models) throws Exception {
         List<UserTempIntegralHistory> list=new ArrayList<>();
         models.forEach(model->{
@@ -303,12 +327,14 @@ public class SisServiceImpl implements SisService {
             double pushAmount =  orderItemses.get(i).getZhituiPrize();
             totalAmount += pushAmount;
         }
+        log.info("orderItemses:"+totalAmount);
         return totalAmount;
     }
 
     @Override
     public int countTotalIntegral(List<OrderItems> orderItemses,double rebateRate,int exchangeRate) {
         double totalOrderItemsAmount=countOrderItemsTotalAmount(orderItemses)*rebateRate/100;
+        log.info("rebateRate:"+rebateRate+" exchangeRate:"+exchangeRate);
         return MathHelper.getIntegralRateByRate(totalOrderItemsAmount,exchangeRate);
     }
 

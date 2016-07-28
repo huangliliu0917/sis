@@ -1499,9 +1499,10 @@ a, a:visited {
 			color: #999;
 			line-height: 20px;
 			font-size: 14px;
-			background-color: #fff;
+			/*background-color: #fff;*/
 			margin-bottom: 10px;
-			border-top: 1px solid #ddd
+			background-color: #F8F8F8;
+			font-weight: bold;
 		}
 		.lq_img_p img, .lq_img_p p img {
 			width: 100%;

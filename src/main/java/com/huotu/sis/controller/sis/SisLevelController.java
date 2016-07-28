@@ -13,15 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huotu.huobanplus.sdk.mall.annotation.CustomerId;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
-import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
-import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
-import com.huotu.sis.entity.support.SisLevelAward;
-import com.huotu.sis.entity.support.SisLevelAwards;
+import com.huotu.sis.entity.support.*;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.model.sis.ResultModel;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.service.SisLevelService;
+import com.huotu.sis.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +44,9 @@ public class SisLevelController {
 
     @Autowired
     private SisLevelRepository sisLevelRepository;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 显示返利配置页面
@@ -73,6 +74,9 @@ public class SisLevelController {
         switch (type){
             case 0:
                 sisLevelAwards=sisConfig.getSisLevelOpenAwards();
+                if(sisLevelAwards==null){
+                    sisLevelAwards=userService.oldOpenAwardCompatibility(sisConfig);
+                }
                 unit="元";
                 individuality=true;
                 break;
@@ -82,6 +86,9 @@ public class SisLevelController {
                 break;
             case 2:
                 sisLevelAwards=sisConfig.getSisLevelStockAwards();
+                if(sisLevelAwards==null){
+                    sisLevelAwards=userService.oldStockAwardCompatibility(levelId,sisConfig);
+                }
                 unit="股";
                 layerNum=2;
                 break;

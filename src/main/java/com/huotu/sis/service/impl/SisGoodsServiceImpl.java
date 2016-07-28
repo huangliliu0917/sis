@@ -5,7 +5,9 @@ import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.Merchant;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.GoodsRepository;
+import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisGoods;
+import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisGoodsRepository;
 import com.huotu.sis.service.SisGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class SisGoodsServiceImpl implements SisGoodsService {
 
     @Autowired
     private GoodsRepository goodsRepository;
+
+    @Autowired
+    private SisConfigRepository sisConfigRepository;
 
 
 
@@ -88,6 +93,7 @@ public class SisGoodsServiceImpl implements SisGoodsService {
         if (merchantId == null) {
             return null;
         }
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(merchantId);
         //筛选条件
         Specification<Goods> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -95,6 +101,9 @@ public class SisGoodsServiceImpl implements SisGoodsService {
             predicates.add(criteriaBuilder.equal(root.get("scenes").as(Integer.class), 0));
             predicates.add(criteriaBuilder.isFalse(root.get("disabled")));
             predicates.add(criteriaBuilder.isTrue(root.get("marketable")));
+            if(sisConfig.getGoodSelectMode()!=null&&sisConfig.getGoodSelectMode()==1){
+                predicates.add(criteriaBuilder.greaterThan(root.get("shopRebateMax").as(Double.class),0.0));
+            }
             if (title != null) {
                 predicates.add(criteriaBuilder.like(root.get("title").as(String.class), "%" + title + "%"));
             }

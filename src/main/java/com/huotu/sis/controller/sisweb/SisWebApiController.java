@@ -222,22 +222,17 @@ public class SisWebApiController {
         log.info("userId:"+userId+"orderID="+orderId+"into openShop");
         //开店
         userService.newOpen(user,orderId,sisConfig);
-        log.debug(user.getId()+"openShopOver");
-        //开店奖计算
-        userService.countOpenShopAward(user, orderId, unionorderId,sisConfig);
-        log.debug(user.getId() + "openCountOver");
-        //合伙人送股
-        userService.givePartnerStock(user, orderId,sisConfig);
-        log.debug(user.getId() + "songguOver");
-        //上线升级
 
-        User beloneOne=userRepository.findOne(user.getBelongOne());
-        if(beloneOne!=null){
-            sisLevelService.upgradeSisLevel(beloneOne);
-        }else {
-            log.info("user:"+userId+"have no beloneOne");
-        }
-        log.debug(user.getId()+" belongOne"+user.getBelongOne()+" upgradeOver");
+        //新开店奖计算
+        userService.newCountOpenShopAward(user, orderId, unionorderId,sisConfig);
+
+
+        //新合伙人送股
+        userService.givePartnerStock(user, orderId,sisConfig);
+
+        //上线升级
+        sisLevelService.upgradeAllSisLevel(user,sisConfig);
+
         resultModel.setCode(200);
         resultModel.setMessage("OK");
         return resultModel;

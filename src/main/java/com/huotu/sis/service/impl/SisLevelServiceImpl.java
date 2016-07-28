@@ -198,6 +198,22 @@ public class SisLevelServiceImpl implements SisLevelService {
     }
 
     @Override
+    public void upgradeAllSisLevel(User user,SisConfig sisConfig) throws Exception {
+        if(!sisConfig.getEnableLevelUpgrade()){
+            log.info("customer:"+sisConfig.getMerchantId()+" Not open store to upgrade");
+            return;
+        }
+
+        User beloneOne=userRepository.findOne(user.getBelongOne());
+        if(beloneOne!=null){
+            upgradeSisLevel(beloneOne);
+        }else {
+            log.info("user:"+user.getId()+" have no beloneOne");
+        }
+        log.debug(user.getId()+" belongOne"+user.getBelongOne()+" upgradeOver");
+    }
+
+    @Override
     public void upgradeSisLevel(User user) throws Exception {
         User upUser=user;
         while (true){

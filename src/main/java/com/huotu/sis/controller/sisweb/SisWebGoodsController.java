@@ -250,7 +250,12 @@ public class SisWebGoodsController {
 //        if(null==sis){
 //            response.sendRedirect(goodsShareUrl);
 //        }
-        SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user);
+        List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods, user);
+
+        SisGoods sisGoods =null;
+        if(sisGoodses!=null&&!sisGoodses.isEmpty()){
+            sisGoods=sisGoodses.get(0);
+        }
 
         if(null==sisGoods){
             sisGoods = new SisGoods();
@@ -466,7 +471,13 @@ public class SisWebGoodsController {
             return modelMap;
 
         } else if (operType == 1) {
-            SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user);
+//            SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user).get(0);
+            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods, user);
+
+            SisGoods sisGoods =null;
+            if(sisGoodses!=null&&!sisGoodses.isEmpty()){
+                sisGoods=sisGoodses.get(0);
+            }
             if (null != sisGoods) {
                 modelMap.addAttribute("success", Boolean.FALSE);
                 modelMap.addAttribute("msg", "商品已上架，请检查");
@@ -475,34 +486,47 @@ public class SisWebGoodsController {
             Long count = sisGoodsService.countByUserId(customerId, userId);
             SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
 
-            if (null != sisConfig && null != sisConfig.getMaxMartketableNum() &&
-
-                    (Integer.parseInt(count.toString()) < sisConfig.getMaxMartketableNum()||sisConfig.getMaxMartketableNum()==0)) {
-
-                sisGoods = new SisGoods();
-                sisGoods.setMerchant(user.getMerchant());
-                sisGoods.setDeleted(false);
-                sisGoods.setSelected(true);
-                sisGoods.setGoods(goods);
-                sisGoods.setUser(user);
-                sisGoodsRepository.save(sisGoods);
-                //商品人气增1
-                if (goods.getMoods() == null) {
-                    goods.setMoods(1);
-                } else {
-                    goods.setMoods(goods.getMoods() + 1);
-                }
-                goodsRepository.save(goods);
-                modelMap.addAttribute("success", Boolean.TRUE);
-                return modelMap;
-            } else {
-                modelMap.addAttribute("msg", "您上架的商品数量已达上限,请删除已上架商品后再添加");
+            if(sisConfig==null){
                 modelMap.addAttribute("success", Boolean.FALSE);
+                modelMap.addAttribute("msg", "找不到店铺配置信息");
                 return modelMap;
             }
+            Boolean limitShelvesNum=sisConfig.getLimitShelvesNum()==null?false:sisConfig.getLimitShelvesNum();
+            if(limitShelvesNum){
+                Integer maxMartketableNum=sisConfig.getMaxMartketableNum()==null?0:sisConfig.getMaxMartketableNum();
+                if(Integer.parseInt(count.toString()) >=maxMartketableNum){
+                    modelMap.addAttribute("msg", "您上架的商品数量已达上限,请删除已上架商品后再添加");
+                    modelMap.addAttribute("success", Boolean.FALSE);
+                    return modelMap;
+                }
+            }
+            sisGoods = new SisGoods();
+            sisGoods.setMerchant(user.getMerchant());
+            sisGoods.setDeleted(false);
+            sisGoods.setSelected(true);
+            sisGoods.setGoods(goods);
+            sisGoods.setUser(user);
+            sisGoodsRepository.save(sisGoods);
+            //商品人气增1
+            if (goods.getMoods() == null) {
+                goods.setMoods(1);
+            } else {
+                goods.setMoods(goods.getMoods() + 1);
+            }
+            goodsRepository.save(goods);
+            modelMap.addAttribute("success", Boolean.TRUE);
+            return modelMap;
+
+
 
         } else if (operType == 2) {
-            SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user);
+//            SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user).get(0);
+            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods, user);
+
+            SisGoods sisGoods =null;
+            if(sisGoodses!=null&&!sisGoodses.isEmpty()){
+                sisGoods=sisGoodses.get(0);
+            }
             if (null == sisGoods) {
                 modelMap.addAttribute("success", Boolean.FALSE);
                 modelMap.addAttribute("msg", "商品已下架或已被删除");
@@ -548,7 +572,7 @@ public class SisWebGoodsController {
                 if (members > 0) {//被授予开店资格
                     return "redirect:showOpenShop";
                 } else {//未被授予开店资格
-                    throw new SisException("未被授予开店资格");
+                    throw new SisException("user: "+userId+" Has not been granted to open a shop");
                 }
 
             } else {
@@ -776,6 +800,9 @@ public class SisWebGoodsController {
         //
         Sis sis = sisRepository.findByUser(user);
         if (sis == null) {
+            if(user!=null){
+                throw new SisException("user: "+user.getId()+" Unable to query information to the owner");
+            }
             throw new SisException("无法查询到店主信息");
         }
         SisLevel level = sis.getSisLevel();
@@ -852,6 +879,11 @@ public class SisWebGoodsController {
                     default:
                         directRebate=0;
                 }
+                if(sisConfig.getGoodSelectMode()!=null&&sisConfig.getGoodSelectMode()==1){
+                    if(directRebate==0){
+                        continue;
+                    }
+                }
                 appSisGoodsModel.setDirectRebate(directRebate);
 
                 List<Double> memberPrices = new ArrayList<>();
@@ -897,7 +929,7 @@ public class SisWebGoodsController {
                         }
 
                         //是否个性化
-                        if (goods.getIndividuation() != null && goods.getIndividuation() == true) {
+                        if (goods.getIndividuation() != null && goods.getIndividuation()) {
                             RebateInfo rebateInfo = new RebateInfo();
                             RebateConfiguration rebateConfiguration = goods.getRebateConfiguration();
                             if (null != rebateConfiguration) {

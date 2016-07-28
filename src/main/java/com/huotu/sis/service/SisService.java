@@ -66,6 +66,17 @@ public interface SisService {
      */
     UserTempIntegralHistoryModel countDefPush(User user, Order order, SisLevel userSisLevel) throws Exception;
 
+
+    /**
+     * 新的默认直推奖计算
+     * @param user          店主
+     * @param contriUser    贡献用户
+     * @param sisConfig     店铺配置信息
+     * @return
+     * @throws Exception
+     */
+    List<UserTempIntegralHistoryModel> newCountDefPush(User user, User contriUser,SisConfig sisConfig,Long sislevelId) throws Exception;
+
     /**
      * 将model转换为实体
      * @param models    临时积分model

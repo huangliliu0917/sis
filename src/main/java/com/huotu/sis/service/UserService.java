@@ -1,9 +1,14 @@
 package com.huotu.sis.service;
 
 import com.huotu.huobanplus.common.entity.User;
+import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisInviteLog;
 import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.support.OpenSisAward;
+import com.huotu.sis.entity.support.SisLevelAward;
+import com.huotu.sis.entity.support.SisLevelAwards;
+import com.huotu.sis.model.sisweb.SisRebateModel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,10 +78,24 @@ public interface UserService {
 
 
     /**
+     * 新开店奖计算
+     * @param user          开店用户
+     * @param orderId       订单号
+     * @param unionOrderId  联合订单号
+     * @param sisConfig     店中店配置
+     * @throws Exception
+     */
+    void newCountOpenShopAward(User user, String orderId, String unionOrderId,SisConfig sisConfig) throws Exception;
+
+
+    /**
      * 给某个用户开店奖返利
      * @param earningsUser          返利的用户
      * @param contributeUser        贡献人
      * @param money                 返利的钱
+     * @param orderId               订单号
+     * @param unionOrderId          联合订单号
+     * @param srcType               返利的层级
      * @throws Exception
      */
     void rebateOpenShop(User earningsUser, User contributeUser, Double money, String orderId, String unionOrderId, Integer srcType) throws Exception;
@@ -114,5 +133,104 @@ public interface UserService {
      * @since 2.0
      */
     List<User> getAllRelationByUserId(Long userId);
+
+
+//    SisRebateModel getSisRebateModel();
+
+    /**
+     * 获取返利列表
+     * @param user              店主
+     * @param sisLevelAward    返利配置
+     * @return
+     */
+    List<SisRebateModel> getSisRebateModelList(User user, SisLevelAward sisLevelAward) throws Exception;
+
+    /**
+     * 返回用户的上线列表(包含自己),目前只支持最多八层上线,主要用户返利
+     * @param user      用户
+     * @param layer     层级，null则查找全部
+     * @return
+     * @throws Exception
+     */
+    List<User> getParentByUser(User user,Integer layer) throws Exception;
+
+    /**
+     * 根据用户ID返回用户
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    User getUserById(Long userId) throws Exception;
+
+    /**
+     * 根据店铺等级和配置信息获取返利
+     * @param openSisAward
+     * @param sis
+     * @return
+     */
+    double getSisRebateModel(OpenSisAward openSisAward, Sis sis);
+
+
+    /**
+     * 旧模式开店兼容
+     * @param user
+     * @param sis
+     * @param sisConfig
+     * @return
+     */
+    SisLevelAwards oldOpenCompatibility(User user,Sis sis,SisConfig sisConfig);
+
+    /**
+     * 旧模式：默认八级开店兼容转换
+     * @param sisConfig
+     * @return
+     */
+    SisLevelAwards oldOpenAwardCompatibility(SisConfig sisConfig);
+
+    /**
+     * 老的letsgo模式的开店奖兼容
+     * @param user
+     * @return
+     */
+    SisLevelAwards oldLetsGoModeOpenAwardCompatibility(User user);
+
+
+    /**
+     * 旧的送股数据的兼容
+     * @param sisLevelId
+     * @param sisConfig
+     * @return
+     */
+    SisLevelAwards oldStockAwardCompatibility(Long sisLevelId,SisConfig sisConfig);
+
+    /**
+     * 旧的直推奖数据兼容
+     * @param sislevelId
+     * @return
+     */
+    SisLevelAwards oldPushAwardCompatibility(Long sislevelId);
+
+    /**
+     * 将给定的等级都配置相同的返利信息
+     * @param sisLevels     店铺等级列表
+     * @param openSisAwardList 返利配置信息
+     * @return
+     */
+    SisLevelAwards setAllSisLevelAwards(List<SisLevel> sisLevels, List<OpenSisAward> openSisAwardList);
+
+    /**
+     * 执行开店返利
+     * @param sisRebateModels   返利model
+     */
+    void exceOpenAwards(List<SisRebateModel> sisRebateModels);
+
+
+    /**
+     * 增加用户余额
+     * @param user
+     * @param money
+     * @throws Exception
+     */
+    void saveUserBalance(User user, double money)throws Exception;
 
 }

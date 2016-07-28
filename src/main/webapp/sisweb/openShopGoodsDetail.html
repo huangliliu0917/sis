@@ -9,27 +9,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
     <meta name="format-detection" content="telephone=no"/>
     <meta name="description" content=""/>
-    <!--<link href="3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"-->
-          <!--th:href="@{/sisweb/3rdParty/css/admin.global.css}"/>-->
-    <!--<link href="3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"-->
-          <!--th:href="@{/sisweb/3rdParty/css/admin.content.css}"/>-->
-    <!--<link href="css/settlements.css" rel="stylesheet" type="text/css"-->
-          <!--th:href="@{/sisweb/css/settlements.css}"/>-->
-    <!--<script type="text/javascript" src="3rdParty/js/jquery-1.4.2.min.js"-->
-            <!--th:src="@{/sisweb/3rdParty/js/jquery-1.7.2.min.js}"></script>-->
-    <!--<script type="text/javascript" src="3rdParty/js/jquery.utils.js"-->
-            <!--th:src="@{/sisweb/3rdParty/js/jquery.utils.js}"></script>-->
-    <!--<link href="3rdParty/jBox/Skins/Green/jbox.css" rel="stylesheet" type="text/css"-->
-          <!--th:href="@{/sisweb/3rdParty/jBox/Skins/Green/jbox.css}"/>-->
-    <!--<script type="text/javascript" src="3rdParty/jBox/jquery.jBox-2.3.min.js"-->
-            <!--th:src="@{/sisweb/3rdParty/jBox/jquery.jBox-2.3.min.js}"></script>-->
-    <!--<link rel="stylesheet" type="text/css" href="css/settlements.css"-->
-          <!--th:href="@{/sisweb/css/settlements.css}"/>-->
-    <!--<script type="text/javascript" src="3rdParty/js/admin.js"-->
-            <!--th:src="@{/sisweb/3rdParty/js/admin.js}"></script>-->
-    <link rel="stylesheet" type="text/css" href="css/common.css" th:href="@{/sisweb/css/common.css}"/>
-    <link rel="stylesheet" type="text/css" href="css/fksc.css" th:href="@{/sisweb/css/fksc.css}"/>
-    <!--<script src="js/TouchSlide.1.1.js"></script>-->
+    <!--<script src="js/jquery-1.7.2.min.js" type="text/javascript"></script>-->
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css"/>
+    <link rel="stylesheet" type="text/css" href="weui/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="weui/css/jquery-weui.css"/>
+    <script src="js/TouchSlide.1.1.js"></script>
     <title>商品详情</title>
 </head>
 
@@ -39,24 +24,10 @@
 
     <div>
         <div>
-            <div id="s_focus" class="s_focus">
-                <div class="s_hd" style="display:none;">
-                    <ul></ul>
-                </div>
-                <div class="s_bd">
-                    <ul>
-                        <li><a href="#"><img style="width:100%;" th:src="@{*{smallPic.value}}"/></a></li>
-                    </ul>
-                </div>
-            </div>
-
-
+            <img th:src="@{*{smallPic.value}}" src="images/g1.png"  width="100%"/>
             <p style="clear:both"></p>
         </div>
 
-        <div class="sort">
-            <i class="sort-handler"></i>
-        </div>
     </div>
     <div class="sp">
         <div>
@@ -66,40 +37,71 @@
                 </a>
             </div>
             <p>
-      <span class="sp_hz">
-      价格
-      </span>
-      <span class="sp_hongz">
-      ¥<a th:text="*{price}">0.00</a>
-      </span>
+                <span class="sp_hz">
+                    价格
+                </span>
+                <span class="sp_hongz">
+                    ¥<i th:text="*{price}" style="font-size:24px;">110</i>
+                    <!--¥<a th:text="*{price}">0.00</a>-->
+                </span>
             </p>
 
             <p>
-      <span class="sp_hz">
-      剩余
-      </span>
-      <span class="sp_hongzz">
-      <a th:text="0>*{stock}?0+'件':*{stock}+'件'">件</a>
-      </span>
+                <span class="sp_hz">
+                    剩余
+                </span>
+                <span class="sp_hongzz" th:text="0>*{stock}?0+'件':*{stock}+'件'">
+                    <!--<a th:text="0>*{stock}?0+'件':*{stock}+'件'">件</a>-->
+                 </span>
             </p>
 
             <p style="clear:both; height:10px">
             </p>
         </div>
     </div>
+    <p class="lq_tit">
+        商品详情
+    </p>
     <div class="lq_img_p">
-        <div id="deta" class="p10_lq">
-
+        <div class="p10_lq" id="goodsDesc" th:utext="${goodsDesc}">
         </div>
-    </div>
-    <div id="goodsDesc" th:utext="${goodsDesc}">
+        <!--<div class="p10_lq">-->
+            <!--&lt;!&ndash;<img src="images/g1.png" / width="100%">&ndash;&gt;-->
 
+        <!--</div>-->
+        <!--<div id="deta" class="p10_lq">-->
+
+        <!--</div>-->
     </div>
 
-    <a id="goodsUrl" href="" th:href="${goodsUrl}"><button class="button-a" type="button">立即购买</button></a>
+
+    <button onclick="submit()" class="button-a" type="button">立即购买</button>
 </div>
 
 </body>
+<script src="weui/js/jquery-2.1.4.js"></script>
+<script src="weui/js/jquery-weui.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    TouchSlide({
+        slideCell:"#s_focus",
+        titCell:".s_hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+        mainCell:".s_bd ul",
+        effect:"leftLoop",
+        pnLoop:true,
+        autoPlay:true,//自动播放
+        autoPage:true //自动分页
+    });
+
+
+    function submit(){
+        var url=/*[[${goodsUrl}]]*/ '';
+        $.showLoading("跳转中...");
+        window.location.href=url;
+    }
+
+    /*]]>*/
+</script>
 
 </html>
 

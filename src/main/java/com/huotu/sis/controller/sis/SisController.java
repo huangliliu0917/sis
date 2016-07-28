@@ -90,7 +90,7 @@ public class SisController {
      * @throws Exception
      */
     @RequestMapping(value = "/showSisList",method = RequestMethod.GET)
-    public String getYmrShareList(@CustomerId Long customerId, SisSearchModel sisSearchModel, Model model) throws Exception     {
+    public String showSisList(@CustomerId Long customerId, SisSearchModel sisSearchModel, Model model) throws Exception     {
         log.info(customerId+"into showSisList");
         if(environment.acceptsProfiles("develop")){
             customerId=4471L;
@@ -372,8 +372,8 @@ public class SisController {
      */
     @RequestMapping(value = "/modifySisLevel", method = RequestMethod.POST)
     @ResponseBody
-    public com.huotu.sis.model.sisweb.ResultModel modifySisLevel(@CustomerId Long customerId, Long sisLevelId, Long sisId) throws Exception {
-        com.huotu.sis.model.sisweb.ResultModel resultModel=new com.huotu.sis.model.sisweb.ResultModel();
+    public ResultModel modifySisLevel(@CustomerId Long customerId, Long sisLevelId, Long sisId) throws Exception {
+        ResultModel resultModel=new ResultModel();
 
         if(customerId==null){
             resultModel.setCode(500);
@@ -403,8 +403,8 @@ public class SisController {
      */
     @RequestMapping(value = "/delSis", method = RequestMethod.POST)
     @ResponseBody
-    public com.huotu.sis.model.sisweb.ResultModel delSis(@CustomerId Long customerId, Long sisId) throws Exception {
-        com.huotu.sis.model.sisweb.ResultModel resultModel=new com.huotu.sis.model.sisweb.ResultModel();
+    public ResultModel delSis(@CustomerId Long customerId, Long sisId) throws Exception {
+        ResultModel resultModel=new ResultModel();
 
         if(customerId==null){
             resultModel.setCode(500);

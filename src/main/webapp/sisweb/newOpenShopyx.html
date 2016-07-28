@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1,user-scalable=no,maximum-scale=1,initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="css/fksc.css"/>
+    <link rel="stylesheet" type="text/css" href="css/weui.minweui.min.css"/>
+    <script type="text/javascript" src="3rdParty/js/jquery-1.7.2.min.js"
+            th:src="@{/sisweb/3rdParty/js/jquery-1.7.2.min.js}"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <link rel="stylesheet" type="text/css" href="layer/skin/layer.css"/>
+    <link rel="stylesheet" type="text/css" href="layer/skin/layer.ext.css"/>
+
+    <title>我要开店(邀请)</title>
+</head>
+
+<body onload="firstLoad()">
+<div class="commfont fk">
+    <p style=" width:45%; text-align:center; margin:0 auto; margin-top:8%">
+        <img th:src="${invitePic}==null?'images/gm-open.png':@{${invitePic}}"
+             src="images/gm-open.png" width="100%"/></p>
+    <p class="tit_rem_small" style="color: #A7A7A7;margin: 20px 10px 10px 10px;" th:utext="${content}">本内容文本内文本内容文本内容文本内容文本内容</p>
+    <p style="height:50px"></p>
+    <p style="text-align:center">
+        <button onclick="javascript:chooseSevel();" class="tit_rem_big button-open-a" type="button" title="">立即开启</button></p>
+</div>
+
+<!--店铺等级选择-->
+<div id="choose_levels"  style="margin:0px 40px;display: none" class="weui_cells weui_cells_checkbox">
+    <p th:if="${openGoods}==null">暂无可购买的店铺等级</p>
+    <label th:each="og:${openGoods}"
+           th:style="${ogStat.count}==1?'border-top: 1px solid #fff; border-bottom:1px solid #ddd;'" class="weui_cell weui_check_label">
+        <div class="weui_cell_hd">
+            <input th:value="${og.goodsId}"  type="radio" name="openGoods" class="weui_check" checked="checked"/>
+            <i class="weui_icon_checked"></i>
+        </div>
+        <div class="weui_cell_bd weui_cell_primary">
+            <div>
+                <a>
+                    <p class="fk_hrsd tit_rem" th:text="${og.levelTitle}">专卖店</p>
+                </a>
+            </div>
+        </div>
+    </label>
+    <p style="height:300px"></p>
+    <p style="text-align:center"><button onclick="javascript:submitform();" class="tit_rem_big button-open-a" type="button" title="">确定</button></p>
+</div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    //初始化进页面
+    var isFree;
+    function firstLoad() {
+        isFree=/*[[${free}]]*/1;//0免费开店，1购买商品开店
+//        $("#openNow").hide();
+    }
+
+    function chooseSevel(){
+        if(isFree==0){
+            submitform();
+        }else {
+            //选择等级
+            layer.open({
+                type: 1,
+                shade: 0.4,
+                title: false,
+                area: ['80%', '80%'],
+                shadeClose: true,
+                content:$("#choose_levels"),
+                end:function(){
+//                    submitform();
+                }
+            });
+        }
+    }
+
+    //提交设置
+    function submitform() {
+        var flag;
+        var openGoodsMode=/*[[${openGoodsMode}]]*/ '';
+        var customerId=/*[[${customerId}]]*/'';
+        submitInviteInfo(customerId);
+    }
+
+
+
+
+    /**
+     *  收集开店信息
+     * @param realName      用户真实姓名
+     * @param phone         用户电话
+     * @param customerId    商户ID
+     */
+    function submitInviteInfo(customerId) {
+        var inviterId=$("input[name='inviterId']").val();
+        var openGoodsId=$("input[name='openGoods']:checked").val();
+        if(openGoodsId==undefined||openGoodsId.length==0){
+            layer.msg("无商品，不开店！");
+            return;
+        }
+
+        var submit=layer.load(0, {shade: false});
+        skipUrl(customerId,openGoodsId);
+    }
+
+    function skipUrl(customerId,openGoodsId){
+        var url="";
+        if(isFree==1){
+            url="showOpenShopGoodsDetail?customerId="+customerId;
+            if(openGoodsId!=undefined&&openGoodsId.length>0){
+                url=url+"&goodsId="+openGoodsId;
+            }
+
+        }
+        if(isFree==0){
+            openFreeShop(customerId);
+            url="getSisCenter?customerId="+customerId;
+
+        }
+        window.location.href=url;
+    }
+
+    /**
+     * 免费开店
+     * @param customerId    商户ID
+     */
+    function openFreeShop(customerId) {
+        $.ajax({
+            type:'POST',
+            url: 'openFreeShop',
+            dataType: 'json',
+            async:false,
+            data: {customerId:customerId},
+            success:function(result){
+                if(result.code!=200){
+                    layer.msg(result.message);
+                }
+            },
+            error:function(e){
+                layer.msg("免费开店出错，请检查网络");
+            }
+        });
+    }
+
+    /*]]>*/
+</script>
+</html>

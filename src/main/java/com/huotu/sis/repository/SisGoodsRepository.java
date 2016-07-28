@@ -26,6 +26,8 @@ import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 /**
  * @author CJ
  */
@@ -35,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 )
 public interface SisGoodsRepository extends JpaRepository<SisGoods, Long>,JpaSpecificationExecutor<SisGoods>, SisGoodsRepositoryCustom {
 
-    SisGoods findByGoodsAndUser(Goods goods, User user);
+    List<SisGoods> findByGoodsAndUser(Goods goods, User user);
 
     @RestResource(exported = false)
     @Query(

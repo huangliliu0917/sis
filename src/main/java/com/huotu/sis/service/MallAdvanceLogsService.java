@@ -14,6 +14,7 @@ public interface MallAdvanceLogsService {
      * @param money             金额
      * @param orderId           贡献订单ID
      * @param unionOrderId      贡献联合订单ID
+     * @param srcType           返利的层级
      * @return
      * @throws Exception
      */
