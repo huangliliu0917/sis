@@ -34,7 +34,7 @@ public class TTDSVerificationService extends AbstractVerificationService impleme
     private Environment env;
 
     public TTDSVerificationService() {
-        log.info("天天快递平台使用中……");
+        log.debug("天天快递平台使用中……");
     }
 
     @Override

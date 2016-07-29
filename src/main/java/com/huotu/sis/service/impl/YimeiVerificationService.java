@@ -36,7 +36,7 @@ public class YimeiVerificationService extends AbstractVerificationService implem
     private SMSHelper sms;
 
     public YimeiVerificationService() {
-        log.info("伊美短信平台使用中……");
+        log.debug("伊美短信平台使用中……");
     }
 
     @Override

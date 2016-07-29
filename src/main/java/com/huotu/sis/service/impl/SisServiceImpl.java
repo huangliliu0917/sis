@@ -197,7 +197,7 @@ public class SisServiceImpl implements SisService {
             log.info("userId:"+user.getId()+" Straight award calculation is empty");
             return;
         }
-        log.info("zhitui:"+models.toString());
+        log.debug("zhitui:"+models.toString());
 
         List<UserTempIntegralHistory> userTempIntegralHistories=new ArrayList<>();
         models.stream().filter(model->model.getPushRatio()!=0).forEach(model -> {
@@ -248,7 +248,7 @@ public class SisServiceImpl implements SisService {
         SisRebateTeamManagerSetting setting=sisConfig.getSisRebateTeamManagerSetting();
         List<User> users=userService.getAllRelationByUserId(user.getId());
         //没有可以返利的用户
-        log.info("userId:"+user.getId()+" No user can rebate");
+//        log.info("userId:"+user.getId()+" No user can rebate");
 
         models=countUserTempIntegralHistoryModel(order,users,setting);
 
@@ -327,14 +327,14 @@ public class SisServiceImpl implements SisService {
             double pushAmount =  orderItemses.get(i).getZhituiPrize();
             totalAmount += pushAmount;
         }
-        log.info("orderItemses:"+totalAmount);
+        log.debug("orderItemses:"+totalAmount);
         return totalAmount;
     }
 
     @Override
     public int countTotalIntegral(List<OrderItems> orderItemses,double rebateRate,int exchangeRate) {
         double totalOrderItemsAmount=countOrderItemsTotalAmount(orderItemses)*rebateRate/100;
-        log.info("rebateRate:"+rebateRate+" exchangeRate:"+exchangeRate);
+        log.debug("rebateRate:"+rebateRate+" exchangeRate:"+exchangeRate);
         return MathHelper.getIntegralRateByRate(totalOrderItemsAmount,exchangeRate);
     }
 

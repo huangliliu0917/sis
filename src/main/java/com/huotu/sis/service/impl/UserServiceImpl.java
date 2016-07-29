@@ -321,7 +321,7 @@ public class UserServiceImpl implements UserService {
                             //---------记录----------
                             //给某个用户开店奖返利,包括插入流水
                             rebateOpenShop(rebateUser, user, rebateMonery, orderId, unionOrderId, i);
-                            log.info(user.getId() + "");
+                            log.debug(user.getId() + "");
                             //插入一条开店返利日志
                             String memo = i + "级会员(" + user.getWxNickName() + ")贡献了开店奖";
                             sisOpenAwardLogService.saveSisOpenAwardLog(user.getMerchant().getId(), rebateUser,
@@ -427,6 +427,12 @@ public class UserServiceImpl implements UserService {
                     "Can't send shares!");
             return;
         }
+
+        if(sisConfig.getOpenMode()==0){
+            log.info(user.getMerchant().getId()+"configured with free open a shop, not rebate");
+            return;
+        }
+
         if (mallCptCfg.getStatus() == 0) {
             log.info(user.getMerchant().getId() + "Business is not enabled to send configuration！," +
                     "Can't send shares!");
@@ -442,48 +448,21 @@ public class UserServiceImpl implements UserService {
             //兼容旧送股数据
             sisLevelStockAwards=oldStockAwardCompatibility(sis.getSisLevel().getId(),sisConfig);
         }
-//        log.info(sisLevelStockAwards.toString());
 
         List<SisRebateModel> sisRebateModels= getSisRebateModelList(user,sisLevelStockAwards.get(sis.getSisLevel().getId()));
 
-//        log.info(sisRebateModels.toString());
         //逐个送股
         for(int i=0,size=sisRebateModels.size();i<size;i++){
             SisRebateModel sisRebateModel=sisRebateModels.get(i);
             Long members = mallCptMembersRepository.countByMemberId(sisRebateModel.getUser().getId());
             int stockNum=(int)sisRebateModel.getRebate();
             //只有是合伙人才能送股
-//            log.info("memberAnd StockNum"+members+"  "+stockNum);
             if (members > 0 && stockNum>0) {
                 mallCptStockLogService.saveCptStockLogs(customerId, mallCptCfg.getCumulativeAmount(),
                         stockNum, sisRebateModel.getUser(), user, orderId);
             }
         }
         log.debug(user.getId() + "songguOver");
-//
-//        //自己送股
-//
-//        //送的股数
-//        Integer stockNum = sisConfig.getCorpStockSelf();
-//        //自己的会员ID
-//        Long memberId = user.getId();
-//        //贡献的会员ID(默认都是当前会员)
-//        Long contribMemberId = memberId;
-//
-//        Long members = mallCptMembersRepository.countByMemberId(memberId);
-//        if (members > 0) {
-//            mallCptStockLogService.saveCptStockLogs(customerId, mallCptCfg.getCumulativeAmount(),
-//                    stockNum, memberId, contribMemberId, orderId);
-//        }
-//
-//        //上线送股
-//        memberId = user.getBelongOne();
-//        stockNum = sisConfig.getCorpStockBelongOne();
-//        members = mallCptMembersRepository.countByMemberId(memberId);
-//        if (memberId > 0 && members > 0) {//有上线，并且上线也是合伙人
-//            mallCptStockLogService.saveCptStockLogs(customerId, mallCptCfg.getCumulativeAmount(),
-//                    stockNum, memberId, contribMemberId, orderId);
-//        }
     }
 
     @Override
@@ -810,7 +789,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUserBalance(User user, double money) throws Exception {
-        log.info("user " + user.getId()+" get "+money);
+        log.debug("user " + user.getId()+" get "+money);
         if (money <= 0) {
             log.info("user" + user.getId() + "rebate is 0");
             return;

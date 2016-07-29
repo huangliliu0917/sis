@@ -57,8 +57,8 @@ public class CommonUserInterceptor implements HandlerInterceptor {
 //        }
         Long userId=0L;
         String userAgent=request.getHeader("User-Agent");
-        log.info("useragent"+userAgent);
-        log.info("url:"+request.getRequestURL()+" canshu:"+request.getQueryString());
+        log.debug("useragent"+userAgent);
+        log.debug("url:"+request.getRequestURL()+" canshu:"+request.getQueryString());
         String[] data= StringHelper.getRequestAppInfo(userAgent);
         if(data!=null&&StringHelper.isTrueSign(data)){
                 userId=Long.parseLong(data[1]);
@@ -66,7 +66,7 @@ public class CommonUserInterceptor implements HandlerInterceptor {
             userId = userService.getUserId(request);
             String paramUserId = request.getParameter("mainUserId");
 
-            log.info("enter interceptor");
+            log.debug("enter interceptor");
 
             if (!env.acceptsProfiles("develop")) {
 
@@ -149,7 +149,7 @@ public class CommonUserInterceptor implements HandlerInterceptor {
                     toUrl += "&" + key + "=" + URLEncoder.encode(map.get(key), "utf-8");
                 }
                 String url = commonConfigService.getMallApiWebUrl() + "/account/adoptmember?" + toUrl.substring(1);
-                log.info(url);
+                log.debug(url);
                 HttpHelper.getRequest(url);
             }
 

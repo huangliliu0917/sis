@@ -60,7 +60,7 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         String toSign = (strB.toString().length() > 0 ? strB.toString().substring(1) : "") + commonConfigService.getAuthKeySecret();
-        log.info(toSign);
+        log.debug(toSign);
         return DigestUtils.md5DigestAsHex(toSign.getBytes("UTF-8")).toLowerCase();
     }
 
@@ -78,7 +78,7 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         String toSign = (strB.toString().length() > 0 ? strB.toString().substring(1) : "") + commonConfigService.getAppSecret();
-        log.info(toSign);
+        log.debug(toSign);
         return DigestUtils.md5DigestAsHex(toSign.getBytes("UTF-8")).toLowerCase();
     }
 }

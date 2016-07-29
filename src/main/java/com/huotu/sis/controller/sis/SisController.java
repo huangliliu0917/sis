@@ -91,7 +91,7 @@ public class SisController {
      */
     @RequestMapping(value = "/showSisList",method = RequestMethod.GET)
     public String showSisList(@CustomerId Long customerId, SisSearchModel sisSearchModel, Model model) throws Exception     {
-        log.info(customerId+"into showSisList");
+        log.debug(customerId+"into showSisList");
         if(environment.acceptsProfiles("develop")){
             customerId=4471L;
             model.addAttribute("dev",true);
@@ -101,7 +101,7 @@ public class SisController {
             throw new Exception("商户ID不存在");
         }
         sisSearchModel.setCustomerId(customerId);
-        log.info(sisSearchModel.toString()+customerId);
+        log.debug(sisSearchModel.toString()+customerId);
         Page<Sis> sises=sisService.findSisList(sisSearchModel);
         if(sises!=null){
             for(Sis s:sises){
@@ -136,14 +136,14 @@ public class SisController {
      */
     @RequestMapping(value = "/showCodeList",method = RequestMethod.GET)
     public String showCodeList(@CustomerId Long customerId, SisSearchCodeModel sisSearchCodeModel, Model model) throws Exception{
-        log.info(customerId+"into showCodeList");
+        log.debug(customerId+"into showCodeList");
         if(environment.acceptsProfiles("develop")){
             customerId=4471L;
         }
         if(customerId==null){
             throw new Exception("商户ID不存在");
         }
-        log.info(sisSearchCodeModel.toString()+customerId);
+        log.debug(sisSearchCodeModel.toString()+customerId);
         sisSearchCodeModel.setMerchantId(customerId);
         Page<VerificationCode> verificationCodes=verificationCodeService.findSisCodes(sisSearchCodeModel);
         model.addAttribute("allCodeList", verificationCodes);//文章列表model

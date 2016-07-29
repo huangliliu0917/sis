@@ -134,14 +134,14 @@ public class SisWebUserController {
     public String auth(String token, String sign, Integer code, String redirectUrl, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        log.info("enter auth " + token + " " + sign);
+        log.debug("enter auth " + token + " " + sign);
         //进行校验
         if (sign == null || !sign.equals(securityService.getSign(request))) {
             return "redirect:/html/error";
         }
 
-        log.info("auth sign passed");
-        log.info(redirectUrl);
+        log.debug("auth sign passed");
+        log.debug(redirectUrl);
 
         if (code == 1) {
             //进行授权校验
@@ -159,12 +159,12 @@ public class SisWebUserController {
             toUrl = commonConfigService.getAuthWebUrl() + "/api/check?" + (toUrl.length() > 0 ? toUrl.substring(1) : "");
             String responseText = HttpHelper.getRequest(toUrl + "&sign=" + toSign);
 
-            log.info(responseText);
+            log.debug(responseText);
 
             if (JsonPath.read(responseText, "$.resultCode").equals(1)) {
                 Long userId = Long.parseLong(JsonPath.read(responseText, "$.resultData.data").toString());
                 userService.setUserId(userId, request, response);
-                log.info("get userId and save in cookie");
+                log.debug("get userId and save in cookie");
                 return "redirect:" + redirectUrl;
             }
         }
@@ -501,7 +501,7 @@ public class SisWebUserController {
             resultModel.setMessage("不是手机号");
             return resultModel;
         }
-        log.info("phone:" + phone + "type:" + type + "merchantId" + customerId);
+        log.debug("phone:" + phone + "type:" + type + "merchantId" + customerId);
         try {
             NoteSendHandle.sendCode(noteService.setNoteModel(phone, type, customerId), verificationService);
         } catch (NoteSendException ex) {
@@ -529,7 +529,7 @@ public class SisWebUserController {
     @RequestMapping("/checkCode")
     @ResponseBody
     public ResultModel checkCode(String phone, String code, Integer type, Long customerId) throws Exception {
-        log.info("phone:" + phone + "code" + code + "type" + type + "customerId" + customerId);
+        log.debug("phone:" + phone + "code" + code + "type" + type + "customerId" + customerId);
         ResultModel resultModel = new ResultModel();
         NoteModel noteModel = new NoteModel();
         noteModel.setPhone(phone);
@@ -574,7 +574,7 @@ public class SisWebUserController {
         }
         PublicParameterModel ppm = PublicParameterHolder.get();
         Long userId = ppm.getUserId();
-        log.info("userID" + userId + "into showOpenShop");
+        log.debug("userID" + userId + "into showOpenShop");
         if (userId == null) {
             throw new UserNotFoundException("用户不存在");
         }
@@ -738,7 +738,7 @@ public class SisWebUserController {
     @RequestMapping(value = "/collectSisInfo", method = RequestMethod.POST)
     @ResponseBody
     public ResultModel collectSisInfo(SisInviteLog sisInviteLog) throws Exception {
-        log.info("collectSisInfo" + sisInviteLog.getCustomerId() + " " + sisInviteLog.getRealName() + " " + sisInviteLog.getMobile());
+        log.debug("collectSisInfo" + sisInviteLog.getCustomerId() + " " + sisInviteLog.getRealName() + " " + sisInviteLog.getMobile());
         ResultModel resultModel = new ResultModel();
         if (sisInviteLog.getCustomerId() == null || sisInviteLog.getMobile() == null || sisInviteLog.getRealName() == null) {
             resultModel.setCode(500);
@@ -991,7 +991,7 @@ public class SisWebUserController {
      */
     @RequestMapping(value = "/appLogin", method = {RequestMethod.GET, RequestMethod.POST})
     public String appLogin(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
-        log.info("into appLogin");
+        log.debug("into appLogin");
         String sign = request.getParameter("sign");
         if (sign == null || !sign.equals(securityService.getSign(request))) {
             throw new SisException("授权失败，签名未通过！");
@@ -1077,8 +1077,8 @@ public class SisWebUserController {
                 .mapToDouble(value
                         -> goodsRepository.findOne(value.getValue().getGoodsid()).getPrice()).findAny().getAsDouble();
         List<SisLevelUpgradeModel> models = new ArrayList<>();
-        log.info("sisLevels的长度是"+sisLevels.size());
-        log.info("openGoodsIdList的长度是"+sisConfig.getOpenGoodsIdlist().size());
+        log.debug("sisLevels的长度是"+sisLevels.size());
+        log.debug("openGoodsIdList的长度是"+sisConfig.getOpenGoodsIdlist().size());
         for (Map.Entry<Long, OpenGoodsIdLevelId> entry : sisConfig.getOpenGoodsIdlist().entrySet()) {
             sisLevels.stream().forEach(sisLevel -> {
                 if (entry.getValue().getLevelid().equals(sisLevel.getId())) {

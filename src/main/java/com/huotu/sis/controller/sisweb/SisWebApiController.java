@@ -177,7 +177,7 @@ public class SisWebApiController {
     @RequestMapping(value = "/openSisShop",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
     public ResultModel open(HttpServletRequest request) throws Exception {
-        log.info("into openShop");
+        log.debug("into openShop");
         ResultModel resultModel=new ResultModel();
 
         //第一步:参数有效性判断
