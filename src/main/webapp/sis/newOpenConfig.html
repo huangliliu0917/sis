@@ -115,7 +115,7 @@
                                                     </thead>
                                                     <tbody>
                                                     <tr th:each="l:${sisLevelModels}">
-                                                        <td><input th:attr="levelId=''+${l.levelId}" onclick="changeExtraUpgrade(this)" th:checked="${l.extraUpgrade}"  type="checkbox"/></td>
+                                                        <td><input name="IsExtraUpgrade" th:attr="levelId=''+${l.levelId}" onclick="changeExtraUpgrade(this)" th:checked="${l.extraUpgrade}"  type="checkbox"/></td>
                                                         <td th:text="${l.levelTitle}">默认等级测试</td>
                                                         <td><a onclick="loadGoodsList(this)" href="#" th:attr="levelId=''+${l.levelId}"  th:text="${l.goodsTitle}==null?'选择商品':${l.goodsTitle}">选择商品</a></td>
                                                         <td><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId},type='0'">设置开店奖</a></td>
@@ -288,20 +288,6 @@
 
     function submitAjax(newSisConfig){
         var sub=layer.load(0, {shade: false});
-//        var openGoodsLevels="[";
-//        var n=1;
-//        var goodsTypeIndividuations=$("#goodsTypeIndividuation").children("div");
-//        goodsTypeIndividuations.each(function(){
-//            var levelIdgoodsId=$(this).children("label").first().text();
-//            openGoodsLevels=openGoodsLevels+levelIdgoodsId;
-//            if(n<goodsTypeIndividuations.size()){
-//                openGoodsLevels=openGoodsLevels+',';
-//            }else {
-//                openGoodsLevels=openGoodsLevels+']';
-//            }
-//            n++;
-//        });
-
 
         $.ajax({
             type:'POST',
@@ -686,6 +672,12 @@
     }
 
     function changeExtraUpgrade(obj){
+        var buyLevels= $("input[name='IsExtraUpgrade']:checked");
+        if(buyLevels.length==0){
+            layer.msg("至少选择一个等级");
+            $(obj).attr("checked","checked");
+            return;
+        }
         var levelId=$(obj).attr("levelid");
         var isCheck=$(obj).attr("checked");
         layer.confirm('确定修改状态吗？', {

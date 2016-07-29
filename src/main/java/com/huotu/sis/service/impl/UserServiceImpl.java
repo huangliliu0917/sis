@@ -191,11 +191,6 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-//        //团队店铺获取等级
-//        SisLevel groupSisLevel=sisLevelService.getSisLevelByOfflineSisNum(user);
-//        if(groupSisLevel!=null&&groupSisLevel.getLevelNo()!=null&&groupSisLevel.getLevelNo()>sisLevel.getLevelNo()){
-//            sisLevel=groupSisLevel;
-//        }
         if (sis == null) {
             sis = new Sis();
             sis.setImgPath("");
