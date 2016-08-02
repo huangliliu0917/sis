@@ -215,11 +215,6 @@ public class OpenSisShopController {
         }
         if (!Objects.isNull(newSisConfig)) {
             newSisConfig.setMerchantId(customerId);
-//            if(newSisConfig.getOpenGoodsMode()!=null&&newSisConfig.getOpenGoodsMode()==1){//todo 开店商品模式修改
-//                OpenGoodsIdLevelIdConverter converter=new OpenGoodsIdLevelIdConverter();
-//                OpenGoodsIdLevelIds openGoodsIdLevelIds=converter.convertToEntityAttribute(openGoodsLevels);
-//                newSisConfig.setOpenGoodsIdlist(openGoodsIdLevelIds);
-//            }
             sisConfigService.saveOpenConfig(newSisConfig);
         } else {
             resultModel.setCode(500);
@@ -343,15 +338,12 @@ public class OpenSisShopController {
 //        String[] levelNames=new String[sisLevels.size()*2];
         for(int i=0;i<sisLevels.size();i++){
             models[i*2]=new SimpleSisLevelModel();
-            models[i*2+1]=new SimpleSisLevelModel();
-
             models[i*2].setLevelTitle(sisLevels.get(i).getLevelName());
-            models[i*2+1].setLevelTitle(sisLevels.get(i).getLevelName());
-
             models[i*2].setLevelNo(sisLevels.get(i).getLevelNo());
-            models[i*2+1].setLevelNo(sisLevels.get(i).getLevelNo());
+            models[i*2+1]=models[i*2];
 
         }
+
 
 
         model.addAttribute("saleAward",saleAward);

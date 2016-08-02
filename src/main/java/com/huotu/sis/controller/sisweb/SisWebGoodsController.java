@@ -624,6 +624,7 @@ public class SisWebGoodsController {
         }
         model.addAttribute("integrals", integrals);
         model.addAttribute("homePageColor",sisConfig.getHomePageColor());
+        model.addAttribute("sisShopMode",sisConfig.getSisShopMode());
         model.addAttribute("shareUrl","/sisweb/inviteOpenShop?customerId="+user.getMerchant().getId()+"&__newframe");
 
         return "/sisweb/sisCenter";
@@ -1217,20 +1218,7 @@ public class SisWebGoodsController {
         }
         Page<SisGoods> sisGoodsList = sisGoodsRecommendService.findSisRecommendGoodsModel
                 (customerId,user,keywords,new PageRequest(page-1,pageSize));
-//        if (goodsList != null && goodsList.getContent() != null) {
-//            goodsList.forEach(p -> {
-//                List<SisGoods> sisGoodsListTemp = sisGoodsService.getAllSisGoodsList(p.getId(), user.getId(),
-//        user.getMerchant().getId());
-//                if (sisGoodsListTemp != null && sisGoodsListTemp.size() == 1) {
-//                    sisGoodsList.add(sisGoodsListTemp.get(0));
-//                } else {
-//                    SisGoods sisGoods = new SisGoods();
-//                    sisGoods.setGoods(p);
-//                    sisGoods.setSelected(false);    //设置成未上架
-//                    sisGoodsList.add(sisGoods);
-//                }
-//            });
-//        }
+
         //计算直推返利/分销返利值
         List<PcSisGoodsModel> list = calculateValue(sisGoodsList.getContent(), user);
         //

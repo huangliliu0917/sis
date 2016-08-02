@@ -139,7 +139,19 @@
                                             </td>
                                         </tr>
 
+
                                         <tr>
+                                            <th>店中店展示模式:</th>
+                                            <td>
+                                                <input id="sisShopMode0" onchange="changeSisShopMode()" value="0" type="radio" name="sisShopMode" th:checked="*{sisShopMode==0}"/>
+                                                <label style="padding-left: 0" for="sisShopMode0">用户配置</label>
+                                                <input id="sisShopMode1" onchange="changeSisShopMode()" value="1" type="radio" name="sisShopMode" th:checked="*{sisShopMode==1}"/>
+                                                <label style="padding-left: 0" for="sisShopMode1">商家配置</label>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr id="commodity_filter">
                                             <th>上架商品过滤:</th>
                                             <td>
                                                 <input id="goodSelectMode0" value="0" onchange="" type="radio" name="goodSelectMode" th:checked="*{goodSelectMode==0}"/>
@@ -246,7 +258,7 @@
     var choseGoods;
                 //提交设置
     function submitForm1() {
-        var newSisConfig=new Object();
+        var newSisConfig={};
 
         var enabled=$("input[name='enabled']:checked").val();
         newSisConfig.enabled=enabled;
@@ -273,6 +285,7 @@
             newSisConfig.openMode=$("input[name='openMode']:checked").val();
             newSisConfig.pushAwardMode=$("input[name='pushAwardMode']:checked").val();
             newSisConfig.goodSelectMode=$("input[name='goodSelectMode']:checked").val();
+            newSisConfig.sisShopMode=$("input[name='sisShopMode']:checked").val();
             newSisConfig.homePageColor=$("#homePageColor").val();
             layer.confirm('即将保存内容，确定继续吗？', {
                 btn: ['确定','取消'] //按钮
@@ -443,6 +456,7 @@
     function initConfig(){
         shopSet();
         limitGoods();
+        changeSisShopMode();
         var color=$("#homePageColor").val();
         $(".f-bigbox").css('background-color',color);
 
@@ -466,16 +480,8 @@
         if(openMode==0){//免费
             $("#levelGoodsConfig").hide();
 
-//            $("input[name='goodsid']").attr("disabled","disabled");
-//            $("input[name='corpStockSelf']").attr("disabled","disabled");
-//            $("input[name='corpStockBelongOne']").attr("disabled","disabled");
-//            $("#recommend").hide();
         }else{  //收费
             $("#levelGoodsConfig").show();
-//            $("input[name='goodsid']").removeAttr("disabled");
-//            $("input[name='corpStockSelf']").removeAttr("disabled");
-//            $("input[name='corpStockBelongOne']").removeAttr("disabled");
-//            $("#recommend").show();
         }
 
     }
@@ -489,6 +495,16 @@
             $("#limitGoodsLabel").show();
         }
 
+    }
+
+    function changeSisShopMode(){
+        var mode=$("input[name='sisShopMode']:checked").val();
+        if(mode==1){
+            $("#commodity_filter").hide();
+        }else {
+            $("#commodity_filter").show();
+
+        }
     }
 
 

@@ -168,4 +168,9 @@ public class SisConfig {
     @Column(name = "Good_Select_Mode")
     @Description("上架商品模式 0:所有店铺商品可挑选，1：有直推返利的可挑选")
     private Integer goodSelectMode;
+
+    @Column(name = "Sis_Shop_Mode")
+    @Description("店中店模式 0:可以挑选商品，1：无法挑选商品，由商家配置店中店样式")
+    private Integer sisShopMode;
+
 }

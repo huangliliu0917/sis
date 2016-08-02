@@ -81,7 +81,7 @@ public class SqlHelper {
         hql.append("SELECT " +
                 "mg,sg.selected " +
                 " FROM  Goods as mg " +
-                "        LEFT JOIN  SisGoodsRecommend as sgr ON mg.id=sgr.goodsId " +
+                "        INNER JOIN SisGoodsRecommend as sgr ON mg.id=sgr.goodsId " +
                 "        LEFT JOIN SisGoods as sg ON sg.goods=mg and sg.user=:user" +
                 " WHERE sgr.customerId=:customerId  and " +
                 " mg.scenes=0 AND " +

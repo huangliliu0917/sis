@@ -25,24 +25,7 @@
     <script src="js/jquery-1.7.2.min.js"
             th:src="@{/sisweb/js/jquery-1.7.2.min.js}"
             type="text/javascript"></script>
-    <script type="text/javascript">
-//        $(function () {
-//            if (typeof WeixinJSBridge == "undefined") {
-//                if (document.addEventListener) {
-//                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-//                } else if (document.attachEvent) {
-//                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-//                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-//                }
-//            } else {
-//                onBridgeReady();
-//            }
-//
-//            function onBridgeReady() {
-//                WeixinJSBridge.call('hideOptionMenu');
-//            }
-//        })
-    </script>
+
     <title>店主中心</title>
     <style>
         .float-ul-xcj {
@@ -121,7 +104,7 @@
     <p style="height:5px; background-color:#F2F2F2"></p>
     <div style="background-color:#fff">
         <div style="margin:10px;padding: 10px 0px;">
-            <ul class="float-ul-xcj flex-ul-xcj" >
+            <ul th:if="${sisShopMode!=1}" class="float-ul-xcj flex-ul-xcj" >
                 <li class="on state_switch">
                     <a href="javascript:void(0)" th:href="@{/sisweb/sisIndex(customerId=${customerId})}">
                         <p><img src="images/x02.png" width="45px" /></p>

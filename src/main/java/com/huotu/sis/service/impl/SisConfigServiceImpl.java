@@ -72,6 +72,7 @@ public class SisConfigServiceImpl implements SisConfigService {
             sisConfig.setHomePageColor("#FF5BA0");
             sisConfig.setCorpStockBelongOne(0);
             sisConfig.setOpenNeedInvite(1);
+            sisConfig.setSisShopMode(0);
             sisConfig.setMaxMartketableNum(100);
             sisConfig.setMaxBrandNum(5);
             sisConfig.setPushAwardMode(0);
@@ -111,6 +112,7 @@ public class SisConfigServiceImpl implements SisConfigService {
         sisConfig.setMaxMartketableNum(newSisConfig.getMaxMartketableNum());
         sisConfig.setMaxBrandNum(newSisConfig.getMaxBrandNum());
         sisConfig.setGoodSelectMode(newSisConfig.getGoodSelectMode());
+        sisConfig.setSisShopMode(newSisConfig.getSisShopMode());
         sisConfig.setLimitShelvesNum(newSisConfig.getLimitShelvesNum());
         sisConfig.setUpdateTime(new Date());
         sisConfigRepository.save(sisConfig);

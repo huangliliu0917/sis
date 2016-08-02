@@ -54,28 +54,6 @@ public class SisGoodsRecommendServiceImpl implements SisGoodsRecommendService {
             sisGoods.setUser(user);
             sisGoods.setMerchant(user.getMerchant());
             sisGoodses.add(sisGoods);
-
-//            goods.setId(data[1]==null?0:Long.parseLong(data[1].toString()));
-//            goods.setTitle(data[2]==null?"":data[2].toString());
-//            goods.setSmallPic(data[3]==null?"":data[3].toString());
-//            goods.setStock(data[4]==null?0:Integer.parseInt(data[4].toString()));
-//            goods.setPrice(data[5]==null?0:Double.parseDouble(data[5].toString()));
-//            goods.setPricesCache(data[6]==null?null:levelPricesConverter.convertToEntityAttribute(data[6].toString()));
-//            goods.setShopRebateMin(data[7]==null?0:Double.parseDouble(data[7].toString()));
-//            goods.setIndividuation(data[8]==null?false:(Boolean)data[8]);
-//            goods.setRebateConfiguration(data[9]==null?null:productSpecificationsConverter.convertToEntityAttribute(data[9].toString()));
-//            sisGoods.setGoods(goods);
-//            sisGoods.setSelected(data[10]==null?false:(Boolean)data[10]);
-//            sisGoods.setUser(user);
-//            sisGoodses.add(sisGoods);
-//            if (data.length == 2 && data[1] != null) {
-//                sisGoodses.add((SisGoods) data[1]);
-//            } else {
-//                SisGoods goods = new SisGoods();
-//                goods.setGoods((Goods) data[0]);
-//                goods.setUser(user);
-//                sisGoodses.add(goods);
-//            }
         });
         query=entityManager.createQuery(SqlHelper.getCountSisRecommendGoodsSql(title));
         query.setParameter("customerId",customerId);

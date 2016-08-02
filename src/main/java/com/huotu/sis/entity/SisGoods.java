@@ -26,7 +26,7 @@ import javax.persistence.*;
  * @author CJ
  */
 @Entity
-@Table(name = "SIS_SisGoods")
+@Table(name = "SIS_SisGoods",indexes = {@Index(columnList = "user"),@Index(columnList = "goods"),@Index(columnList = "selected")})
 @Getter
 @Setter
 @Cacheable(value = false)

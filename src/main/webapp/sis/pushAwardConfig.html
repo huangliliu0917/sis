@@ -714,7 +714,11 @@
 
     };
 
-    //teamManagerRebateConfig.
+    function hideNotOpenShop(obj,no){
+        if(no==1){
+            $(obj).find("option").last().hide();
+        }
+    }
 
     /*]]>*/
 </script>
@@ -726,6 +730,7 @@
         text-decoration:line-through;
         color:#999;
     }
+
 </style>
 <script type="text/template" id="tmplTesterRow">
     <div class="clear_vn h90" name="divTestRow">
@@ -733,7 +738,7 @@
             <li class="s"><p>tester{No}</p></li>
             <li class="ss">
                 <p>
-                    <select name="ddlRoleLevel">
+                    <select name="ddlRoleLevel" onclick="hideNotOpenShop(this,{No})">
                         <!--<option value="0">请选择</option>-->
                         <option th:if="${lStat.index%2==0}" th:value="${l.levelNo}" value="1460" th:each="l:${levelNames}" th:text="${l.levelTitle}">会员等级1</option>
                         <option value="-1">未开店</option>

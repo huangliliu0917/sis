@@ -440,6 +440,7 @@ public class SisWebUserController {
         if(sisConfig!=null){
             request.setAttribute("enableLevelUpgrade",sisConfig.getEnableLevelUpgrade());
         }
+        request.setAttribute("sisShopMode",sisConfig.getSisShopMode());
         return "sisweb/sisHome";
     }
 
