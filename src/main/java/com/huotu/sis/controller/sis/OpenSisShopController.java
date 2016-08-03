@@ -24,7 +24,10 @@ import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.entity.SisOpenAwardAssign;
-import com.huotu.sis.entity.support.*;
+import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
+import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
+import com.huotu.sis.entity.support.RelationAndPercent;
+import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.model.sis.*;
 import com.huotu.sis.model.sisweb.SisLevelModel;
 import com.huotu.sis.repository.GoodRepository;
@@ -35,8 +38,6 @@ import com.huotu.sis.service.CommonConfigService;
 import com.huotu.sis.service.SisConfigService;
 import com.huotu.sis.service.SisLevelService;
 import com.huotu.sis.service.SisService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
@@ -49,9 +50,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by slt on 2016/1/22.
@@ -62,16 +64,15 @@ import java.util.regex.Pattern;
 @Controller
 @RequestMapping("/sis")
 public class OpenSisShopController {
-    private static Log log = LogFactory.getLog(OpenSisShopController.class);
 
     @Autowired
-    Environment environment;
+    private Environment environment;
 
     @Autowired
-    GoodsRestRepository goodsRestRepository;
+    private GoodsRestRepository goodsRestRepository;
 
     @Autowired
-    SisConfigService sisConfigService;
+    private SisConfigService sisConfigService;
 
     @Autowired
     private SisLevelRepository sisLevelRepository;
@@ -80,40 +81,37 @@ public class OpenSisShopController {
     private GoodRepository goodRepository;
 
     @Autowired
-    SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
+    private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
 
     @Autowired
-    MerchantRepository merchantRespository;
+    private MerchantRepository merchantRespository;
 
     @Autowired
-    SisConfigRepository sisConfigRepository;
+    private SisConfigRepository sisConfigRepository;
 
     @Autowired
-    CommonConfigService commonConfigService;
+    private CommonConfigService commonConfigService;
 
     @Autowired
-    SisService sisService;
+    private SisService sisService;
 
     @Autowired
-    MerchantConfigRepository merchantConfigRepository;
+    private MerchantConfigRepository merchantConfigRepository;
 
     @Autowired
-    SisLevelService sisLevelService;
+    private SisLevelService sisLevelService;
 
     /**
      * 进入开店设置页面(需要优化)
      *
-     * @param customerId 商家ID
-     * @param model
-     * @return
-     * @throws Exception
+     * @param customerId    商家ID
+     * @param model         返回的数据
+     * @return              店铺设置视图字符串
+     * @throws Exception    异常
      */
     @RequestMapping(value = "/openConfig", method = RequestMethod.GET)
-    public String openConfig(@CustomerId Long customerId, Model model, HttpServletRequest request) throws Exception {
-        if (environment.acceptsProfiles("develop"))
-        {
-            customerId = 4471L;
-        }
+    public String openConfig(@CustomerId Long customerId, Model model)
+            throws Exception {
         if (customerId == null) {
             throw new Exception("商户ID不存在");
         }
@@ -158,8 +156,6 @@ public class OpenSisShopController {
 
         }
         model.addAttribute("newSisConfig", sisConfig);
-        model.addAttribute("mainHost",replaceHost(request.getRequestURL().toString()));
-        model.addAttribute("mainhost",replaceServerName(request.getServerName()));
 
         GoodsModel goodsModel=null;
         if(sisConfig.getExtraUpGoodsId()!=null){
@@ -181,22 +177,22 @@ public class OpenSisShopController {
         return serverName;
     }
 
-    /**
-     * 替换host域名
-     * @param url
-     * @return
-     */
-    private String replaceHost(String url){
-        String host=null;
-        Pattern p=Pattern.compile("http[s]?://([^:]+)(:\\d+)?/?.*");
-        Matcher m=p.matcher(url);
-        while(m.find()){
-            host=m.group(1);
-        }
-        String[] strings=host.split("\\.");
-        host=host.replaceAll(strings[0],"pdmall");
-        return host;
-    }
+//    /**
+//     * 替换host域名
+//     * @param url
+//     * @return
+//     */
+//    private String replaceHost(String url){
+//        String host=null;
+//        Pattern p=Pattern.compile("http[s]?://([^:]+)(:\\d+)?/?.*");
+//        Matcher m=p.matcher(url);
+//        while(m.find()){
+//            host=m.group(1);
+//        }
+//        String[] strings=host.split("\\.");
+//        host=host.replaceAll(strings[0],"pdmall");
+//        return host;
+//    }
 
     /**
      * 保存店中店开店设置(需要优化)

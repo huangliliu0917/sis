@@ -1,5 +1,14 @@
 package com.huotu.sis.controller.sis;
 
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2015. All rights reserved.
+ */
+
 import com.huotu.sis.model.sis.ResultModel;
 import com.huotu.sis.service.StaticResourceService;
 import org.apache.commons.logging.Log;
@@ -18,7 +27,8 @@ import java.net.URI;
 import java.util.UUID;
 
 /**
- * Created by Administrator on 2016/1/26.
+ * 图片上传
+ * Created by slt on 2016/1/26.
  */
 @Controller
 @RequestMapping(value = "/sis")
@@ -31,7 +41,7 @@ public class ImageUploadController {
 
 
     /**
-     * 图片上传(如：后台上传分享图片)
+     * 图片上传,(如：后台上传分享图片,富文本，目前只有后台上传)
      * @return
      * @throws Exception
      */

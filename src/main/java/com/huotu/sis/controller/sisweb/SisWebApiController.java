@@ -27,8 +27,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
+import java.util.Vector;
 
 /**
  * Created by slt on 2016/2/18.
@@ -217,6 +219,8 @@ public class SisWebApiController {
             return resultModel;
         }
 
+        Vector vector=new Vector();
+        Enumeration enumeration=vector.elements();
         String orderId=request.getParameter("orderid");
         String unionorderId=request.getParameter("unionorderid");
         log.info("userId:"+userId+"orderID="+orderId+"into openShop");
@@ -225,7 +229,6 @@ public class SisWebApiController {
 
         //新开店奖计算
         userService.newCountOpenShopAward(user, orderId, unionorderId,sisConfig);
-
 
         //新合伙人送股
         userService.givePartnerStock(user, orderId,sisConfig);

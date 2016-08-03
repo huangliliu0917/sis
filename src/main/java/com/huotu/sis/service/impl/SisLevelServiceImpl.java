@@ -177,6 +177,7 @@ public class SisLevelServiceImpl implements SisLevelService {
             }
 
             for(int i=0,size=sisLevelConditions.size();i<size;i++){
+                //获取条件对象
                 SisLevelCondition condition=sisLevelConditions.get(i);
                 if(condition.getRelation()!=1){
                     if(canUp){

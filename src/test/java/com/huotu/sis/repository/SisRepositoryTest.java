@@ -81,6 +81,8 @@ public class SisRepositoryTest extends WebTest {
         twosl.setMerchantId(merchant.getId());
         twosl=sisLevelRepository.saveAndFlush(twosl);
 
+        SisLevel sisLevel=sisLevelRepository.findFirstByMerchantIdAndLevelNoGreaterThanOrderByLevelNoAsc(merchant.getId(),0);
+
 
 
 
@@ -126,6 +128,11 @@ public class SisRepositoryTest extends WebTest {
 
         Assert.assertEquals("",map.get(ownsl.getId()).intValue(),2);
         Assert.assertEquals("",map.get(0L).intValue(),4);
+
+    }
+
+    @Test
+    public void findFirstByMerchantIdAndLevelNoGreaterThanOrderByLevelNoAscTest(){
 
     }
 }
