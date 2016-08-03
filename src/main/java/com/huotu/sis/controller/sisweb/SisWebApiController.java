@@ -219,8 +219,6 @@ public class SisWebApiController {
             return resultModel;
         }
 
-        Vector vector=new Vector();
-        Enumeration enumeration=vector.elements();
         String orderId=request.getParameter("orderid");
         String unionorderId=request.getParameter("unionorderid");
         log.info("userId:"+userId+"orderID="+orderId+"into openShop");
@@ -304,6 +302,7 @@ public class SisWebApiController {
             resultModel.setMessage("未找到店铺配置或店铺已关闭");
             return resultModel;
         }
+        log.info("userId:"+user.getId()+"orderID="+orderId+"into calculateShopRebate");
 
         sisService.calculatePushAward(user,order,unionOrderId,sisConfig);
 
