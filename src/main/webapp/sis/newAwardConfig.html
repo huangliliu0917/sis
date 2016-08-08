@@ -34,9 +34,9 @@
         /*<![CDATA[*/
         var tp=/*[[${type}]]*/0;
         function saveConfig() {
-            var load=layer.load(0, {shade: false});
             setTimeout(function () {
                 layerRebateConfigControl.getConfigResult(function (cfgstr) {
+                    var load=layer.load(0, {shade: false});
                     $.ajax({
                         type: "POST",
 //                        dataType: 'json',
@@ -110,9 +110,25 @@
                                 });
                             });
                         };
-                        layerRebateConfigControl.getConfigResult = function (callback) {//设置的信息交由服务器生成json
+                        layerRebateConfigControl.getConfigResult = function (callback) {//将序列化转换为对象
                             var _data = $('#frmRebateConfig').serialize();
                             var sisLevelOpenAward=serializeToObj(_data);
+
+                            //如果是直推奖则判断总比例是否超过100%
+                            var type =/*[[${type}]]*/[];
+                            if(type==1){
+                                var openSisAwards=sisLevelOpenAward.cfg;
+                                var sum=0;
+                                for(var i=0;i<openSisAwards.length;i++){
+                                    sum+=parseFloat(openSisAwards[i].unified);
+                                }
+                                if(sum>100){
+                                    layer.msg("总数超过100");
+                                    return;
+                                }
+                            }
+
+
                             callback(sisLevelOpenAward);
                         };
                         layerRebateConfigControl.initCustomConfigResult = function(){

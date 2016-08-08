@@ -735,28 +735,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SisLevelAwards oldPushAwardCompatibility(Long sislevelId) {
+    public SisLevelAwards oldPushAwardCompatibility(Long customerId) {
         SisLevelAwards sisLevelAwards=new SisLevelAwards();
 
+        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoAsc(customerId);
 
-        SisLevel sisLevel=sisLevelRepository.findOne(sislevelId);
-        if(sisLevel==null){
+        if(sisLevels==null){
             return sisLevelAwards;
         }
-        double rebateRate=sisLevel.getRebateRate();
-        SisLevelAward sisLevelAward=new SisLevelAward();
-        sisLevelAward.setBuySisLvId(0L);
 
-        List<OpenSisAward> openSisAwardList=new ArrayList<>();
-        OpenSisAward openSisAward=new OpenSisAward();
-        openSisAward.setIdx(0);
-        openSisAward.setUnified(rebateRate);
-        openSisAwardList.add(openSisAward);
+        for(int i=0,size=sisLevels.size();i<size;i++){
+            SisLevel sisLevel= sisLevels.get(i);
 
 
-        sisLevelAward.setCfg(openSisAwardList);
-        sisLevelAwards.put(sislevelId,sisLevelAward);
+            double rebateRate=sisLevel.getRebateRate();
+            SisLevelAward sisLevelAward=new SisLevelAward();
+            sisLevelAward.setBuySisLvId(sisLevel.getId());
 
+            List<OpenSisAward> openSisAwardList=new ArrayList<>();
+            OpenSisAward openSisAward=new OpenSisAward();
+            openSisAward.setIdx(0);
+            openSisAward.setUnified(rebateRate);
+            openSisAwardList.add(openSisAward);
+
+            sisLevelAward.setCfg(openSisAwardList);
+            sisLevelAwards.put(sisLevel.getId(),sisLevelAward);
+
+        }
+
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
+        sisConfig.setSisLevelPushAwards(sisLevelAwards);
+        sisConfigRepository.save(sisConfig);
         return sisLevelAwards;
     }
 

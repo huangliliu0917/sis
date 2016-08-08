@@ -327,9 +327,23 @@
                 <li class="childMenus" style="cursor: pointer;" id="id020206">
                     <div id="msg020206"
                          style="display: none; position: absolute; left: 10px; padding: 10px; top: 43px; color: #fff; z-index: 9999; background: #04B299; width: 180px; height: auto; border-radius: 4px 4px 4px 4px;"></div>
-                    <a onclick="openUrl('pushAwardConfig','020206')"><i class="fa fa-caret-right"></i>直推奖设置<span
+                    <a onclick="openUrl('pushAwardConfig','020206')"><i class="fa fa-caret-right"></i>经营者直推奖设置<span
                             onmouseover="showMsg('020206')" onmouseout="hideMsg('020206')"
                             class="fa pull-right badge badge-success" id="warning020206"
+                            style="display: none;background-color:red;">!
+        </span>
+                    </a>
+                    <ul class="children" style="display: none; margin-left: 20px;">
+                        {childMenus}
+                    </ul>
+                </li>
+
+                <li class="childMenus" style="cursor: pointer;" id="id020207">
+                    <div id="msg020207"
+                         style="display: none; position: absolute; left: 10px; padding: 10px; top: 43px; color: #fff; z-index: 9999; background: #04B299; width: 180px; height: auto; border-radius: 4px 4px 4px 4px;"></div>
+                    <a onclick="openUrl('defaultPushConfig','020207')"><i class="fa fa-caret-right"></i>默认直推奖设置<span
+                            onmouseover="showMsg('020207')" onmouseout="hideMsg('020207')"
+                            class="fa pull-right badge badge-success" id="warning020207"
                             style="display: none;background-color:red;">!
         </span>
                     </a>

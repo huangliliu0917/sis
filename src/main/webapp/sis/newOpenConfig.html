@@ -534,34 +534,32 @@
     }
 
 
-    function openAwardConfig(){
-        var host=/*[[${mainHost}]]*/ '';
-        var testhost=/*[[${mainhost}]]*/ '';
-        console.log(host);
-        console.log("test"+testhost);
-        layer.open({
-            type: 2,
-//            offset:'100px',
-            title: '店中店开店奖设置',
-//            shadeClose: true,
-//            shade: false,
-            area: ['85%', '85%'],
-            content:"http://"+testhost+'/MallManage/ShopInShopV2/OpenAward.aspx',
-//            content: 'selectOpenGoodsList.html',
-            end:function(){
-
-            }
-        });
-
-    }
+//    function openAwardConfig(){
+//        var host=/*[[${mainHost}]]*/ '';
+//        var testhost=/*[[${mainhost}]]*/ '';
+//        console.log(host);
+//        console.log("test"+testhost);
+//        layer.open({
+//            type: 2,
+////            offset:'100px',
+//            title: '店中店开店奖设置',
+////            shadeClose: true,
+////            shade: false,
+//            area: ['85%', '85%'],
+//            content:"http://"+testhost+'/MallManage/ShopInShopV2/OpenAward.aspx',
+////            content: 'selectOpenGoodsList.html',
+//            end:function(){
+//
+//            }
+//        });
+//
+//    }
 
     function pushAwardConfig(){
-        var host=/*[[${mainHost}]]*/ '';
-        var testhost=/*[[${mainhost}]]*/ '';
         var pushType=$("input[name='pushAwardMode']:checked").val();
         var pushConfigUrl;
         if(pushType==0){
-            pushConfigUrl='showLevelAwardConfig?type=1&levelId=0';
+            pushConfigUrl='defaultPushConfig';
         }else {
             pushConfigUrl='pushAwardConfig';
         }
@@ -580,26 +578,26 @@
 
     }
 
-    function openAwardLevelConfig(){
-//        var host=/*[[${mainHost}]]*/ '';
-//        var testhost=/*[[${mainhost}]]*/ '';
-//        console.log(host);
-//        console.log("test"+testhost);
-        layer.open({
-            type: 2,
-//            offset:'100px',
-            title: '店中店开店奖设置',
-//            shadeClose: true,
-//            shade: false,
-            area: ['85%', '85%'],
-            content:'openAwardConfig',
-//            content: 'selectOpenGoodsList.html',
-            end:function(){
-
-            }
-        });
-
-    }
+//    function openAwardLevelConfig(){
+////        var host=/*[[${mainHost}]]*/ '';
+////        var testhost=/*[[${mainhost}]]*/ '';
+////        console.log(host);
+////        console.log("test"+testhost);
+//        layer.open({
+//            type: 2,
+////            offset:'100px',
+//            title: '店中店开店奖设置',
+////            shadeClose: true,
+////            shade: false,
+//            area: ['85%', '85%'],
+//            content:'openAwardConfig',
+////            content: 'selectOpenGoodsList.html',
+//            end:function(){
+//
+//            }
+//        });
+//
+//    }
 
 
     function changeGoodsType(){

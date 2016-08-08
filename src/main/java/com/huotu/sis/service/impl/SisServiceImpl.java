@@ -280,10 +280,10 @@ public class SisServiceImpl implements SisService {
 
         SisLevelAwards sisLevelPushAwards=sisConfig.getSisLevelPushAwards();
         if(sisLevelPushAwards==null){
-            sisLevelPushAwards=userService.oldPushAwardCompatibility(sislevelId);
+            sisLevelPushAwards=userService.oldPushAwardCompatibility(sisConfig.getMerchantId());
         }
 
-        List<SisRebateModel> sisRebateModels=userService.getSisRebateModelList(user,sisLevelPushAwards.get(0L));
+        List<SisRebateModel> sisRebateModels=userService.getSisRebateModelList(user,sisLevelPushAwards.get(sislevelId));
 
         for(SisRebateModel s:sisRebateModels){
             UserTempIntegralHistoryModel model=new UserTempIntegralHistoryModel();

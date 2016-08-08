@@ -205,10 +205,10 @@ public interface UserService {
 
     /**
      * 旧的直推奖数据兼容
-     * @param sislevelId
+     * @param customerId
      * @return
      */
-    SisLevelAwards oldPushAwardCompatibility(Long sislevelId);
+    SisLevelAwards oldPushAwardCompatibility(Long customerId);
 
     /**
      * 将给定的等级都配置相同的返利信息

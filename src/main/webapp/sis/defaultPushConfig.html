@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>
+        开店设置
+    </title>
+    <link rel="stylesheet" href="../resource/css/fmwebbb.css"
+          th:href="@{/resource/css/fmwebbb.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/css/search.css"
+          th:href="@{/resource/css/search.css}" />
+    <link rel="stylesheet" type="text/css" href="../resource/css/newonedow.css"
+          th:href="@{/resource/css/newonedow.css}" />
+    <link href="../resource/3rdParty/css/admin.content.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.content.css}" />
+    <link href="../resource/css/settlements.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/css/settlements.css}"/>
+    <script type="text/javascript" src="../resource/3rdParty/js/jquery-1.8.3.min.js"
+            th:src="@{/resource/3rdParty/js/jquery-1.8.3.min.js}"></script>
+    <link href="../resource/3rdParty/css/admin.global.css" rel="stylesheet" type="text/css"
+          th:href="@{/resource/3rdParty/css/admin.global.css}"/>
+    <!--layer弹框插件-->
+    <script type="text/javascript" src="../resource/layer/layer.js"
+            th:src="@{/resource/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.css"
+          th:src="@{/resource/layer/skin/layer.css}"/>
+    <link rel="stylesheet" type="text/css" href="../resource/layer/skin/layer.ext.css"
+          th:src="@{/resource/layer/skin/layer.ext.css}"/>
+    <!--颜色选择器插件-->
+    <script type="text/javascript" src="../resource/js/spectrum.js"
+            th:src="@{/resource/js/spectrum.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../resource/css/spectrum.css"
+          th:src="@{/resource/css/spectrum.css}"/>
+</head>
+<body>
+<form method="post" action="saveNewOpenConfig" id="form1">
+    <div class="container">
+        <div class="blank10">
+        </div>
+        <div class="search block" style="display: block;">
+            <div class="h">
+      <span class="icon-sprite icon-magnifier">
+      </span>
+                <h3>直推奖配置</h3>
+            </div>
+            <div class="cnt-wp" style="padding: 35px 10px 10px;">
+                <div id="makeTab" class="cnt om-tabs om-widget om-widget-content om-corner-all" style="width: auto; height: auto;">
+
+                    <!-- 以下设置表单-->
+                    <div class="om-tabs-panels om-widget-content om-corner-bottom">
+                        <div class="om-widget om-panel">
+                            <div id="tab0001" class="om-panel-body om-widget-content om-panel-noheader om-state-nobd">
+
+                                <div id="sisConfig" class="division">
+
+                                    <table id="submitTable" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+
+
+                                        <tr id="isFreeOpenSisShop">
+                                            <th>各等级直推奖配置</th>
+                                            <td>
+                                                <table id="levelGoodsConfig">
+                                                    <thead>
+                                                    <tr>
+                                                        <th th:each="l:${sisLevels}" style="text-align: center" th:text="${l.levelName}"></th>
+                                                        <!--<th style="text-align: center">店铺等级</th>-->
+                                                        <!--<th style="text-align: center">开店商品</th>-->
+                                                        <!--<th style="text-align: center">开店奖</th>-->
+                                                        <!--<th style="text-align: center">梦想合伙人送股</th>-->
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td th:each="l:${sisLevels}">
+                                                            <a onclick="setSevelPushAwardConfig(this)"
+                                                               href="#" th:attr="levelId=''+${l.id},type='1'">设置直推奖</a>
+                                                        </td>
+                                                        <!--<td><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId},type='0'">设置开店奖</a></td>-->
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+
+
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--是否在资讯栏目发一篇介绍范围结束-->
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+
+    function setSevelPushAwardConfig(obj){
+        var levelId=$(obj).attr("levelid");
+        var type=$(obj).attr("type");
+        choseGoods=layer.open({
+            type: 2,
+            title: '设置返利',
+//            shadeClose: true,
+//            shade: false,
+            area: ['80%', '80%'],
+            content:['showLevelAwardConfig?type='+type+'&levelId='+levelId],
+            end:function(){
+
+            }
+        });
+    }
+
+    /*]]>*/
+
+</script>
+
+</body>
+</html>

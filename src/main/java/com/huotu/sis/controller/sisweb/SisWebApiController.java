@@ -3,7 +3,6 @@ package com.huotu.sis.controller.sisweb;
 import com.huotu.huobanplus.common.entity.Order;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
@@ -27,12 +26,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
-import java.util.Vector;
 
 /**
+ * 店中店外部调用接口
  * Created by slt on 2016/2/18.
  */
 @Controller
@@ -51,19 +49,10 @@ public class SisWebApiController {
     private SisOrderItemsRepository sisOrderItemsRepository;
 
     @Autowired
-    private SisLevelRepository sisLevelRepository;
-
-    @Autowired
-    private UTIHRepository utihRepository;
-
-    @Autowired
     private SecurityService securityService;
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private MerchantConfigRepository merchantConfigRepository;
 
     @Autowired
     private SisService sisService;
@@ -83,7 +72,7 @@ public class SisWebApiController {
     /**
      * 检查签名是否正确
      * @param request   请求
-     * @return
+     * @return          签名是否正确
      */
     private boolean checkSign(HttpServletRequest request){
         if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
@@ -103,10 +92,11 @@ public class SisWebApiController {
 
     /**
      * 升级用户店中店
+     * 此接口在需求中以不在使用
      *
      * <b>负责人：史利挺</b>
-     * @return
-     * @throws Exception
+     * @return              升级结果
+     * @throws Exception    异常
      */
     @RequestMapping(value = "/upgradeSisShop",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
@@ -134,7 +124,7 @@ public class SisWebApiController {
         }
 
         SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
-        if(sisConfig==null||sisConfig.getEnabled()==0||sisConfig.getOpenGoodsMode()==null||sisConfig.getOpenGoodsMode()==0){//todo 开店商品模式修改
+        if(sisConfig==null||sisConfig.getEnabled()==0||sisConfig.getOpenGoodsMode()==null||sisConfig.getOpenGoodsMode()==0){
             resultModel.setCode(403);
             resultModel.setMessage(userId+"商户无店中店配置不是升级的条件");
             return resultModel;
@@ -171,10 +161,11 @@ public class SisWebApiController {
      * 1.开启店中店
      * 2.用户返利
      * 3.合伙人送股
+     * 4.升级
      *
-     * @param request
-     * @return
-     * @throws Exception
+     * @param request       request请求
+     * @return              开店结果
+     * @throws Exception    异常
      */
     @RequestMapping(value = "/openSisShop",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
@@ -242,9 +233,9 @@ public class SisWebApiController {
 
     /**
      * 计算直推奖
-     * @param httpServletRequest
-     * @return
-     * @throws Exception
+     * @param httpServletRequest    request请求
+     * @return                      返回计算结果
+     * @throws Exception            抛出异常
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/calculateShopRebate", method = {RequestMethod.POST,RequestMethod.GET})
