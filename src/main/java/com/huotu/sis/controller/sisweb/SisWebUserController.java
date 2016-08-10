@@ -37,6 +37,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
@@ -894,8 +895,8 @@ public class SisWebUserController {
      * @return 视图
      * @throws Exception
      */
-    @RequestMapping(value = "inviteOpenShop", method = RequestMethod.GET)
-    public String inviteOpenShop(Long customerId, HttpServletRequest request, Model model) throws Exception {
+    @RequestMapping(value = "/inviteopenshop", method = RequestMethod.GET)
+    public String inviteOpenShop(@RequestParam(name = "customerid") Long customerId, HttpServletRequest request, Model model) throws Exception {
         if (environment.acceptsProfiles("develop")) {
             customerId = 4471L;
         }

@@ -600,10 +600,12 @@ public class SisWebGoodsController {
         }
         model.addAttribute("integrals", integrals);
         model.addAttribute("homePageColor",sisConfig.getHomePageColor());
-        model.addAttribute("shareUrl","/sisweb/inviteOpenShop?customerId="+user.getMerchant().getId()+"&__newframe");
+        model.addAttribute("shareUrl","/sisweb/inviteopenshop?customerid="+user.getMerchant().getId()+"&__newframe");
 
         return "/sisweb/sisCenter";
     }
+
+
 
     /**
      * 店铺订单页面
