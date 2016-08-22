@@ -69,8 +69,11 @@ public class CommonUserInterceptor implements HandlerInterceptor {
             log.debug("enter interceptor");
 
             if (!env.acceptsProfiles("develop")) {
-
-                Long customerId = Long.parseLong(request.getParameter("customerId"));
+                String customerIdStr=request.getParameter("customerId");
+                if(customerIdStr==null){
+                    customerIdStr=request.getParameter("customerid");
+                }
+                Long customerId = Long.parseLong(customerIdStr);
                 Boolean toSSO = false;
                 //强制刷新用户
                 String forceRefresh = "0";
