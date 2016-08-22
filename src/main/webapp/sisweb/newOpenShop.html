@@ -42,6 +42,10 @@
             submitform(customerId);
         }else {
             var objs=[];
+            if(openGoods==undefined||openGoods.length==0){
+                $.alert("没有可以开店的等级");
+                return;
+            }
             $.each(openGoods,function(i,val){
                 var obj={
                     text:val.levelTitle,

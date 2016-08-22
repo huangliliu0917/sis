@@ -258,8 +258,9 @@
     var choseGoods;
                 //提交设置
     function submitForm1() {
-        var newSisConfig={};
+        var tableBody=$("#levelGoodsConfig tbody");
 
+        var newSisConfig={};
         var enabled=$("input[name='enabled']:checked").val();
         newSisConfig.enabled=enabled;
         if(enabled==1){
