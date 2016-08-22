@@ -101,7 +101,7 @@ public class SisGoodsServiceImpl implements SisGoodsService {
             predicates.add(criteriaBuilder.equal(root.get("scenes").as(Integer.class), 0));
             predicates.add(criteriaBuilder.isFalse(root.get("disabled")));
             predicates.add(criteriaBuilder.isTrue(root.get("marketable")));
-            if(sisConfig.getGoodSelectMode()!=null&&sisConfig.getGoodSelectMode()==1){
+            if(brandId==null&&sisConfig.getGoodSelectMode()!=null&&sisConfig.getGoodSelectMode()==1){
                 predicates.add(criteriaBuilder.greaterThan(root.get("shopRebateMax").as(Double.class),0.0));
             }
             if (title != null) {

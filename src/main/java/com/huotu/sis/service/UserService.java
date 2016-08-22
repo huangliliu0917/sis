@@ -135,8 +135,6 @@ public interface UserService {
     List<User> getAllRelationByUserId(Long userId);
 
 
-//    SisRebateModel getSisRebateModel();
-
     /**
      * 获取返利列表
      * @param user              店主
@@ -217,12 +215,6 @@ public interface UserService {
      * @return
      */
     SisLevelAwards setAllSisLevelAwards(List<SisLevel> sisLevels, List<OpenSisAward> openSisAwardList);
-
-    /**
-     * 执行开店返利
-     * @param sisRebateModels   返利model
-     */
-    void exceOpenAwards(List<SisRebateModel> sisRebateModels);
 
 
     /**

@@ -509,58 +509,6 @@ public class UserServiceImpl implements UserService {
 
         return sisRebateModels;
 
-//            if (tiers > 0) {
-//                User rebateUser = user;//默认从自己开始返利
-//
-//                double rebateMonery = 0;
-//                //遍历每一个层级的开店返利信息
-//                for (int i = 0; i < tiers; i++) {
-//                    if(rebateUser==null){
-//                        break;
-//                    }
-//                    Sis sis = sisRepository.findByUser(rebateUser);
-//                    if (Objects.isNull(sis)) {
-//                        //用户未开启店中店，无法返利
-//                        log.info("user=" + user.getId() + "Not to open the inn in inn to rebate！");
-//                        //获取他的上级用户
-//                        rebateUser = userRepository.findOne(rebateUser.getBelongOne());
-//                        continue;
-//                    }
-//                    if (!sis.isStatus()) {
-//                        //用户店中店被关闭,无法返利
-//                        log.info("user=" + user.getId() + "Users to the inn in inn is closed to rebate！");
-//                        //获取他的上级用户
-//                        rebateUser = userRepository.findOne(rebateUser.getBelongOne());
-//                        continue;
-//                    }
-//                    //获取返利信息
-//                    OpenSisAward openSisAward = null;
-//                    //是否是个性化开店返利
-//                    if (openSisAward.getUnified() == -1.0) {//是个性化
-//                        //获取用户的店铺等级ID
-//                        long levelId = sisService.getSisLevelId(rebateUser);
-//                        for (LevelIdAndVal lv : openSisAward.getCustom()) {
-//                            if (lv.getLvid() == levelId) {//如果店铺的ID等于某个个性化返利的ID
-//                                //开店奖返利
-//                                rebateMonery = lv.getVal();
-//                                break;
-//                            }
-//                        }
-//                    } else if (openSisAward.getUnified() >= 0) {//不是个性化
-//                        rebateMonery = openSisAward.getUnified();
-//                    }
-//
-//
-//                    //为下个层级返利做准备
-//                    if (rebateUser.getBelongOne() <= 0) {
-//                        //没有上级
-//                        break;
-//                    }
-//                    //获取他的上级用户
-//                    rebateUser = userRepository.findOne(rebateUser.getBelongOne());
-//                }
-//            }
-
     }
 
     @Override
@@ -783,12 +731,6 @@ public class UserServiceImpl implements UserService {
             sisLevelAwards.put(sisLevel.getId(),sisLevelAward);
         });
         return sisLevelAwards;
-    }
-
-    @Override
-    public void exceOpenAwards(List<SisRebateModel> sisRebateModels) {
-
-
     }
 
     @Override

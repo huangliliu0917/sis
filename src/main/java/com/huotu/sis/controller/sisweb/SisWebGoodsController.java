@@ -880,11 +880,11 @@ public class SisWebGoodsController {
                     default:
                         directRebate=0;
                 }
-                if(sisConfig.getGoodSelectMode()!=null&&sisConfig.getGoodSelectMode()==1){
-                    if(directRebate==0){
-                        continue;
-                    }
-                }
+//                if(sisConfig.getGoodSelectMode()!=null&&sisConfig.getGoodSelectMode()==1){
+//                    if(directRebate==0){
+//                        continue;
+//                    }
+//                }
                 appSisGoodsModel.setDirectRebate(directRebate);
 
                 List<Double> memberPrices = new ArrayList<>();
