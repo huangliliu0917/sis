@@ -2,7 +2,6 @@ package com.huotu.sis.boot;
 
 import com.huotu.common.api.ApiResultHandler;
 import com.huotu.common.api.OutputHandler;
-
 import com.huotu.sis.common.WebHandlerExceptionResolver;
 import com.huotu.sis.interceptor.CommonUserInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -19,6 +19,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
+import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import java.util.Arrays;
@@ -34,6 +35,10 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private Environment environment;
 
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
@@ -46,6 +51,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private CommonUserInterceptor commonUserInterceptor;
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -112,11 +118,13 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public ThymeleafViewResolver viewResolver() {
+
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
         SpringTemplateEngine engine = new SpringTemplateEngine();
-        ServletContextTemplateResolver rootTemplateResolver = new ServletContextTemplateResolver();
+        ServletContextTemplateResolver rootTemplateResolver = new ServletContextTemplateResolver(webApplicationContext.getServletContext());
         rootTemplateResolver.setPrefix("/");
         rootTemplateResolver.setSuffix(".html");
+        rootTemplateResolver.setTemplateMode(TemplateMode.HTML);
         rootTemplateResolver.setCharacterEncoding("UTF-8");
         // start cache
         if(environment.acceptsProfiles("development")||environment.acceptsProfiles("develop")){
@@ -132,5 +140,50 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
         });
         return resolver;
     }
+
+//    /**
+//     * THYMELEAF: View Resolver - implementation of Spring's ViewResolver interface.
+//     */
+//    @Bean
+//    public ViewResolver viewResolver() {
+//        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+//        viewResolver.setTemplateEngine(templateEngine());
+//        viewResolver.setContentType("text/html;charset=utf-8");
+//        viewResolver.setOrder(2147483647 + 10);
+//        viewResolver.setCharacterEncoding("UTF-8");
+//        viewResolver.setExcludedViewNames(new String[]{
+//                "content/**"
+//        });
+//        return viewResolver;
+//    }
+//
+//    /**
+//     * THYMELEAF: Template Engine (Spring4-specific version).
+//     */
+//    @Bean
+//    public SpringTemplateEngine templateEngine() {
+//        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+//        templateEngine.addTemplateResolver(webTemplateResolver());
+//        return templateEngine;
+//    }
+//
+//
+//    /**
+//     * THYMELEAF: Template Resolver for webapp pages.
+//     */
+//    private ITemplateResolver webTemplateResolver() {
+//        WebApplicationContext webApplicationContext = ContextLoader.getCurrentWebApplicationContext();
+//        ServletContext servletContext = webApplicationContext.getServletContext();
+//        ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
+//
+//        templateResolver.setPrefix("/");
+//        templateResolver.setSuffix(".html");
+//        templateResolver.setCharacterEncoding("UTF-8");
+//        // start cache
+//        if(environment.acceptsProfiles("development")||environment.acceptsProfiles("develop")){
+//            templateResolver.setCacheable(false);
+//        }
+//        return templateResolver;
+//    }
 
 }
