@@ -11,6 +11,7 @@ import com.huotu.huobanplus.common.repository.GoodsRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.huobanplus.model.type.MallEmbedResource;
+import com.huotu.sis.controller.sisweb.SisWebGoodsController;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.model.sisweb.SisDetailModel;
 import com.huotu.sis.model.sisweb.SisSumAmountModel;
@@ -217,6 +218,19 @@ public class SisWebGoodsControllerTest extends WebTest {
 //        assertThat(elements.get(1).getText().trim()).isEqualTo(goods.getIntro()).as("商品详情");
 
 
+    }
+
+
+    @Test
+    public void calculateValueTest() throws Exception{
+
+
+
+
+
+
+        SisWebGoodsController sisWebGoodsController=new SisWebGoodsController();
+        sisWebGoodsController.calculateValue(null,null);
     }
 
 }

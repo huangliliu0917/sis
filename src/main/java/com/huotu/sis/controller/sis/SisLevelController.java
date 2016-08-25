@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by jinzj on 2016/1/21.
  * modify by slt    on 2016/7/19
  *
- * @author jinzj
+ * @author slt
  * @
  */
 @Controller

@@ -54,7 +54,7 @@
             var width = $('#con_left').width();
             var scrolling = 'auto';
             var height = this._getLeftHeight();
-            var ifSrc = /*[["123456"]]*/ "shareManager.html";
+            var ifSrc = "shareManager.html";
             document.write('<iframe id="content_left" width="' + width + '" height="' + height + 'px" class="hide" marginwidth="0" marginheight="0" frameborder="0" scrolling="' + scrolling + '" onload="$(\'#loading\').hide();$(this).show();" src="' + ifSrc + '" style="overflow-x:hidden;"></iframe>');
         };
 
@@ -77,21 +77,6 @@
             $('.dropdown-toggle').click(function () {
                 $('.dropdown-menu').toggle();
             });
-//            $('#menu01').click(function () {
-//                mallMenuManager.openConfig();
-//            });
-//            $('#menu02').click(function () {
-//                mallMenuManager.showArticles();
-//            });
-//            $('#menu03').click(function () {
-//                mallMenuManager.showCrowdFundings();
-//            });
-//            $('#menu04').click(function () {
-//                mallMenuManager.showUsers();
-//            });
-//            $('#menu05').click(function () {
-//                mallMenuManager.showConfigs();
-//            });
         };
 
 
@@ -102,35 +87,7 @@
             _loadMain(_url);
             _loadLeftMenu('left.html');
         };
-//        mallMenuManager.showArticles = function () {
-//            $(".active").removeClass("active");
-//            $("#menu02").addClass("active");
-//            var _url = /*[['getArticleList']]*/ "articleList.html";
-//            _loadMain(_url);
-//            _loadLeftMenu('../manager/articleManager.html');
-//        };
-//        mallMenuManager.showCrowdFundings = function () {
-//            $(".active").removeClass("active");
-//            $("#menu03").addClass("active");
-//            var _url = /*[['getCrowdFundingList']]*/ "crowdFundingList.html";
-//            _loadMain(_url);
-//            _loadLeftMenu('../manager/crowdFundingManager.html');
-//        }
-//        mallMenuManager.showUsers = function () {
-//            $(".active").removeClass("active");
-//            $("#menu04").addClass("active");
-//            var _url = /*[['getUserList']]*/ "userList.html";
-//            _loadMain(_url);
-//            _loadLeftMenu('../manager/userManager.html');
-//        }
-//        mallMenuManager.showConfigs = function () {
-//            $(".active").removeClass("active");
-//            $("#menu05").addClass("active");
-//            var _url = /*[['configRefund']]*/ "configRefund.html";
-//            _loadMain(_url);
-//            _loadLeftMenu('../manager/configManager.html');
-//        }
-        //#endregion
+
 
         $(function () {
             adaptFrame.init();
@@ -216,38 +173,7 @@
         <div class="headerbar">
             <div class="header-left" style="padding-left: 5px;">
                 <div class="topnav">
-                    <!--<ul class="nav nav-horizontal">-->
-                        <!--<li class="active" id="menu01">-->
-                            <!--<a style="cursor: pointer;"><i class="fa fa-folder-o"></i>-->
-                                <!--<span>爱美容</span></a>-->
-                        <!--</li>-->
 
-                        <!--<li class="" id="menu02">-->
-                            <!--<a style="cursor: pointer;"><i class="fa fa-folder-o"></i>-->
-                                <!--<span>关于美投</span></a>-->
-                        <!--</li>-->
-
-                        <!--<li style="display: none" class="" id="menu03">-->
-                            <!--<a style="cursor: pointer;"><i class="fa fa-folder-o"></i>-->
-                                <!--<span>众筹合伙人</span></a>-->
-                        <!--</li>-->
-
-                        <!--<li style="display: none" class="" id="menu06">-->
-                            <!--<a style="cursor: pointer;"><i class="fa fa-folder-o"></i>-->
-                                <!--<span>滴滴美容</span></a>-->
-                        <!--</li>-->
-
-                        <!--<li class="" id="menu04">-->
-                            <!--<a style="cursor: pointer;"><i class="fa fa-folder-o"></i>-->
-                                <!--<span>用户管理</span></a>-->
-                        <!--</li>-->
-                        <!--<li class="" id="menu05">-->
-                            <!--<a style="cursor: pointer;"><i class="fa fa-folder-o"></i>-->
-                                <!--<span>配置管理</span></a>-->
-                        <!--</li>-->
-
-
-                    <!--</ul>-->
                 </div>
             </div>
         </div>

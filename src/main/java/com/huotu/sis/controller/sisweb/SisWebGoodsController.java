@@ -13,28 +13,30 @@ import com.huotu.huobanplus.common.model.adrebateconfig.ProductDisRebateDesc;
 import com.huotu.huobanplus.common.repository.*;
 import com.huotu.huobanplus.common.utils.DateUtil;
 import com.huotu.sis.common.MathHelper;
+import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisGoods;
 import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
+import com.huotu.sis.exception.SisException;
+import com.huotu.sis.exception.UserNotFoundException;
 import com.huotu.sis.model.sisweb.*;
 import com.huotu.sis.repository.*;
 import com.huotu.sis.service.*;
-import com.huotu.sis.common.PublicParameterHolder;
-import com.huotu.sis.exception.SisException;
-import com.huotu.sis.exception.UserNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -731,67 +733,6 @@ public class SisWebGoodsController {
         return userId;
     }
 
-
-    /**
-     * 计算直推奖(弃用)
-     * <p>
-     * -(1)、插入流水表Hot_UserTempIntegral_History
-     * -(2)、用户表Hot_UserBaseInfo-》UB_UserTempIntegral更新
-     *
-     * @param httpServletRequest request请求
-     * @return
-     * @throws Exception
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/calculateShopRebate", method = {RequestMethod.POST, RequestMethod.GET})
-    @ResponseBody
-    public ResultModel calculateShopRebate(HttpServletRequest httpServletRequest) throws Exception {
-        String sign = httpServletRequest.getParameter("sign");
-        String shopIdString = httpServletRequest.getParameter("shopId");
-        int shopId = Integer.parseInt(shopIdString);
-        String orderId = httpServletRequest.getParameter("orderId");
-        String unionOrderId = httpServletRequest.getParameter("unionOrderId");
-        ResultModel resultModel = new ResultModel();
-//        if (sign != "9389e8a5c32eefa3134340640fb4ceaa\n") {
-//            resultModel.setCode(401);
-//            resultModel.setMessage("签名失败");
-//            return resultModel;
-//
-//        }
-        System.out.println(shopId + "" + orderId + "" + unionOrderId);
-        Order order = sisOrderRepository.findOne(orderId);
-        List<OrderItems> orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId);
-
-        for (OrderItems i : orderItems) {//测试得到orderItems对象
-            System.out.println(i);
-        }
-        SisLevel sisLevel = sisLevelRepository.findOne((long) shopId);
-        System.out.println("sislevel rate:" + sisLevel.getRebateRate());
-//        int sisShopLevel=sisLevel.getLevelNo().intValue();
-//        SisConfig sisConfig=sisConfigRepository.findByMerchantId(order.getMerchant().getId());
-//        String rebate=sisConfig.getRebateSetting();
-        double rate = 0;//所需要计算出来的那个比例值
-        rate = sisLevel.getRebateRate();
-        double totalPrize = 0;//总共的直推积分
-        for (int i = 0; i < orderItems.size(); i++) {
-            int zhituiPrize = (int) orderItems.get(i).getZhituiPrize();
-            totalPrize += zhituiPrize;
-        }
-        totalPrize = (totalPrize * rate);
-        UserTempIntegralHistory utih = new UserTempIntegralHistory();
-        int totalPrizeInt = (int) totalPrize;
-        System.out.println(totalPrizeInt);
-        utih.setIntegral(totalPrizeInt);
-        utih.setUnionOrderId(unionOrderId);
-        utih.setStatus(0);
-        utih.setOrder(order);
-        utihRepository.save(utih);
-        resultModel.setCode(200);
-        resultModel.setMessage("签名成功");
-        return resultModel;
-
-    }
-
     /**
      * 根据店中店商品列表，计算直推返利/分销返利区间 后再返回
      *
@@ -799,7 +740,8 @@ public class SisWebGoodsController {
      * @param user
      * @return
      */
-    private List<PcSisGoodsModel> calculateValue(List<SisGoods> sisGoodsList, User user) throws IOException, SisException {
+    public List<PcSisGoodsModel> calculateValue(List<SisGoods> sisGoodsList, User user) throws IOException, SisException {
+        log.info("calculateValue");
         List<PcSisGoodsModel> list = new ArrayList<>();
         //
         Sis sis = sisRepository.findByUser(user);
@@ -913,15 +855,20 @@ public class SisWebGoodsController {
                     appSisGoodsModel.setPrice(goods.getPrice());
                 }
 
+                log.info("first");
                 //如果是普通会员
                 if (userLevel.getType().equals(UserType.normal)) {
+                    log.info("normal");
                     appSisGoodsModel.setMinRebate(0);
                     appSisGoodsModel.setMaxRebate(0);
                 } else {
+                    log.info("xiaohuoban");
                     //三级返利
                     if (null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.ThreeMode)) {
+                        log.info("ThreeMode");
                         //将所有等级的价格都得到，然后去重
                         Set<Double> prices = new HashSet<>();
+                        //应该返利的钱的列表
                         List<Double> allIntegral = new ArrayList<>();
                         if (goods.getPricesCache() != null && goods.getPricesCache().size() > 0) {
                             for (Map.Entry<Long, LevelPrice> entry : goods.getPricesCache().entrySet()) {
@@ -932,7 +879,7 @@ public class SisWebGoodsController {
                             prices.add(goods.getPrice());
                         }
 
-                        //是否个性化
+                        //是否个性化(个性化)
                         if (goods.getIndividuation() != null && goods.getIndividuation()) {
                             RebateInfo rebateInfo = new RebateInfo();
                             RebateConfiguration rebateConfiguration = goods.getRebateConfiguration();
@@ -946,6 +893,7 @@ public class SisWebGoodsController {
                                         for (Double price : prices) {
                                             rebateInfo.setAmount(price);
                                             //得到未处理的返利
+                                            //只显示我(店主)下线买，我能拿到的钱
                                             Double integral = normalRebateService.rebateAmountByLevelId(user.getLevelId(), rebateInfo, 1);
                                             allIntegral.add(integral);
                                         }
@@ -973,6 +921,7 @@ public class SisWebGoodsController {
                                     }
                                 }
                             }
+                            //不是个性化
                         } else {
                             RebateConfiguration rebateConfiguration = goods.getRebateConfiguration();
                             if (null != rebateConfiguration) {
@@ -996,6 +945,7 @@ public class SisWebGoodsController {
                             }
                         }
                         if (allIntegral.size() > 0) {
+                            //获取应该返利的最大积分和最小积分
                             Double minIntegral = allIntegral.get(0);
                             Double maxIntegral = allIntegral.get(0);
                             for (Double integral : allIntegral) {
@@ -1010,17 +960,26 @@ public class SisWebGoodsController {
                             appSisGoodsModel.setMinRebate(0);
                             appSisGoodsModel.setMaxRebate(0);
                         }
+                        //八级金字塔
                     } else if (null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.EightMode)) {
+                        log.info("EightMode");
                         if (null == goods.getProductRebateConfigs()) {
                             appSisGoodsModel.setMinRebate(0);
                             appSisGoodsModel.setMaxRebate(0);
                         } else {
+                            log.info("into baji fanli");
+                            log.info("exchangeRate:"+exchangeRate);
+                            log.info(user.getLevelId()+"  "+goods.getProductRebateConfigs().toString()+"  "+
+                                    merchantConfig.getRebateLayerConfigs().toString());
                             double[] integral = advanceQuatoRebateService.rebateAmountIntervalByLevelId(user.getLevelId()
                                     , goods.getProductRebateConfigs(), merchantConfig.getRebateLayerConfigs(), 1);
+                            log.info("integral[0]:"+integral[0]+"integral[1]:"+integral[1]);
                             appSisGoodsModel.setMinRebate((int) Math.rint(integral[0] * 100 / exchangeRate));
                             appSisGoodsModel.setMaxRebate((int) Math.rint(integral[1] * 100 / exchangeRate));
                         }
+                        //经营者模式
                     }else if(null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.operator)){
+                        log.info("operator");
                         Integer maxRebate=0;
                         Integer minRebate=0;
                         Integer levelNo=null;
@@ -1057,6 +1016,7 @@ public class SisWebGoodsController {
                         appSisGoodsModel.setMinRebate(minRebate);
                         appSisGoodsModel.setMaxRebate(maxRebate);
                     } else {
+                        log.info("nonting");
                         appSisGoodsModel.setMinRebate(0);
                         appSisGoodsModel.setMaxRebate(0);
                     }
