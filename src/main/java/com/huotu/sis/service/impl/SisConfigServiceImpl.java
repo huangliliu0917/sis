@@ -6,6 +6,8 @@ import com.huotu.huobanplus.sdk.common.repository.CategoryRestRepository;
 import com.huotu.huobanplus.sdk.common.repository.GoodsRestRepository;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
+import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
 import com.huotu.sis.entity.support.RelationAndPercent;
 import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.model.sis.CategoryModel;
@@ -14,7 +16,10 @@ import com.huotu.sis.repository.GoodRepository;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.service.SisConfigService;
+import com.huotu.sis.service.SisLevelService;
 import com.huotu.sis.service.StaticResourceService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
@@ -35,6 +40,7 @@ import java.util.Objects;
  */
 @Service
 public class SisConfigServiceImpl implements SisConfigService {
+    private Log log = LogFactory.getLog(SisConfigServiceImpl.class);
     @Autowired
     Environment environment;
 
@@ -55,6 +61,9 @@ public class SisConfigServiceImpl implements SisConfigService {
 
     @Autowired
     SisLevelRepository sisLevelRepository;
+
+    @Autowired
+    SisLevelService sisLevelService;
 
     @Override
     public SisConfig initSisConfig(Long customerId) throws Exception {//todo 初始化
@@ -190,32 +199,6 @@ public class SisConfigServiceImpl implements SisConfigService {
             goodsModels.add(simpleGoodsModel);
         });
         return new PageImpl<>(goodsModels,new PageRequest(pageNo,10),goodses.getTotalElements());
-//        title= StringUtils.isEmpty(title.trim())?null:"%"+title+"%";
-//        if(!StringUtils.isEmpty(title)){
-//            title=URLEncoder.encode(title,"UTF8");
-//        }
-//        Page<DuobaoGoods> goodses;
-//        try{
-//            goodses=goodsRestRepository.findByTitleAndCategory(title, null, customerId, 0, new PageRequest(pageNo, 10));
-//        }catch (Exception ex){
-//            goodses=null;
-//        }
-//        List<MallGoodModel> mallGoodModels=new ArrayList<>();
-//        if(!Objects.isNull(goodses)){
-//            for(DuobaoGoods g:goodses){
-//                MallGoodModel mallGoodModel=new MallGoodModel();
-//                mallGoodModel.setId(g.getId());
-//                mallGoodModel.setTitle(g.getTitle());
-//                mallGoodModel.setImg(g.getSmallPic());
-//                mallGoodModel.setOriginalPrice(g.getPrice());
-//                mallGoodModel.setPrice(g.getPrice());
-//                mallGoodModel.setIntegral(0);//todo
-//                mallGoodModels.add(mallGoodModel);
-//            }
-//            Page<MallGoodModel> mallGoodModelPage=new PageImpl<MallGoodModel>(mallGoodModels,new PageRequest(pageNo,10),goodses.getTotalElements());
-//            return mallGoodModelPage;
-//        }
-//        return null;
     }
 
     @Override
@@ -244,5 +227,57 @@ public class SisConfigServiceImpl implements SisConfigService {
         return setting;
     }
 
+    @Override
+    public void compatibilityOpenShopGoods(Long customerId) throws Exception {
+        if(customerId==null){
+            log.info("have no customerId,compatibilityOpenShopGoods fail");
+            return;
+        }
+        SisConfig sisConfig=sisConfigRepository.findByMerchantId(customerId);
+        if(sisConfig==null){
+            log.info("have no sisConfig,compatibilityOpenShopGoods fail");
+            return;
+        }
 
+        OpenGoodsIdLevelIds openGoodsIdLevelIds= sisConfig.getOpenGoodsIdlist();
+        List<SisLevel> needInitSisLevels=sisLevelService.defaultLevels(customerId);
+        if(needInitSisLevels==null||needInitSisLevels.isEmpty()){
+            log.info("have no needInitSisLevels,compatibilityOpenShopGoods fail");
+            return;
+        }
+
+        if(openGoodsIdLevelIds==null){
+            openGoodsIdLevelIds=new OpenGoodsIdLevelIds();
+        }
+
+        for(SisLevel sl:needInitSisLevels){
+            OpenGoodsIdLevelId openGoodsIdLevelId=openGoodsIdLevelIds.get(sl.getId());
+            if(openGoodsIdLevelId==null){
+                openGoodsIdLevelId=new OpenGoodsIdLevelId();
+                openGoodsIdLevelId.setLevelid(sl.getId());
+                openGoodsIdLevelId.setGoodsid(sisConfig.getOpenGoodsId());
+                openGoodsIdLevelIds.put(sl.getId(),openGoodsIdLevelId);
+            }
+        }
+        sisConfig.setOpenGoodsIdlist(openGoodsIdLevelIds);
+        sisConfigRepository.save(sisConfig);
+    }
+
+    @Override
+    public void defaultLevelSelected(Long customerId) throws Exception {
+        List<SisLevel> defaultLevels=sisLevelService.defaultLevels(customerId);
+        for(SisLevel sisLevel:defaultLevels){
+            if(sisLevel.getExtraUpgrade()==null||sisLevel.getExtraUpgrade()==0){
+                sisLevel.setExtraUpgrade(1);
+                sisLevelRepository.save(sisLevel);
+            }
+        }
+
+    }
+
+    @Override
+    public void compatibilityOpenShopGoodsAndSelected(Long customerId) throws Exception {
+        compatibilityOpenShopGoods(customerId);
+        defaultLevelSelected(customerId);
+    }
 }

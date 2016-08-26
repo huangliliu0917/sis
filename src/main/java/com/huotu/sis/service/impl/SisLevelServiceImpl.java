@@ -10,8 +10,8 @@ import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
 import com.huotu.sis.entity.support.OpenGoodsIdLevelId;
 import com.huotu.sis.entity.support.OpenSisAward;
-import com.huotu.sis.entity.support.SisLevelCondition;
 import com.huotu.sis.entity.support.SisLevelAward;
+import com.huotu.sis.entity.support.SisLevelCondition;
 import com.huotu.sis.model.sis.SimpleSisLevelModel;
 import com.huotu.sis.model.sis.SisLevelConditionsModel;
 import com.huotu.sis.model.sisweb.OpenLevelGoodsModel;
@@ -266,6 +266,8 @@ public class SisLevelServiceImpl implements SisLevelService {
     }
 
 
+
+
     @Override
     public SisLevel getUpgradeSisLevel(SisConfig sisConfig,Sis sis,OrderItems orderItems,User user) throws Exception {
         //获取店中店配置的开店等级对应的商品list
@@ -423,5 +425,28 @@ public class SisLevelServiceImpl implements SisLevelService {
         });
 
         return openLevelGoodsModels;
+    }
+
+    @Override
+    public List<SisLevel> defaultLevels(Long customerId) throws Exception {
+        List<SisLevel> sisLevels=new ArrayList<>();
+
+        List<SisLevel> allSisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoAsc(customerId);
+        if(allSisLevels==null||allSisLevels.isEmpty()){
+            return sisLevels;
+        }
+
+        List<SisLevel> defaultLevels=new ArrayList<>();
+        for(SisLevel sl:allSisLevels){
+            if(sl.getIsSystem()!=null&&sl.getIsSystem()==1){
+                defaultLevels.add(sl);
+            }
+        }
+
+        //如果找不到系统等级则取最小等级
+        if(defaultLevels.isEmpty()){
+            defaultLevels.add(allSisLevels.get(0));
+        }
+        return defaultLevels;
     }
 }

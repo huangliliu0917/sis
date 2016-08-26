@@ -157,4 +157,15 @@ public interface SisLevelService {
      * @throws Exception
      */
     SisLevelAward initSisLevelAward(long customerId, long levelId,int layerNum)throws Exception;
+
+    /**
+     * 获取默认等级
+     * @param customerId    商户ID
+     * @return
+     * @throws Exception
+     */
+    List<SisLevel> defaultLevels(Long customerId) throws Exception;
+
+
+
 }

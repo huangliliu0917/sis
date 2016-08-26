@@ -17,7 +17,6 @@ import com.huotu.huobanplus.common.entity.MerchantConfig;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.MerchantRepository;
-import com.huotu.huobanplus.sdk.common.repository.GoodsRestRepository;
 import com.huotu.huobanplus.sdk.mall.annotation.CustomerId;
 import com.huotu.sis.common.MathHelper;
 import com.huotu.sis.entity.Sis;
@@ -64,12 +63,8 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/sis")
 public class OpenSisShopController {
-
     @Autowired
     private Environment environment;
-
-    @Autowired
-    private GoodsRestRepository goodsRestRepository;
 
     @Autowired
     private SisConfigService sisConfigService;
@@ -110,64 +105,52 @@ public class OpenSisShopController {
      * @throws Exception    异常
      */
     @RequestMapping(value = "/openConfig", method = RequestMethod.GET)
-    public String openConfig(@CustomerId Long customerId, Model model)
-            throws Exception {
+    public String openConfig(@CustomerId Long customerId, Model model) throws Exception {
         if (customerId == null) {
             throw new Exception("商户ID不存在");
         }
+        //兼容
+        sisConfigService.compatibilityOpenShopGoodsAndSelected(customerId);
         SisConfig sisConfig = sisConfigService.initSisConfig(customerId);
-        if (sisConfig != null) {
-            if(sisConfig.getOpenGoodsId()!=null) {
-                Goods goods = goodRepository.findOne(sisConfig.getOpenGoodsId());
-                if(goods!=null){
-                    model.addAttribute("goodsTitle", goods.getTitle());
-                }
-
+        if(sisConfig.getOpenGoodsId()!=null) {
+            Goods goods = goodRepository.findOne(sisConfig.getOpenGoodsId());
+            if(goods!=null){
+                model.addAttribute("goodsTitle", goods.getTitle());
             }
-            List<SisLevelModel> sisLevelModels=new ArrayList<>();
 
-            List<SisLevel> sisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoAsc(customerId);
-            OpenGoodsIdLevelIds openGoodsIdLevelIds=sisConfig.getOpenGoodsIdlist();
-            for(SisLevel sl:sisLevels){
-                SisLevelModel sisLevelModel=new SisLevelModel();
-                sisLevelModel.setLevelId(sl.getId());
-                sisLevelModel.setLevelTitle(sl.getLevelName());
-                sisLevelModel.setExtraUpgrade(sl.getExtraUpgrade());
-                if(openGoodsIdLevelIds!=null){
-                    for(OpenGoodsIdLevelId ogid:openGoodsIdLevelIds.values()){
-                        if(sl.getId().equals(ogid.getLevelid())){
-                            Goods goods=null;
-                            if(ogid.getGoodsid()!=null){
-                                goods=goodRepository.findOne(ogid.getGoodsid());
-                            }
-                            if(goods!=null){
-                                sisLevelModel.setGoodsId(goods.getId());
-                                sisLevelModel.setGoodsTitle(goods.getTitle());
-                                sisLevelModel.setGoodsPrice(goods.getPrice());
-                            }
-                            break;
+        }
+        List<SisLevelModel> sisLevelModels=new ArrayList<>();
+
+        List<SisLevel> sisLevels=sisLevelRepository.findByMerchantIdOrderByLevelNoAsc(customerId);
+        OpenGoodsIdLevelIds openGoodsIdLevelIds=sisConfig.getOpenGoodsIdlist();
+        for(SisLevel sl:sisLevels){
+            SisLevelModel sisLevelModel=new SisLevelModel();
+            sisLevelModel.setLevelId(sl.getId());
+            sisLevelModel.setLevelTitle(sl.getLevelName());
+            sisLevelModel.setExtraUpgrade(sl.getExtraUpgrade());
+            if(openGoodsIdLevelIds!=null){
+                for(OpenGoodsIdLevelId ogid:openGoodsIdLevelIds.values()){
+                    if(sl.getId().equals(ogid.getLevelid())){
+                        Goods goods=null;
+                        if(ogid.getGoodsid()!=null){
+                            goods=goodRepository.findOne(ogid.getGoodsid());
                         }
+                        if(goods!=null){
+                            sisLevelModel.setGoodsId(goods.getId());
+                            sisLevelModel.setGoodsTitle(goods.getTitle());
+                            sisLevelModel.setGoodsPrice(goods.getPrice());
+                        }
+                        break;
                     }
                 }
-                sisLevelModels.add(sisLevelModel);
             }
-
-            model.addAttribute("sisLevelModels",sisLevelModels);
-
+            sisLevelModels.add(sisLevelModel);
         }
+
+        model.addAttribute("sisLevelModels",sisLevelModels);
+
         model.addAttribute("newSisConfig", sisConfig);
 
-        GoodsModel goodsModel=null;
-        if(sisConfig.getExtraUpGoodsId()!=null){
-            Goods extraUpGoods=goodRepository.findOne(sisConfig.getExtraUpGoodsId());
-            if(extraUpGoods!=null){
-                goodsModel=new GoodsModel();
-                goodsModel.setGoodsId(extraUpGoods.getId());
-                goodsModel.setGoodsTitle(extraUpGoods.getTitle());
-                goodsModel.setGoodsPrice(extraUpGoods.getPrice());
-            }
-        }
-        model.addAttribute("extraUpGoods",goodsModel);
         return "/sis/newOpenConfig";
     }
 
@@ -177,22 +160,6 @@ public class OpenSisShopController {
         return serverName;
     }
 
-//    /**
-//     * 替换host域名
-//     * @param url
-//     * @return
-//     */
-//    private String replaceHost(String url){
-//        String host=null;
-//        Pattern p=Pattern.compile("http[s]?://([^:]+)(:\\d+)?/?.*");
-//        Matcher m=p.matcher(url);
-//        while(m.find()){
-//            host=m.group(1);
-//        }
-//        String[] strings=host.split("\\.");
-//        host=host.replaceAll(strings[0],"pdmall");
-//        return host;
-//    }
 
     /**
      * 保存店中店开店设置(需要优化)

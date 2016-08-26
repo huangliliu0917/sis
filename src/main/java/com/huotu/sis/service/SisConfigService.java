@@ -73,4 +73,26 @@ public interface SisConfigService {
     SisRebateTeamManagerSetting initSisRebateTeamManagerSetting(Long merchantId) throws Exception;
 
 
+    /**
+     * 兼容单一商品转为为等级商品之后商品没有的尴尬
+     * @param customerId        商户ID
+     * @throws Exception
+     */
+    void compatibilityOpenShopGoods(Long customerId) throws Exception;
+
+
+    /**
+     * 兼容单一等级转换为等级商品之后没有选中的尴尬
+     * @param customerId    商户ID
+     * @throws Exception
+     */
+    void defaultLevelSelected(Long customerId) throws Exception;
+
+    /**
+     * 兼容单一等级转换为等级商品之后没有商品和没有选中的尴尬
+     * @param customerId
+     * @throws Exception
+     */
+    void compatibilityOpenShopGoodsAndSelected(Long customerId) throws Exception;
+
 }

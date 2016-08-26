@@ -110,6 +110,9 @@ public class SisWebUserController {
     @Autowired
     private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
 
+    @Autowired
+    private SisConfigService sisConfigService;
+
 
     VerificationService verificationService;
 
@@ -584,6 +587,9 @@ public class SisWebUserController {
         if (Objects.isNull(user)) {
             throw new UserNotFoundException("用户不存在");
         }
+        //        兼容
+        sisConfigService.compatibilityOpenShopGoodsAndSelected(customerId);
+
         SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
         if (Objects.isNull(sisConfig) || sisConfig.getEnabled() == 0) {
             throw new CustomerNotUseSisException("商家未启用店中店");
@@ -676,6 +682,7 @@ public class SisWebUserController {
             default:
                 throw new SisException("未知的开店门槛");
         }
+
 
         model.addAttribute("sisInviteLog", sisInviteLog);
         model.addAttribute("customerId", customerId);

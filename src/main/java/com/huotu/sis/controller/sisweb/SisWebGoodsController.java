@@ -741,7 +741,6 @@ public class SisWebGoodsController {
      * @return
      */
     public List<PcSisGoodsModel> calculateValue(List<SisGoods> sisGoodsList, User user) throws IOException, SisException {
-        log.info("calculateValue");
         List<PcSisGoodsModel> list = new ArrayList<>();
         //
         Sis sis = sisRepository.findByUser(user);
@@ -855,17 +854,13 @@ public class SisWebGoodsController {
                     appSisGoodsModel.setPrice(goods.getPrice());
                 }
 
-                log.info("first");
                 //如果是普通会员
                 if (userLevel.getType().equals(UserType.normal)) {
-                    log.info("normal");
                     appSisGoodsModel.setMinRebate(0);
                     appSisGoodsModel.setMaxRebate(0);
                 } else {
-                    log.info("xiaohuoban");
                     //三级返利
                     if (null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.ThreeMode)) {
-                        log.info("ThreeMode");
                         //将所有等级的价格都得到，然后去重
                         Set<Double> prices = new HashSet<>();
                         //应该返利的钱的列表
@@ -962,24 +957,17 @@ public class SisWebGoodsController {
                         }
                         //八级金字塔
                     } else if (null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.EightMode)) {
-                        log.info("EightMode");
                         if (null == goods.getProductRebateConfigs()) {
                             appSisGoodsModel.setMinRebate(0);
                             appSisGoodsModel.setMaxRebate(0);
                         } else {
-                            log.info("into baji fanli");
-                            log.info("exchangeRate:"+exchangeRate);
-                            log.info(user.getLevelId()+"  "+goods.getProductRebateConfigs().toString()+"  "+
-                                    merchantConfig.getRebateLayerConfigs().toString());
                             double[] integral = advanceQuatoRebateService.rebateAmountIntervalByLevelId(user.getLevelId()
                                     , goods.getProductRebateConfigs(), merchantConfig.getRebateLayerConfigs(), 1);
-                            log.info("integral[0]:"+integral[0]+"integral[1]:"+integral[1]);
                             appSisGoodsModel.setMinRebate((int) Math.rint(integral[0] * 100 / exchangeRate));
                             appSisGoodsModel.setMaxRebate((int) Math.rint(integral[1] * 100 / exchangeRate));
                         }
                         //经营者模式
                     }else if(null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.operator)){
-                        log.info("operator");
                         Integer maxRebate=0;
                         Integer minRebate=0;
                         Integer levelNo=null;
@@ -1016,7 +1004,6 @@ public class SisWebGoodsController {
                         appSisGoodsModel.setMinRebate(minRebate);
                         appSisGoodsModel.setMaxRebate(maxRebate);
                     } else {
-                        log.info("nonting");
                         appSisGoodsModel.setMinRebate(0);
                         appSisGoodsModel.setMaxRebate(0);
                     }
