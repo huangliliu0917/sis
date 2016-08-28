@@ -110,7 +110,7 @@
                                                         <th style="text-align: center">店铺等级</th>
                                                         <th style="text-align: center">开店商品</th>
                                                         <th style="text-align: center">开店奖</th>
-                                                        <th style="text-align: center">梦想合伙人送股</th>
+                                                        <th th:if="${isOpenMallCptCfg}" style="text-align: center">梦想合伙人送股</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -119,7 +119,7 @@
                                                         <td th:text="${l.levelTitle}">默认等级测试</td>
                                                         <td><a onclick="loadGoodsList(this)" href="#" th:attr="levelId=''+${l.levelId}"  th:text="${l.goodsTitle}==null?'选择商品':${l.goodsTitle}">选择商品</a></td>
                                                         <td><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId},type='0'">设置开店奖</a></td>
-                                                        <td><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId},type='2'">设置送股</a></td>
+                                                        <td  th:if="${isOpenMallCptCfg}"><a onclick="setSevelOpenAwardConfig(this)" href="#" th:attr="levelId=''+${l.levelId},type='2'">设置送股</a></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

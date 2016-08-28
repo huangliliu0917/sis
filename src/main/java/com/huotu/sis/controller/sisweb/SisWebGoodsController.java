@@ -582,11 +582,15 @@ public class SisWebGoodsController {
             }
 
         }
-
         if (Objects.isNull(user.getWeixinImageUrl())) {
             sis.setImgPath("images/moren.png");
-        } else
+        } else{
             sis.setImgPath(user.getWeixinImageUrl());
+        }
+        sisRepository.save(sis);
+
+
+
         model.addAttribute("sis", sis);
         model.addAttribute("customerId", user.getMerchant().getId());
         SisLevel sisLevel = sis.getSisLevel();

@@ -53,7 +53,7 @@ public interface UserService {
     String getLoginType(HttpServletRequest request) throws Exception;
 
     /**
-     * 开店
+     * 开店(废弃)
      *
      * @param userId
      */

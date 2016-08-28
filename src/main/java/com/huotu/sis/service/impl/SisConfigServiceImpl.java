@@ -75,7 +75,7 @@ public class SisConfigServiceImpl implements SisConfigService {
             sisConfig.setOpenMode(1);
             sisConfig.setOpenAwardMode(0);
             sisConfig.setEnableLevelUpgrade(false);
-            sisConfig.setOpenGoodsMode(0);
+            sisConfig.setOpenGoodsMode(1);
             sisConfig.setCorpStockSelf(0);
             sisConfig.setGoodSelectMode(0);
             sisConfig.setHomePageColor("#FF5BA0");

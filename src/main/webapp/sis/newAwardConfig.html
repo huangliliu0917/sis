@@ -162,7 +162,7 @@
                             var tmplRowLayer = $('#tmplRowLayer').html();
                             var temp = tmplRowLayer.replace(/\{LayerIndex\}/ig, __curLayerIndex);
 
-                            temp = temp.replace(/\{LayerName\}/ig, __curLayerIndex == 0 ? '开店人' : __curLayerIndex + '级上线店主');
+                            temp = temp.replace(/\{LayerName\}/ig, __curLayerIndex == 0 ? '店主' : __curLayerIndex + '级上线店主');
                             $(temp).appendTo($('#tblLayer'));
                             this._setValue(objRowConfig);
                             __curLayerIndex++;

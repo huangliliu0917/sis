@@ -3,10 +3,12 @@ package com.huotu.sis.service.impl;
 import com.huotu.common.base.CookieHelper;
 import com.huotu.common.base.RSAHelper;
 import com.huotu.huobanplus.common.entity.MallCptCfg;
+import com.huotu.huobanplus.common.entity.MerchantConfig;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.MallCptCfgRepository;
 import com.huotu.huobanplus.common.repository.MallCptMembersRepository;
+import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
@@ -81,7 +83,10 @@ public class UserServiceImpl implements UserService {
     private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
 
     @Autowired
-    private SisLevelService sisLevelService;
+    private MerchantConfigRepository merchantConfigRepository;
+
+    @Autowired
+    private CommonConfigsService commonConfigService;
 
     @Override
     public Long getUserId(HttpServletRequest request) {
@@ -175,8 +180,7 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        //多个开店商品，有等级
-        if (sisConfig.getOpenMode() == 1) {//todo 开店商品模式修改
+        if (sisConfig.getOpenMode() == 1) {//收费开店情况下
             OrderItems orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId).get(0);
             OpenGoodsIdLevelIds openGoodsIdLevelIds = sisConfig.getOpenGoodsIdlist();
             //根据订单号找到该用户购买的开店等级
@@ -191,9 +195,20 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+
+        //分享图片
+        String imgUrl;
+        MerchantConfig merchantConfig=merchantConfigRepository.findByMerchant(user.getMerchant());
+        if(merchantConfig!=null&&!StringUtils.isEmpty(merchantConfig.getLogoImg())){
+            imgUrl=commonConfigService.getResourceServerUrl()+merchantConfig.getLogoImg();
+        }else {
+            imgUrl=user.getWeixinImageUrl();
+        }
+
+
         if (sis == null) {
             sis = new Sis();
-            sis.setImgPath("");
+            sis.setImgPath(imgUrl);
             sis.setTitle("我的小店");
             sis.setShareDesc("分享描述");
             sis.setShareTitle("分享标题");

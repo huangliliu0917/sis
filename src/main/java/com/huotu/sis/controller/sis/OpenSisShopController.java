@@ -11,10 +11,8 @@ package com.huotu.sis.controller.sis;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.huotu.huobanplus.common.entity.Goods;
-import com.huotu.huobanplus.common.entity.Merchant;
-import com.huotu.huobanplus.common.entity.MerchantConfig;
-import com.huotu.huobanplus.common.entity.User;
+import com.huotu.huobanplus.common.entity.*;
+import com.huotu.huobanplus.common.repository.MallCptCfgRepository;
 import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
 import com.huotu.huobanplus.common.repository.MerchantRepository;
 import com.huotu.huobanplus.sdk.mall.annotation.CustomerId;
@@ -96,6 +94,9 @@ public class OpenSisShopController {
     @Autowired
     private SisLevelService sisLevelService;
 
+    @Autowired
+    private MallCptCfgRepository mallCptCfgRepository;
+
     /**
      * 进入开店设置页面(需要优化)
      *
@@ -146,6 +147,14 @@ public class OpenSisShopController {
             }
             sisLevelModels.add(sisLevelModel);
         }
+
+        //合伙人送股是否开启或关闭
+        boolean isOpenMallCptCfg=false;
+        MallCptCfg mallCptCfg = mallCptCfgRepository.findOne(customerId);
+        if(mallCptCfg!=null&&mallCptCfg.getStatus()!=null&&mallCptCfg.getStatus()==1){
+            isOpenMallCptCfg=true;
+        }
+        model.addAttribute("isOpenMallCptCfg",isOpenMallCptCfg);
 
         model.addAttribute("sisLevelModels",sisLevelModels);
 

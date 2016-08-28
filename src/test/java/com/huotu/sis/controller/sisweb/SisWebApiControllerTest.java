@@ -20,7 +20,7 @@ public class SisWebApiControllerTest extends WebTest {
     public void testCalculateShopRebate() throws Exception {
 
         //单一商品转换为等级商品兼容测试
-        SisConfig sisConfig=sisConfigRepository
+//        SisConfig sisConfig=sisConfigRepository;
 
     }
 
@@ -33,6 +33,7 @@ public class SisWebApiControllerTest extends WebTest {
     private SisConfig createSisConfig(){
         Merchant merchant=new Merchant();
         SisConfig sisConfig=new SisConfig();
-        sisConfig.setMerchantId();
+//        sisConfig.setMerchantId();
+        return null;
     }
 }
