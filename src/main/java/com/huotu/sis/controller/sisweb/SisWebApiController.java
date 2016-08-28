@@ -8,10 +8,7 @@ import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.model.sisweb.ResultModel;
 import com.huotu.sis.repository.*;
-import com.huotu.sis.service.SecurityService;
-import com.huotu.sis.service.SisLevelService;
-import com.huotu.sis.service.SisService;
-import com.huotu.sis.service.UserService;
+import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +65,9 @@ public class SisWebApiController {
 
     @Autowired
     private Environment environment;
+
+    @Autowired
+    private SisConfigService sisConfigService;
 
     /**
      * 检查签名是否正确
@@ -202,6 +202,9 @@ public class SisWebApiController {
             resultModel.setMessage(userId+"店中店已经开启");
             return resultModel;
         }
+
+        //兼容
+        sisConfigService.compatibilityOpenShopGoodsAndSelected(user.getMerchant().getId());
 
         SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
         if(sisConfig==null){

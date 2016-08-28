@@ -20,6 +20,7 @@ import java.util.Random;
 import static org.junit.Assert.assertEquals;
 
 /**
+ * 实体映射属性测试
  * @author slt
  */
 public class StringCorrectTest {
