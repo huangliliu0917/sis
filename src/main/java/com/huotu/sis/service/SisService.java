@@ -145,4 +145,11 @@ public interface SisService {
      * @return
      */
     double countPushPercent(Integer levelNo,List<RelationAndPercent> manageAwards);
+
+    /**
+     * 获取商家LOGO URL
+     * @param customerId
+     * @return
+     */
+    String getMerchantLogoUrl(Long customerId);
 }

@@ -3,7 +3,6 @@ package com.huotu.sis.service.impl;
 import com.huotu.common.base.CookieHelper;
 import com.huotu.common.base.RSAHelper;
 import com.huotu.huobanplus.common.entity.MallCptCfg;
-import com.huotu.huobanplus.common.entity.MerchantConfig;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.MallCptCfgRepository;
@@ -195,20 +194,9 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-
-        //分享图片
-        String imgUrl;
-        MerchantConfig merchantConfig=merchantConfigRepository.findByMerchant(user.getMerchant());
-        if(merchantConfig!=null&&!StringUtils.isEmpty(merchantConfig.getLogoImg())){
-            imgUrl=commonConfigService.getResourceServerUrl()+merchantConfig.getLogoImg();
-        }else {
-            imgUrl=user.getWeixinImageUrl();
-        }
-
-
         if (sis == null) {
             sis = new Sis();
-            sis.setImgPath(imgUrl);
+            sis.setImgPath(sisService.getMerchantLogoUrl(user.getMerchant().getId()));
             sis.setTitle("我的小店");
             sis.setShareDesc("分享描述");
             sis.setShareTitle("分享标题");

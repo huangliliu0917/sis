@@ -33,6 +33,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -582,13 +583,16 @@ public class SisWebGoodsController {
             }
 
         }
+
+        if(StringUtils.isEmpty(sis.getImgPath())){
+            sis.setImgPath(sisService.getMerchantLogoUrl(user.getMerchant().getId()));
+            sisRepository.save(sis);
+        }
         if (Objects.isNull(user.getWeixinImageUrl())) {
             sis.setImgPath("images/moren.png");
         } else{
             sis.setImgPath(user.getWeixinImageUrl());
         }
-        sisRepository.save(sis);
-
 
 
         model.addAttribute("sis", sis);

@@ -2,6 +2,7 @@ package com.huotu.sis.service.impl;
 
 import com.huotu.huobanplus.common.entity.*;
 import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
+import com.huotu.huobanplus.common.repository.MerchantRepository;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.common.repository.UserTempIntegralHistoryRepository;
 import com.huotu.sis.common.DateHelper;
@@ -17,6 +18,7 @@ import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.repository.SisOrderItemsRepository;
 import com.huotu.sis.repository.SisRepository;
+import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SisService;
 import com.huotu.sis.service.UserService;
 import org.apache.commons.logging.Log;
@@ -69,6 +71,12 @@ public class SisServiceImpl implements SisService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CommonConfigsService commonConfigService;
+
+    @Autowired
+    private MerchantRepository merchantRepository;
 
     @Override
     public long getSisLevelId(User user) throws Exception {
@@ -470,5 +478,20 @@ public class SisServiceImpl implements SisService {
             }
         }
         return rate;
+    }
+
+    @Override
+    public String getMerchantLogoUrl(Long customerId) {
+        //分享图片
+        String imgUrl="";
+        Merchant merchant=merchantRepository.findOne(customerId);
+        if(merchant==null){
+            return imgUrl;
+        }
+        MerchantConfig merchantConfig=merchantConfigRepository.findByMerchant(merchant);
+        if(merchantConfig!=null&&!StringUtils.isEmpty(merchantConfig.getLogoImg())){
+            imgUrl=commonConfigService.getResourceServerUrl()+merchantConfig.getLogoImg();
+        }
+        return imgUrl;
     }
 }
