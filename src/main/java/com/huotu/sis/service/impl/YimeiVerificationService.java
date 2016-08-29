@@ -23,6 +23,7 @@ import java.util.Formatter;
 import java.util.Locale;
 
 /**
+ * 短信配置(新版本弃用了)
  * @author slt
  */
 @Service("yimei")
