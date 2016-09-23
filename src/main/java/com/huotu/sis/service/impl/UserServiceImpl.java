@@ -1,6 +1,5 @@
 package com.huotu.sis.service.impl;
 
-import com.huotu.common.base.CookieHelper;
 import com.huotu.common.base.RSAHelper;
 import com.huotu.huobanplus.common.entity.MallCptCfg;
 import com.huotu.huobanplus.common.entity.OrderItems;
@@ -12,6 +11,7 @@ import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
+import com.huotu.sis.common.CookieHelper;
 import com.huotu.sis.entity.*;
 import com.huotu.sis.entity.support.*;
 import com.huotu.sis.exception.SisException;
@@ -110,7 +110,6 @@ public class UserServiceImpl implements UserService {
         if (userId > 0) {
             String encrypt = RSAHelper.encrypt(userId.toString(), publicKey);
             CookieHelper.set(response, userKey, encrypt, request.getServerName(), 60 * 60 * 24 * 365);
-//            CookieHelper.set(response, userKey, userId.toString(), request.getServerName(), 60 * 60 * 24 * 365);
         }
 
     }
