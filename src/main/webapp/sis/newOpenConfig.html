@@ -263,41 +263,40 @@
         var newSisConfig={};
         var enabled=$("input[name='enabled']:checked").val();
         newSisConfig.enabled=enabled;
-        if(enabled==1){
-            newSisConfig.openNeedInvite=$("input[name='openNeedInvite']:checked").val();
-            var limitShelvesNum=$("input[name='limitGoodsNum']:checked").val();
-            newSisConfig.limitShelvesNum=limitShelvesNum==1?true:false;
-            if(limitShelvesNum==1){
-                var rex=/^[0-9]*$/;
-                var maxMartketableNum=$("input[name='maxMartketableNum']").val();
-                var maxBrandNum=$("input[name='maxBrandNum']").val();
-                if(!rex.test(maxBrandNum)||!rex.test(maxBrandNum)||maxBrandNum.length==0){
-                    layer.msg("品牌数量请输入数字！");
-                    return;
-                }
-                if(!rex.test(maxMartketableNum)||!rex.test(maxMartketableNum)||maxBrandNum.length==0){
-                    layer.msg("单品数量请输入数字！");
-                    return;
-                }
-                newSisConfig.maxMartketableNum=maxMartketableNum;
-                newSisConfig.maxBrandNum=maxBrandNum;
-
+        newSisConfig.openNeedInvite=$("input[name='openNeedInvite']:checked").val();
+        var limitShelvesNum=$("input[name='limitGoodsNum']:checked").val();
+        newSisConfig.limitShelvesNum=limitShelvesNum==1?true:false;
+        if(limitShelvesNum==1){
+            var rex=/^[0-9]*$/;
+            var maxMartketableNum=$("input[name='maxMartketableNum']").val();
+            var maxBrandNum=$("input[name='maxBrandNum']").val();
+            if(!rex.test(maxBrandNum)||!rex.test(maxBrandNum)||maxBrandNum.length==0){
+                layer.msg("品牌数量请输入数字！");
+                return;
             }
-            newSisConfig.openMode=$("input[name='openMode']:checked").val();
-            newSisConfig.pushAwardMode=$("input[name='pushAwardMode']:checked").val();
-            newSisConfig.goodSelectMode=$("input[name='goodSelectMode']:checked").val();
-            newSisConfig.sisShopMode=$("input[name='sisShopMode']:checked").val();
-            newSisConfig.homePageColor=$("#homePageColor").val();
-            layer.confirm('即将保存内容，确定继续吗？', {
-                btn: ['确定','取消'] //按钮
-            }, function(){
-
-                submitAjax(newSisConfig);
-
-            }, function(){
-            });
+            if(!rex.test(maxMartketableNum)||!rex.test(maxMartketableNum)||maxBrandNum.length==0){
+                layer.msg("单品数量请输入数字！");
+                return;
+            }
+            newSisConfig.maxMartketableNum=maxMartketableNum;
+            newSisConfig.maxBrandNum=maxBrandNum;
 
         }
+        newSisConfig.openMode=$("input[name='openMode']:checked").val();
+        newSisConfig.pushAwardMode=$("input[name='pushAwardMode']:checked").val();
+        newSisConfig.goodSelectMode=$("input[name='goodSelectMode']:checked").val();
+        newSisConfig.sisShopMode=$("input[name='sisShopMode']:checked").val();
+        newSisConfig.homePageColor=$("#homePageColor").val();
+        layer.confirm('即将保存内容，确定继续吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+
+            submitAjax(newSisConfig);
+
+        }, function(){
+        });
+
+
     }
 
     function submitAjax(newSisConfig){
