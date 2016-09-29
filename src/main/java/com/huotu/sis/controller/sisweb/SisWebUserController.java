@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lgh on 2015/12/29.
@@ -321,17 +322,14 @@ public class SisWebUserController {
         User user = userRepository.findOne(userId);
         Sis sis = sisRepository.findByUser(user);
         List<TemplatePage> templatePage = templatePageRepository.findByScopeAndEnabled(Scope.sis, true);
+
+
+        templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId().equals(customerId)).
+                collect(Collectors.toList());
+
+
         List<TemplatePageModel> list = new ArrayList<>();
-//        List<TemplatePage> templatePage = resourceRepository.getListByScope(1);
-//        templatePage.stream().forEach(r->{
-//            TemplatePageModel templatePageModel = new TemplatePageModel();
-//            templatePageModel.setTemplateId(r.getId());
-//            templatePageModel.setTitle(r.getTitle());
-//            if(!Objects.isNull(r.getThumbnailResource())){
-//                log.debug("smartui old img:"+r.getThumbnailResource().getValue());
-//                templatePageModel.setImgPath(r.getThumbnailResource().getValue());
-//            }
-//        });
+
 //        smartui 图片地址，现在不对
         templatePage.stream().forEach(r -> {
             TemplatePageModel templatePageModel = new TemplatePageModel();
