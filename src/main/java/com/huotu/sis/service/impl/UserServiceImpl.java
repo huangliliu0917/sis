@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lgh on 2015/12/30.
@@ -142,31 +143,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public void open(Long userId) {
-        User user = userRepository.findOne(userId);
-        Sis sis = sisRepository.findByUser(user);
-        if (sis == null) {
-            List<TemplatePage> templatePage = templatePageRepository.findByScopeAndEnabled(Scope.sis, true);
-            Sis sis1 = new Sis();
-            sis1.setTitle("我的小店");
-            sis1.setImgPath("");
-            sis1.setShareDesc("分享描述");
-            sis1.setShareTitle("分享标题");
-            sis1.setStatus(true);
-            if (templatePage.size() > 0) {
-                sis1.setTemplateId(templatePage.get(0).getId());
-            }
-            sis1.setUser(user);
-            sis1.setDescription("我的小店描述");
-            sisRepository.save(sis1);
-        }
-    }
 
     @Override
     public void newOpen(User user, String orderId, SisConfig sisConfig) throws Exception {
         Sis sis = sisRepository.findByUser(user);
         List<TemplatePage> templatePage = templatePageRepository.findByScopeAndEnabled(Scope.sis, true);
+        templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId().equals(sisConfig.getMerchantId())).
+                collect(Collectors.toList());
         SisInviteLog sisInviteLog = sisInviteRepository.findFirstByAcceptIdOrderByAcceptTimeDesc(user.getId());
         //开店用户等级设置
         SisLevel sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());

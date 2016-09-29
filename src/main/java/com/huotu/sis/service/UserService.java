@@ -53,13 +53,6 @@ public interface UserService {
     String getLoginType(HttpServletRequest request) throws Exception;
 
     /**
-     * 开店(废弃)
-     *
-     * @param userId
-     */
-    void open(Long userId);
-
-    /**
      * 新的开店逻辑
      *      1.增加一条店中店记录
      *      2.开店奖计算
