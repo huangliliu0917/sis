@@ -58,7 +58,7 @@ public class SpringWebTest {
 //    protected WebClient webClient;
     protected WebDriver webDriver;
 
-    @PersistenceContext(unitName = "sisEntity")
+    @PersistenceContext(unitName = "entityManager")
     protected EntityManager entityManager;
 
     @Resource(name = "entityManagerFactory")

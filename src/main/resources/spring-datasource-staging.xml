@@ -10,7 +10,7 @@
                 <property name="resourceRef" value="true"></property>
             </bean>
         </property>
-
+        <property name="persistenceUnitName" value="entityManager" />
         <property name="packagesToScan">
             <array>
                 <value>com.huotu.sis.entity</value>

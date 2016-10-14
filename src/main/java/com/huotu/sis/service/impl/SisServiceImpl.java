@@ -318,14 +318,15 @@ public class SisServiceImpl implements SisService {
     }
 
     @Override
-    public List<User> saveUsersTempIntegral(List<UserTempIntegralHistoryModel> models) throws Exception {
-        List<User> users=new ArrayList<>();
+    public void saveUsersTempIntegral(List<UserTempIntegralHistoryModel> models) throws Exception {
+//        List<User> users=new ArrayList<>();
         models.forEach(model->{
-            User user=model.getUser();
-            user.setUserTempIntegral(user.getUserTempIntegral()+model.getIntegral());
-            users.add(user);
+            userRepository.updateUserTempIntegral(model.getIntegral(),model.getUser().getId());
+//            User user=model.getUser();
+//            user.setUserTempIntegral(user.getUserTempIntegral()+model.getIntegral());
+//            users.add(user);
         });
-        return userRepository.save(users);
+//        return userRepository.save(users);
     }
 
     @Override
