@@ -99,7 +99,7 @@ public interface SisService {
      * @return
      * @throws Exception
      */
-    List<User> saveUsersTempIntegral(List<UserTempIntegralHistoryModel> models) throws Exception;
+    void saveUsersTempIntegral(List<UserTempIntegralHistoryModel> models) throws Exception;
 
 
     /**
