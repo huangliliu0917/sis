@@ -7,6 +7,7 @@ import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.common.StringHelper;
+import com.huotu.sis.exception.SisException;
 import com.huotu.sis.model.sisweb.PublicParameterModel;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SecurityService;
@@ -72,6 +73,9 @@ public class CommonUserInterceptor implements HandlerInterceptor {
                 String customerIdStr=request.getParameter("customerId");
                 if(customerIdStr==null){
                     customerIdStr=request.getParameter("customerid");
+                }
+                if(customerIdStr==null){
+                    throw new SisException("未获取到商户ID");
                 }
                 Long customerId = Long.parseLong(customerIdStr);
                 Boolean toSSO = false;

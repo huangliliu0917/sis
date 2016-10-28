@@ -40,14 +40,14 @@ public class Sis {
     /**
      * 店主(小伙伴)
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @Description("店主(小伙伴)")
     private User user;
 
     /**
      * 店铺等级
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @Description("店铺等级")
     private SisLevel sisLevel;
 

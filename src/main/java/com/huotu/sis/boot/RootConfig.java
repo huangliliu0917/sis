@@ -12,6 +12,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
+ * root
  * Created by lgh on 2016/3/22.
  */
 

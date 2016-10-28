@@ -7,6 +7,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import javax.servlet.Filter;
 
 /**
+ * boot
  * Created by lgh on 2015/12/29.
  */
 public class SisWebBoot extends AbstractAnnotationConfigDispatcherServletInitializer {

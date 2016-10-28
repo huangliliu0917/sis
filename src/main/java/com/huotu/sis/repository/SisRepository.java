@@ -23,7 +23,11 @@ import java.util.List;
  */
 @RepositoryRestResource
 public interface SisRepository extends JpaRepository<Sis, Long>,JpaSpecificationExecutor<Sis> {
+    @Query("select s from Sis as s where s.user=?1")
     Sis findByUser(User user);
+
+    @Query("select s from Sis as s where s.user.id=?1")
+    Sis findByUserId(Long userId);
 
     @Query("select s from Sis as s where s.user in (select u from User as u where u.belongOne=?1)")
     List<Sis> findByUserWhereUserBeloneis(Long belongOneId);

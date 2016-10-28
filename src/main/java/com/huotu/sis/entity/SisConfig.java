@@ -136,7 +136,7 @@ public class SisConfig {
 
     @Column(name = "Open_GoodsMode")
     @Description("开店商品模式 0:一种开店商品，1：每个等级都有一种开店商品(新版本弃用)")
-    private Integer openGoodsMode;
+    private Integer openGoodsMode=1;
 
     @Column(name = "Open_GoodsIdlist",columnDefinition = "longtext")
     @Description("个性化商品的和等级")

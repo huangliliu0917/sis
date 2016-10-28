@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * mvc
  * Created by lgh on 2016/1/12.
  */
 @Configuration
@@ -80,7 +81,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 
     /**
      * 设置控制器方法参数化输出
-     * @param argumentResolvers
+     * @param argumentResolvers 参数
      */
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new OutputHandler());
@@ -88,7 +89,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 
     /**
      * 监听 控制器的ApiResult返回值
-     * @param returnValueHandlers
+     * @param returnValueHandlers 参数
      */
     public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> returnValueHandlers) {
         returnValueHandlers.add(new ApiResultHandler());
