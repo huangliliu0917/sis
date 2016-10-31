@@ -86,6 +86,7 @@ public class SisLevelController {
                     sisLevelAwards=userService.oldPushAwardCompatibility(customerId);
                 }
                 unit="%";
+                individuality=true;
                 break;
             case 2:
                 sisLevelAwards=sisConfig.getSisLevelStockAwards();
