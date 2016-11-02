@@ -132,7 +132,7 @@ public class SisConfigServiceImpl implements SisConfigService {
     public List<CategoryModel> getCategory(Long customerId) throws IOException {
         List<Category> categories;
         try{
-            categories=categoryRestRepository.findByTitleAndCategory(customerId, new PageRequest(0, Integer.MAX_VALUE)).getContent();
+            categories=categoryRestRepository.findByMerchantId(customerId, new PageRequest(0, Integer.MAX_VALUE)).getContent();
         }catch (Exception ex){
             return null;
         }

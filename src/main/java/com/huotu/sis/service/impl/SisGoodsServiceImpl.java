@@ -21,6 +21,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -97,6 +98,8 @@ public class SisGoodsServiceImpl implements SisGoodsService {
         //筛选条件
         Specification<Goods> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+            List<Integer> list= Arrays.asList(0,2);
+            predicates.add(root.get("saleChannels").as(Integer.class).in(list));
             predicates.add(criteriaBuilder.equal(root.get("owner").get("id").as(Long.class), merchantId));
             predicates.add(criteriaBuilder.equal(root.get("scenes").as(Integer.class), 0));
             predicates.add(criteriaBuilder.isFalse(root.get("disabled")));
