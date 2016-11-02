@@ -20,7 +20,7 @@ public interface GoodRepository extends JpaRepository<Goods, Long>, JpaSpecifica
 
     @Query("select g.id,g.title,g.price,g.stock,sg.id from Goods as g left join SisGoodsRecommend as sg " +
             "on g.id=sg.goodsId where g.owner.id=?1 and g.title like ?2" +
-            " and g.disabled=false and g.marketable=true and g.scenes=0 ")
+            " and g.disabled=false and g.marketable=true and g.scenes=0 and g.saleChannels in(0,2)")
     Page findByOwnerAndTitleLike(Long merchantId, String title, Pageable pageable);
 
 }
