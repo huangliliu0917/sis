@@ -176,24 +176,24 @@ public class SisWebGoodsController {
      */
     @RequestMapping(value = "/sisIndex", method = RequestMethod.GET)
     public String sisIndex(Long customerId,Model model) throws IOException, SisException {
-        Long userId = getCurrentUserId();
-        User user = userRepository.findOne(userId);
-        if (null == user)
-            throw new SisException("该用户不存在或者已经过期");
-        Sis sis = sisRepository.findByUser(user);
-        if (null == sis)
-            throw new SisException("您尚未开店，请先去开店再进行下一步操作！");
-        if (null == user.getWeixinImageUrl())
-            sis.setImgPath("images/moren.png");
-        else
-            sis.setImgPath(user.getWeixinImageUrl());
-        model.addAttribute("sis", sis);
-        SisLevel sisLevel = sis.getSisLevel();
-        if (null != sisLevel) {
-            model.addAttribute("sisLevelName", sisLevel.getLevelName());
-        } else {
-            model.addAttribute("sisLevelName", "默认等级");
-        }
+//        Long userId = getCurrentUserId();
+//        User user = userRepository.findOne(userId);
+//        if (null == user)
+//            throw new SisException("该用户不存在或者已经过期");
+//        Sis sis = sisRepository.findByUser(user);
+//        if (null == sis)
+//            throw new SisException("您尚未开店，请先去开店再进行下一步操作！");
+////        if (null == user.getWeixinImageUrl())
+////            sis.setImgPath("images/moren.png");
+////        else
+////            sis.setImgPath(user.getWeixinImageUrl());
+////        model.addAttribute("sis", sis);
+//        SisLevel sisLevel = sis.getSisLevel();
+//        if (null != sisLevel) {
+//            model.addAttribute("sisLevelName", sisLevel.getLevelName());
+//        } else {
+//            model.addAttribute("sisLevelName", "默认等级");
+//        }
         model.addAttribute("customerId", customerId);
         return "/sisweb/sisIndex";
     }

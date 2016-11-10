@@ -10,16 +10,12 @@
 package com.huotu.sis.repository.mall;
 
 import com.huotu.huobanplus.common.entity.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.Description;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,35 +83,11 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @Override
     <S extends User> S save(S entity);
 
-    //获取
-    @PreAuthorize("permitAll()")
-//    @PreAuthorize("hasAnyRole('ROOT','" + CommonServiceSpringConfig.MallUser + "','" + ManagerRole + "')")
-    @Override
-    User findOne(Long aLong);
-
-    @Override
-    Page<User> findAll(Pageable pageable);
-
-    @Override
-    User getOne(Long aLong);
-
-    @Override
-    List<User> findAll(Iterable<Long> longs);
-
-    @Override
-    List<User> findAll(Sort sort);
-
-    @Override
-    List<User> findAll();
-
     @Description("根据用户数组id得到用户数组")
     @Query("select user from User user where user.id in :ids")
     List<User> findByUserIds(
             @Param("ids")
             Collection<Long> ids);
-
-    @Description("根据用户登录名获取用户信息")
-    User findByLoginName(@Param("loginName") String loginName);
 
     @Description("修改用户的积分")
     @Modifying
