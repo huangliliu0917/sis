@@ -6,7 +6,7 @@ import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.support.RebateConfiguration;
 import com.huotu.huobanplus.common.model.RebateMode;
 import com.huotu.huobanplus.common.model.RebatePair;
-import com.huotu.huobanplus.common.repository.MallBaseRepository;
+import com.huotu.sis.repository.mall.MallBaseRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;

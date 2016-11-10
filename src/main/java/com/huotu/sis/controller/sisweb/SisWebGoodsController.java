@@ -1,17 +1,13 @@
 package com.huotu.sis.controller.sisweb;
 
 import com.huotu.huobanplus.common.UserType;
-import com.huotu.huobanplus.common.dataService.AdvanceQuatoRebateService;
-import com.huotu.huobanplus.common.dataService.NormalRebateService;
-import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.*;
 import com.huotu.huobanplus.common.entity.support.*;
 import com.huotu.huobanplus.common.model.RebateCompatible;
 import com.huotu.huobanplus.common.model.RebateInfo;
 import com.huotu.huobanplus.common.model.RebateMode;
 import com.huotu.huobanplus.common.model.adrebateconfig.ProductDisRebateDesc;
-import com.huotu.huobanplus.common.repository.*;
-import com.huotu.huobanplus.common.utils.DateUtil;
+import com.huotu.sis.common.DateUtil;
 import com.huotu.sis.common.MathHelper;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.entity.Sis;
@@ -23,6 +19,7 @@ import com.huotu.sis.exception.SisException;
 import com.huotu.sis.exception.UserNotFoundException;
 import com.huotu.sis.model.sisweb.*;
 import com.huotu.sis.repository.*;
+import com.huotu.sis.repository.mall.*;
 import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,13 +61,11 @@ public class SisWebGoodsController {
     @Autowired
     CategoryRepository categoryRepository;
     @Autowired
-    SisOrderItemsRepository sisOrderItemsRepository;
+    OrderItemsRepository sisOrderItemsRepository;
     @Autowired
-    SisOrderRepository sisOrderRepository;
+    OrderRepository sisOrderRepository;
     @Autowired
     CommonConfigsService commonConfigService;
-    @Autowired
-    UTIHRepository utihRepository;
     @Autowired
     private UserLevelRepository userLevelRepository;
     @Autowired

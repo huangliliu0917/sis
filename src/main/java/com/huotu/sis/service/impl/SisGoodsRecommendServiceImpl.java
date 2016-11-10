@@ -2,9 +2,9 @@ package com.huotu.sis.service.impl;
 
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.GoodsRepository;
-import com.huotu.sis.entity.SisGoods;
 import com.huotu.sis.common.SqlHelper;
+import com.huotu.sis.entity.SisGoods;
+import com.huotu.sis.repository.mall.GoodsRepository;
 import com.huotu.sis.service.SisGoodsRecommendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

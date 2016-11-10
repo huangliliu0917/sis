@@ -1,14 +1,13 @@
 package com.huotu.sis.interceptor;
 
 import com.huotu.common.base.HttpHelper;
-
 import com.huotu.huobanplus.common.UserType;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.common.StringHelper;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.model.sisweb.PublicParameterModel;
+import com.huotu.sis.repository.mall.UserRepository;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SecurityService;
 import com.huotu.sis.service.UserService;

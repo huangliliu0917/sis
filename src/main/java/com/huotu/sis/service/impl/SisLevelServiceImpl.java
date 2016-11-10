@@ -3,8 +3,6 @@ package com.huotu.sis.service.impl;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.GoodsRepository;
-import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
@@ -19,6 +17,8 @@ import com.huotu.sis.model.sisweb.SisLevelModel;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.repository.SisRepository;
+import com.huotu.sis.repository.mall.GoodsRepository;
+import com.huotu.sis.repository.mall.UserRepository;
 import com.huotu.sis.service.SisLevelService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -407,7 +407,7 @@ public class SisLevelServiceImpl implements SisLevelService {
             goodsIds.add(o.getGoodsid());
         }
         List<SisLevel> levelList=sisLevelRepository.findByIdIn(levelIds);
-        List<Goods> goodsList=goodsRepository.findByIdIn(goodsIds,sisConfig.getMerchantId());
+        List<Goods> goodsList=goodsRepository.findByIdIns(goodsIds,sisConfig.getMerchantId());
         for(OpenGoodsIdLevelId o:sisConfig.getOpenGoodsIdlist().values()){
             OpenLevelGoodsModel openLevelGoodsModel=new OpenLevelGoodsModel();
             SisLevel level=levelList.stream().filter(sisLevel -> o.getLevelid().equals(sisLevel.getId())).findFirst().get();

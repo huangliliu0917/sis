@@ -5,10 +5,6 @@ import com.huotu.common.base.RSAHelper;
 import com.huotu.huobanplus.common.entity.MallCptCfg;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.MallCptCfgRepository;
-import com.huotu.huobanplus.common.repository.MallCptMembersRepository;
-import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
-import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
 import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
@@ -17,6 +13,7 @@ import com.huotu.sis.entity.support.*;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.model.sisweb.SisRebateModel;
 import com.huotu.sis.repository.*;
+import com.huotu.sis.repository.mall.*;
 import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,7 +74,7 @@ public class UserServiceImpl implements UserService {
     private SisInviteRepository sisInviteRepository;
 
     @Autowired
-    private SisOrderItemsRepository sisOrderItemsRepository;
+    private OrderItemsRepository sisOrderItemsRepository;
 
     @Autowired
     private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
@@ -94,6 +91,8 @@ public class UserServiceImpl implements UserService {
 //            userRepository.findAll();
             return 97278L;//146 4471商户 王明
 //            return 96116L;
+//        }if(env.acceptsProfiles("staging")){
+//            return 17377L;
         } else {
             String encrypt = CookieHelper.get(request, userKey);
             try {

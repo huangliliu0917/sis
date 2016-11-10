@@ -3,11 +3,13 @@ package com.huotu.sis.controller.sisweb;
 import com.huotu.huobanplus.common.entity.Order;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.model.sisweb.ResultModel;
 import com.huotu.sis.repository.*;
+import com.huotu.sis.repository.mall.OrderItemsRepository;
+import com.huotu.sis.repository.mall.OrderRepository;
+import com.huotu.sis.repository.mall.UserRepository;
 import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,10 +42,10 @@ public class SisWebApiController {
     private UserRepository userRepository;
 
     @Autowired
-    private SisOrderRepository sisOrderRepository;
+    private OrderRepository sisOrderRepository;
 
     @Autowired
-    private SisOrderItemsRepository sisOrderItemsRepository;
+    private OrderItemsRepository sisOrderItemsRepository;
 
     @Autowired
     private SecurityService securityService;
@@ -75,7 +77,7 @@ public class SisWebApiController {
      * @return          签名是否正确
      */
     private boolean checkSign(HttpServletRequest request){
-        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
+        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")&&!environment.acceptsProfiles("staging")){
             String sign=request.getParameter("sign");
             try {
                 if (sign == null || !sign.equals(securityService.getSign(request))) {

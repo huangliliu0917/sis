@@ -2,7 +2,7 @@ package cm.huotu.sis.service;
 
 import cm.huotu.sis.common.WebTest;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.UserRepository;
+import com.huotu.sis.repository.mall.UserRepository;
 import com.huotu.sis.service.UserService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

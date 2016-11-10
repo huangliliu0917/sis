@@ -12,9 +12,9 @@ import com.huotu.sis.entity.support.RelationAndPercent;
 import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.model.sis.CategoryModel;
 import com.huotu.sis.model.sis.MallGoodModel;
-import com.huotu.sis.repository.GoodRepository;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
+import com.huotu.sis.repository.mall.GoodsRepository;
 import com.huotu.sis.service.SisConfigService;
 import com.huotu.sis.service.SisLevelService;
 import com.huotu.sis.service.StaticResourceService;
@@ -57,7 +57,7 @@ public class SisConfigServiceImpl implements SisConfigService {
     GoodsRestRepository goodsRestRepository;
 
     @Autowired
-    GoodRepository goodRepository;
+    GoodsRepository goodRepository;
 
     @Autowired
     SisLevelRepository sisLevelRepository;

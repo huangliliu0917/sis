@@ -218,4 +218,6 @@ public interface UserService {
      */
     void saveUserBalance(User user, double money)throws Exception;
 
+//    Long getUserId()
+
 }
