@@ -1,9 +1,9 @@
 package com.huotu.sis.repository.mall;
 
-import com.huotu.huobanplus.base.data.JpaSpecificationExecutor;
 import com.huotu.huobanplus.common.entity.GoodsKeywords;
 import com.huotu.huobanplus.model.entity.pk.GoodsKeywordsPK;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 

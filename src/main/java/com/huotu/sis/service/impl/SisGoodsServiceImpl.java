@@ -1,6 +1,5 @@
 package com.huotu.sis.service.impl;
 
-import com.huotu.huobanplus.base.data.MutableSpecification;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.Merchant;
 import com.huotu.huobanplus.common.entity.User;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -169,7 +167,7 @@ public class SisGoodsServiceImpl implements SisGoodsService {
     public Page<SisGoods> getMallGoods(Merchant merchant, User user, int page, int pageSize) {
         Sort sort= new Sort(Sort.Direction.DESC, "autoMarketDate");
         Pageable pageable=new PageRequest(page,pageSize,sort);
-        Page<Goods> goodses=goodsRepository.findAll(new MutableSpecification<Goods>() {
+        Page<Goods> goodses=goodsRepository.findAll(new Specification<Goods>() {
             @Override
             public Predicate toPredicate(Root<Goods> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 return cb.and(
@@ -177,10 +175,6 @@ public class SisGoodsServiceImpl implements SisGoodsService {
                     cb.isTrue(root.get("marketable").as(Boolean.class)),
                     cb.isFalse(root.get("disabled").as(Boolean.class))
                 );
-            }
-            @Override
-            public void beforeQuery(TypedQuery query) {
-
             }
         },pageable);
         List<SisGoods> sisGoodses=new ArrayList<>();

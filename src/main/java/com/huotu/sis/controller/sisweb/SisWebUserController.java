@@ -1,7 +1,6 @@
 package com.huotu.sis.controller.sisweb;
 
 import com.huotu.common.base.HttpHelper;
-import com.huotu.huobanplus.base.toolService.ResourceService;
 import com.huotu.huobanplus.common.UserType;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.MerchantConfig;
@@ -12,7 +11,6 @@ import com.huotu.huobanplus.model.type.MallEmbedResource;
 import com.huotu.huobanplus.sdk.mall.service.MallInfoService;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
-import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
 import com.huotu.huobanplus.smartui.sdk.SmartPageRepository;
 import com.huotu.sis.common.*;
 import com.huotu.sis.entity.*;
@@ -25,6 +23,7 @@ import com.huotu.sis.repository.mall.GoodsRepository;
 import com.huotu.sis.repository.mall.MerchantConfigRepository;
 import com.huotu.sis.repository.mall.MerchantRepository;
 import com.huotu.sis.repository.mall.UserRepository;
+import com.huotu.sis.repository.smartui.TemplatePageRepository;
 import com.huotu.sis.service.*;
 import com.huotu.sis.service.impl.NoteSendHandle;
 import com.jayway.jsonpath.JsonPath;
@@ -67,8 +66,6 @@ public class SisWebUserController {
     private UserRepository userRepository;
     @Autowired
     private TemplatePageRepository templatePageRepository;
-    @Autowired
-    private ResourceService resourceService;
     @Autowired
     private SmartPageRepository resourceRepository;
     @Autowired
@@ -446,26 +443,26 @@ public class SisWebUserController {
         return "sisweb/sisHome";
     }
 
-    private AppSisBaseInfoModel toSisBaseInfoModel(Sis sis, User user) throws IOException {
-        //分享二维码的URL
-        String indexUrl = getSisCustomerUrl(user.getMerchant().getId(), user.getId());
-
-        AppSisBaseInfoModel appSisBaseInfoModel = new AppSisBaseInfoModel();
-        appSisBaseInfoModel.setUserId(user.getId());
-        appSisBaseInfoModel.setEnableSis(sis.isStatus());
-
-        if (StringUtils.isEmpty(sis.getImgPath()))
-            appSisBaseInfoModel.setImgUrl(resourceService.getResource(defaultHead).getURL().toString());
-        else
-            appSisBaseInfoModel.setImgUrl(resourceService.getResource(sis.getImgPath()).getURL().toString());
-        appSisBaseInfoModel.setSisId(sis.getId());
-        appSisBaseInfoModel.setTitle(sis.getTitle());
-        appSisBaseInfoModel.setSisDescription(sis.getDescription());
-        appSisBaseInfoModel.setShareTitle(sis.getShareTitle());
-        appSisBaseInfoModel.setShareDescription(sis.getShareDesc());
-        appSisBaseInfoModel.setIndexUrl(indexUrl);
-        return appSisBaseInfoModel;
-    }
+//    private AppSisBaseInfoModel toSisBaseInfoModel(Sis sis, User user) throws IOException {
+//        //分享二维码的URL
+//        String indexUrl = getSisCustomerUrl(user.getMerchant().getId(), user.getId());
+//
+//        AppSisBaseInfoModel appSisBaseInfoModel = new AppSisBaseInfoModel();
+//        appSisBaseInfoModel.setUserId(user.getId());
+//        appSisBaseInfoModel.setEnableSis(sis.isStatus());
+//
+//        if (StringUtils.isEmpty(sis.getImgPath()))
+//            appSisBaseInfoModel.setImgUrl(resourceService.getResource(defaultHead).getURL().toString());
+//        else
+//            appSisBaseInfoModel.setImgUrl(resourceService.getResource(sis.getImgPath()).getURL().toString());
+//        appSisBaseInfoModel.setSisId(sis.getId());
+//        appSisBaseInfoModel.setTitle(sis.getTitle());
+//        appSisBaseInfoModel.setSisDescription(sis.getDescription());
+//        appSisBaseInfoModel.setShareTitle(sis.getShareTitle());
+//        appSisBaseInfoModel.setShareDescription(sis.getShareDesc());
+//        appSisBaseInfoModel.setIndexUrl(indexUrl);
+//        return appSisBaseInfoModel;
+//    }
 
     /**
      * 获取商家域名

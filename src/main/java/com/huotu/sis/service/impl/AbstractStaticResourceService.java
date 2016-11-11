@@ -10,7 +10,6 @@
 
 package com.huotu.sis.service.impl;
 
-import com.huotu.huobanplus.base.toolService.VFSHelper;
 import com.huotu.sis.service.StaticResourceService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
