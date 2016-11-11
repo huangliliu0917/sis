@@ -56,7 +56,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query(value = "SELECT a FROM Category a WHERE a.owner.id = ?1 and a.catPath like %?2")
     List<Category> findByOwner_IdAndCatPath(Long ownerId, String catPath);
 
-    List<Category> findByOwner(Merchant merchant);
+    @Query("select c from Category as c where c.owner.id=?1")
+    List<Category> findByOwner(Long customerId);
 
     // 删除
     @PreAuthorize("hasAnyRole('ROOT','" + ManagerRole + "')")

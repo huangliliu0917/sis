@@ -248,7 +248,7 @@ public class SisWebGoodsController {
 //        if(null==sis){
 //            response.sendRedirect(goodsShareUrl);
 //        }
-        List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods, user);
+        List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
 
         SisGoods sisGoods =null;
         if(sisGoodses!=null&&!sisGoodses.isEmpty()){
@@ -470,7 +470,7 @@ public class SisWebGoodsController {
 
         } else if (operType == 1) {
 //            SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user).get(0);
-            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods, user);
+            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
 
             SisGoods sisGoods =null;
             if(sisGoodses!=null&&!sisGoodses.isEmpty()){
@@ -519,7 +519,7 @@ public class SisWebGoodsController {
 
         } else if (operType == 2) {
 //            SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user).get(0);
-            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods, user);
+            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
 
             SisGoods sisGoods =null;
             if(sisGoodses!=null&&!sisGoodses.isEmpty()){
@@ -765,7 +765,7 @@ public class SisWebGoodsController {
         if(sisConfig==null||sisConfig.getEnabled()==0){
             throw new SisException("未找到店中店配置或未启用店中店");
         }
-        MerchantConfig merchantConfig = merchantConfigRepository.findByMerchant(user.getMerchant());
+        MerchantConfig merchantConfig = merchantConfigRepository.findByMerchantId(user.getMerchant().getId());
         int exchangeRate = 100; //默认100
         RebateInfo merchantRebateInfo = new RebateInfo();
         //

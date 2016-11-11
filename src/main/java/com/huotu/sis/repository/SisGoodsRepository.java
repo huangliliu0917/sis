@@ -9,7 +9,6 @@
 
 package com.huotu.sis.repository;
 
-import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.Merchant;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.sis.entity.SisGoods;
@@ -37,7 +36,8 @@ import java.util.List;
 )
 public interface SisGoodsRepository extends JpaRepository<SisGoods, Long>,JpaSpecificationExecutor<SisGoods>, SisGoodsRepositoryCustom {
 
-    List<SisGoods> findByGoodsAndUser(Goods goods, User user);
+    @Query("select sg from  SisGoods as sg where sg.goods.id=?1 and sg.user.id=?2")
+    List<SisGoods> findByGoodsAndUser(Long goodsId, Long userId);
 
     @RestResource(exported = false)
     @Query(
