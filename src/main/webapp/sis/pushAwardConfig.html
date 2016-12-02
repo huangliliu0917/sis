@@ -554,24 +554,24 @@
         }
 
         var pushSave = layer.load(0, {shade: false});
-        $.ajax({
-            type: "POST",
-            dataType: 'json',
-            url: "savePushAwardConfig",
-            contentType:"application/json",
-            data: JSON.stringify(setting),
-            success: function (result) {
-                layer.close(pushSave);
-//                var _result = $.parseJSON(result);
-                if (result.code == 200) {
-//                    jBox.tip('保存成功', 'success');
-                    layer.msg("保存成功", {icon: 1});
-                    return;
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: "savePushAwardConfig",
+                contentType:"application/json",
+                data: JSON.stringify(setting),
+                success: function (result) {
+                    layer.close(pushSave);
+    //                var _result = $.parseJSON(result);
+                    if (result.code == 200) {
+    //                    jBox.tip('保存成功', 'success');
+                        layer.msg("保存成功", {icon: 1});
+                        return;
+                    }
+                    layer.msg("保存错误", {icon: 2});
+    //                jBox.tip('保存错误:' + _result.msg, 'error');
                 }
-                layer.msg("保存错误", {icon: 2});
-//                jBox.tip('保存错误:' + _result.msg, 'error');
-            }
-        });
+            });
     }
 
     teamManagerRebateConfig.createSetting=function(){

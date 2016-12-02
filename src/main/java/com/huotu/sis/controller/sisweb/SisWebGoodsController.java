@@ -14,6 +14,7 @@ import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisGoods;
 import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.support.SisLevelAward;
 import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.exception.UserNotFoundException;
@@ -100,6 +101,9 @@ public class SisWebGoodsController {
 
     @Autowired
     private SisService sisService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 查找品牌对应的商品列表详情
@@ -806,7 +810,9 @@ public class SisWebGoodsController {
                 //暂时按照直推奖的最小值来显示
                 switch (pushModel){
                     case 0:
-                        directRebate = (int) Math.rint(goods.getShopRebateMin() * level.getRebateRate() / exchangeRate);
+                        SisLevelAward sisLevelAward=sisConfig.getSisLevelPushAwards().get(sis.getSisLevel().getId());
+                        double rebate=userService.getSisRebateModel(sisLevelAward.getCfg().get(0),sis);
+                        directRebate = (int) Math.rint(goods.getShopRebateMin() * rebate / exchangeRate);
                         break;
                     case 1:
                         List<ProIdAndAmount>proIdAndAmounts=goods.getShopRebates();

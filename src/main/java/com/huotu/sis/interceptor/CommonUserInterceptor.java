@@ -77,6 +77,8 @@ public class CommonUserInterceptor implements HandlerInterceptor {
                     throw new SisException("未获取到商户ID");
                 }
                 Long customerId = Long.parseLong(customerIdStr);
+
+
                 Boolean toSSO = false;
                 //强制刷新用户
                 String forceRefresh = "0";
