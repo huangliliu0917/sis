@@ -148,7 +148,7 @@ public class SisServiceImpl implements SisService {
     @Override
     public void calculatePushAward(User user, Order order, String unionOrderId,SisConfig sisConfig) throws Exception {
         List<UserTempIntegralHistoryModel> models=new ArrayList<>();
-        MerchantConfig merchantConfig =merchantConfigRepository.findByMerchant(user.getMerchant());
+        MerchantConfig merchantConfig =merchantConfigRepository.findByMerchantId(user.getMerchant().getId());
         if(Objects.isNull(merchantConfig)){
             //未找到商家配置信息，无法返利
             log.info("userId:"+user.getId()+" Store configuration information was not found to rebate");
@@ -487,7 +487,7 @@ public class SisServiceImpl implements SisService {
         if(merchant==null){
             return imgUrl;
         }
-        MerchantConfig merchantConfig=merchantConfigRepository.findByMerchant(merchant);
+        MerchantConfig merchantConfig=merchantConfigRepository.findByMerchantId(merchant.getId());
         if(merchantConfig!=null&&!StringUtils.isEmpty(merchantConfig.getLogoImg())){
             imgUrl=commonConfigService.getResourceServerUrl()+merchantConfig.getLogoImg();
         }

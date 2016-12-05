@@ -376,7 +376,7 @@ public class OpenSisShopController {
             throw new Exception("商户ID不存在");
         }
         Merchant merchant=merchantRespository.findOne(customerId);
-        MerchantConfig merchantConfig =merchantConfigRepository.findByMerchant(merchant);
+        MerchantConfig merchantConfig =merchantConfigRepository.findByMerchantId(merchant.getId());
 
         //积分兑换钱的比例
         int exchangeRate=merchantConfig.getExchangeRate();
