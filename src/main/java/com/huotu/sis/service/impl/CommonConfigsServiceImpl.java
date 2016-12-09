@@ -17,7 +17,7 @@ public class CommonConfigsServiceImpl implements CommonConfigsService {
 
     @Override
     public String getWebUrl() {
-        return env.getProperty("sisweb.weburl", "http://192.168.1.57:8080");
+        return env.getProperty("sisweb.weburl", "http://192.168.1.57:8081");
     }
 
     @Override

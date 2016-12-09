@@ -10,14 +10,11 @@
 package com.huotu.sis.repository.mall;
 
 import com.huotu.huobanplus.common.entity.Category;
-import com.huotu.huobanplus.common.entity.Merchant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,57 +24,16 @@ import java.util.List;
  */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-
-    String ManagerRole = "CATEGORY_MANAGE";
-
-    Page<Category> findByOwner_Id(@Param("id") Long id, Pageable pageable);
-
-    List<Category> findByOwnerAndParentIdOrderBySortId(Merchant merchant, Long parentId);
-
-    /**
-     * 根据商户id和父类id 获取 分类列表
-     *
-     * @since 1.4
-     */
-    List<Category> findByOwner_IdAndParentId(Long ownerId, Long parentId);
-
-    /**
-     * 根据商户id和分类id 获取 该分类
-     *
-     * @since 1.4
-     */
-    Category findByOwner_IdAndId(Long ownerId, Long catId);
-
-    /**
-     * 根据商户id和分类catpath 获取 分类列表
-     *
-     * @since 1.4
-     */
-    @Query(value = "SELECT a FROM Category a WHERE a.owner.id = ?1 and a.catPath like %?2")
-    List<Category> findByOwner_IdAndCatPath(Long ownerId, String catPath);
-
     @Query("select c from Category as c where c.owner.id=?1")
-    List<Category> findByOwner(Long customerId);
-
+    List<Category> findByCustomerId(Long customerId);
     // 删除
-    @PreAuthorize("hasAnyRole('ROOT','" + ManagerRole + "')")
     @Override
     void delete(Category entity);
 
-    @PreAuthorize("hasAnyRole('ROOT','" + ManagerRole + "')")
-    @Override
-    void deleteInBatch(Iterable<Category> entities);
-
-    @PreAuthorize("hasAnyRole('ROOT','" + ManagerRole + "')")
-    @Override
-    void deleteAllInBatch();
-
     //保存
-    @PreAuthorize("hasAnyRole('ROOT','" + ManagerRole + "')")
     @Override
     <S extends Category> List<S> save(Iterable<S> entities);
 
-    @PreAuthorize("hasAnyRole('ROOT','" + ManagerRole + "')")
     @Override
     <S extends Category> S save(S entity);
 
@@ -100,16 +56,4 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Override
     List<Category> findAll();
 
-    List<Category> findByOwner_Id(@Param("id") Long id);
-
-//    /**
-//     * 查询所有子分类
-//     *
-//     * @param id 当前分类id
-//     * @return 所有子分类List
-//     * @apiNote 蒋才添加
-//     * @since 1.4
-//     */
-//    @PreAuthorize("hasAnyRole('ROOT','" + CommonServiceSpringConfig.MallUser + "','" + ManagerRole + "')")
-//    Stream<Category> findByParentId(@Param("id") Long id);
 }

@@ -85,7 +85,7 @@ public class SisWebBrandController {
         if (null == user)
             throw new SisException("用户不存在或者已过期");
 
-        List<Category> categories = categoryRepository.findByOwner(user.getMerchant().getId());
+        List<Category> categories = categoryRepository.findByCustomerId(user.getMerchant().getId());
         List<AppSisSortModel> sortFirst = new ArrayList<>();
 
         for (Category category : categories) {
