@@ -316,19 +316,19 @@ public class SisWebGoodsController {
     @RequestMapping(value = "/goodsIndex", method = RequestMethod.GET)
     public String goodsIndex(Long customerId, Model model, String pageType, HttpServletRequest request) throws IOException, SisException {
         Long userId = getCurrentUserId();
-        User user = userRepository.findOne(userId);
-        if (null == user) {
-            throw new SisException("该用户不存在或者已经过期");
-        }
+//        User user = userRepository.findOne(userId);
+//        if (null == user) {
+//            throw new SisException("该用户不存在或者已经过期");
+//        }
         Long count = sisGoodsService.countByUserId(customerId,userId);
-        Sis sis =sisRepository.findByUser(user);
+//        Sis sis =sisRepository.findByUserId(userId);
         request.setAttribute("pageType", pageType);
-        model.addAttribute("user", user);
+//        model.addAttribute("user", user);
         model.addAttribute("customerId", customerId);
         model.addAttribute("count", count);
-        if(sis!=null){
-            model.addAttribute("shelvesModel",sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
-        }
+//        if(sis!=null){
+//            model.addAttribute("shelvesModel",sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
+//        }
         return "/sisweb/sisGoodsList";
     }
 

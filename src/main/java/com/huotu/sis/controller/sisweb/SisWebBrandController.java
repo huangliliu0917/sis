@@ -79,13 +79,13 @@ public class SisWebBrandController {
      */
     @RequestMapping(value = "/getCategoryList", method = RequestMethod.GET)
     @ResponseBody
-    public List<AppSisSortModel> getCategoryList() throws IOException, SisException {
-        Long userId = getCurrentUserId();
-        User user = userRepository.findOne(userId);
-        if (null == user)
-            throw new SisException("用户不存在或者已过期");
+    public List<AppSisSortModel> getCategoryList(@RequestParam Long customerId) throws IOException, SisException {
+//        Long userId = getCurrentUserId();
+//        User user = userRepository.findOne(userId);
+//        if (null == user)
+//            throw new SisException("用户不存在或者已过期");
 
-        List<Category> categories = categoryRepository.findByCustomerId(user.getMerchant().getId());
+        List<Category> categories = categoryRepository.findByCustomerId(customerId);
         List<AppSisSortModel> sortFirst = new ArrayList<>();
 
         for (Category category : categories) {
