@@ -62,6 +62,16 @@ public interface TemplatePageRepository extends JpaRepository<TemplatePage, Long
                                                           Long merchantId,
                                                           Pageable pageable);
 
+    List<TemplatePage> findByScopeAndEnabledAndMerchantId(@RequestParam("scope")
+                                                          @Param("scope")
+                                                          Scope scope,
+                                                          @RequestParam("enabled")
+                                                          @Param("enabled")
+                                                          boolean enabled,
+                                                          @RequestParam("merchantId")
+                                                          @Param("merchantId")
+                                                          Long merchantId);
+
     @RestResource(exported = false)
     List<TemplatePage> findByScopeAndEnabled(@RequestParam("scope")
                                              @Param("scope")
