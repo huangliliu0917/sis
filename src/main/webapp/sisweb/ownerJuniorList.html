@@ -63,7 +63,7 @@
 
 
 
-                <tr th:each="junior:${list}">
+                <tr th:each="junior:${list}" th:if="${juniorStat.count<3}">
                     <td class="boxtd fffx"><p style="text-align: center" th:text="${junior.srcType}+'级'">
                         I
                     </p></td>
