@@ -15,7 +15,8 @@
 
 <body>
 <div class="commfont fk">
-    <p style=" width:45%; text-align:center; margin:0 auto; margin-top:8%"><img th:src="${invitePic}==null?'images/gm-open.png':@{${invitePic}}" src="images/gm-open.png" width="100%"/></p>
+    <p style=" width:100%; text-align:center; margin:0 auto; margin-top:8%">
+        <img th:src="${invitePic}==null?'images/gm-open.png':@{${invitePic}}" src="images/gm-open.png" width="100%"/></p>
 
     <form method="post" action="collectSisInfo" id="form1">
 
