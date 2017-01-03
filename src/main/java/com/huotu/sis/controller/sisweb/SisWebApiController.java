@@ -84,7 +84,7 @@ public class SisWebApiController {
                     return false;
                 }
             } catch (UnsupportedEncodingException e) {
-                log.info("签名解析异常");
+                log.debug("签名解析异常");
                 return false;
             }
         }
@@ -151,7 +151,7 @@ public class SisWebApiController {
         }else {
             resultModel.setCode(500);
             resultModel.setMessage("Fail");
-            log.info("user"+userId+"Upgrade failed");
+            log.debug("user"+userId+"Upgrade failed");
 
         }
         return resultModel;

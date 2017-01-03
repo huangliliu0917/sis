@@ -115,7 +115,6 @@ public class SisWebBrandController {
             throw new SisException("用户不存在或者已过期");
 //        Page<Brand> pages = brandRepository.findByCustomerId(user.getMerchant().getId(), pageable);
 
-
         Page<SisBrand> pages=null;
         if(sis!=null&&sis.getShelvesAllGoods()!=null&&sis.getShelvesAllGoods()){
             Sort sort = new Sort(Sort.Direction.DESC, "id");

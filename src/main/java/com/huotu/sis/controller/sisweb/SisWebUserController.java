@@ -171,7 +171,7 @@ public class SisWebUserController {
             }
         }
 
-        log.info("auth error " + code);
+        log.debug("auth error " + code);
         return "redirect:/html/error";
     }
 

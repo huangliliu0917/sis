@@ -26,7 +26,7 @@ public class WebHandlerExceptionResolver implements HandlerExceptionResolver {
             try {
                 throw ex;
             } catch (Exception e) {
-                log.error("web request error", e);
+                log.debug("web request error", e);
                 message = e.getMessage();
             }
 

@@ -49,7 +49,7 @@ public class DynamicStaticResourceService extends AbstractStaticResourceService 
         if (home == null) {
             throw new IllegalStateException("请设置huotu.resourcesUri和huotu.resourcesHome属性");
         }
-        log.info("Use ResourceURI:" + uri);
+        log.debug("Use ResourceURI:" + uri);
         try {
             this.uriPrefix = new URI(uri);
             this.fileHome = new URI(home);

@@ -68,7 +68,7 @@ public abstract class AbstractStaticResourceService implements StaticResourceSer
                     data.close();
                     out.close();
                 } catch (IOException e) {
-                    log.info("Exception on close stream." + e);
+                    log.debug("Exception on close stream." + e);
                 }
             }
             return null;
