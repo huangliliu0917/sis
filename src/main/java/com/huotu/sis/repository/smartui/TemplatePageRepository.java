@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -62,15 +63,8 @@ public interface TemplatePageRepository extends JpaRepository<TemplatePage, Long
                                                           Long merchantId,
                                                           Pageable pageable);
 
-    List<TemplatePage> findByScopeAndEnabledAndMerchantId(@RequestParam("scope")
-                                                          @Param("scope")
-                                                          Scope scope,
-                                                          @RequestParam("enabled")
-                                                          @Param("enabled")
-                                                          boolean enabled,
-                                                          @RequestParam("merchantId")
-                                                          @Param("merchantId")
-                                                          Long merchantId);
+    @Query("select  t from TemplatePage as t where t.scope in ?1 and t.enabled=?2 and t.merchantId=?3")
+    List<TemplatePage> findByScopeInAndEnabledAndMerchantId(List<Scope> scopes, boolean enabled, Long merchantId);
 
     @RestResource(exported = false)
     List<TemplatePage> findByScopeAndEnabled(@RequestParam("scope")

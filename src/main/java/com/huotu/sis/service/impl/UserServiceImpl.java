@@ -146,7 +146,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void newOpen(User user, String orderId, SisConfig sisConfig) throws Exception {
         Sis sis = sisRepository.findByUser(user);
-        List<TemplatePage> templatePage = templatePageRepository.findByScopeAndEnabledAndMerchantId(Scope.sis, true,user.getMerchant().getId());
+        List<Scope> scopes=Arrays.asList(Scope.sis,Scope.system);
+        List<TemplatePage> templatePage = templatePageRepository.findByScopeInAndEnabledAndMerchantId(
+                scopes, true,user.getMerchant().getId());
         templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId().equals(sisConfig.getMerchantId())).
                 collect(Collectors.toList());
         SisInviteLog sisInviteLog = sisInviteRepository.findFirstByAcceptIdOrderByAcceptTimeDesc(user.getId());

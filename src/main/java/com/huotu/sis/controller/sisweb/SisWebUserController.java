@@ -318,7 +318,9 @@ public class SisWebUserController {
 
         User user = userRepository.findOne(userId);
         Sis sis = sisRepository.findByUser(user);
-        List<TemplatePage> templatePage = templatePageRepository.findByScopeAndEnabledAndMerchantId(Scope.sis, true,customerId);
+        List<Scope> scopes=Arrays.asList(Scope.sis,Scope.system);
+        List<TemplatePage> templatePage = templatePageRepository.findByScopeInAndEnabledAndMerchantId(
+                scopes, true,customerId);
 
 
         templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId().equals(customerId)).
