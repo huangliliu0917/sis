@@ -2,11 +2,13 @@ package com.huotu.sis.interceptor;
 
 import com.huotu.common.base.HttpHelper;
 import com.huotu.huobanplus.common.UserType;
+import com.huotu.huobanplus.common.entity.Merchant;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.common.StringHelper;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.model.sisweb.PublicParameterModel;
+import com.huotu.sis.repository.mall.MerchantRepository;
 import com.huotu.sis.repository.mall.UserRepository;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SecurityService;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,17 +47,14 @@ public class CommonUserInterceptor implements HandlerInterceptor {
     private UserRepository userRepository;
 
     @Autowired
+    private MerchantRepository merchantRepository;
+
+    @Autowired
     private Environment env;
 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        if(env.acceptsProfiles("test")||env.acceptsProfiles("develop")){
-//            PublicParameterModel publicParameterModel = new PublicParameterModel();
-//            publicParameterModel.setUserId(97278L);
-//            PublicParameterHolder.set(publicParameterModel);
-//            return true;
-//        }
         Long userId=0L;
         String userAgent=request.getHeader("User-Agent");
         log.debug("useragent"+userAgent);
@@ -63,71 +63,28 @@ public class CommonUserInterceptor implements HandlerInterceptor {
         if(data!=null&&StringHelper.isTrueSign(data)){
                 userId=Long.parseLong(data[1]);
         }else {
-            userId = userService.getUserId(request);
-            String paramUserId = request.getParameter("mainUserId");
-
-            log.debug("enter interceptor");
-
-            if (!env.acceptsProfiles("develop")) {
-                String customerIdStr=request.getParameter("customerId");
-                if(customerIdStr==null){
-                    customerIdStr=request.getParameter("customerid");
-                }
-                if(customerIdStr==null){
-                    throw new SisException("未获取到商户ID");
-                }
-                Long customerId = Long.parseLong(customerIdStr);
-
-
-                Boolean toSSO = false;
-                //强制刷新用户
-                String forceRefresh = "0";
-                //强制授权
-                if (userId == null || userId == 0) {
-                    toSSO = true;
-                } else if (!StringUtils.isEmpty(paramUserId) && !userId.toString().equals(paramUserId)) {
-                    //用户切换 强制刷新
-                    toSSO = true;
-                    forceRefresh = "1";
-                } else {
-                    //商家切换 强制刷新
-                    User user = userRepository.findOne(userId);
-                    if (!user.getMerchant().getId().equals(customerId)) {
-                        toSSO = true;
-                        forceRefresh = "1";
-                    }
-
-                }
-
-                //进行单点登录
-                if (toSSO) {
-                    //                log.info(userId);
-//                log.info(paramUserId);
-//                log.info(!userId.toString().equals(paramUserId));
-
-                    //todo customerId为空
-                    String redirectUrl = commonConfigService.getWebUrl() + "/sisweb/auth?redirectUrl=" + URLEncoder.encode(request.getRequestURL()
-                            + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString()), "utf-8");
-
-                    //生成sign
-                    Map<String, String> map = new HashMap<>();
-                    map.put("customerId", customerId.toString());
-                    map.put("redirectUrl", redirectUrl);
-                    map.put("forceRefresh", forceRefresh);
-                    String sign = securityService.getMapSign(map);
-
-                    //生成toUrl
-                    String toUrl = "";
-                    for (String key : map.keySet()) {
-                        toUrl += "&" + key + "=" + URLEncoder.encode(map.get(key), "utf-8");
-                    }
-                    toUrl = commonConfigService.getAuthWebUrl() + "/api/login?" + (toUrl.length() > 0 ? toUrl.substring(1) : "");
-
-//                log.info("interceptor " + toUrl + " " + sign);
-
-                    response.sendRedirect(toUrl + "&sign=" + sign);
+            Long customerId=getCurrentCustomerId(request);
+            Merchant merchant=merchantRepository.getOne(customerId);
+            if(merchant.getAccountModle()==3){
+                userId=userService.currentUserId(request,4471);
+                if(userId==null){
+                    String gduid= request.getParameter("gduid");
+                    String backUrl=request.getRequestURL()+"?"+request.getQueryString();
+                    mallRegister(response,commonConfigService.getMallDomain(),customerId,backUrl,gduid);
                     return false;
                 }
+
+            }else {
+                userId = userService.getUserId(request);
+                String paramUserId = request.getParameter("mainUserId");
+                Boolean toSSO =isSSO(userId,paramUserId,customerId);
+                //进行单点登录
+                if (toSSO) {
+                    String forceRefresh=forceRefresh(userId,paramUserId,customerId);
+                    sso(request,response,customerId,forceRefresh);
+                    return false;
+                }
+
             }
         }
 
@@ -164,6 +121,105 @@ public class CommonUserInterceptor implements HandlerInterceptor {
         }
 
         return true;
+    }
+
+    /**
+     * 判断是否需要单点登录
+     * @return
+     */
+    private boolean isSSO(Long userId,String paramUserId,Long customerId){
+        boolean toSSO = false;
+        //强制授权
+        if (userId == null || userId == 0) {
+            toSSO = true;
+        } else if (!StringUtils.isEmpty(paramUserId) && !userId.toString().equals(paramUserId)) {
+            //用户切换 强制刷新
+            toSSO = true;
+        } else {
+            //商家切换 强制刷新
+            User user = userRepository.findOne(userId);
+            if (!user.getMerchant().getId().equals(customerId)) {
+                toSSO = true;
+            }
+        }
+        return toSSO;
+    }
+
+    /**
+     * 没有cookie,去商城登录
+     */
+    private void mallRegister(HttpServletResponse response,String domain,Long customerId,String backSkipUrl
+            ,String guideUserId) throws IOException{
+        String url="http://"+domain+"/UserCenter/VerifyMobile" +
+                ".aspx?customerid="+customerId+"&redirecturl="+backSkipUrl+"&gduid="+guideUserId;
+        response.sendRedirect(url);
+
+    }
+
+    /**
+     * 获取当前商户ID
+     * @param request
+     * @return
+     * @throws SisException
+     */
+    private Long getCurrentCustomerId(HttpServletRequest request) throws SisException{
+        String customerIdStr=request.getParameter("customerId");
+        if(customerIdStr==null){
+            customerIdStr=request.getParameter("customerid");
+        }
+        if(customerIdStr==null){
+            throw new SisException("未获取到商户ID");
+        }
+        Long customerId = Long.parseLong(customerIdStr);
+        return customerId;
+    }
+
+
+    /**
+     * 强制刷新：0：否，1：是
+     * @param userId
+     * @param paramUserId
+     * @param customerId
+     * @return
+     */
+    private String forceRefresh(Long userId,String paramUserId,Long customerId){
+        //强制刷新用户
+        String forceRefresh = "0";
+        if(!StringUtils.isEmpty(paramUserId) && !userId.toString().equals(paramUserId)){
+            forceRefresh = "1";
+        }else {
+            User user = userRepository.findOne(userId);
+            if (!user.getMerchant().getId().equals(customerId)) {
+                forceRefresh = "1";
+            }
+        }
+        return forceRefresh;
+
+    }
+
+    private void sso(HttpServletRequest request,HttpServletResponse response,Long customerId,String forceRefresh) throws
+            Exception{
+        //todo customerId为空
+        String redirectUrl = commonConfigService.getWebUrl() + "/sisweb/auth?redirectUrl=" + URLEncoder.encode(request.getRequestURL()
+                + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString()), "utf-8");
+
+        //生成sign
+        Map<String, String> map = new HashMap<>();
+        map.put("customerId", customerId.toString());
+        map.put("redirectUrl", redirectUrl);
+        map.put("forceRefresh", forceRefresh);
+        String sign = securityService.getMapSign(map);
+
+        //生成toUrl
+        String toUrl = "";
+        for (String key : map.keySet()) {
+            toUrl += "&" + key + "=" + URLEncoder.encode(map.get(key), "utf-8");
+        }
+        toUrl = commonConfigService.getAuthWebUrl() + "/api/login?" + (toUrl.length() > 0 ? toUrl.substring(1) : "");
+
+//                log.info("interceptor " + toUrl + " " + sign);
+        response.sendRedirect(toUrl + "&sign=" + sign);
+
     }
 
     @Override

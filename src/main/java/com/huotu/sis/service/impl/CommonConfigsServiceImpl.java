@@ -74,4 +74,9 @@ public class CommonConfigsServiceImpl implements CommonConfigsService {
         return env.getProperty("huotu.mall.resourcesUri", "http://res.51flashmall.com");
     }
 
+    @Override
+    public String cookieKey() {
+        return env.getProperty("sis.mall.des.key", "XjvDhKLvCsm9y7G7");
+    }
+
 }

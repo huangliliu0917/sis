@@ -29,6 +29,15 @@ public interface UserService {
     Long getUserId(HttpServletRequest request) throws Exception;
 
     /**
+     * 获取登录之后用户的cookie
+     * @param request       请求
+     * @param customerId
+     * @return
+     * @throws Exception
+     */
+    Long currentUserId(HttpServletRequest request, long customerId);
+
+    /**
      * 对用户的id进行加密
      * 放入cookie中
      *

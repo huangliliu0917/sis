@@ -22,11 +22,17 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lgh on 2015/12/30.
@@ -85,6 +91,18 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private CommonConfigsService commonConfigService;
 
+    /**
+     * 用于解密HTS1
+     */
+    private final SecretKey key;
+
+    @SuppressWarnings("unused")//不能省
+    @Autowired
+    public UserServiceImpl(Environment environment) throws IOException {
+        String keyCode = environment.getProperty("sis.mall.des.key", "XjvDhKLvCsm9y7G7");
+        key = new SecretKeySpec(keyCode.getBytes("ASCII"), "AES");
+    }
+
     @Override
     public Long getUserId(HttpServletRequest request) {
         if (env.acceptsProfiles("develop")) {
@@ -102,6 +120,25 @@ public class UserServiceImpl implements UserService {
             } catch (Exception ex) {
                 return null;
             }
+        }
+    }
+
+    @Override
+    public Long currentUserId(HttpServletRequest request, long customerId){
+        try{
+            String cookieValue = Stream.of(request.getCookies())
+                    .filter(cookie -> cookie.getName().equalsIgnoreCase("mem_authcode_"+customerId))
+                    .findAny().get().getValue();
+            byte[] encryptData = Base64.getDecoder().decode(URLDecoder.decode(cookieValue, "UTF-8"));
+
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+
+            byte[] data = cipher.doFinal(encryptData);
+            return Long.parseLong(new String(data));
+        }catch (Exception ex){
+            log.info("getUserCookieError",ex);
+            return null;
         }
     }
 
