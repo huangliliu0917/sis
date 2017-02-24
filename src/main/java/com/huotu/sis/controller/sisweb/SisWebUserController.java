@@ -709,6 +709,7 @@ public class SisWebUserController {
      */
     @RequestMapping(value = "/mallAccredit")
     public String mallAccredit(Long customerId,String backUrl,String gduId) throws Exception{
+        backUrl=URLEncoder.encode(backUrl, "utf-8");
         String redirectUrl=userService.getMallAccreditUrl(backUrl,userService.getMerchantSubDomain(customerId),
                 customerId.toString(),gduId);
         return "redirect:" + redirectUrl;

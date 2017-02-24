@@ -4,7 +4,10 @@ $(document).on("click", "#show-actions", function() {
             //点击确认后的回调函数
             var backUrl=window.location.href;
             var encodeUrl=htmlEncodeJQ(backUrl);
-            var url=location.host+"/sisweb/mallAccredit?customerId="+customerId+"&backUrl="+encodeUrl+"&gduId="+gduid;
+            var url="/sisweb/mallAccredit?customerId="+customerId+"&backUrl="+encodeUrl;
+            if(gduid!=null){
+                url=url+"&gduId="+gduid;
+            }
             window.location.href=url;
         });
         return;
