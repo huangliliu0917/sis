@@ -13,9 +13,9 @@
         ">
 
     <import resource="spring-datasource-development.xml"/>
-    <!--<import resource="spring-datasource-test.xml"/>-->
-    <!--<import resource="spring-datasource-staging.xml"/>-->
-    <!--<import resource="spring-datasource-production.xml"/>-->
+    <import resource="spring-datasource-test.xml"/>
+    <import resource="spring-datasource-staging.xml"/>
+    <import resource="spring-datasource-production.xml"/>
 
     <bean name="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
           p:entityManagerFactory-ref="entityManagerFactory"/>

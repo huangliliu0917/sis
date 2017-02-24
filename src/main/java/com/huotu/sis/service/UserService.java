@@ -227,6 +227,22 @@ public interface UserService {
      */
     void saveUserBalance(User user, double money)throws Exception;
 
+    /**
+     * 获取商家主域名
+     * @param customerId    商户ID
+     * @return
+     */
+    String getMerchantSubDomain(Long customerId);
+
+    /**
+     * 返回商城校验地址
+     * @param backUrl       回调地址(需要encode)
+     * @param domain        商城主域名
+     * @param customerId    商户ID
+     * @return
+     */
+    String getMallAccreditUrl(String backUrl,String domain,String customerId,String gduId) throws Exception;
+
 //    Long getUserId()
 
 }

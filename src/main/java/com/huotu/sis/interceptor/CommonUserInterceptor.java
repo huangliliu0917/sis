@@ -23,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,12 +65,16 @@ public class CommonUserInterceptor implements HandlerInterceptor {
             Long customerId=getCurrentCustomerId(request);
             Merchant merchant=merchantRepository.getOne(customerId);
             if(merchant.getAccountModle()==3){
-                userId=userService.currentUserId(request,4471);
-                if(userId==null){
-                    String gduid= request.getParameter("gduid");
-                    String backUrl=request.getRequestURL()+"?"+request.getQueryString();
-                    mallRegister(response,commonConfigService.getMallDomain(),customerId,backUrl,gduid);
-                    return false;
+                userId=userService.currentUserId(request,customerId);
+                if(!request.getRequestURI().contains("showOpenShop")){
+                    if(userId==null){
+                        String domain=userService.getMerchantSubDomain(customerId);
+                        String gduid= request.getParameter("gduid");
+                        String backUrl=request.getRequestURL()+"?"+request.getQueryString();
+                        String encodeUrl=URLEncoder.encode(backUrl,"utf-8");
+                        mallRegister(response,domain,customerId,encodeUrl,gduid);
+                        return false;
+                    }
                 }
 
             }else {
@@ -149,9 +152,8 @@ public class CommonUserInterceptor implements HandlerInterceptor {
      * 没有cookie,去商城登录
      */
     private void mallRegister(HttpServletResponse response,String domain,Long customerId,String backSkipUrl
-            ,String guideUserId) throws IOException{
-        String url="http://"+domain+"/UserCenter/VerifyMobile" +
-                ".aspx?customerid="+customerId+"&redirecturl="+backSkipUrl+"&gduid="+guideUserId;
+            ,String guideUserId) throws Exception{
+        String url=userService.getMallAccreditUrl(backSkipUrl,domain,customerId.toString(),guideUserId);
         response.sendRedirect(url);
 
     }

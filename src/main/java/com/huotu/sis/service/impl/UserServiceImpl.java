@@ -91,6 +91,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private CommonConfigsService commonConfigService;
 
+    @Autowired
+    private MerchantRepository merchantRepository;
+
     /**
      * 用于解密HTS1
      */
@@ -137,7 +140,7 @@ public class UserServiceImpl implements UserService {
             byte[] data = cipher.doFinal(encryptData);
             return Long.parseLong(new String(data));
         }catch (Exception ex){
-            log.info("getUserCookieError",ex);
+            log.debug("getUserCookieError",ex);
             return null;
         }
     }
@@ -770,6 +773,27 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
     }
+
+    @Override
+    public String getMerchantSubDomain(Long customerId) {
+        String subDomain = merchantRepository.findSubDomainByMerchantId(customerId);
+        if (subDomain == null) {
+            subDomain = "";
+        }
+        return "http://" + subDomain + "." + commonConfigService.getMallDomain();
+    }
+
+    @Override
+    public String getMallAccreditUrl(String backUrl, String domain, String customerId, String gduId) throws Exception {
+//        backUrl= URLEncoder.encode(backUrl,"utf-8");
+        String url=domain+"/UserCenter/VerifyMobile" +
+                ".aspx?customerid="+customerId+"&redirecturl="+backUrl;
+        if(!StringUtils.isEmpty(gduId)){
+            url=url+"&gduid="+gduId;
+        }
+        return url;
+    }
+
 
     /**
      * 递归查找上级用户
