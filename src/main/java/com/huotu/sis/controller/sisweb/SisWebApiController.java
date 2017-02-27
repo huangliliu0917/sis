@@ -3,10 +3,11 @@ package com.huotu.sis.controller.sisweb;
 import com.huotu.huobanplus.common.entity.Order;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.model.sisweb.ResultModel;
-import com.huotu.sis.repository.*;
+import com.huotu.sis.repository.SisConfigRepository;
+import com.huotu.sis.repository.SisInviteRepository;
+import com.huotu.sis.repository.SisRepository;
 import com.huotu.sis.repository.mall.OrderItemsRepository;
 import com.huotu.sis.repository.mall.OrderRepository;
 import com.huotu.sis.repository.mall.UserRepository;
@@ -198,12 +199,12 @@ public class SisWebApiController {
             return resultModel;
         }
 
-        Sis sis = sisRepository.findByUser(user);
-        if(sis!=null){
-            resultModel.setCode(500);
-            resultModel.setMessage(userId+"店中店已经开启");
-            return resultModel;
-        }
+//        Sis sis = sisRepository.findByUser(user);
+//        if(sis!=null){
+//            resultModel.setCode(500);
+//            resultModel.setMessage(userId+"店中店已经开启");
+//            return resultModel;
+//        }
 
         //兼容
         sisConfigService.compatibilityOpenShopGoodsAndSelected(user.getMerchant().getId());

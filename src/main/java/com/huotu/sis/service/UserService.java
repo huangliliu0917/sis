@@ -1,6 +1,7 @@
 package com.huotu.sis.service;
 
 import com.huotu.huobanplus.common.entity.User;
+import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisInviteLog;
@@ -242,6 +243,15 @@ public interface UserService {
      * @return
      */
     String getMallAccreditUrl(String backUrl,String domain,String customerId,String gduId) throws Exception;
+
+
+    /**
+     * 根据商户ID获取默认店铺模板
+     * @param customerId    商户ID
+     * @return
+     * @throws Exception
+     */
+    TemplatePage getDefaultTemplate(Long customerId) throws Exception;
 
 //    Long getUserId()
 

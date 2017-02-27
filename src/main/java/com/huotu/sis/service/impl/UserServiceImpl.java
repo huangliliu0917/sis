@@ -186,23 +186,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void newOpen(User user, String orderId, SisConfig sisConfig) throws Exception {
         Sis sis = sisRepository.findByUser(user);
-        List<Scope> scopes=Arrays.asList(Scope.sis,Scope.system);
-        List<TemplatePage> templatePage = templatePageRepository.findByScopeInAndEnabledAndMerchantId(
-                scopes, true,user.getMerchant().getId());
-        templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId().equals(sisConfig.getMerchantId())).
-                collect(Collectors.toList());
-        SisInviteLog sisInviteLog = sisInviteRepository.findFirstByAcceptIdOrderByAcceptTimeDesc(user.getId());
+//        List<Scope> scopes=Arrays.asList(Scope.sis,Scope.system);
+//        List<TemplatePage> templatePage = templatePageRepository.findByScopeInAndEnabledAndMerchantId(
+//                scopes, true,user.getMerchant().getId());
+//        templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId().equals(sisConfig.getMerchantId())).
+//                collect(Collectors.toList());
+//        SisInviteLog sisInviteLog = sisInviteRepository.findFirstByAcceptIdOrderByAcceptTimeDesc(user.getId());
+
         //开店用户等级设置
-        SisLevel sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());
-
-        if(sisLevel==null){
-            sisLevel=sisLevelRepository.findFirstByMerchantIdOrderByLevelNoAsc(user.getMerchant().getId());
-        }
-        if(sisLevel==null){
-            throw new SisException("customerId:"+user.getMerchant().getId()+"have no sisLevel");
-        }
-
-
+        SisLevel sisLevel=null;
         if (sisConfig.getOpenMode() == 1) {//收费开店情况下
             OrderItems orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId).get(0);
             OpenGoodsIdLevelIds openGoodsIdLevelIds = sisConfig.getOpenGoodsIdlist();
@@ -216,6 +208,15 @@ public class UserServiceImpl implements UserService {
                     }
                 }
             }
+        }else {
+            sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());
+
+            if(sisLevel==null){
+                sisLevel=sisLevelRepository.findFirstByMerchantIdOrderByLevelNoAsc(user.getMerchant().getId());
+            }
+        }
+        if(sisLevel==null){
+            throw new SisException("customerId:"+user.getMerchant().getId()+"have no sisLevel");
         }
 
         if (sis == null) {
@@ -226,8 +227,9 @@ public class UserServiceImpl implements UserService {
             sis.setShareTitle("分享标题");
             sis.setOpenTime(new Date());
             sis.setStatus(true);
-            if (templatePage.size() > 0) {
-                sis.setTemplateId(templatePage.get(0).getId());
+            TemplatePage templatePage=getDefaultTemplate(sisConfig.getMerchantId());
+            if (templatePage!=null) {
+                sis.setTemplateId(templatePage.getId());
             }
             sis.setUser(user);
             sis.setDescription("我的小店描述");
@@ -235,13 +237,15 @@ public class UserServiceImpl implements UserService {
             sis.setSisLevel(sisLevel);
             //新增字段
             sis.setCustomerId(user.getMerchant().getId());
-            if (sisInviteLog != null) {
-                if (!StringUtils.isEmpty(sisInviteLog.getRealName())) {
-                    sis.setTitle(sisInviteLog.getRealName() + "的小店");
-                }
-                sis.setRealName(sisInviteLog.getRealName());
-                sis.setMobile(sisInviteLog.getMobile());
-            }
+//            if (sisInviteLog != null) {
+//                if (!StringUtils.isEmpty(sisInviteLog.getRealName())) {
+//                    sis.setTitle(sisInviteLog.getRealName() + "的小店");
+//                }
+//                sis.setRealName(sisInviteLog.getRealName());
+//                sis.setMobile(sisInviteLog.getMobile());
+//            }
+        }else {
+            sis.setSisLevel(sisLevel);
         }
         sisRepository.save(sis);
         log.debug(user.getId()+"openShopOver");
@@ -792,6 +796,20 @@ public class UserServiceImpl implements UserService {
             url=url+"&gduid="+gduId;
         }
         return url;
+    }
+
+    @Override
+    public TemplatePage getDefaultTemplate(Long customerId) throws Exception {
+        List<Scope> scopes=Arrays.asList(Scope.sis,Scope.system);
+        List<TemplatePage> templatePage = templatePageRepository.findByScopeInAndEnabledAndMerchantId(
+                scopes, true,customerId);
+        templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId()
+                .equals(customerId))
+                .collect(Collectors.toList());
+        if(templatePage!=null&&!templatePage.isEmpty()){
+            return templatePage.get(0);
+        }
+        return null;
     }
 
 
