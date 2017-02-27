@@ -94,6 +94,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MerchantRepository merchantRepository;
 
+    @Autowired
+    private SisLevelService sisLevelService;
+
     /**
      * 用于解密HTS1
      */
@@ -237,6 +240,7 @@ public class UserServiceImpl implements UserService {
             sis.setSisLevel(sisLevel);
             //新增字段
             sis.setCustomerId(user.getMerchant().getId());
+            sisRepository.save(sis);
 //            if (sisInviteLog != null) {
 //                if (!StringUtils.isEmpty(sisInviteLog.getRealName())) {
 //                    sis.setTitle(sisInviteLog.getRealName() + "的小店");
@@ -245,9 +249,10 @@ public class UserServiceImpl implements UserService {
 //                sis.setMobile(sisInviteLog.getMobile());
 //            }
         }else {
-            sis.setSisLevel(sisLevel);
+            sisLevelService.saveSisLevel(sis,sisLevel);
+//            sis.setSisLevel(sisLevel);
         }
-        sisRepository.save(sis);
+
         log.debug(user.getId()+"openShopOver");
     }
 

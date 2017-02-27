@@ -13,12 +13,12 @@ $(document).on("click", "#show-actions", function() {
         return;
     }
     $.modal({
-        title: "为了保障您的权益，请填写真实信息",
+        title: '<span style="font-size: 12px;color: #8b8b8b">为了保障您的权益，请填写真实信息</span>',
         text:
-        '<input type="text" class="weui_input weui-prompt-input" id="weui-prompt-IDNo"' +
-        'placeholder="请输入身份证号" />' +
         '<input type="text" class="weui_input weui-prompt-input" id="weui-prompt-realName" ' +
-        'placeholder="请输入真实姓名" />',
+        'placeholder="请输入真实姓名" />'+
+        '<input type="text" class="weui_input weui-prompt-input" id="weui-prompt-IDNo"' +
+            'placeholder="请输入身份证号" />' ,
         buttons: [
             { text: "取消",className: "default", onClick: function(){
                 $.closeModal();
@@ -111,7 +111,7 @@ function buyLevel(){
             objs[i]=obj;
         })
         $.actions({
-            title:"请选择购买等级",
+            title:"请选择店铺等级",
             actions: objs
         });
     }
