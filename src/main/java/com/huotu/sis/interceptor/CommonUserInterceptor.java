@@ -88,6 +88,29 @@ public class CommonUserInterceptor implements HandlerInterceptor {
                     return false;
                 }
 
+                if (!StringUtils.isEmpty(request.getParameter("gduid")) && Integer.parseInt(request.getParameter("gduid")) > 0) {
+                    User user = userRepository.findOne(userId);
+                    if (user.getUserType().equals(UserType.normal) && user.getBelongOne() == 0) {
+                        //todo 调用王明的找回逻辑服务 test
+                        Map<String, String> map = new HashMap<>();
+                        map.put("memberid", userId.toString());
+                        map.put("gduid", request.getParameter("gduid"));
+                        map.put("customerid", user.getMerchant().getId().toString());
+                        map.put("appid", commonConfigService.getAppId());
+                        map.put("timestamp", String.valueOf((new Date()).getTime()));
+                        map.put("sign", securityService.getMapSignByAppSecret(map));
+                        //生成toUrl
+                        String toUrl = "";
+                        for (String key : map.keySet()) {
+                            toUrl += "&" + key + "=" + URLEncoder.encode(map.get(key), "utf-8");
+                        }
+                        String url = commonConfigService.getMallApiWebUrl() + "/account/adoptmember?" + toUrl.substring(1);
+                        log.debug(url);
+                        HttpHelper.getRequest(url);
+                    }
+
+                }
+
             }
         }
 
@@ -100,28 +123,7 @@ public class CommonUserInterceptor implements HandlerInterceptor {
 //        //没有店进行开店
 //        userService.open(userId);
 
-        if (!StringUtils.isEmpty(request.getParameter("gduid")) && Integer.parseInt(request.getParameter("gduid")) > 0) {
-            User user = userRepository.findOne(userId);
-            if (user.getUserType().equals(UserType.normal) && user.getBelongOne() == 0) {
-                //todo 调用王明的找回逻辑服务 test
-                Map<String, String> map = new HashMap<>();
-                map.put("memberid", userId.toString());
-                map.put("gduid", request.getParameter("gduid"));
-                map.put("customerid", user.getMerchant().getId().toString());
-                map.put("appid", commonConfigService.getAppId());
-                map.put("timestamp", String.valueOf((new Date()).getTime()));
-                map.put("sign", securityService.getMapSignByAppSecret(map));
-                //生成toUrl
-                String toUrl = "";
-                for (String key : map.keySet()) {
-                    toUrl += "&" + key + "=" + URLEncoder.encode(map.get(key), "utf-8");
-                }
-                String url = commonConfigService.getMallApiWebUrl() + "/account/adoptmember?" + toUrl.substring(1);
-                log.debug(url);
-                HttpHelper.getRequest(url);
-            }
 
-        }
 
         return true;
     }
