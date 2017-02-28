@@ -103,7 +103,7 @@ function buyLevel(){
             var obj={
                 text:val.levelTitle,
                 onClick:function(){
-                    $.alert("您选择了购买："+val.levelTitle);
+                    //$.alert("您选择了购买："+val.levelTitle);
                     submitform(customerId,val.goodsId);
 //
                 }
