@@ -189,6 +189,9 @@ public class CommonUserInterceptor implements HandlerInterceptor {
     private String forceRefresh(Long userId,String paramUserId,Long customerId){
         //强制刷新用户
         String forceRefresh = "0";
+        if(userId==null||userId==0){
+            return forceRefresh;
+        }
         if(!StringUtils.isEmpty(paramUserId) && !userId.toString().equals(paramUserId)){
             forceRefresh = "1";
         }else {
