@@ -12,60 +12,45 @@ $(document).on("click", "#show-actions", function() {
         });
         return;
     }
-    $.modal({
-        title: '<span style="font-size: 12px;color: #8b8b8b">为了保障您的权益，请填写真实信息</span>',
-        text:
-        '<input type="text" class="weui_input weui-prompt-input" id="weui-prompt-realName" ' +
-        'placeholder="请输入真实姓名" />'+
-        '<input type="text" class="weui_input weui-prompt-input" id="weui-prompt-IDNo"' +
+
+    var tab=$.cookie('saveDataTab');
+    if(tab!=null){
+        buyLevel();
+    }else {
+        $.modal({
+            title: '<span style="font-size: 12px;color: #8b8b8b">为了保障您的权益，请填写真实信息</span>',
+            text:
+            '<input type="text" class="weui_input weui-prompt-input" id="weui-prompt-realName" ' +
+            'placeholder="请输入真实姓名" />'+
+            '<input type="text" class="weui_input weui-prompt-input" id="weui-prompt-IDNo"' +
             'placeholder="请输入身份证号" />' ,
-        buttons: [
-            { text: "取消",className: "default", onClick: function(){
-                $.closeModal();
-            }},
-            { text: "确定", onClick: function(){
-                var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-                IDNo=$("#weui-prompt-IDNo").val();
-                IDName=$("#weui-prompt-realName").val();
-                if(reg.test(IDNo) === false){
-                    $.alert("身份证输入不合法");
-                    return;
-                }
-                if(IDName.length==0||IDName.length>10){
-                    $.alert("姓名输入不合法");
-                    return;
-                }
-                saveUserInfo(IDNo,IDName);
-            }},
-        ]
-    });
+            buttons: [
+                { text: "取消",className: "default", onClick: function(){
+                    $.closeModal();
+                }},
+                { text: "确定", onClick: function(){
+                    var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+                    IDNo=$("#weui-prompt-IDNo").val();
+                    IDName=$("#weui-prompt-realName").val();
+                    if(reg.test(IDNo) === false){
+                        $.alert("身份证输入不合法");
+                        return;
+                    }
+                    if(IDName.length==0||IDName.length>10){
+                        $.alert("姓名输入不合法");
+                        return;
+                    }
+                    saveUserInfo(IDNo,IDName);
+                }},
+            ]
+        });
+    }
+
+
 
     function htmlEncodeJQ (str) {
         return escape(str);
     }
-//        $.prompt("请输入身份证号","",function(text){
-//            var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-//            if(reg.test(text) === false){
-//                $.alert("身份证输入不合法");
-//                return;
-//            }else {
-//                IDNo=text;
-//                $.prompt("请输入姓名","",function(text){
-//                    if(text.length==0||text.length>10){
-//                        $.alert("姓名输入不合法");
-//                        return;
-//                    }else {
-//                        IDName=text;
-//                        //保存信息
-//                        saveUserInfo(IDNo,IDName);
-////                        buyLevel();
-//                    }
-//
-//                });
-//
-//            }
-//
-//        });
 
 });
 
@@ -78,6 +63,7 @@ function saveUserInfo(IDNo,IDName){
         data: {IDNo:IDNo,IDName:IDName,customerId:customerId},
         success:function(result){
             $.hideLoading();
+            $.cookie('saveDataTab', 'tab', { expires: 1 });
             buyLevel();
 
         },

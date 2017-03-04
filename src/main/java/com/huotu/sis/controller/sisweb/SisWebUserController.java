@@ -886,11 +886,14 @@ public class SisWebUserController {
                 freeze = freeze + p.getFreeze();
             }
         }
+        Set<Product> enables=getEnablesProducts(products);
+
+        model.addAttribute("products",enables);
         goods.setStock(goods.getStock() - freeze);
         model.addAttribute("good", goods);
         String url = userService.getMerchantSubDomain(customerId) + "/mall/SubmitOrder.aspx?" +
                 "fastbuy=1&" +
-                "traitems=" + goods.getId() + "_" + productId + "_1&" +
+                "traitems=" + goods.getId() + "_{productId}_1&" +
                 "customerid=" + customerId + "&" +
                 "showwxpaytitle=1" + "&" + "returl=/UserCenter/ShopInShop/OpenSuccess.aspx%3Fcustomerid%3D" + customerId;
         model.addAttribute("goodsUrl", url);
@@ -901,6 +904,25 @@ public class SisWebUserController {
         return "sisweb/openShopGoodsDetail";
 
     }
+
+    /**
+     * 获取可选择的商品列表
+     * @param products
+     * @return
+     */
+    private Set<Product> getEnablesProducts(Set<Product> products){
+        Set<Product> enables=new HashSet<>();
+        if(products==null){
+            return enables;
+        }
+        products.forEach(product -> {
+            if(product.isMarketable()){
+                enables.add(product);
+            }
+        });
+        return enables;
+    }
+
 
     /**
      * 进入分享开店邀请页面

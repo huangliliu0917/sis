@@ -18,6 +18,83 @@
     <title>商品详情</title>
 </head>
 
+<style>
+    .sku_wrap h3 {
+        float: left;
+        width: auto;
+        height: 40px;
+        line-height: 16px;
+        font-size: 12px;
+        font-weight: normal;
+        color: #999999;
+        overflow: hidden;
+    }
+    .sku_wrap .sku_list {
+        overflow: hidden;
+    }
+    .detail_standard_wx .sku_wrap .option {
+        height: 36px;
+        border: 2px solid #dedede;
+        line-height: 36px;
+        min-width: 2.3em;
+        font-size: 12px;
+        margin-right: 5px;
+    }
+    .detail_standard_wx .sku_wrap .option_selected {
+        border-color: #ff8c00;
+    }
+    .sku_wrap .option_selected {
+        border-color: #d91100;
+    }
+    .sku_wrap .option {
+        float: left;
+        position: relative;
+        height: 38px;
+        border: 1px solid #ddd;
+        line-height: 38px;
+        text-align: center;
+        font-size: 12px;
+        min-width: 2em;
+        overflow: hidden;
+        padding: 0 7px;
+        background: #fff;
+        margin: 0 10px 10px 0;
+        word-break: break-all;
+        color: #333;
+        position: relative;
+    }
+    .detail_standard_wx .sku_wrap .option_selected:after {
+        width: 12px;
+        height: 12px;
+        background-position: -80px -118px;
+        right: 0;
+        bottom: 0;
+    }
+    .sku_wrap .option_selected:after {
+        content: "";
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        bottom: -1px;
+        right: -1px;
+        background-position: -80px -106px;
+    }
+    .sku_wrap .option_selected:after {
+        background-image: url(images/detail_v1.png);
+        background-repeat: no-repeat;
+        background-size: 100px 170px;
+    }
+    .sku_wrap .sku_list {
+        overflow: hidden;
+    }
+    .detail_standard_wx .sku_wrap .option.ques{
+        background-color: #f9f9f9;
+        color: #dedede;
+        border: 2px dashed #dedede;
+    }
+
+</style>
+
 <body>
 <div class="commfont fk " th:object="${good}">
     <!--<input type="hidden" name="goodsId" id="goodsId" th:value="*{goodsId}"/>-->
@@ -36,12 +113,48 @@
                 商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情
                 </a>
             </div>
+
+            <p>
+                <span class="sp_hz">
+                    规格：
+                </span>
+            <div class="detail_standard_wx">
+                <div class="sku_wrap">
+                    <div id="prop-list">
+                        <div class="sku">
+                            <!--/*@thymesVar id="products" type="java.util.Set<com.huotu.huobanplus.common.entity.Product>"*/-->
+                            <div id="products" class="sku_list">
+                                <span   th:each="p:${products}"
+                                        th:class="(${p.stock}-${p.freeze})<=0?'option  ques':'option'"
+                                        th:onclick="'selectProduct(this,'+${p.id}+','+(${p.stock}-${p.freeze})+','+${p.price}+')'"
+                                        onclick="selectProduct(this,5)" class="option option_selected">一箱</span>
+                                <!--<span onclick="selectProduct(this,5)" class="option option_selected">一箱</span>-->
+                                <!--<span onclick="selectProduct(this,4)" class="option">一箱</span>-->
+                                <!--<span onclick="selectProduct(this,1)" class="option">一箱</span>-->
+                                <!--<span onclick="selectProduct(this)" class="option  ques">一箱</span>-->
+                            </div>
+
+                            <!--<div id="products" class="sku_list">-->
+                                <!--<span onclick="selectProduct(this,5)" class="option option_selected">一箱</span>-->
+                                <!--<span onclick="selectProduct(this,4)" class="option">一箱</span>-->
+                                <!--<span onclick="selectProduct(this,1)" class="option">一箱</span>-->
+                                <!--<span class="option  ques">一箱</span>-->
+                            <!--</div>-->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </p>
+
+
             <p>
                 <span class="sp_hz">
                     价格
                 </span>
                 <span class="sp_hongz">
-                    ¥<i th:text="*{price}" style="font-size:24px;">110</i>
+                    ¥<i id="price" th:text="*{price}" style="font-size:24px;">110</i>
                     <!--¥<a th:text="*{price}">0.00</a>-->
                 </span>
             </p>
@@ -50,7 +163,7 @@
                 <span class="sp_hz">
                     剩余
                 </span>
-                <span class="sp_hongzz" th:text="0>*{stock}?0+'件':*{stock}+'件'">
+                <span id="stock" class="sp_hongzz" th:text="0>*{stock}?0+'件':*{stock}+'件'">
                     <!--<a th:text="0>*{stock}?0+'件':*{stock}+'件'">件</a>-->
                  </span>
             </p>
@@ -81,8 +194,14 @@
 </body>
 <script src="weui/js/jquery-2.1.4.js"></script>
 <script src="weui/js/jquery-weui.js"></script>
+
+
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
+    var productId;
+    $(function(){
+        $("span","#products")[0].click();
+    });
     TouchSlide({
         slideCell:"#s_focus",
         titCell:".s_hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
@@ -93,9 +212,25 @@
         autoPage:true //自动分页
     });
 
+    function selectProduct(obj,id,stock,price){
+        if($(obj).attr("class")=="option  ques"){
+            return;
+        }
+        $("span","#products").each(function(){
+            if($(this).attr("class")=="option option_selected"){
+                $(this).attr("class","option");
+            }
+        });
+        $(obj).attr("class","option option_selected");
+        $("#price").text(price);
+        $("#stock").text(stock);
+        productId=id;
+    }
+
 
     function submit(){
-        var url=/*[[${goodsUrl}]]*/ '';
+        var url=/*[[${goodsUrl}]]*/ '4555_{productId}_1';
+        url=url.replace('{productId}',productId);
         $.showLoading("跳转中...");
         window.location.href=url;
     }
