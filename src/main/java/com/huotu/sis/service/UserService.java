@@ -1,6 +1,7 @@
 package com.huotu.sis.service;
 
 import com.huotu.huobanplus.common.entity.User;
+import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisInviteLog;
@@ -27,6 +28,15 @@ public interface UserService {
      * @return
      */
     Long getUserId(HttpServletRequest request) throws Exception;
+
+    /**
+     * 获取登录之后用户的cookie
+     * @param request       请求
+     * @param customerId
+     * @return
+     * @throws Exception
+     */
+    Long currentUserId(HttpServletRequest request, long customerId);
 
     /**
      * 对用户的id进行加密
@@ -217,5 +227,32 @@ public interface UserService {
      * @throws Exception
      */
     void saveUserBalance(User user, double money)throws Exception;
+
+    /**
+     * 获取商家主域名
+     * @param customerId    商户ID
+     * @return
+     */
+    String getMerchantSubDomain(Long customerId);
+
+    /**
+     * 返回商城校验地址
+     * @param backUrl       回调地址(需要encode)
+     * @param domain        商城主域名
+     * @param customerId    商户ID
+     * @return
+     */
+    String getMallAccreditUrl(String backUrl,String domain,String customerId,String gduId) throws Exception;
+
+
+    /**
+     * 根据商户ID获取默认店铺模板
+     * @param customerId    商户ID
+     * @return
+     * @throws Exception
+     */
+    TemplatePage getDefaultTemplate(Long customerId) throws Exception;
+
+//    Long getUserId()
 
 }

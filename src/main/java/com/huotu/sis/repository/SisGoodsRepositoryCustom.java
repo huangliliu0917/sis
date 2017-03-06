@@ -9,7 +9,6 @@
 
 package com.huotu.sis.repository;
 
-import com.huotu.huobanplus.base.annotation.ExportableQuery;
 import com.huotu.huobanplus.common.entity.Brand;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.User;
@@ -34,7 +33,6 @@ public interface SisGoodsRepositoryCustom {
      * @param pageable 分组依据
      * @return 商品
      */
-    @ExportableQuery
     @Description("获取该店中店店主所有的可上架商品")
     Page<SisGoods> findUserAllSISGoods(@RequestParam("user")
                                        @Param("user")
@@ -50,7 +48,6 @@ public interface SisGoodsRepositoryCustom {
      * @param key      搜索关键字
      * @return
      */
-    @ExportableQuery
     @Description("获取该店中店店主分类之后的所有的可上架商品")
     List<SisGoods> findUserSISGoods(@RequestParam("user") @Param("user") User user,
                                     @RequestParam("catId") @Param("catId") Long catId,
@@ -71,29 +68,24 @@ public interface SisGoodsRepositoryCustom {
 //                    "left join SisGoods as sis on sis.goods=goods and sis.user=:user " +
 //                    "where goods.marketable=true and goods.disabled=false and (sis.deleted=false or sis is null) and sis.selected=:selected " +
 //                    "order by sis.orderWeight")
-    @ExportableQuery
     @Description("展示该小伙伴店中店上架销售商品")
     List<Goods> findSISGoods(@RequestParam("user") @Param("user") User user,
                              @RequestParam("selected") @Param("selected") boolean selected,
                              @RequestParam("key") @Param("key") String key,
                              Pageable pageable);
 
-    @ExportableQuery
     @Description("获取店中店商品上架数量和下架数量")
     Long[] sisGoodsTotals(@RequestParam("user") @Param("user") User user);
 
-    @ExportableQuery
     @Description("获取该店中店店主分类之后的所有的可上架商品,按照id排序")
     List<SisGoods> findUserSISGoodsOrderById(@RequestParam("user") @Param("user") User user,
                                              @RequestParam("categoryId") @Param("categoryId") Long categoryId,
                                              @RequestParam("name") @Param("name") String name,
                                              Pageable pageable);
 
-    @ExportableQuery
     @Description("获取该店中店店主分类之后的所有的可上架商品的总数")
     Integer findUserSISGoodsCount(User user, Long categoryId, String name);
 
-    @ExportableQuery
     @Description("获取该店中店店主分类之后的所有的可上架商品的总数")
     Integer findUserSISGoodsCount(User user, String keywords, Brand brand);
 

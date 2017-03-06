@@ -12,7 +12,6 @@ package com.huotu.sis.controller.sis;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.Merchant;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.MerchantRepository;
 import com.huotu.huobanplus.sdk.mall.annotation.CustomerId;
 import com.huotu.sis.common.StringHelper;
 import com.huotu.sis.entity.Sis;
@@ -25,7 +24,12 @@ import com.huotu.sis.model.sis.SisSearchCodeModel;
 import com.huotu.sis.model.sis.SisSearchModel;
 import com.huotu.sis.model.sisweb.SisLevelModel;
 import com.huotu.sis.model.sisweb.VerificationType;
-import com.huotu.sis.repository.*;
+import com.huotu.sis.repository.SisGoodsRecommendRepository;
+import com.huotu.sis.repository.SisLevelRepository;
+import com.huotu.sis.repository.SisRepository;
+import com.huotu.sis.repository.VerificationCodeRepository;
+import com.huotu.sis.repository.mall.GoodsRepository;
+import com.huotu.sis.repository.mall.MerchantRepository;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SisLevelService;
 import com.huotu.sis.service.SisService;
@@ -72,7 +76,7 @@ public class SisController {
     VerificationCodeRepository verificationCodeRepository;
 
     @Autowired
-    GoodRepository goodRepository;
+    GoodsRepository goodRepository;
 
     @Autowired
     SisGoodsRecommendRepository sisGoodsRecommendRepository;

@@ -1,22 +1,19 @@
 package com.huotu.sis.service.impl;
 
+import com.huotu.common.base.CookieHelper;
 import com.huotu.common.base.RSAHelper;
 import com.huotu.huobanplus.common.entity.MallCptCfg;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.MallCptCfgRepository;
-import com.huotu.huobanplus.common.repository.MallCptMembersRepository;
-import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
-import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
-import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
-import com.huotu.sis.common.CookieHelper;
 import com.huotu.sis.entity.*;
 import com.huotu.sis.entity.support.*;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.model.sisweb.SisRebateModel;
 import com.huotu.sis.repository.*;
+import com.huotu.sis.repository.mall.*;
+import com.huotu.sis.repository.smartui.TemplatePageRepository;
 import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,11 +22,17 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lgh on 2015/12/30.
@@ -77,7 +80,7 @@ public class UserServiceImpl implements UserService {
     private SisInviteRepository sisInviteRepository;
 
     @Autowired
-    private SisOrderItemsRepository sisOrderItemsRepository;
+    private OrderItemsRepository sisOrderItemsRepository;
 
     @Autowired
     private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
@@ -88,12 +91,32 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private CommonConfigsService commonConfigService;
 
+    @Autowired
+    private MerchantRepository merchantRepository;
+
+    @Autowired
+    private SisLevelService sisLevelService;
+
+    /**
+     * 用于解密HTS1
+     */
+    private final SecretKey key;
+
+    @SuppressWarnings("unused")//不能省
+    @Autowired
+    public UserServiceImpl(Environment environment) throws IOException {
+        String keyCode = environment.getProperty("sis.mall.des.key", "XjvDhKLvCsm9y7G7");
+        key = new SecretKeySpec(keyCode.getBytes("ASCII"), "AES");
+    }
+
     @Override
     public Long getUserId(HttpServletRequest request) {
         if (env.acceptsProfiles("develop")) {
 //            userRepository.findAll();
             return 97278L;//146 4471商户 王明
 //            return 96116L;
+//        }if(env.acceptsProfiles("staging")){
+//            return 17377L;
         } else {
             String encrypt = CookieHelper.get(request, userKey);
             try {
@@ -107,10 +130,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Long currentUserId(HttpServletRequest request, long customerId){
+        try{
+            String cookieValue = Stream.of(request.getCookies())
+                    .filter(cookie -> cookie.getName().equalsIgnoreCase("mem_authcode_"+customerId))
+                    .findAny().get().getValue();
+            byte[] encryptData = Base64.getDecoder().decode(URLDecoder.decode(cookieValue, "UTF-8"));
+
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+
+            byte[] data = cipher.doFinal(encryptData);
+            return Long.parseLong(new String(data));
+        }catch (Exception ex){
+            log.debug("getUserCookieError",ex);
+            return null;
+        }
+    }
+
+    @Override
     public void setUserId(Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (userId > 0) {
             String encrypt = RSAHelper.encrypt(userId.toString(), publicKey);
             CookieHelper.set(response, userKey, encrypt, request.getServerName(), 60 * 60 * 24 * 365);
+//            CookieHelper.set(response, userKey, userId.toString(), request.getServerName(), 60 * 60 * 24 * 365);
         }
 
     }
@@ -146,21 +189,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void newOpen(User user, String orderId, SisConfig sisConfig) throws Exception {
         Sis sis = sisRepository.findByUser(user);
-        List<TemplatePage> templatePage = templatePageRepository.findByScopeAndEnabled(Scope.sis, true);
-        templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId().equals(sisConfig.getMerchantId())).
-                collect(Collectors.toList());
-        SisInviteLog sisInviteLog = sisInviteRepository.findFirstByAcceptIdOrderByAcceptTimeDesc(user.getId());
+//        List<Scope> scopes=Arrays.asList(Scope.sis,Scope.system);
+//        List<TemplatePage> templatePage = templatePageRepository.findByScopeInAndEnabledAndMerchantId(
+//                scopes, true,user.getMerchant().getId());
+//        templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId().equals(sisConfig.getMerchantId())).
+//                collect(Collectors.toList());
+//        SisInviteLog sisInviteLog = sisInviteRepository.findFirstByAcceptIdOrderByAcceptTimeDesc(user.getId());
+
         //开店用户等级设置
-        SisLevel sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());
-
-        if(sisLevel==null){
-            sisLevel=sisLevelRepository.findFirstByMerchantIdOrderByLevelNoAsc(user.getMerchant().getId());
-        }
-        if(sisLevel==null){
-            throw new SisException("customerId:"+user.getMerchant().getId()+"have no sisLevel");
-        }
-
-
+        SisLevel sisLevel=null;
         if (sisConfig.getOpenMode() == 1) {//收费开店情况下
             OrderItems orderItems = sisOrderItemsRepository.getOrderItemsByOrderId(orderId).get(0);
             OpenGoodsIdLevelIds openGoodsIdLevelIds = sisConfig.getOpenGoodsIdlist();
@@ -174,6 +211,15 @@ public class UserServiceImpl implements UserService {
                     }
                 }
             }
+        }else {
+            sisLevel = sisLevelRepository.findByMerchantIdSys(user.getMerchant().getId());
+
+            if(sisLevel==null){
+                sisLevel=sisLevelRepository.findFirstByMerchantIdOrderByLevelNoAsc(user.getMerchant().getId());
+            }
+        }
+        if(sisLevel==null){
+            throw new SisException("customerId:"+user.getMerchant().getId()+"have no sisLevel");
         }
 
         if (sis == null) {
@@ -184,8 +230,9 @@ public class UserServiceImpl implements UserService {
             sis.setShareTitle("分享标题");
             sis.setOpenTime(new Date());
             sis.setStatus(true);
-            if (templatePage.size() > 0) {
-                sis.setTemplateId(templatePage.get(0).getId());
+            TemplatePage templatePage=getDefaultTemplate(sisConfig.getMerchantId());
+            if (templatePage!=null) {
+                sis.setTemplateId(templatePage.getId());
             }
             sis.setUser(user);
             sis.setDescription("我的小店描述");
@@ -193,15 +240,19 @@ public class UserServiceImpl implements UserService {
             sis.setSisLevel(sisLevel);
             //新增字段
             sis.setCustomerId(user.getMerchant().getId());
-            if (sisInviteLog != null) {
-                if (!StringUtils.isEmpty(sisInviteLog.getRealName())) {
-                    sis.setTitle(sisInviteLog.getRealName() + "的小店");
-                }
-                sis.setRealName(sisInviteLog.getRealName());
-                sis.setMobile(sisInviteLog.getMobile());
-            }
+            sisRepository.save(sis);
+//            if (sisInviteLog != null) {
+//                if (!StringUtils.isEmpty(sisInviteLog.getRealName())) {
+//                    sis.setTitle(sisInviteLog.getRealName() + "的小店");
+//                }
+//                sis.setRealName(sisInviteLog.getRealName());
+//                sis.setMobile(sisInviteLog.getMobile());
+//            }
+        }else {
+            sisLevelService.saveSisLevel(sis,sisLevel);
+//            sis.setSisLevel(sisLevel);
         }
-        sisRepository.save(sis);
+
         log.debug(user.getId()+"openShopOver");
     }
 
@@ -731,6 +782,41 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
     }
+
+    @Override
+    public String getMerchantSubDomain(Long customerId) {
+        String subDomain = merchantRepository.findSubDomainByMerchantId(customerId);
+        if (subDomain == null) {
+            subDomain = "";
+        }
+        return "http://" + subDomain + "." + commonConfigService.getMallDomain();
+    }
+
+    @Override
+    public String getMallAccreditUrl(String backUrl, String domain, String customerId, String gduId) throws Exception {
+//        backUrl= URLEncoder.encode(backUrl,"utf-8");
+        String url=domain+"/UserCenter/VerifyMobile" +
+                ".aspx?customerid="+customerId+"&redirecturl="+backUrl;
+        if(!StringUtils.isEmpty(gduId)){
+            url=url+"&gduid="+gduId;
+        }
+        return url;
+    }
+
+    @Override
+    public TemplatePage getDefaultTemplate(Long customerId) throws Exception {
+        List<Scope> scopes=Arrays.asList(Scope.sis,Scope.system);
+        List<TemplatePage> templatePage = templatePageRepository.findByScopeInAndEnabledAndMerchantId(
+                scopes, true,customerId);
+        templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId()
+                .equals(customerId))
+                .collect(Collectors.toList());
+        if(templatePage!=null&&!templatePage.isEmpty()){
+            return templatePage.get(0);
+        }
+        return null;
+    }
+
 
     /**
      * 递归查找上级用户

@@ -10,7 +10,6 @@
 
 package com.huotu.sis.service.impl;
 
-import com.huotu.huobanplus.base.toolService.VFSHelper;
 import com.huotu.sis.service.StaticResourceService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,7 +68,7 @@ public abstract class AbstractStaticResourceService implements StaticResourceSer
                     data.close();
                     out.close();
                 } catch (IOException e) {
-                    log.info("Exception on close stream." + e);
+                    log.debug("Exception on close stream." + e);
                 }
             }
             return null;

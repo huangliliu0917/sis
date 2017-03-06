@@ -3,9 +3,6 @@ package com.huotu.sis.controller.sisweb;
 import com.huotu.huobanplus.common.entity.Brand;
 import com.huotu.huobanplus.common.entity.Category;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.BrandRepository;
-import com.huotu.huobanplus.common.repository.CategoryRepository;
-import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisBrand;
@@ -18,6 +15,9 @@ import com.huotu.sis.model.sisweb.PublicParameterModel;
 import com.huotu.sis.model.sisweb.SisBrandModel;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisRepository;
+import com.huotu.sis.repository.mall.BrandRepository;
+import com.huotu.sis.repository.mall.CategoryRepository;
+import com.huotu.sis.repository.mall.UserRepository;
 import com.huotu.sis.service.CommonConfigService;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SisBrandService;
@@ -79,13 +79,13 @@ public class SisWebBrandController {
      */
     @RequestMapping(value = "/getCategoryList", method = RequestMethod.GET)
     @ResponseBody
-    public List<AppSisSortModel> getCategoryList() throws IOException, SisException {
-        Long userId = getCurrentUserId();
-        User user = userRepository.findOne(userId);
-        if (null == user)
-            throw new SisException("用户不存在或者已过期");
+    public List<AppSisSortModel> getCategoryList(@RequestParam Long customerId) throws IOException, SisException {
+//        Long userId = getCurrentUserId();
+//        User user = userRepository.findOne(userId);
+//        if (null == user)
+//            throw new SisException("用户不存在或者已过期");
 
-        List<Category> categories = categoryRepository.findByOwner(user.getMerchant());
+        List<Category> categories = categoryRepository.findByCustomerId(customerId);
         List<AppSisSortModel> sortFirst = new ArrayList<>();
 
         for (Category category : categories) {
@@ -114,7 +114,6 @@ public class SisWebBrandController {
         if (null == user)
             throw new SisException("用户不存在或者已过期");
 //        Page<Brand> pages = brandRepository.findByCustomerId(user.getMerchant().getId(), pageable);
-
 
         Page<SisBrand> pages=null;
         if(sis!=null&&sis.getShelvesAllGoods()!=null&&sis.getShelvesAllGoods()){

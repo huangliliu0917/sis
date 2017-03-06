@@ -1,22 +1,16 @@
 package com.huotu.sis.controller.sisweb;
 
 import com.huotu.common.base.HttpHelper;
-import com.huotu.huobanplus.base.toolService.ResourceService;
 import com.huotu.huobanplus.common.UserType;
 import com.huotu.huobanplus.common.entity.Goods;
 import com.huotu.huobanplus.common.entity.MerchantConfig;
 import com.huotu.huobanplus.common.entity.Product;
 import com.huotu.huobanplus.common.entity.User;
 import com.huotu.huobanplus.common.entity.support.ProductSpecifications;
-import com.huotu.huobanplus.common.repository.GoodsRepository;
-import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
-import com.huotu.huobanplus.common.repository.MerchantRepository;
-import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.huobanplus.model.type.MallEmbedResource;
 import com.huotu.huobanplus.sdk.mall.service.MallInfoService;
 import com.huotu.huobanplus.smartui.entity.TemplatePage;
 import com.huotu.huobanplus.smartui.entity.support.Scope;
-import com.huotu.huobanplus.smartui.repository.TemplatePageRepository;
 import com.huotu.huobanplus.smartui.sdk.SmartPageRepository;
 import com.huotu.sis.common.*;
 import com.huotu.sis.entity.*;
@@ -25,6 +19,11 @@ import com.huotu.sis.entity.support.OpenGoodsIdLevelIds;
 import com.huotu.sis.exception.*;
 import com.huotu.sis.model.sisweb.*;
 import com.huotu.sis.repository.*;
+import com.huotu.sis.repository.mall.GoodsRepository;
+import com.huotu.sis.repository.mall.MerchantConfigRepository;
+import com.huotu.sis.repository.mall.MerchantRepository;
+import com.huotu.sis.repository.mall.UserRepository;
+import com.huotu.sis.repository.smartui.TemplatePageRepository;
 import com.huotu.sis.service.*;
 import com.huotu.sis.service.impl.NoteSendHandle;
 import com.jayway.jsonpath.JsonPath;
@@ -33,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,8 +67,6 @@ public class SisWebUserController {
     private UserRepository userRepository;
     @Autowired
     private TemplatePageRepository templatePageRepository;
-    @Autowired
-    private ResourceService resourceService;
     @Autowired
     private SmartPageRepository resourceRepository;
     @Autowired
@@ -174,7 +172,7 @@ public class SisWebUserController {
             }
         }
 
-        log.info("auth error " + code);
+        log.debug("auth error " + code);
         return "redirect:/html/error";
     }
 
@@ -321,7 +319,9 @@ public class SisWebUserController {
 
         User user = userRepository.findOne(userId);
         Sis sis = sisRepository.findByUser(user);
-        List<TemplatePage> templatePage = templatePageRepository.findByScopeAndEnabled(Scope.sis, true);
+        List<Scope> scopes=Arrays.asList(Scope.sis,Scope.system);
+        List<TemplatePage> templatePage = templatePageRepository.findByScopeInAndEnabledAndMerchantId(
+                scopes, true,customerId);
 
 
         templatePage=templatePage.stream().filter(t -> null==t.getMerchantId()||t.getMerchantId().equals(customerId)).
@@ -446,26 +446,26 @@ public class SisWebUserController {
         return "sisweb/sisHome";
     }
 
-    private AppSisBaseInfoModel toSisBaseInfoModel(Sis sis, User user) throws IOException {
-        //分享二维码的URL
-        String indexUrl = getSisCustomerUrl(user.getMerchant().getId(), user.getId());
-
-        AppSisBaseInfoModel appSisBaseInfoModel = new AppSisBaseInfoModel();
-        appSisBaseInfoModel.setUserId(user.getId());
-        appSisBaseInfoModel.setEnableSis(sis.isStatus());
-
-        if (StringUtils.isEmpty(sis.getImgPath()))
-            appSisBaseInfoModel.setImgUrl(resourceService.getResource(defaultHead).getURL().toString());
-        else
-            appSisBaseInfoModel.setImgUrl(resourceService.getResource(sis.getImgPath()).getURL().toString());
-        appSisBaseInfoModel.setSisId(sis.getId());
-        appSisBaseInfoModel.setTitle(sis.getTitle());
-        appSisBaseInfoModel.setSisDescription(sis.getDescription());
-        appSisBaseInfoModel.setShareTitle(sis.getShareTitle());
-        appSisBaseInfoModel.setShareDescription(sis.getShareDesc());
-        appSisBaseInfoModel.setIndexUrl(indexUrl);
-        return appSisBaseInfoModel;
-    }
+//    private AppSisBaseInfoModel toSisBaseInfoModel(Sis sis, User user) throws IOException {
+//        //分享二维码的URL
+//        String indexUrl = getSisCustomerUrl(user.getMerchant().getId(), user.getId());
+//
+//        AppSisBaseInfoModel appSisBaseInfoModel = new AppSisBaseInfoModel();
+//        appSisBaseInfoModel.setUserId(user.getId());
+//        appSisBaseInfoModel.setEnableSis(sis.isStatus());
+//
+//        if (StringUtils.isEmpty(sis.getImgPath()))
+//            appSisBaseInfoModel.setImgUrl(resourceService.getResource(defaultHead).getURL().toString());
+//        else
+//            appSisBaseInfoModel.setImgUrl(resourceService.getResource(sis.getImgPath()).getURL().toString());
+//        appSisBaseInfoModel.setSisId(sis.getId());
+//        appSisBaseInfoModel.setTitle(sis.getTitle());
+//        appSisBaseInfoModel.setSisDescription(sis.getDescription());
+//        appSisBaseInfoModel.setShareTitle(sis.getShareTitle());
+//        appSisBaseInfoModel.setShareDescription(sis.getShareDesc());
+//        appSisBaseInfoModel.setIndexUrl(indexUrl);
+//        return appSisBaseInfoModel;
+//    }
 
     /**
      * 获取商家域名
@@ -477,7 +477,7 @@ public class SisWebUserController {
      * @throws IOException
      */
     private String getSisCustomerUrl(long merchantId, long userId) throws IOException {
-        String url = getMerchantSubDomain(merchantId);
+        String url = userService.getMerchantSubDomain(merchantId);
         url = url.replace("http://", "http://s" + userId + ".");
         StringBuilder sb = new StringBuilder(url);
         sb.append("/shop.aspx?customerid=" + merchantId + "&gduid=" + userId);
@@ -575,11 +575,23 @@ public class SisWebUserController {
         if (customerId == null) {
             throw new CustomerNotFoundException("未获取到商户ID");
         }
+        model.addAttribute("customerId", customerId);
+        SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
+        if (Objects.isNull(sisConfig) || sisConfig.getEnabled() == 0) {
+            throw new CustomerNotUseSisException("商家未启用店中店");
+        }
+        if(!StringUtils.isEmpty(sisConfig.getSharePic())){
+            String invitePic=sisConfig.getSharePic();
+            model.addAttribute("invitePic",commonConfigService.getResourcesUri()+invitePic);
+        }
+        model.addAttribute("content",sisConfig.getContent());
+        model.addAttribute("gduid",gduid);
         PublicParameterModel ppm = PublicParameterHolder.get();
         Long userId = ppm.getUserId();
         log.debug("userID" + userId + "into showOpenShop");
         if (userId == null) {
-            throw new UserNotFoundException("用户不存在");
+            return "sisweb/newOpenShop";
+//            throw new UserNotFoundException("用户不存在");
         }
         User user = userRepository.findOne(userId);
         if (Objects.isNull(user)) {
@@ -588,10 +600,7 @@ public class SisWebUserController {
         //        兼容
         sisConfigService.compatibilityOpenShopGoodsAndSelected(customerId);
 
-        SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
-        if (Objects.isNull(sisConfig) || sisConfig.getEnabled() == 0) {
-            throw new CustomerNotUseSisException("商家未启用店中店");
-        }
+
         Sis sis = sisRepository.findByUser(user);
         if (!Objects.isNull(sis)) {
             //进入店中店首页
@@ -600,46 +609,6 @@ public class SisWebUserController {
         }
         //todo
         SisInviteLog sisInviteLog = new SisInviteLog();
-//        if (sisConfig.getOpenMode() == 1) {//购买商品开店
-//            if (sisConfig.getOpenNeedInvite() == 1) {//邀请制
-//                if (gduid == null) {//没有邀请人
-//                    Long members = sisQualifiedMemberRepository.countByMemberId(userId);
-//                    if (members <= 0) {//未被授予开店资格
-//                        throw new UserNotOpenShopQualificationException("未被授予开店资格");
-//                    }
-//
-//                } else {//有邀请人
-//                    User guser = userRepository.findOne(gduid);
-//                    if (Objects.isNull(guser)) {
-//                        throw new UserNotFoundException("无法获取你的上级");
-//                    }
-//                    if (UserType.normal.equals(guser.getUserType())) {//邀请人是会员
-//                        throw new UserNotOpenShopQualificationException("邀请你的上级不是小伙伴，无法注册开店");
-//                    }
-//                    sisInviteLog.setInviterId(gduid);
-//                    model.addAttribute("inviterName", guser.getWxNickName());
-//                }
-//            } else {    //公开制
-////                if (UserType.normal.equals(user.getUserType())) {
-////                    throw new UserNotOpenShopQualificationException("请升级为小伙伴之后开店");
-////                }
-//            }
-////            Long invites = sisInviteRepository.countByAcceptIdAndInviterId(userId, gduid);
-////            if (invites > 0) {//已经填写过邀请信息
-////                model.addAttribute("customerId",customerId);
-////                return "redirect:showOpenShopGoodsDetail";
-////            }
-//
-//        } else {//免费开店
-//            if (UserType.normal.equals(user.getUserType())) {
-//                throw new UserNotOpenShopQualificationException("请升级为小伙伴之后开店");
-//            }
-//            Long invites = sisInviteRepository.countByAcceptIdAndInviterId(userId, gduid);
-//            if (invites > 0) {//已经填写过邀请信息
-//                model.addAttribute("customerId", customerId);
-//                return "redirect:getSisCenter";//表示已经开店了
-//            }
-//        }
 
         Integer openNeedInvite=sisConfig.getOpenNeedInvite()==null?-1:sisConfig.getOpenNeedInvite();
         switch (openNeedInvite){
@@ -683,9 +652,9 @@ public class SisWebUserController {
 
 
         model.addAttribute("sisInviteLog", sisInviteLog);
-        model.addAttribute("customerId", customerId);
+
         model.addAttribute("free", sisConfig.getOpenMode());
-        model.addAttribute("content",sisConfig.getContent());
+
         model.addAttribute("openGoodsMode", sisConfig.getOpenGoodsMode());//todo 开店商品模式修改
 
 
@@ -723,14 +692,29 @@ public class SisWebUserController {
 
             model.addAttribute("openGoods", sisLevelModels);
         }
-        if(!StringUtils.isEmpty(sisConfig.getSharePic())){
-            String invitePic=sisConfig.getSharePic();
-            model.addAttribute("invitePic",commonConfigService.getResourcesUri()+invitePic);
-        }
+
+        model.addAttribute("userId",userId);
         return "sisweb/newOpenShop";
 
 
     }
+
+    /**
+     * 商城校验
+     * @param customerId        商户ID
+     * @param backUrl           回调地址
+     * @param gduId             引导人ID
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/mallAccredit")
+    public String mallAccredit(Long customerId,String backUrl,String gduId) throws Exception{
+        backUrl=URLEncoder.encode(backUrl, "utf-8");
+        String redirectUrl=userService.getMallAccreditUrl(backUrl,userService.getMerchantSubDomain(customerId),
+                customerId.toString(),gduId);
+        return "redirect:" + redirectUrl;
+    }
+
 
 
     /**
@@ -774,6 +758,29 @@ public class SisWebUserController {
 //        }
 //        model.addAttribute("customerId",customerId);
 //        return "redirect:showOpenShopGoodsDetail";
+    }
+
+    /**
+     * 保存开店用户的身份证和姓名
+     * @param IDNo      身份证
+     * @param IDName    姓名
+     * @return          结果
+     * @throws Exception
+     */
+    @RequestMapping("/saveUserInfo")
+    @ResponseBody
+    @Transactional
+    public ResultModel saveUserInfo(@RequestParam String IDNo,@RequestParam String IDName)
+            throws Exception{
+        PublicParameterModel ppm = PublicParameterHolder.get();
+        Long userId = ppm.getUserId();
+        User user=userRepository.getOne(userId);
+        user.setRealName(IDName);
+        user.setUserCardID(IDNo);
+        ResultModel model=new ResultModel();
+        model.setCode(200);
+        model.setMessage("保存成功！");
+        return model;
     }
 
     /**
@@ -879,11 +886,14 @@ public class SisWebUserController {
                 freeze = freeze + p.getFreeze();
             }
         }
+        Set<Product> enables=getEnablesProducts(products);
+
+        model.addAttribute("products",enables);
         goods.setStock(goods.getStock() - freeze);
         model.addAttribute("good", goods);
-        String url = getMerchantSubDomain(customerId) + "/mall/SubmitOrder.aspx?" +
+        String url = userService.getMerchantSubDomain(customerId) + "/mall/SubmitOrder.aspx?" +
                 "fastbuy=1&" +
-                "traitems=" + goods.getId() + "_" + productId + "_1&" +
+                "traitems=" + goods.getId() + "_{productId}_1&" +
                 "customerid=" + customerId + "&" +
                 "showwxpaytitle=1" + "&" + "returl=/UserCenter/ShopInShop/OpenSuccess.aspx%3Fcustomerid%3D" + customerId;
         model.addAttribute("goodsUrl", url);
@@ -894,6 +904,25 @@ public class SisWebUserController {
         return "sisweb/openShopGoodsDetail";
 
     }
+
+    /**
+     * 获取可选择的商品列表
+     * @param products
+     * @return
+     */
+    private Set<Product> getEnablesProducts(Set<Product> products){
+        Set<Product> enables=new HashSet<>();
+        if(products==null){
+            return enables;
+        }
+        products.forEach(product -> {
+            if(product.isMarketable()){
+                enables.add(product);
+            }
+        });
+        return enables;
+    }
+
 
     /**
      * 进入分享开店邀请页面
@@ -947,7 +976,7 @@ public class SisWebUserController {
             String invitePic=sisConfig.getSharePic();
             model.addAttribute("invitePic",commonConfigService.getResourcesUri()+invitePic);
         }
-        model.addAttribute("customerUrl", getMerchantSubDomain(customerId));
+        model.addAttribute("customerUrl", userService.getMerchantSubDomain(customerId));
         model.addAttribute("shareUrl", shareUrl);
         return "sisweb/inviteOpenShop";
 
@@ -974,19 +1003,19 @@ public class SisWebUserController {
         return content;
     }
 
-    /**
-     * 获取商户的网址
-     *
-     * @param merchantId 商户ID
-     * @return
-     */
-    private String getMerchantSubDomain(Long merchantId) {
-        String subDomain = merchantRepository.findSubDomainByMerchantId(merchantId);
-        if (subDomain == null) {
-            subDomain = "";
-        }
-        return "http://" + subDomain + "." + commonConfigService.getMallDomain();
-    }
+//    /**
+//     * 获取商户的网址
+//     *
+//     * @param merchantId 商户ID
+//     * @return
+//     */
+//    private String getMerchantSubDomain(Long merchantId) {
+//        String subDomain = merchantRepository.findSubDomainByMerchantId(merchantId);
+//        if (subDomain == null) {
+//            subDomain = "";
+//        }
+//        return "http://" + subDomain + "." + commonConfigService.getMallDomain();
+//    }
 
 
     /**
@@ -1073,7 +1102,7 @@ public class SisWebUserController {
 //                "showwxpaytitle=1" + "&" + "returl=/UserCenter/ShopInShop/OpenSuccess.aspx%3Fcustomerid%3D" + customerId;
         Long productId = extraGoods.getSpecificationsCache().entrySet()
                 .stream().mapToLong(value -> value.getValue().getProductId()).findAny().getAsLong();
-        String url = getMerchantSubDomain(customerId) + "/mall/SubmitOrder.aspx?" +
+        String url = userService.getMerchantSubDomain(customerId) + "/mall/SubmitOrder.aspx?" +
                 "fastbuy=1&" + "&" +
                 "customerid=" + customerId + "&" +
                 "showwxpaytitle=1" + "&" + "returl=/UserCenter/ShopInShop/OpenSuccess.aspx%3Fcustomerid%3D" + customerId +

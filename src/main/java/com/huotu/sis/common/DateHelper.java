@@ -1,6 +1,5 @@
 package com.huotu.sis.common;
 
-import com.huotu.huobanplus.common.utils.DateUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

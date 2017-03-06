@@ -3,11 +3,14 @@ package com.huotu.sis.controller.sisweb;
 import com.huotu.huobanplus.common.entity.Order;
 import com.huotu.huobanplus.common.entity.OrderItems;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.UserRepository;
-import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.model.sisweb.ResultModel;
-import com.huotu.sis.repository.*;
+import com.huotu.sis.repository.SisConfigRepository;
+import com.huotu.sis.repository.SisInviteRepository;
+import com.huotu.sis.repository.SisRepository;
+import com.huotu.sis.repository.mall.OrderItemsRepository;
+import com.huotu.sis.repository.mall.OrderRepository;
+import com.huotu.sis.repository.mall.UserRepository;
 import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,10 +43,10 @@ public class SisWebApiController {
     private UserRepository userRepository;
 
     @Autowired
-    private SisOrderRepository sisOrderRepository;
+    private OrderRepository sisOrderRepository;
 
     @Autowired
-    private SisOrderItemsRepository sisOrderItemsRepository;
+    private OrderItemsRepository sisOrderItemsRepository;
 
     @Autowired
     private SecurityService securityService;
@@ -75,14 +78,14 @@ public class SisWebApiController {
      * @return          签名是否正确
      */
     private boolean checkSign(HttpServletRequest request){
-        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")){
+        if(!environment.acceptsProfiles("develop")&&!environment.acceptsProfiles("development")&&!environment.acceptsProfiles("staging")){
             String sign=request.getParameter("sign");
             try {
                 if (sign == null || !sign.equals(securityService.getSign(request))) {
                     return false;
                 }
             } catch (UnsupportedEncodingException e) {
-                log.info("签名解析异常");
+                log.debug("签名解析异常");
                 return false;
             }
         }
@@ -149,7 +152,7 @@ public class SisWebApiController {
         }else {
             resultModel.setCode(500);
             resultModel.setMessage("Fail");
-            log.info("user"+userId+"Upgrade failed");
+            log.debug("user"+userId+"Upgrade failed");
 
         }
         return resultModel;
@@ -196,12 +199,12 @@ public class SisWebApiController {
             return resultModel;
         }
 
-        Sis sis = sisRepository.findByUser(user);
-        if(sis!=null){
-            resultModel.setCode(500);
-            resultModel.setMessage(userId+"店中店已经开启");
-            return resultModel;
-        }
+//        Sis sis = sisRepository.findByUser(user);
+//        if(sis!=null){
+//            resultModel.setCode(500);
+//            resultModel.setMessage(userId+"店中店已经开启");
+//            return resultModel;
+//        }
 
         //兼容
         sisConfigService.compatibilityOpenShopGoodsAndSelected(user.getMerchant().getId());

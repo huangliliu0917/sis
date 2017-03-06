@@ -90,4 +90,10 @@ public interface CommonConfigsService {
      * @return
      */
     String getResoureServerUrl();
+
+    /**
+     * cookie加密key
+     * @return
+     */
+    String cookieKey();
 }

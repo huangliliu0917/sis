@@ -2,9 +2,9 @@ package com.huotu.sis.service.impl;
 
 import com.huotu.huobanplus.common.entity.MallCptStockLog;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.MallCptCfgRepository;
-import com.huotu.huobanplus.common.repository.MallCptStockLogRepository;
 import com.huotu.sis.repository.SisConfigRepository;
+import com.huotu.sis.repository.mall.MallCptCfgRepository;
+import com.huotu.sis.repository.mall.MallCptStockLogRepository;
 import com.huotu.sis.service.MallCptStockLogService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -1,28 +1,26 @@
 package com.huotu.sis.controller.sisweb;
 
 import com.huotu.huobanplus.common.UserType;
-import com.huotu.huobanplus.common.dataService.AdvanceQuatoRebateService;
-import com.huotu.huobanplus.common.dataService.NormalRebateService;
-import com.huotu.huobanplus.common.dataService.UserTempIntegralHistoryService;
 import com.huotu.huobanplus.common.entity.*;
 import com.huotu.huobanplus.common.entity.support.*;
 import com.huotu.huobanplus.common.model.RebateCompatible;
 import com.huotu.huobanplus.common.model.RebateInfo;
 import com.huotu.huobanplus.common.model.RebateMode;
 import com.huotu.huobanplus.common.model.adrebateconfig.ProductDisRebateDesc;
-import com.huotu.huobanplus.common.repository.*;
-import com.huotu.huobanplus.common.utils.DateUtil;
+import com.huotu.sis.common.DateUtil;
 import com.huotu.sis.common.MathHelper;
 import com.huotu.sis.common.PublicParameterHolder;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisGoods;
 import com.huotu.sis.entity.SisLevel;
+import com.huotu.sis.entity.support.SisLevelAward;
 import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.exception.SisException;
 import com.huotu.sis.exception.UserNotFoundException;
 import com.huotu.sis.model.sisweb.*;
 import com.huotu.sis.repository.*;
+import com.huotu.sis.repository.mall.*;
 import com.huotu.sis.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,13 +62,11 @@ public class SisWebGoodsController {
     @Autowired
     CategoryRepository categoryRepository;
     @Autowired
-    SisOrderItemsRepository sisOrderItemsRepository;
+    OrderItemsRepository sisOrderItemsRepository;
     @Autowired
-    SisOrderRepository sisOrderRepository;
+    OrderRepository sisOrderRepository;
     @Autowired
     CommonConfigsService commonConfigService;
-    @Autowired
-    UTIHRepository utihRepository;
     @Autowired
     private UserLevelRepository userLevelRepository;
     @Autowired
@@ -105,6 +101,9 @@ public class SisWebGoodsController {
 
     @Autowired
     private SisService sisService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 查找品牌对应的商品列表详情
@@ -181,24 +180,24 @@ public class SisWebGoodsController {
      */
     @RequestMapping(value = "/sisIndex", method = RequestMethod.GET)
     public String sisIndex(Long customerId,Model model) throws IOException, SisException {
-        Long userId = getCurrentUserId();
-        User user = userRepository.findOne(userId);
-        if (null == user)
-            throw new SisException("该用户不存在或者已经过期");
-        Sis sis = sisRepository.findByUser(user);
-        if (null == sis)
-            throw new SisException("您尚未开店，请先去开店再进行下一步操作！");
-        if (null == user.getWeixinImageUrl())
-            sis.setImgPath("images/moren.png");
-        else
-            sis.setImgPath(user.getWeixinImageUrl());
-        model.addAttribute("sis", sis);
-        SisLevel sisLevel = sis.getSisLevel();
-        if (null != sisLevel) {
-            model.addAttribute("sisLevelName", sisLevel.getLevelName());
-        } else {
-            model.addAttribute("sisLevelName", "默认等级");
-        }
+//        Long userId = getCurrentUserId();
+//        User user = userRepository.findOne(userId);
+//        if (null == user)
+//            throw new SisException("该用户不存在或者已经过期");
+//        Sis sis = sisRepository.findByUser(user);
+//        if (null == sis)
+//            throw new SisException("您尚未开店，请先去开店再进行下一步操作！");
+////        if (null == user.getWeixinImageUrl())
+////            sis.setImgPath("images/moren.png");
+////        else
+////            sis.setImgPath(user.getWeixinImageUrl());
+////        model.addAttribute("sis", sis);
+//        SisLevel sisLevel = sis.getSisLevel();
+//        if (null != sisLevel) {
+//            model.addAttribute("sisLevelName", sisLevel.getLevelName());
+//        } else {
+//            model.addAttribute("sisLevelName", "默认等级");
+//        }
         model.addAttribute("customerId", customerId);
         return "/sisweb/sisIndex";
     }
@@ -253,7 +252,7 @@ public class SisWebGoodsController {
 //        if(null==sis){
 //            response.sendRedirect(goodsShareUrl);
 //        }
-        List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods, user);
+        List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
 
         SisGoods sisGoods =null;
         if(sisGoodses!=null&&!sisGoodses.isEmpty()){
@@ -317,19 +316,19 @@ public class SisWebGoodsController {
     @RequestMapping(value = "/goodsIndex", method = RequestMethod.GET)
     public String goodsIndex(Long customerId, Model model, String pageType, HttpServletRequest request) throws IOException, SisException {
         Long userId = getCurrentUserId();
-        User user = userRepository.findOne(userId);
-        if (null == user) {
-            throw new SisException("该用户不存在或者已经过期");
-        }
+//        User user = userRepository.findOne(userId);
+//        if (null == user) {
+//            throw new SisException("该用户不存在或者已经过期");
+//        }
         Long count = sisGoodsService.countByUserId(customerId,userId);
-        Sis sis =sisRepository.findByUser(user);
+//        Sis sis =sisRepository.findByUserId(userId);
         request.setAttribute("pageType", pageType);
-        model.addAttribute("user", user);
+//        model.addAttribute("user", user);
         model.addAttribute("customerId", customerId);
         model.addAttribute("count", count);
-        if(sis!=null){
-            model.addAttribute("shelvesModel",sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
-        }
+//        if(sis!=null){
+//            model.addAttribute("shelvesModel",sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
+//        }
         return "/sisweb/sisGoodsList";
     }
 
@@ -475,7 +474,7 @@ public class SisWebGoodsController {
 
         } else if (operType == 1) {
 //            SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user).get(0);
-            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods, user);
+            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
 
             SisGoods sisGoods =null;
             if(sisGoodses!=null&&!sisGoodses.isEmpty()){
@@ -524,7 +523,7 @@ public class SisWebGoodsController {
 
         } else if (operType == 2) {
 //            SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user).get(0);
-            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods, user);
+            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
 
             SisGoods sisGoods =null;
             if(sisGoodses!=null&&!sisGoodses.isEmpty()){
@@ -770,7 +769,7 @@ public class SisWebGoodsController {
         if(sisConfig==null||sisConfig.getEnabled()==0){
             throw new SisException("未找到店中店配置或未启用店中店");
         }
-        MerchantConfig merchantConfig = merchantConfigRepository.findByMerchant(user.getMerchant());
+        MerchantConfig merchantConfig = merchantConfigRepository.findByMerchantId(user.getMerchant().getId());
         int exchangeRate = 100; //默认100
         RebateInfo merchantRebateInfo = new RebateInfo();
         //
@@ -811,7 +810,9 @@ public class SisWebGoodsController {
                 //暂时按照直推奖的最小值来显示
                 switch (pushModel){
                     case 0:
-                        directRebate = (int) Math.rint(goods.getShopRebateMin() * level.getRebateRate() / exchangeRate);
+                        SisLevelAward sisLevelAward=sisConfig.getSisLevelPushAwards().get(sis.getSisLevel().getId());
+                        double rebate=userService.getSisRebateModel(sisLevelAward.getCfg().get(0),sis);
+                        directRebate = (int) Math.rint(goods.getShopRebateMin() * rebate / exchangeRate);
                         break;
                     case 1:
                         List<ProIdAndAmount>proIdAndAmounts=goods.getShopRebates();

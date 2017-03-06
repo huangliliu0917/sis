@@ -12,9 +12,6 @@ package com.huotu.sis.controller.sis;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.huotu.huobanplus.common.entity.*;
-import com.huotu.huobanplus.common.repository.MallCptCfgRepository;
-import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
-import com.huotu.huobanplus.common.repository.MerchantRepository;
 import com.huotu.huobanplus.sdk.mall.annotation.CustomerId;
 import com.huotu.sis.common.MathHelper;
 import com.huotu.sis.entity.Sis;
@@ -27,10 +24,13 @@ import com.huotu.sis.entity.support.RelationAndPercent;
 import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.model.sis.*;
 import com.huotu.sis.model.sisweb.SisLevelModel;
-import com.huotu.sis.repository.GoodRepository;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
 import com.huotu.sis.repository.SisOpenAwardAssignRepository;
+import com.huotu.sis.repository.mall.GoodsRepository;
+import com.huotu.sis.repository.mall.MallCptCfgRepository;
+import com.huotu.sis.repository.mall.MerchantConfigRepository;
+import com.huotu.sis.repository.mall.MerchantRepository;
 import com.huotu.sis.service.CommonConfigService;
 import com.huotu.sis.service.SisConfigService;
 import com.huotu.sis.service.SisLevelService;
@@ -71,7 +71,7 @@ public class OpenSisShopController {
     private SisLevelRepository sisLevelRepository;
 
     @Autowired
-    private GoodRepository goodRepository;
+    private GoodsRepository goodRepository;
 
     @Autowired
     private SisOpenAwardAssignRepository sisOpenAwardAssignRepository;
@@ -376,7 +376,7 @@ public class OpenSisShopController {
             throw new Exception("商户ID不存在");
         }
         Merchant merchant=merchantRespository.findOne(customerId);
-        MerchantConfig merchantConfig =merchantConfigRepository.findByMerchant(merchant);
+        MerchantConfig merchantConfig =merchantConfigRepository.findByMerchantId(merchant.getId());
 
         //积分兑换钱的比例
         int exchangeRate=merchantConfig.getExchangeRate();

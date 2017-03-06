@@ -2,9 +2,9 @@ package com.huotu.sis.service.impl;
 
 import com.huotu.huobanplus.common.entity.Brand;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.BrandRepository;
 import com.huotu.sis.entity.SisBrand;
 import com.huotu.sis.repository.SisBrandRepository;
+import com.huotu.sis.repository.mall.BrandRepository;
 import com.huotu.sis.service.SisBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;

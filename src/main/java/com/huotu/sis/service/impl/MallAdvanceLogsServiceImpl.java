@@ -2,10 +2,10 @@ package com.huotu.sis.service.impl;
 
 import com.huotu.huobanplus.common.entity.MallAdvanceLogs;
 import com.huotu.huobanplus.common.entity.User;
-import com.huotu.huobanplus.common.repository.MallAdvanceLogsRepository;
-import com.huotu.huobanplus.common.repository.OrderRepository;
-import com.huotu.huobanplus.common.repository.UserRepository;
 import com.huotu.sis.repository.SisRepository;
+import com.huotu.sis.repository.mall.MallAdvanceLogsRepository;
+import com.huotu.sis.repository.mall.OrderRepository;
+import com.huotu.sis.repository.mall.UserRepository;
 import com.huotu.sis.service.MallAdvanceLogsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

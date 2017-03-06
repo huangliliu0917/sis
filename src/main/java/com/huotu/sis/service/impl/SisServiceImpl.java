@@ -1,23 +1,21 @@
 package com.huotu.sis.service.impl;
 
 import com.huotu.huobanplus.common.entity.*;
-import com.huotu.huobanplus.common.repository.MerchantConfigRepository;
-import com.huotu.huobanplus.common.repository.MerchantRepository;
-import com.huotu.huobanplus.common.repository.UserRepository;
-import com.huotu.huobanplus.common.repository.UserTempIntegralHistoryRepository;
 import com.huotu.sis.common.DateHelper;
 import com.huotu.sis.common.MathHelper;
 import com.huotu.sis.entity.Sis;
 import com.huotu.sis.entity.SisConfig;
 import com.huotu.sis.entity.SisLevel;
-import com.huotu.sis.entity.support.*;
+import com.huotu.sis.entity.support.RelationAndPercent;
+import com.huotu.sis.entity.support.SisLevelAwards;
+import com.huotu.sis.entity.support.SisRebateTeamManagerSetting;
 import com.huotu.sis.model.sis.SisSearchModel;
 import com.huotu.sis.model.sisweb.SisRebateModel;
 import com.huotu.sis.model.sisweb.UserTempIntegralHistoryModel;
 import com.huotu.sis.repository.SisConfigRepository;
 import com.huotu.sis.repository.SisLevelRepository;
-import com.huotu.sis.repository.SisOrderItemsRepository;
 import com.huotu.sis.repository.SisRepository;
+import com.huotu.sis.repository.mall.*;
 import com.huotu.sis.service.CommonConfigsService;
 import com.huotu.sis.service.SisService;
 import com.huotu.sis.service.UserService;
@@ -55,7 +53,7 @@ public class SisServiceImpl implements SisService {
     UserTempIntegralHistoryRepository userTempIntegralHistoryRepository;
 
     @Autowired
-    private SisOrderItemsRepository sisOrderItemsRepository;
+    private OrderItemsRepository sisOrderItemsRepository;
 
     @Autowired
     private SisLevelRepository sisLevelRepository;
@@ -150,7 +148,7 @@ public class SisServiceImpl implements SisService {
     @Override
     public void calculatePushAward(User user, Order order, String unionOrderId,SisConfig sisConfig) throws Exception {
         List<UserTempIntegralHistoryModel> models=new ArrayList<>();
-        MerchantConfig merchantConfig =merchantConfigRepository.findByMerchant(user.getMerchant());
+        MerchantConfig merchantConfig =merchantConfigRepository.findByMerchantId(user.getMerchant().getId());
         if(Objects.isNull(merchantConfig)){
             //未找到商家配置信息，无法返利
             log.info("userId:"+user.getId()+" Store configuration information was not found to rebate");
@@ -489,7 +487,7 @@ public class SisServiceImpl implements SisService {
         if(merchant==null){
             return imgUrl;
         }
-        MerchantConfig merchantConfig=merchantConfigRepository.findByMerchant(merchant);
+        MerchantConfig merchantConfig=merchantConfigRepository.findByMerchantId(merchant.getId());
         if(merchantConfig!=null&&!StringUtils.isEmpty(merchantConfig.getLogoImg())){
             imgUrl=commonConfigService.getResourceServerUrl()+merchantConfig.getLogoImg();
         }
