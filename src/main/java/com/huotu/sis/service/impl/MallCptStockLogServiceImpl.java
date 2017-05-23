@@ -32,7 +32,7 @@ public class MallCptStockLogServiceImpl implements MallCptStockLogService {
     public MallCptStockLog saveCptStockLogs(Long customerId, Double cumulativeAmount, Integer stockNum,
                                             User member, User contribMember, String orderId) throws Exception {
         if(stockNum<=0){
-            log.info("user"+member.getId()+"stockNum is 0");
+//            log.info("user"+member.getId()+"stockNum is 0");
             return null;
         }
         SimpleDateFormat sFormat = new SimpleDateFormat("yyyyMM");

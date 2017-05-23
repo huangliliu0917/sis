@@ -20,19 +20,18 @@ public class WebHandlerExceptionResolver implements HandlerExceptionResolver {
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         String requestURI = request.getRequestURI().substring(request.getContextPath().length());
-        log.info("web request error back:"+ex.getMessage());
         if (requestURI.startsWith("/sisweb/") || requestURI.startsWith("/sisapi/")) {
 
-            String message ="";
+            String message = "";
             try {
                 throw ex;
             } catch (Exception e) {
-                log.info("web request error"+e.getMessage());
+                log.error("P", e);
                 message = e.getMessage();
             }
 
             try {
-                return new ModelAndView("redirect:/html/error?errorMessage="+ URLEncoder.encode(message,"utf-8"));
+                return new ModelAndView("redirect:/html/error?errorMessage=" + URLEncoder.encode(message, "utf-8"));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

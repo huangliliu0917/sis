@@ -179,7 +179,7 @@ public class SisWebGoodsController {
      * @throws IOException  IO异常，SisException 店中店异常
      */
     @RequestMapping(value = "/sisIndex", method = RequestMethod.GET)
-    public String sisIndex(Long customerId,Model model) throws IOException, SisException {
+    public String sisIndex(Long customerId, Model model) throws IOException, SisException {
 //        Long userId = getCurrentUserId();
 //        User user = userRepository.findOne(userId);
 //        if (null == user)
@@ -240,10 +240,10 @@ public class SisWebGoodsController {
      * @throws IOException
      */
     @RequestMapping(value = "/getSisGoodsDetail", method = RequestMethod.GET)
-    public String getSisGoodsDetail(Long goodId,Long customerId, HttpServletRequest request) throws IOException, SisException {
+    public String getSisGoodsDetail(Long goodId, Long customerId, HttpServletRequest request) throws IOException, SisException {
         Long userId = getCurrentUserId();
         User user = userRepository.findOne(userId);
-        Sis sis=sisRepository.findByUser(user);
+        Sis sis = sisRepository.findByUser(user);
 
         GoodsDetailModel goodsDetailModel = new GoodsDetailModel();
         Goods goods = goodsRepository.findOne(goodId);
@@ -252,14 +252,14 @@ public class SisWebGoodsController {
 //        if(null==sis){
 //            response.sendRedirect(goodsShareUrl);
 //        }
-        List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
+        List<SisGoods> sisGoodses = sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
 
-        SisGoods sisGoods =null;
-        if(sisGoodses!=null&&!sisGoodses.isEmpty()){
-            sisGoods=sisGoodses.get(0);
+        SisGoods sisGoods = null;
+        if (sisGoodses != null && !sisGoodses.isEmpty()) {
+            sisGoods = sisGoodses.get(0);
         }
 
-        if(null==sisGoods){
+        if (null == sisGoods) {
             sisGoods = new SisGoods();
             sisGoods.setGoods(goods);
             sisGoods.setDeleted(false);
@@ -300,7 +300,7 @@ public class SisWebGoodsController {
         StringBuilder picture = new StringBuilder();
         picture.append(commonConfigService.getResoureServerUrl() + goods.getSmallPic().getValue());
         goodsDetailModel.setPicture(picture.toString());
-        goodsDetailModel.setShelves(sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
+        goodsDetailModel.setShelves(sis.getShelvesAllGoods() == null ? false : sis.getShelvesAllGoods());
         request.setAttribute("customerId", customerId);
         request.setAttribute("goodsDetailModel", goodsDetailModel);
         return "sisweb/goodsDetail";
@@ -320,7 +320,7 @@ public class SisWebGoodsController {
 //        if (null == user) {
 //            throw new SisException("该用户不存在或者已经过期");
 //        }
-        Long count = sisGoodsService.countByUserId(customerId,userId);
+        Long count = sisGoodsService.countByUserId(customerId, userId);
 //        Sis sis =sisRepository.findByUserId(userId);
         request.setAttribute("pageType", pageType);
 //        model.addAttribute("user", user);
@@ -350,11 +350,11 @@ public class SisWebGoodsController {
             throw new SisException("用户不存在或者已过期");
         }
         logger.debug("show sis goods list begin");
-        Sis sis=sisRepository.findByUser(user);
+        Sis sis = sisRepository.findByUser(user);
         Page<SisGoods> pages;
-        if(sis==null||sis.getShelvesAllGoods()==null||!sis.getShelvesAllGoods()){
+        if (sis == null || sis.getShelvesAllGoods() == null || !sis.getShelvesAllGoods()) {
             pages = sisGoodsService.getSisGoodsList(user.getMerchant().getId(), user.getId(), page - 1, pageSize);
-        }else{
+        } else {
             pages = sisGoodsService.getMallGoods(user.getMerchant(), user, page - 1, pageSize);
         }
         List<SisGoods> goodsList = pages.getContent();
@@ -457,8 +457,8 @@ public class SisWebGoodsController {
 
 
         if (operType == 0) {
-            List<SisGoods> sisGoodsList = sisGoodsService.getAllSisGoodsList(goodsId,userId,customerId);
-            if (null == sisGoodsList || sisGoodsList.size()==0) {
+            List<SisGoods> sisGoodsList = sisGoodsService.getAllSisGoodsList(goodsId, userId, customerId);
+            if (null == sisGoodsList || sisGoodsList.size() == 0) {
                 modelMap.addAttribute("success", Boolean.FALSE);
                 modelMap.addAttribute("msg", "商品已下架或已被删除");
                 return modelMap;
@@ -474,11 +474,11 @@ public class SisWebGoodsController {
 
         } else if (operType == 1) {
 //            SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user).get(0);
-            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
+            List<SisGoods> sisGoodses = sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
 
-            SisGoods sisGoods =null;
-            if(sisGoodses!=null&&!sisGoodses.isEmpty()){
-                sisGoods=sisGoodses.get(0);
+            SisGoods sisGoods = null;
+            if (sisGoodses != null && !sisGoodses.isEmpty()) {
+                sisGoods = sisGoodses.get(0);
             }
             if (null != sisGoods) {
                 modelMap.addAttribute("success", Boolean.FALSE);
@@ -488,15 +488,15 @@ public class SisWebGoodsController {
             Long count = sisGoodsService.countByUserId(customerId, userId);
             SisConfig sisConfig = sisConfigRepository.findByMerchantId(customerId);
 
-            if(sisConfig==null){
+            if (sisConfig == null) {
                 modelMap.addAttribute("success", Boolean.FALSE);
                 modelMap.addAttribute("msg", "找不到店铺配置信息");
                 return modelMap;
             }
-            Boolean limitShelvesNum=sisConfig.getLimitShelvesNum()==null?false:sisConfig.getLimitShelvesNum();
-            if(limitShelvesNum){
-                Integer maxMartketableNum=sisConfig.getMaxMartketableNum()==null?0:sisConfig.getMaxMartketableNum();
-                if(Integer.parseInt(count.toString()) >=maxMartketableNum){
+            Boolean limitShelvesNum = sisConfig.getLimitShelvesNum() == null ? false : sisConfig.getLimitShelvesNum();
+            if (limitShelvesNum) {
+                Integer maxMartketableNum = sisConfig.getMaxMartketableNum() == null ? 0 : sisConfig.getMaxMartketableNum();
+                if (Integer.parseInt(count.toString()) >= maxMartketableNum) {
                     modelMap.addAttribute("msg", "您上架的商品数量已达上限,请删除已上架商品后再添加");
                     modelMap.addAttribute("success", Boolean.FALSE);
                     return modelMap;
@@ -520,14 +520,13 @@ public class SisWebGoodsController {
             return modelMap;
 
 
-
         } else if (operType == 2) {
 //            SisGoods sisGoods = sisGoodsRepository.findByGoodsAndUser(goods, user).get(0);
-            List<SisGoods> sisGoodses=sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
+            List<SisGoods> sisGoodses = sisGoodsRepository.findByGoodsAndUser(goods.getId(), user.getId());
 
-            SisGoods sisGoods =null;
-            if(sisGoodses!=null&&!sisGoodses.isEmpty()){
-                sisGoods=sisGoodses.get(0);
+            SisGoods sisGoods = null;
+            if (sisGoodses != null && !sisGoodses.isEmpty()) {
+                sisGoods = sisGoodses.get(0);
             }
             if (null == sisGoods) {
                 modelMap.addAttribute("success", Boolean.FALSE);
@@ -574,7 +573,7 @@ public class SisWebGoodsController {
                 if (members > 0) {//被授予开店资格
                     return "redirect:showOpenShop";
                 } else {//未被授予开店资格
-                    throw new SisException("user: "+userId+" Has not been granted to open a shop");
+                    throw new SisException("user: " + userId + " Has not been granted to open a shop");
                 }
 
             } else {
@@ -583,13 +582,13 @@ public class SisWebGoodsController {
 
         }
 
-        if(StringUtils.isEmpty(sis.getImgPath())){
+        if (StringUtils.isEmpty(sis.getImgPath())) {
             sis.setImgPath(sisService.getMerchantLogoUrl(user.getMerchant().getId()));
             sisRepository.save(sis);
         }
         if (Objects.isNull(user.getWeixinImageUrl())) {
             sis.setImgPath("images/moren.png");
-        } else{
+        } else {
             sis.setImgPath(user.getWeixinImageUrl());
         }
 
@@ -604,7 +603,7 @@ public class SisWebGoodsController {
         }
         //订单数量
 //        Long orderCount = orderService.getCountByUserId(userId);
-        Long orderCount = userTempIntegralHistoryService.getCountByUserId(userId,500);
+        Long orderCount = userTempIntegralHistoryService.getCountByUserId(userId, 500);
         model.addAttribute("orderCount", orderCount);
         Date now = new Date();
         Date startDate = DateUtil.makeStartDate(now);
@@ -623,7 +622,7 @@ public class SisWebGoodsController {
         } catch (IOException e) {
             logger.debug("error share url:" + e);
         }
-        model.addAttribute("indexUrl", indexUrl+"&__newframe");
+        model.addAttribute("indexUrl", indexUrl + "&__newframe");
 
         //总收益
         List<UserTempIntegralHistory> list = userTempIntegralHistoryService.getListByUserIdAndDate(userId, 1, 500, null, null);
@@ -632,14 +631,13 @@ public class SisWebGoodsController {
             integrals += history.getIntegral();
         }
         model.addAttribute("integrals", integrals);
-        model.addAttribute("homePageColor",sisConfig.getHomePageColor());
-        model.addAttribute("shareUrl","/sisweb/inviteopenshop?customerid="+user.getMerchant().getId()+"&__newframe");
-        model.addAttribute("sisShopMode",sisConfig.getSisShopMode());
+        model.addAttribute("homePageColor", sisConfig.getHomePageColor());
+        model.addAttribute("shareUrl", "/sisweb/inviteopenshop?customerid=" + user.getMerchant().getId() + "&__newframe");
+        model.addAttribute("sisShopMode", sisConfig.getSisShopMode());
 //        model.addAttribute("shareUrl","/sisweb/inviteOpenShop?customerId="+user.getMerchant().getId()+"&__newframe");
 
         return "/sisweb/sisCenter";
     }
-
 
 
     /**
@@ -649,12 +647,12 @@ public class SisWebGoodsController {
      * @throws SisException
      */
     @RequestMapping(value = "/orderIndex", method = RequestMethod.GET)
-    public String goToSisOrderList(Long customerId,Model model) throws SisException {
+    public String goToSisOrderList(Long customerId, Model model) throws SisException {
         Long userId = getCurrentUserId();
         User user = userRepository.findOne(userId);
         if (null == user)
             throw new SisException("该用户不存在或者已经过期");
-        model.addAttribute("customerId",customerId);
+        model.addAttribute("customerId", customerId);
         return "/sisweb/sisOrderList";
     }
 
@@ -752,8 +750,8 @@ public class SisWebGoodsController {
         //
         Sis sis = sisRepository.findByUser(user);
         if (sis == null) {
-            if(user!=null){
-                throw new SisException("user: "+user.getId()+" Unable to query information to the owner");
+            if (user != null) {
+                throw new SisException("user: " + user.getId() + " Unable to query information to the owner");
             }
             throw new SisException("无法查询到店主信息");
         }
@@ -765,8 +763,8 @@ public class SisWebGoodsController {
         if (userLevel == null) {
             throw new SisException("会员等级未配置");
         }
-        SisConfig sisConfig=sisConfigRepository.findByMerchantId(user.getMerchant().getId());
-        if(sisConfig==null||sisConfig.getEnabled()==0){
+        SisConfig sisConfig = sisConfigRepository.findByMerchantId(user.getMerchant().getId());
+        if (sisConfig == null || sisConfig.getEnabled() == 0) {
             throw new SisException("未找到店中店配置或未启用店中店");
         }
         MerchantConfig merchantConfig = merchantConfigRepository.findByMerchantId(user.getMerchant().getId());
@@ -803,35 +801,39 @@ public class SisWebGoodsController {
                 PcSisGoodsModel appSisGoodsModel = new PcSisGoodsModel();
 
                 Integer directRebate;
-                Integer pushModel=sisConfig.getPushAwardMode();
-                if(pushModel==null){
-                    pushModel=0;
+                Integer pushModel = sisConfig.getPushAwardMode();
+                if (pushModel == null) {
+                    pushModel = 0;
                 }
                 //暂时按照直推奖的最小值来显示
-                switch (pushModel){
+                switch (pushModel) {
                     case 0:
-                        SisLevelAward sisLevelAward=sisConfig.getSisLevelPushAwards().get(sis.getSisLevel().getId());
-                        double rebate=userService.getSisRebateModel(sisLevelAward.getCfg().get(0),sis);
-                        directRebate = (int) Math.rint(goods.getShopRebateMin() * rebate / exchangeRate);
+                        SisLevelAward sisLevelAward = sisConfig.getSisLevelPushAwards().get(sis.getSisLevel().getId());
+                        if (sisLevelAward != null && sisLevelAward.getCfg() != null) {
+                            double rebate = userService.getSisRebateModel(sisLevelAward.getCfg().get(0), sis);
+                            directRebate = (int) Math.rint(goods.getShopRebateMin() * rebate / exchangeRate);
+                        } else {
+                            directRebate = 0;
+                        }
                         break;
                     case 1:
-                        List<ProIdAndAmount>proIdAndAmounts=goods.getShopRebates();
-                        double amount=0;
-                        if(proIdAndAmounts!=null&&!proIdAndAmounts.isEmpty()){
-                             amount=proIdAndAmounts.stream().mapToDouble(ProIdAndAmount::getAmount).min().orElse(0);
+                        List<ProIdAndAmount> proIdAndAmounts = goods.getShopRebates();
+                        double amount = 0;
+                        if (proIdAndAmounts != null && !proIdAndAmounts.isEmpty()) {
+                            amount = proIdAndAmounts.stream().mapToDouble(ProIdAndAmount::getAmount).min().orElse(0);
                         }
-                        SisRebateTeamManagerSetting setting=sisConfig.getSisRebateTeamManagerSetting();
-                        if(setting==null||setting.getManageAwards()==null){
-                            directRebate=0;
+                        SisRebateTeamManagerSetting setting = sisConfig.getSisRebateTeamManagerSetting();
+                        if (setting == null || setting.getManageAwards() == null) {
+                            directRebate = 0;
                             break;
                         }
-                        double rate=sisService.countPushPercent(level.getLevelNo(),setting.getManageAwards());
-                        rate+=setting.getSaleAward();
-                        double totalAmount=amount*rate/100;
-                        directRebate= MathHelper.getIntegralRateByRate(totalAmount,exchangeRate);
+                        double rate = sisService.countPushPercent(level.getLevelNo(), setting.getManageAwards());
+                        rate += setting.getSaleAward();
+                        double totalAmount = amount * rate / 100;
+                        directRebate = MathHelper.getIntegralRateByRate(totalAmount, exchangeRate);
                         break;
                     default:
-                        directRebate=0;
+                        directRebate = 0;
                 }
 //                if(sisConfig.getGoodSelectMode()!=null&&sisConfig.getGoodSelectMode()==1){
 //                    if(directRebate==0){
@@ -976,36 +978,36 @@ public class SisWebGoodsController {
                             appSisGoodsModel.setMaxRebate((int) Math.rint(integral[1] * 100 / exchangeRate));
                         }
                         //经营者模式
-                    }else if(null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.operator)){
-                        Integer maxRebate=0;
-                        Integer minRebate=0;
-                        Integer levelNo=null;
-                        List<UserLevel> userLevels=userLevelRepository.findByMerchant_IdAndTypeOrderByLevelAsc(user.getMerchant().getId(),
-                                UserType.buddy,new PageRequest(0,1000)).getContent();
-                        if(userLevels!=null){
-                            for(int i=0;i<userLevels.size();i++){
-                                if(userLevels.get(i).getId().equals((long)user.getLevelId())){
-                                    levelNo=i;
+                    } else if (null != merchantConfig && null != merchantConfig.getRebateCompatible() && merchantConfig.getRebateCompatible().equals(RebateCompatible.operator)) {
+                        Integer maxRebate = 0;
+                        Integer minRebate = 0;
+                        Integer levelNo = null;
+                        List<UserLevel> userLevels = userLevelRepository.findByMerchant_IdAndTypeOrderByLevelAsc(user.getMerchant().getId(),
+                                UserType.buddy, new PageRequest(0, 1000)).getContent();
+                        if (userLevels != null) {
+                            for (int i = 0; i < userLevels.size(); i++) {
+                                if (userLevels.get(i).getId().equals((long) user.getLevelId())) {
+                                    levelNo = i;
                                     break;
                                 }
                             }
-                            if(levelNo!=null){
-                                RebateTeamManagerSetting rebateSetting=merchantConfig.getRebateTeamManagerSetting();
-                                List<String> levelKeys=getPossibleRebateRelations(-1,levelNo);
-                                if(rebateSetting!=null&&levelKeys!=null){
-                                    Double rebate=rebateSetting.getSaleAward();
-                                    for(RebateTeam rt:rebateSetting.getRebateTeams()){
-                                        for(String s:levelKeys){
-                                            if(rt.getRelation().equals(s)){
-                                                rebate=rebate+rt.getPercent();
+                            if (levelNo != null) {
+                                RebateTeamManagerSetting rebateSetting = merchantConfig.getRebateTeamManagerSetting();
+                                List<String> levelKeys = getPossibleRebateRelations(-1, levelNo);
+                                if (rebateSetting != null && levelKeys != null) {
+                                    Double rebate = rebateSetting.getSaleAward();
+                                    for (RebateTeam rt : rebateSetting.getRebateTeams()) {
+                                        for (String s : levelKeys) {
+                                            if (rt.getRelation().equals(s)) {
+                                                rebate = rebate + rt.getPercent();
                                             }
                                         }
                                     }
-                                    List<ProductDisRebateDesc> productRebateConfigs=goods.getProductRebateConfigs();
-                                    if(productRebateConfigs!=null){
-                                        double maxAmount=getProductDisRebateDescsMaxAmount(productRebateConfigs);
-                                        maxRebate=(int)Math.rint(maxAmount*rebate/exchangeRate);
-                                        minRebate=maxRebate;
+                                    List<ProductDisRebateDesc> productRebateConfigs = goods.getProductRebateConfigs();
+                                    if (productRebateConfigs != null) {
+                                        double maxAmount = getProductDisRebateDescsMaxAmount(productRebateConfigs);
+                                        maxRebate = (int) Math.rint(maxAmount * rebate / exchangeRate);
+                                        minRebate = maxRebate;
                                     }
                                 }
                             }
@@ -1030,7 +1032,7 @@ public class SisWebGoodsController {
                 appSisGoodsModel.setStock(goods.getStock());
                 appSisGoodsModel.setGoodSelected(sisGoods.isSelected());
                 appSisGoodsModel.setDetailsUrl(goodsUrl + "&goodId=");
-                appSisGoodsModel.setShelves(sis.getShelvesAllGoods()==null? false:sis.getShelvesAllGoods());
+                appSisGoodsModel.setShelves(sis.getShelvesAllGoods() == null ? false : sis.getShelvesAllGoods());
 //                logger.debug("sis goods share URL:" + getSisGoodsUrl(user.getMerchant().getId(), user.getId(), goods.getId()));
                 appSisGoodsModel.setShareUrl(goodsShareUrl + goods.getId());
                 list.add(appSisGoodsModel);
@@ -1059,10 +1061,10 @@ public class SisWebGoodsController {
             throw new SisException("该用户不存在或者已经过期");
 
         List<SisSumAmountModel> list = sqlService.getListGroupBySrcType(userId);
-        if(customerId==4471){
+        if (customerId == 4471) {
             model.addAttribute("list", list.get(0));
-        }else {
-            model.addAttribute("list",list);
+        } else {
+            model.addAttribute("list", list);
         }
         model.addAttribute("customerId", customerId);
         return "/sisweb/ownerJuniorList";
@@ -1112,7 +1114,7 @@ public class SisWebGoodsController {
     @ResponseBody
     public PageOpenShopModel getJuniorDetailListAjax(Integer srcType, Long customerId, Integer pageSize, Integer page) throws
             IOException, UserNotFoundException, SisException {
-        System.out.println("srcType:"+srcType);
+        System.out.println("srcType:" + srcType);
         Long userId = getCurrentUserId();
         if (userId == null) {
             throw new UserNotFoundException("用户不存在");
@@ -1139,19 +1141,19 @@ public class SisWebGoodsController {
      * @throws SisException
      */
     @RequestMapping(value = "/recommendGoodsIndex", method = RequestMethod.GET)
-    public String recommendGoodsIndex(Long customerId,Model model) throws IOException, SisException {
+    public String recommendGoodsIndex(Long customerId, Model model) throws IOException, SisException {
         Long userId = getCurrentUserId();
         User user = userRepository.findOne(userId);
         if (null == user) {
             throw new SisException("该用户不存在或者已经过期");
         }
-        Sis sis =sisRepository.findByUser(user);
+        Sis sis = sisRepository.findByUser(user);
         model.addAttribute("user", user);
         model.addAttribute("customerId", customerId);
-        Long count = sisGoodsService.countByUserId(customerId,userId);
+        Long count = sisGoodsService.countByUserId(customerId, userId);
         model.addAttribute("count", count);
-        if(sis!=null){
-            model.addAttribute("shelvesModel",sis.getShelvesAllGoods()==null?false:sis.getShelvesAllGoods());
+        if (sis != null) {
+            model.addAttribute("shelvesModel", sis.getShelvesAllGoods() == null ? false : sis.getShelvesAllGoods());
         }
 
         return "/sisweb/recommendGoodsIndex";
@@ -1159,30 +1161,31 @@ public class SisWebGoodsController {
 
     /**
      * 获取商家推荐的商品
-     * @param page          第几页
-     * @param pageSize      每页条数
-     * @param keywords      商品民称
-     * @param customerId    商户ID
+     *
+     * @param page       第几页
+     * @param pageSize   每页条数
+     * @param keywords   商品民称
+     * @param customerId 商户ID
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/getRecommendGoodsList",method = RequestMethod.POST)
+    @RequestMapping(value = "/getRecommendGoodsList", method = RequestMethod.POST)
     @ResponseBody
-    public PageGoodsModel getRecommendGoodsList(int page, int pageSize,Long customerId,
+    public PageGoodsModel getRecommendGoodsList(int page, int pageSize, Long customerId,
                                                 @RequestParam(required = false) String keywords) throws Exception {
         Long userId = getCurrentUserId();
-        User user=userRepository.findOne(userId);
-        if(user==null){
+        User user = userRepository.findOne(userId);
+        if (user == null) {
             throw new UserNotFoundException("用户不存在或已过期");
         }
         Page<SisGoods> sisGoodsList = sisGoodsRecommendService.findSisRecommendGoodsModel
-                (customerId,user,keywords,new PageRequest(page-1,pageSize));
+                (customerId, user, keywords, new PageRequest(page - 1, pageSize));
 
         //计算直推返利/分销返利值
         List<PcSisGoodsModel> list = calculateValue(sisGoodsList.getContent(), user);
         //
         PageGoodsModel model = new PageGoodsModel();
-        int count = (int)sisGoodsList.getTotalElements();
+        int count = (int) sisGoodsList.getTotalElements();
         int pageCount = sisGoodsList.getTotalPages();
         model.setRows(list);
         model.setPageCount(pageCount);
@@ -1195,10 +1198,10 @@ public class SisWebGoodsController {
 
 
     /**
-     *
      * 经营者模式，根据输入的小伙伴等级索引找出所有应该的返利的key
-     * @param startIndex   开始的小伙伴等级
-     * @param stopIndex    结束的小伙伴等级
+     *
+     * @param startIndex 开始的小伙伴等级
+     * @param stopIndex  结束的小伙伴等级
      * @return
      */
     private List<String> getPossibleRebateRelations(int startIndex, int stopIndex) {
@@ -1210,7 +1213,7 @@ public class SisWebGoodsController {
             for (int k = startIndex; k <= rightTopIndex; k++) {
                 int diff = k - i;
                 if (diff == 1 || diff == 0) {
-                    lstResults.add(i+"_"+k);
+                    lstResults.add(i + "_" + k);
                 }
             }
         }
@@ -1219,14 +1222,15 @@ public class SisWebGoodsController {
 
     /**
      * 获取商品八级返利冗余字段里面返利最多的货品的钱
+     *
      * @param productDisRebateDescs
      * @return
      */
-    private double getProductDisRebateDescsMaxAmount(List<ProductDisRebateDesc> productDisRebateDescs){
-        double maxAmount=0;
-        for(ProductDisRebateDesc p:productDisRebateDescs){
-            if(p.getAmount()>maxAmount){
-                maxAmount=p.getAmount();
+    private double getProductDisRebateDescsMaxAmount(List<ProductDisRebateDesc> productDisRebateDescs) {
+        double maxAmount = 0;
+        for (ProductDisRebateDesc p : productDisRebateDescs) {
+            if (p.getAmount() > maxAmount) {
+                maxAmount = p.getAmount();
             }
         }
         return maxAmount;
